@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+    <script src="{{ '/scripts/jquery/jquery.min.js'|url }}"></script>
+    <link href="{{ '/scripts/jquery/ui/themes/base/jquery-ui.min.css'|url }}" rel="stylesheet">
+
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ '/scripts/bootstrap/css/bootstrap.min.css'|url }}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{{ '/styles/main.css'|url }}" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="{{ '/scripts/medbase.js'|url }}"> </script>
+
+    <style>
+
+    </style>
+    <title>{% block title %} - Medbase{% endblock %}</title>
+    <script src="{{ '/scripts/highcharts/js/highcharts.js'|url }}"></script>
+    <script src="{{ '/scripts/highcharts/js/highcharts-3d.js'|url }}"></script>
+    <script src="{{ '/scripts/highcharts/js/modules/exporting.js'|url }}"></script>
+    <style>
+        <!--
+
+        a.hico{
+            display: block;
+            width: 150px;
+            height:140px;
+            margin: 10px 10px 20px 10px;
+            float:left;
+            text-align: center;
+
+        }
+        .hico span{
+            display: block;
+            width: 150px;
+            height:120px;
+            padding:0px;
+            font-weight: bold;
+        //background-color:#0000CC;
+
+
+        }
+        .hico-stats{
+            background:url("images/hico.png") -5px -565px;
+
+        }
+        .hico-auth{
+            background:url("images/hico.png") -220px -560px;
+
+        }
+        .hico-lab{
+            background:url("images/hico.png") -156px -565px;
+
+        }
+        .hico-icd{
+            background:url("images/hico.png") -440px -565px;
+
+        }
+        .hico-bills{
+            background:url("images/hico.png") -600px -565px;
+
+        }
+        .hico-clinic{
+            background:url("images/hico.png") -315px -455px;
+
+        }
+        .hico-record{
+            background:url("images/hico.png") -155px -455px;
+
+        }
+
+        -->
+    </style>
+
+{% endblock %}
+
+</head>
+
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="font-size:85%">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#cnav">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="<?php print url('/')?>">
+                <img alt="MB" height="100%" src="{{ 'images/default_logo.png'|url }}">
+                <?php print $HOSPITAL->name.', '.$HOSPITAL->country ;?></a>
+
+        </div>
+        <div class="collapse navbar-collapse" id="cnav">
+
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Registration <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="<?php print  url('/')?>registration/personalreg.php">Patient</a></li>
+                        <li><a href="<?php print  url('/')?>registration/groupreg.php">Group</a></li>
+                        <li><a href="<?php print  url('/')?>registration/staffreg.php">Staff</a></li>
+                        <li class="dropdown-header">Others</li>
+                        <li class="divider"></li>
+                        <li><a href="<?php print  url('/')?>registration/birthreg.php">Birth</a></li>
+                        <li><a href="<?php print  url('/')?>registration/deathreg.php">Death</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Records <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="<?php print  url('/')?>records/personalviewall.php">Patient</a></li>
+                        <li><a href="<?php print  url('/')?>records/groupviewall.php">Group</a></li>
+                        <li><a href="<?php print  url('/')?>records/staffviewall.php">Staff</a></li>
+                        <li class="dropdown-header">Others</li>
+                        <li class="divider"></li>
+                        <li><a href="<?php print  url('/')?>records/birthviewall.php">Birth</a></li>
+                        <li><a href="<?php print  url('/')?>records/deathviewall.php">Death</a></li>
+                    </ul>
+                </li>
+                <li><a href="<?php print  url('/')?>clinics/">Clinic/Ward</a>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Laboratory <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+
+                        <li><a href="<?php print  url('/')?>lab/labtestlist.php">Lab Tests</a></li>
+                        <li><a href="<?php print  url('/')?>lab/testrequest.php">Test Requests</a></li>
+                        <li><a href="<?php print  url('/')?>lab/testresult.php">Test Results</a></li>
+                        <li><a href="<?php print  url('/')?>lab/labadmin.php">Laboratory Admin</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Messaging <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                    </ul>
+                </li>
+                <li><a href="<?php print  url('/')?>statistics/">Statistics</a>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="<?php print  url('/')?>admin/departments.php"">Department</a></li>
+                        <li><a href="<?php print  url('/')?>admin/randc.php"">Roles and Permisions</a></li>
+                        <li><a href="<?php print  url('/')?>admin/services.php"">Services</a></li>
+                        <li><a href="<?php print  url('/')?>admin/vaccination.php">Vaccination</a></li>
+                    </ul>
+                </li>
+                <?php
+		$redr =  (isset($_SERVER['QUERY_STRING']))?
+    	urlencode($_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING']):
+    	urlencode($_SERVER['PHP_SELF']);
+		?>
+                <li><a href="<?php print  url('/')?>logout.php?redr=<?php print $redr ?>">LogOut</a></li>
+            </ul>
+
+        </div>
+        <!--/.nav-collapse -->
+    </div>
+</div>
+
+{% include("layout/notify.twig") %}
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+<div class="footer">
+    <div class="container">
+        <p class="text-muted">
+            <a href="?setLocale=en_US"><?php print 'English'?></a>
+            <a href="?setLocale=es_ES"><?php print 'Español'?></a>
+            Powered by <a href="http://netronit.com">NetronIT</a>.
+            <i>Copyright &copy; <?php print date("Y")?></i>
+            <a href="/about.php">About MebBase</a>.
+        </p>
+    </div>
+</div>
+{% block script %}
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/scripts/jquery/ui/jquery-ui.min.js"></script>
+<script src="/scripts/bootstrap/js/bootstrap.min.js"></script>
+{% endblock %}
+</body>
+
+</html>

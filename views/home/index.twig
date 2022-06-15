@@ -1,0 +1,47 @@
+{% extends "layout/main.twig" %}
+
+{% block title %} Home {{ parent() }} {% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-9">
+
+            <h2>Welcome</h2>
+            <div class="row">
+
+                <a class="hico" href="{{ 'records/personalviewall.html'|url }}">
+                    <span class="hico-record"></span>
+                    {{ 'Record'|_ }}
+                </a>
+                <a class="hico"  href="{{ 'clinics/'|url }}">
+                    <span class="hico-clinic"></span>
+                    {{ 'Clinics / Wards'|_ }}
+                </a>
+                <a class="hico" href="{{ 'lab/labtestlist.html'|url }}">
+                    <span class="hico-lab"></span>
+                    {{ 'Laboratory'|_ }}
+                </a>
+                <a class="hico" href="{{ 'account/'|url }}">
+                    <span class="hico-bills" ></span>
+                    {{ 'Accounts'|_ }}
+                </a>
+                <a class="hico" href="{{ 'statistics'|url }}">
+                    <span class="hico-stats"></span>
+                    {{ 'Statistics'|_ }}
+                </a>
+            </div>
+            <div class="row">
+                {% if adpt %}
+                    {{ adpt.display("chartContainer") }}
+                {% else %}
+                    <div class="alert alert-warning">{{ 'Statistics is not available'|_ }}</div>
+                {% endif %}
+
+            </div>
+        </div>
+        <div class="col-md-3">
+            <!-- Side bar for advert -->
+            <br><br>
+            <img src="https://unsplash.it/200/400">
+        </div>
+    </div>
+{% endblock %}
