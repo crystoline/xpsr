@@ -14,12 +14,7 @@ class Configuration extends Repository
     private $configPath;
 
 
-    /**
-     * @param string $path
-     * @param string|null $environment
-     * @return void
-     */
-    public function loadConfigurationFiles($path, $environment = null)
+    public function loadConfigurationFiles(string $path, ?string $environment = null)
     {
 
         $this->configPath = $path;

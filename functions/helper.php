@@ -6,14 +6,10 @@ use Psr\Http\Message\ResponseInterface;
 use Sunrise\Http\Message\ResponseFactory;
 
 if(!function_exists('config')){
-
-    /**
-     * @param string $name
-     * @param string $default
-     * @return mixed|null
-     */
-    function config($name, $default = null){
-        return app()->getConfig()->get($name)?: $default;
+    function config(string $name, mixed $default = null)
+    {
+        $value = app()->getConfig()->get($name);
+        return $value !== null? $value: $default;
     }
 }
 

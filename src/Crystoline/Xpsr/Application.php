@@ -59,9 +59,9 @@ class Application extends ServiceContainer
      */
     private function setupPaths()
     {
-        $this->paths['env_file_path'] = __SITEPATH__;
-        $this->paths['env_file'] = $this->paths['env_file_path'] . '.env';
-        $this->paths['config_path'] = __SITEPATH__ . DIRECTORY_SEPARATOR . 'config';
+        $this->paths['env_file_path'] = $this->getRootDir();
+        $this->paths['env_file'] = $this->getRootDir(). DIRECTORY_SEPARATOR . '.env';
+        $this->paths['config_path'] = $this->getRootDir(). DIRECTORY_SEPARATOR . 'config';
     }
 
     /**

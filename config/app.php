@@ -40,7 +40,7 @@ return [
     |
     */
 
-    'debug' => (bool) env('APP_DEBUG', false),
+    'debug' => env('APP_DEBUG', false)  === 'true',
 
     /*
     |--------------------------------------------------------------------------
@@ -53,7 +53,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhostsss'),
+    'url' => env('APP_URL', 'http://localhosts'),
 
     'asset_url' => env('ASSET_URL', null),
 
