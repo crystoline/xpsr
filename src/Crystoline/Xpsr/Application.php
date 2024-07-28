@@ -16,7 +16,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use const __SITEPATH__;
 
-class Application extends ServiceContainer
+final class Application extends ServiceContainer
 {
     /**
      * @var self
@@ -28,15 +28,14 @@ class Application extends ServiceContainer
      * @var Configuration
      */
     private $config;
+
     /**
-     *
      * @var array
      */
     protected $paths = [];
     public string $rootDir;
 
     /**
-     *
      * Initialize configuration.
      */
     public function __construct(string $public_dir)
@@ -54,10 +53,9 @@ class Application extends ServiceContainer
     }
 
     /**
-     *
      * Initialize the paths.
      */
-    private function setupPaths()
+    private function setupPaths(): void
     {
         $this->paths['env_file_path'] = $this->getRootDir();
         $this->paths['env_file'] = $this->getRootDir(). DIRECTORY_SEPARATOR . '.env';
@@ -67,13 +65,13 @@ class Application extends ServiceContainer
     /**
      *
      * Detect the environment. Defaults to production.
-     * @return string
      */
-    private function getEnvironment()
+    private function getEnvironment(): ?string
     {
         if (is_file($this->paths['env_file'])) {
             $dotenv = Dotenv::createUnsafeImmutable($this->paths['env_file_path'])->load();
         }
+
         return null;
         //return getenv('ENVIRONMENT') ?: 'production';
         return getenv('APP_ENV') ?: '';
@@ -85,22 +83,21 @@ class Application extends ServiceContainer
             return self::$instance;
         }
 
-        return new Application();
+        throw new Exception('Instance not initiated');
     }
 
-    /**
-     * @return Configuration
-     */
     public function getConfig(): Configuration
     {
         return $this->config;
     }
+
     public function isConsole(): bool{
         return php_sapi_name() === 'cli';
     }
 
-    public function boot(): void{
+    public function boot(): void {
         $this->registerServices();
+
         $writer = new ResponseWriter();
 
         $request = $this->get(ServerRequestInterface::class);
@@ -108,6 +105,7 @@ class Application extends ServiceContainer
         if(!$request instanceof ServerRequestInterface){
             throw new \Exception('Can\'t create request' ); //TODO
         }
+
         try {
 
             if ($this->isConsole()) {
@@ -127,11 +125,10 @@ class Application extends ServiceContainer
             exit;
         }
     }
+
     private function handleHttp(ResponseWriter $writer, ServerRequestInterface $request):void{
         $router = $this->build(RouteHandlerInterface::class);
 
-
-        //if(!$router instanceof Router){
         if(!$router instanceof RequestHandlerInterface){
             throw new \Exception('Can not found router handler');
         }
@@ -140,14 +137,9 @@ class Application extends ServiceContainer
 
         $response = $router->run($request);
 
-        //emit($response);
         $writer->write($response);
-
-
-
-
-
     }
+
     private function handleCommand(ResponseWriter $writer):void{
 
     }
@@ -165,18 +157,13 @@ class Application extends ServiceContainer
                 continue;
             }
 
-            //is_subclass_of()
-
             if(!is_subclass_of($register, ServiceRegistry::class)){
-            // if(! in_array(ServiceRegistry::class, class_parents($register))){
                 continue;
             }
 
             $this->register($register, true);
-
         }
     }
-
 
     private function registerConfigService()
     {
@@ -202,7 +189,7 @@ class Application extends ServiceContainer
         if($this->has($id)){
             return $this->get($id);
         }
-        //var_dump(array_keys($this->services));
+
         throw new NotFoundException(sprintf('service %s not found', $id));
     }
 
@@ -210,6 +197,4 @@ class Application extends ServiceContainer
     {
         return $this->rootDir;
     }
-
-
 }
