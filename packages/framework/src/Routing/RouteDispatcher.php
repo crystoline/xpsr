@@ -12,8 +12,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Crystoline\Http\Exception\MethodNotAllowedHttpException;
+use Crystoline\Http\Exception\NotFoundHttpException;
 use UnexpectedValueException;
 
 /** @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md. */

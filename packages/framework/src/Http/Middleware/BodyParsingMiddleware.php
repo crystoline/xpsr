@@ -10,8 +10,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Crystoline\Http\Exception\BadRequestHttpException;
+use Crystoline\Http\Exception\PayloadTooLargeHttpException;
 
 /**
  * Fills getParsedBody() for request bodies PHP does not parse itself.
@@ -91,8 +91,8 @@ final class BodyParsingMiddleware implements MiddlewareInterface
         return $contents;
     }
 
-    private function tooLarge(): HttpException
+    private function tooLarge(): PayloadTooLargeHttpException
     {
-        return new HttpException(413, "The request body is larger than {$this->maxBytes} bytes.");
+        return new PayloadTooLargeHttpException("The request body is larger than {$this->maxBytes} bytes.");
     }
 }

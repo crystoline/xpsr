@@ -14,7 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Crystoline\Http\Exception\HttpExceptionInterface;
 use Crystoline\Tests\Fixtures\Http\ChunkedStream;
 
 final class BodyParsingMiddlewareTest extends TestCase

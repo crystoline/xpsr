@@ -38,12 +38,35 @@ Remove it from `app.middleware` to handle bodies yourself.
 
 The kernel catches every exception from middleware, routing, and handlers and passes it to `Crystoline\Exception\ExceptionHandlerInterface`. The default `ExceptionHandler`:
 
-- uses the exception's status for Symfony `HttpExceptionInterface` exceptions (including their headers, such as `Allow`), and 500 for everything else;
+- uses the exception's status and headers (such as `Allow`) for HTTP exceptions, and 500 for everything else;
 - returns JSON (`{"message": ...}`) when the `Accept` header prefers `application/json` or a `+json` type, and HTML otherwise;
 - shows only the standard reason phrase, such as "Internal Server Error", unless `APP_DEBUG=true`. With debug enabled, JSON includes the exception message. HTML shows the Whoops error page if `filp/whoops` is installed (the skeleton installs it as a development dependency); otherwise it shows a plain built-in page with each exception in the chain, its location, and its stack trace. Debug is off unless explicitly enabled;
 - logs 5xx errors, but not 4xx errors, through PSR-3.
 
-Unmatched routes (404) and unsupported methods (405) are thrown as `NotFoundHttpException` and `MethodNotAllowedHttpException`, so they receive the same JSON or HTML body as other errors. Throw these, or `BadRequestHttpException` and others from `symfony/http-kernel`, from your handlers for other client errors.
+### HTTP exceptions
+
+Throw these from handlers and middleware to send an error status. They are in `Crystoline\Http\Exception`:
+
+| Class | Status | Extra constructor argument |
+|---|---|---|
+| `BadRequestHttpException` | 400 | |
+| `UnauthorizedHttpException` | 401 | `$challenge` → `WWW-Authenticate`, for example `'Bearer realm="api"'` |
+| `ForbiddenHttpException` | 403 | |
+| `NotFoundHttpException` | 404 | |
+| `MethodNotAllowedHttpException` | 405 | `$allowedMethods` → `Allow` |
+| `ConflictHttpException` | 409 | |
+| `PayloadTooLargeHttpException` | 413 | |
+| `UnsupportedMediaTypeHttpException` | 415 | |
+| `UnprocessableEntityHttpException` | 422 | |
+| `TooManyRequestsHttpException` | 429 | `$retryAfterSeconds` → `Retry-After` |
+| `ServiceUnavailableHttpException` | 503 | |
+| `HttpException` | any 400–599 | `$statusCode` first |
+
+The other arguments are `$message`, `$previous`, `$headers`, and `$code`. The message reaches clients only when `APP_DEBUG=true`. Statuses 500 and above are logged; client errors are not. To create your own, implement `Crystoline\Http\Exception\HttpExceptionInterface` or extend `HttpException`.
+
+Unmatched routes (404) and unsupported methods (405) are thrown as `NotFoundHttpException` and `MethodNotAllowedHttpException`, so they receive the same JSON or HTML body as other errors.
+
+Symfony's HttpKernel exceptions (`Symfony\Component\HttpKernel\Exception\*`) are also rendered with their status and headers when `symfony/http-kernel` is installed. The framework no longer depends on that package; it was required only for these classes.
 
 If the application cannot even boot, `public/index.php` logs the cause with `error_log()` and returns a plain-text "Internal Server Error" with status 500.
 

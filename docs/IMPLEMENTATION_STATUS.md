@@ -231,9 +231,30 @@ Implemented:
 
 Verified on 26 October 2026: 300 tests and 1,219 assertions pass on PHP 8.4.27 and PHP 8.5.12, and at the lowest allowed dependency versions with deprecations as failures. PHPStan, PER style checks for 127 files, strict validation of all four `composer.json` files, the security audit, and the packaging group pass. In the packaging group, the framework installs and tests standalone without Twig or Whoops as requirements, and a `--no-dev` application install serves requests without Whoops.
 
+## Twelfth milestone: completed — no Symfony HttpKernel dependency
+
+Implemented:
+
+- **XPSR HTTP exceptions.** `Crystoline\Http\Exception`:
+  - `HttpExceptionInterface` and `HttpException`, which rejects statuses outside 400–599;
+  - classes for 400, 401 (with the `WWW-Authenticate` challenge), 403, 404, 405 (with `Allow`), 409, 413, 415, 422, 429 (optional `Retry-After`), and 503.
+
+  Constructors follow Symfony's argument order (`$message`, `$previous`, `$headers`, `$code`), which keeps migration simple.
+- **Framework code switched.** The route dispatcher, body parser, and tutorial use them. The exception handler renders XPSR exceptions and, when `symfony/http-kernel` is installed, Symfony's too, so existing code keeps working.
+- **`IpRange`** replaces Symfony's `IpUtils` for trusted-proxy matching: exact addresses and CIDR ranges, IPv4 and IPv6, with invalid ranges never matching.
+- **Smaller install.** The framework no longer requires `symfony/http-kernel` or `symfony/http-foundation`. A fresh production install of the skeleton no longer contains HttpKernel, HttpFoundation, EventDispatcher, ErrorHandler, VarDumper, or `psr/event-dispatcher`. Those packages remain development dependencies of the monorepo, which runs the Symfony compatibility test, at unchanged versions.
+
+Verified on 26 October 2026:
+
+- **Suite:** 342 tests and 1,297 assertions pass on PHP 8.4.27 and PHP 8.5.12, and at the lowest allowed dependency versions with deprecations as failures.
+- **Static checks:** PHPStan, PER style checks for 143 files, strict validation of all four `composer.json` files, and the security audit pass.
+- **Packaging:** the packaging group passes, including the framework's standalone tests.
+- **Tutorial:** walked through again in a freshly created project, with the same results.
+- **Fresh install:** its `--no-dev` install contains only Console, Process, and Finder (plus their contracts and polyfills) from Symfony, and serves a JSON 404 correctly.
+
 ## Boundaries and remaining work
 
-The first eleven milestones are working slices, not completion of all roadmap phases. Phase 5 is complete except publishing, which needs the repository owner's accounts and decisions.
+The first twelve milestones are working slices, not completion of all roadmap phases. Phase 5 is complete except publishing, which needs the repository owner's accounts and decisions.
 
 - **Publishing.** The split job and release flow are ready and rehearsed (see the tenth milestone). What remains needs the owner's accounts: the `xpsr-php` organization and repositories, the `SPLIT_TOKEN` secret, removal of the old `crystoline/xpsr` `v1.0.0`, Packagist registration, and the `v0.1.0` tag. See "First publication" in `PACKAGES.md`.
 - **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.
@@ -247,7 +268,7 @@ The first eleven milestones are working slices, not completion of all roadmap ph
   - The emitter does not compress, add `Content-Length`, or serve ranges.
   - Only Nyholm PSR-7 is tested.
   - The request host comes from the client's `Host` header; build absolute URLs from `APP_URL`.
-- **Hard dependencies.** `symfony/http-kernel` is a framework requirement only for its HTTP exception classes, and it pulls in several other Symfony components. Own exception classes, with the Symfony interface still recognized, would remove it. Twig and Whoops are optional since the eleventh milestone.
+- **Dependencies.** The framework's remaining third-party requirements are Symfony Console, Process, and Finder; Illuminate Config; phpdotenv; and Nyholm's PSR-7 server helper. Finder only lists configuration files, and Illuminate Config pulls in parts of Illuminate Support, so both are candidates for small in-house replacements.
 - **Not yet available:** cache operations, database integration, authentication, queues, and scheduling (roadmap phase 6).
 - **Windows.** Native Windows execution of the development server and generators is not verified.
 
@@ -255,4 +276,4 @@ The first eleven milestones are working slices, not completion of all roadmap ph
 
 Publishing is ready to run once the GitHub organization, the `SPLIT_TOKEN` secret, and Packagist access exist; follow "First publication" in `PACKAGES.md`.
 
-Without accounts, the next useful steps are: replace the `symfony/http-kernel` dependency with XPSR HTTP exception classes (keeping the Symfony interface working), then start roadmap phase 6 with a PSR-16 cache integration and `cache:clear`.
+Without accounts, start roadmap phase 6 with a PSR-16 cache integration and a `cache:clear` command. It should be an optional package, so applications that do not cache stay unaffected.

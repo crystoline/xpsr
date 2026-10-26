@@ -8,8 +8,9 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use Crystoline\Http\Exception\HttpExceptionInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface as SymfonyHttpExceptionInterface;
 use Throwable;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
@@ -39,7 +40,9 @@ final class ExceptionHandler implements ExceptionHandlerInterface
 
     public function shouldReport(Throwable $exception): bool
     {
-        return !$exception instanceof HttpExceptionInterface || $exception->getStatusCode() >= 500;
+        $http = self::httpError($exception);
+
+        return $http === null || $http[0] >= 500;
     }
 
     public function render(RequestInterface $request, Throwable $exception): ResponseInterface
@@ -48,13 +51,10 @@ final class ExceptionHandler implements ExceptionHandlerInterface
             $this->report($exception);
         }
 
-        $status = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
+        [$status, $headers] = self::httpError($exception) ?? [500, []];
         $response = $this->responses->createResponse($status);
-
-        if ($exception instanceof HttpExceptionInterface) {
-            foreach ($exception->getHeaders() as $name => $value) {
-                $response = $response->withHeader($name, $value);
-            }
+        foreach ($headers as $name => $value) {
+            $response = $response->withHeader($name, $value);
         }
 
         // Exception details are never included unless debug is explicitly enabled.
@@ -73,6 +73,23 @@ final class ExceptionHandler implements ExceptionHandlerInterface
 
         return $response->withHeader('Content-Type', $contentType)
             ->withBody($this->streams->createStream($body));
+    }
+
+    /**
+     * Status and headers of an HTTP exception, or null for any other exception.
+     *
+     * Symfony's HttpKernel exceptions are recognized too when symfony/http-kernel is installed,
+     * so existing code that throws them keeps working.
+     *
+     * @return array{int, array<array-key, mixed>}|null
+     */
+    private static function httpError(Throwable $exception): ?array
+    {
+        if ($exception instanceof HttpExceptionInterface || $exception instanceof SymfonyHttpExceptionInterface) {
+            return [$exception->getStatusCode(), $exception->getHeaders()];
+        }
+
+        return null;
     }
 
     private function whoopsPage(Throwable $exception): string

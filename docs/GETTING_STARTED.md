@@ -60,8 +60,8 @@ namespace App\Http\Controller;
 use Crystoline\Http\Response\ResponseBuilder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Crystoline\Http\Exception\BadRequestHttpException;
+use Crystoline\Http\Exception\NotFoundHttpException;
 
 final class TaskController
 {
@@ -102,7 +102,7 @@ Things to notice:
 - **Injection:** the constructor's `ResponseBuilder` is supplied by the container. Controllers need no registration.
 - **Route parameters:** the `{id}` placeholder arrives as a request attribute.
 - **Request bodies:** JSON is already decoded in `getParsedBody()`, by the body-parsing middleware the skeleton enables.
-- **Errors:** throwing a Symfony HTTP exception produces that status code. API clients get `{"message": "Bad Request"}`; the detailed message appears only with `APP_DEBUG=true`.
+- **Errors:** throwing one of XPSR's HTTP exceptions (`Crystoline\Http\Exception\*`) produces that status code. API clients get `{"message": "Bad Request"}`; the detailed message appears only with `APP_DEBUG=true`.
 
 Add the routes to `routes/api.php`:
 

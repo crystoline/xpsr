@@ -92,7 +92,7 @@ Middleware entries must be PSR-15 instances or service IDs resolving to them. Ex
 
 `Allow` combines matching methods across overlapping definitions, adds HEAD when GET exists, and adds OPTIONS. Automatic OPTIONS does not run route middleware and does not provide CORS authorization headers. Put cross-cutting policy in global middleware or declare an explicit OPTIONS route. The kernel does not infer Content-Length for HEAD.
 
-404 and 405 are thrown by `RouteDispatcher` as Symfony `NotFoundHttpException` and `MethodNotAllowedHttpException` (the latter carries `Allow`). The kernel's exception handler renders them with the same JSON or HTML body as other errors; see `HTTP.md`. Global middleware therefore sees these outcomes as exceptions, not as 404/405 responses. A middleware that needs a fallback for unmatched paths should catch `NotFoundHttpException`.
+404 and 405 are thrown by `RouteDispatcher` as `Crystoline\Http\Exception\NotFoundHttpException` and `MethodNotAllowedHttpException` (the latter carries `Allow`). The kernel's exception handler renders them with the same JSON or HTML body as other errors; see `HTTP.md`. Global middleware therefore sees these outcomes as exceptions, not as 404/405 responses. A middleware that needs a fallback for unmatched paths should catch `NotFoundHttpException`.
 
 Direct use of `RouteDispatcher` bypasses the outer kernel, including HEAD body suppression and error rendering, so 404/405 surface as exceptions. Applications should use `Application::getHttpKernel()`.
 

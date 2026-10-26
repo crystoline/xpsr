@@ -12,7 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
-use Symfony\Component\HttpFoundation\IpUtils;
+use Crystoline\Http\IpRange;
 
 /**
  * Creates the server request from PHP globals.
@@ -72,7 +72,7 @@ class ServerRequestFactory
     ): ServerRequestInterface {
         $server['REQUEST_METHOD'] ??= 'GET';
         $remote = $server['REMOTE_ADDR'] ?? null;
-        if ($trustedProxies === [] || !is_string($remote) || !IpUtils::checkIp($remote, $trustedProxies)) {
+        if ($trustedProxies === [] || !is_string($remote) || !IpRange::matches($remote, $trustedProxies)) {
             foreach (array_keys($server) as $key) {
                 if (str_starts_with((string) $key, 'HTTP_X_FORWARDED_') || $key === 'HTTP_FORWARDED') {
                     unset($server[$key]);

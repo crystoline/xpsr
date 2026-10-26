@@ -14,7 +14,8 @@
     "filp/whoops": "^2.16",
     "friendsofphp/php-cs-fixer": "^3.64",
     "phpstan/phpstan": "^2.1",
-    "phpunit/phpunit": "^12.5"
+    "phpunit/phpunit": "^12.5",
+    "symfony/http-kernel": "^7.4"
   },
   "suggest": {
     "crystoline/xpsr-router-sunrise": "Sunrise router adapter. Select it with: php xpsr setup --router=sunrise --install-dependencies"

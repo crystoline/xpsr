@@ -20,6 +20,10 @@ First release of the rebuilt framework. It replaces the earlier prototype, which
 - Router contract test suite for adapter authors (`Crystoline\Testing\RouterContractTestCase`).
 - Documentation: getting started, deployment, HTTP, routing, container, console, packages, and versioning.
 
+### HTTP exceptions
+
+- `Crystoline\Http\Exception\*`: `HttpException`, `HttpExceptionInterface`, and classes for 400, 401, 403, 404, 405, 409, 413, 415, 422, 429, and 503. The framework no longer depends on `symfony/http-kernel` or `symfony/http-foundation`. Symfony's HttpKernel exceptions are still rendered with their status when that package is installed.
+
 ### Optional dependencies
 
 - `twig/twig` (views) and `filp/whoops` (debug error pages) are suggestions of the framework, not requirements. The skeleton requires Twig for its web example and installs Whoops for development only. Without Whoops, debug mode shows a plain built-in error page.
