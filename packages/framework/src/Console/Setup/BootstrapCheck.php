@@ -13,6 +13,8 @@ use Symfony\Component\Process\Process;
  *
  * The child resolves the configured router and matches every route that has no placeholders.
  * Route handlers are not executed.
+ *
+ * @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md.
  */
 class BootstrapCheck
 {

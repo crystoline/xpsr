@@ -32,6 +32,25 @@ jobs:
       - run: composer check
       - run: composer audit
 
+  # The whole suite against the lowest versions every constraint allows. PHPUnit fails on
+  # deprecations, so a minimum version that is not clean on the PHP version fails here.
+  lowest-dependencies:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.4', '8.5']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '${{ matrix.php }}'
+          extensions: mbstring, dom, xml, xmlwriter, pcntl
+          coverage: none
+          tools: composer:v2
+      - run: composer update --prefer-lowest --prefer-stable --prefer-dist --no-interaction --no-progress
+      - run: composer test
+
   # Installs each package on its own and builds a project with composer create-project.
   packaging:
     runs-on: ubuntu-latest

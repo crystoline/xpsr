@@ -26,6 +26,8 @@ use Symfony\Component\Process\Process;
  * Order: validate, plan file changes, install a missing adapter package, write files, run the
  * bootstrap check. Nothing is written if planning or Composer fails, and written files are
  * restored if the check fails.
+ *
+ * @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md.
  */
 final class SetupCommand extends Command
 {

@@ -9,6 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+/** @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md. */
 final class MiddlewarePipeline implements RequestHandlerInterface
 {
     private readonly RequestHandlerInterface $pipeline;

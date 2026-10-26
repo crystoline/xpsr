@@ -8,6 +8,7 @@ use Crystoline\Console\Generator\GeneratedClass;
 use Crystoline\Console\Generator\StubGenerator;
 use Symfony\Component\Console\Input\InputInterface;
 
+/** @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md. */
 final class MakeMiddlewareCommand extends AbstractMakeCommand
 {
     public function __construct(StubGenerator $generator)

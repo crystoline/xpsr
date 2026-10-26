@@ -105,7 +105,10 @@ final class PackagesTest extends TestCase
             $this->composer(['config', 'repositories.xpsr', $this->packagesRepository()], $directory);
         }
         $this->composer(['validate', '--strict', '--no-check-lock'], $directory);
-        $this->composer(['install', '--prefer-dist'], $directory);
+        // XPSR_DEPENDENCIES=lowest installs the lowest versions every constraint allows.
+        $this->composer(getenv('XPSR_DEPENDENCIES') === 'lowest'
+            ? ['update', '--prefer-lowest', '--prefer-stable', '--prefer-dist']
+            : ['install', '--prefer-dist'], $directory);
         if ($package !== 'framework') {
             self::assertDirectoryExists($directory . '/vendor/crystoline/xpsr-framework/src');
             self::assertFalse(is_link($directory . '/vendor/crystoline/xpsr-framework'), 'The framework is installed as a copy.');
@@ -122,7 +125,10 @@ final class PackagesTest extends TestCase
         self::assertDirectoryDoesNotExist($skeleton . '/packages');
         $manifest = json_decode((string) file_get_contents($skeleton . '/composer.json'), true, flags: JSON_THROW_ON_ERROR);
         self::assertArrayNotHasKey('repositories', $manifest);
-        self::assertArrayNotHasKey('autoload-dev', $manifest);
+        self::assertSame(['psr-4' => ['Tests\\' => 'tests/']], $manifest['autoload-dev']);
+        self::assertSame(['phpunit/phpunit'], array_keys($manifest['require-dev']));
+        self::assertFileExists($skeleton . '/phpunit.xml');
+        self::assertDirectoryDoesNotExist($skeleton . '/tests/Integration', 'Monorepo tests are not exported.');
 
         $skeletonRepository = json_encode([
             'type' => 'path',
@@ -163,5 +169,18 @@ final class PackagesTest extends TestCase
         self::assertSame('["helloooooooo"]', $response);
 
         self::assertStringContainsString('Created app/Http/Controller/ReportController.php', $xpsr('make:controller', 'ReportController'));
+
+        // The application's own example tests pass.
+        $output = $this->runCommand([PHP_BINARY, 'vendor/bin/phpunit', '--colors=never'], $project);
+        self::assertMatchesRegularExpression('/^OK \(\d+ tests, \d+ assertions\)$/m', $output);
+
+        // A production install, as in docs/DEPLOYMENT.md, still serves requests.
+        $this->composer(['install', '--no-dev', '--optimize-autoloader'], $project);
+        self::assertDirectoryDoesNotExist($project . '/vendor/phpunit');
+        self::assertSame('["helloooooooo"]', $this->runCommand(
+            [PHP_BINARY, $project . '/public/index.php'],
+            $this->work,
+            ['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/hello', 'HTTP_HOST' => 'localhost', 'APP_ENV' => 'production'],
+        ));
     }
 }

@@ -7,9 +7,10 @@ declare(strict_types=1);
  *
  *   php scripts/export-skeleton.php <empty target directory>
  *
- * Copies only the files a new application needs, and writes a composer.json without the
- * monorepo-only parts: the path repository for packages/, autoloading for package tests,
- * and development tooling whose configuration is not exported. composer.lock is not
+ * Copies only the files a new application needs, including the application test scaffold
+ * (tests/TestCase.php, tests/Application, phpunit.xml), and writes a composer.json without
+ * the monorepo-only parts: the path repository for packages/, autoloading for package tests,
+ * and analysis/style tooling whose configuration is not exported. composer.lock is not
  * copied: a released skeleton's lock file must be built against published packages.
  */
 
@@ -18,9 +19,12 @@ const SKELETON_PATHS = [
     'app', 'bootstrap', 'config', 'docker-compose.yml', 'public', 'routes', 'views', 'xpsr',
 ];
 
+/** The application test scaffold: tests/ in the monorepo also holds framework integration tests. */
+const SKELETON_TESTS = ['tests/TestCase.php', 'tests/Application'];
+
 /** require-dev entries and scripts that only make sense inside the monorepo. */
-const MONOREPO_DEV_PACKAGES = ['crystoline/xpsr-router-sunrise', 'friendsofphp/php-cs-fixer', 'phpstan/phpstan', 'phpunit/phpunit'];
-const MONOREPO_SCRIPTS = ['test', 'test:packaging', 'test:coverage', 'analyse', 'style', 'style:fix', 'check'];
+const MONOREPO_DEV_PACKAGES = ['crystoline/xpsr-router-sunrise', 'friendsofphp/php-cs-fixer', 'phpstan/phpstan'];
+const MONOREPO_SCRIPTS = ['test:packaging', 'analyse', 'style', 'style:fix', 'check'];
 
 $source = dirname(__DIR__);
 $target = $argv[1] ?? '';
@@ -57,9 +61,16 @@ foreach (SKELETON_PATHS as $path) {
         copyPath("{$source}/{$path}", "{$target}/{$path}");
     }
 }
+mkdir("{$target}/tests");
+foreach (SKELETON_TESTS as $path) {
+    copyPath("{$source}/{$path}", "{$target}/{$path}");
+}
+copy(__DIR__ . '/skeleton/phpunit.xml', "{$target}/phpunit.xml");
 
 $composer = json_decode((string) file_get_contents("{$source}/composer.json"), true, flags: JSON_THROW_ON_ERROR);
-unset($composer['repositories'], $composer['autoload-dev']);
+unset($composer['repositories']);
+// Keep only the application's own test namespace.
+$composer['autoload-dev'] = ['psr-4' => ['Tests\\' => 'tests/']];
 foreach (MONOREPO_DEV_PACKAGES as $package) {
     unset($composer['require-dev'][$package]);
 }

@@ -10,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use UnexpectedValueException;
 
+/** @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md. */
 final class HandlerResolver
 {
     public function __construct(private readonly ContainerInterface $container) {}

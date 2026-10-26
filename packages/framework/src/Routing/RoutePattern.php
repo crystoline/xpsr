@@ -6,7 +6,11 @@ namespace Crystoline\Routing;
 
 use InvalidArgumentException;
 
-/** The portable grammar deliberately excludes optional segments and vendor regex extensions. */
+/**
+ * The portable grammar deliberately excludes optional segments and vendor regex extensions.
+ *
+ * @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md.
+ */
 final class RoutePattern
 {
     /** @var list<string|array{string, string}> */

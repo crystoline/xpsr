@@ -11,6 +11,8 @@ use Composer\InstalledVersions;
  *
  * A package installed only through require-dev does not count: it would be missing from a
  * production install made with --no-dev.
+ *
+ * @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md.
  */
 final class ComposerPackageInspector implements PackageInspectorInterface
 {

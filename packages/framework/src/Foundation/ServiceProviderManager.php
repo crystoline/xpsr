@@ -10,6 +10,7 @@ use LogicException;
 use RuntimeException;
 use Throwable;
 
+/** @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md. */
 final class ServiceProviderManager
 {
     /** @var array<class-string<ServiceRegistry>, ServiceRegistry> */

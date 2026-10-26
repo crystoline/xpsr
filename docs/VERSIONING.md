@@ -1,0 +1,55 @@
+# Versioning and upgrades
+
+XPSR follows [Semantic Versioning](https://semver.org/). This page defines what the version numbers promise.
+
+## One version for every package
+
+`crystoline/xpsr` (skeleton), `crystoline/xpsr-framework`, `crystoline/xpsr-router-fastroute`, and `crystoline/xpsr-router-sunrise` are released together with the same version number. The adapters require the matching framework range: adapter 0.2.x works with framework 0.2.x. A release that changes only one package still tags all of them, so you never need a compatibility table.
+
+## Public API
+
+The backward-compatibility promise covers:
+
+- **Classes, interfaces, and their public methods** in `crystoline/*` packages, unless marked `@internal`. This includes `Crystoline\Contracts\*`, the container, `ServiceRegistry`, `Application`, `Configuration`, the HTTP kernel, middleware, response builder and emitter, routing definitions (`RouteCollection`, `RouteDefinition`, `RouteMatch`, `AbstractRouter`), the URL generator, the exception handler, the logger, and `Crystoline\Testing\RouterContractTestCase`.
+- **Route files**: a callable receiving `RouteCollection`, and the portable route grammar in [ROUTING.md](ROUTING.md).
+- **Configuration keys and environment variables** documented in the docs, such as `app.registry`, `app.middleware`, `routing.adapter`, `ROUTER_ADAPTER`, `LOG_LEVEL`, and `TRUSTED_PROXIES`.
+- **Documented HTTP behavior**: status codes for 404, 405, 400, and 413, the `{"message": ...}` error body, HEAD/OPTIONS handling, and body parsing.
+- **Console commands**: names, documented options, and exit codes.
+
+Not covered:
+
+- Anything marked `@internal`: the setup and generator internals, the built-in command classes (their command-line behavior is covered, their PHP API is not), the provider manager, the middleware pipeline, the route dispatcher, the handler resolver, and route pattern parsing.
+- Files under `Console/Resources/`, including the stubs. Generated code may change in any release, but code you already generated is yours and never changes.
+- Exception messages and console output wording, except the exit codes.
+- Tests and test fixtures inside the packages.
+- The skeleton's example code (`HomeController`, `GreetCommand`, the `/hello` route). You own and edit these after creating a project.
+
+## Before 1.0
+
+XPSR is in its 0.x series. Composer reads `^0.1` as "0.1.0 or newer, below 0.2.0", so:
+
+- **Patch releases (0.1.1, 0.1.2, …)** contain fixes only. They never break the public API.
+- **Minor releases (0.2.0, 0.3.0, …)** may break the public API. Every break is listed under **Breaking** in `CHANGELOG.md`, with migration steps in `UPGRADE.md`.
+
+Require `^0.1` and upgrade between minor versions deliberately.
+
+## From 1.0
+
+- Patch and minor releases never break the public API. Minor releases add features.
+- Features are deprecated in a minor release, documented in `CHANGELOG.md`, marked `@deprecated`, and trigger an `E_USER_DEPRECATED` notice where practical. They are removed only in the next major release.
+- Major releases may remove deprecated features and make other breaking changes, each listed in `UPGRADE.md`.
+
+## PHP and dependency versions
+
+- Each release supports the PHP versions tested in CI (currently 8.4 and 8.5). Dropping a PHP version is a breaking change: it needs a minor release before 1.0 and a major release after.
+- Minimum dependency versions must be free of deprecation notices on every supported PHP version. CI runs the whole test suite against the lowest allowed versions with deprecations treated as failures. Raising a minimum version to fix a defect is allowed in any release.
+- Supporting a new major version of a dependency, such as `psr/http-message` 2, is not a breaking change on its own.
+
+## Making a release
+
+1. Move the **Unreleased** entries in `CHANGELOG.md` under the new version, and update `UPGRADE.md` for breaking changes.
+2. Ensure CI passes, including the packaging and lowest-dependency jobs.
+3. Tag the same version in the monorepo and every split repository ([PACKAGES.md](PACKAGES.md)).
+4. For the skeleton, update its framework and adapter constraints to the new range.
+
+The first tagged release is `0.1.0`. Packagist already lists an unrelated prototype as `crystoline/xpsr` `v1.0.0`; remove that version before tagging `0.1.0`, otherwise `composer create-project crystoline/xpsr` keeps selecting it.

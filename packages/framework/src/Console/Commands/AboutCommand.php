@@ -13,6 +13,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/** @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md. */
 final class AboutCommand extends Command
 {
     public function __construct(private readonly Application $application)

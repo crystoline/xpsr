@@ -59,7 +59,7 @@ Each package has its own `phpunit.xml.dist` and runs its tests standalone after 
 php scripts/export-skeleton.php /path/to/empty/dir
 ```
 
-The script copies the files a new application needs and writes a `composer.json` without the monorepo-only parts:
+The script copies the files a new application needs, including the application test scaffold (`tests/TestCase.php`, `tests/Application/`, and a `phpunit.xml` from `scripts/skeleton/`). It writes a `composer.json` without the monorepo-only parts:
 
 - the `packages/*` path repository;
 - autoloading for package tests;
@@ -67,7 +67,20 @@ The script copies the files a new application needs and writes a `composer.json`
 
 It does not copy `composer.lock`. A released skeleton's lock must be built against the published packages.
 
-The packaging test builds a project from this export with `composer create-project`, using the packages through path repositories without symbolic links. It then checks that only the FastRoute adapter is installed, `setup` works, a real `composer require` of the Sunrise adapter succeeds (including moving `psr/http-message` from 2.x to 1.x), requests are served, and generators work.
+The packaging test builds a project from this export with `composer create-project`, using the packages through path repositories without symbolic links. It then checks that:
+
+- only the FastRoute adapter is installed;
+- `setup` works;
+- a real `composer require` of the Sunrise adapter succeeds, including moving `psr/http-message` from 2.x to 1.x;
+- requests are served and generators work;
+- the project's own tests pass;
+- a `composer install --no-dev --optimize-autoloader` production install still serves requests.
+
+`XPSR_DEPENDENCIES=lowest composer test:packaging` installs each package at the lowest versions its constraints allow.
+
+## Lowest dependency versions
+
+The CI job `lowest-dependencies` runs the whole suite after `composer update --prefer-lowest --prefer-stable`, with deprecation notices treated as failures. This guards the minimum versions declared in each `composer.json`. It found that `vlucas/phpdotenv` 5.4, `nyholm/psr7` 1.8.0, `filp/whoops` 2.14, and `symfony/var-dumper` 6.4 print PHP 8.4 deprecation notices that corrupt responses and console output. The minimums are therefore `^5.6.1`, `^1.8.2`, and `^2.16`, plus a `conflict` with `symfony/var-dumper` below 7.4.
 
 ## Publishing (not done yet)
 
@@ -77,4 +90,4 @@ Publishing needs, in order:
 2. **Packagist.** Registration of `crystoline/xpsr`, `crystoline/xpsr-framework`, `crystoline/xpsr-router-fastroute`, and `crystoline/xpsr-router-sunrise`. Check name availability first.
 3. **Tags.** Tag `v0.1.0` in each split repository, then drop the `@dev` flags.
 4. **Skeleton lock.** Generate the skeleton's `composer.lock` against the published versions.
-5. **CI.** Add a job that installs the packages at their lowest allowed dependency versions (`composer update --prefer-lowest`).
+5. **Old prototype.** Delete the existing `crystoline/xpsr` `v1.0.0` (the old prototype) from Packagist and its tag, and point the Packagist entry at the skeleton repository instead of the monorepo. See [VERSIONING.md](VERSIONING.md).

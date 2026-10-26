@@ -16,6 +16,7 @@ use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use UnexpectedValueException;
 
+/** @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md. */
 final class RouteDispatcher implements RequestHandlerInterface
 {
     public function __construct(

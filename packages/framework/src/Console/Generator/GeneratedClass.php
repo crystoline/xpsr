@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Crystoline\Console\Generator;
 
-/** A validated generator target: where the class lives and where its file goes. */
+/**
+ * A validated generator target: where the class lives and where its file goes.
+ *
+ * @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md.
+ */
 final readonly class GeneratedClass
 {
     public function __construct(

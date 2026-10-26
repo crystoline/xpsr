@@ -6,7 +6,7 @@
     "php": "^8.4",
     "crystoline/xpsr-framework": "^0.1@dev",
     "crystoline/xpsr-router-fastroute": "^0.1@dev",
-    "nyholm/psr7": "^1.8"
+    "nyholm/psr7": "^1.8.2"
   },
   "require-dev": {
     "crystoline/xpsr-router-sunrise": "^0.1@dev",

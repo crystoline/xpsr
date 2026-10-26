@@ -8,6 +8,8 @@ use RuntimeException;
 
 /**
  * Writes files atomically and remembers their previous contents so a failed setup can be undone.
+ *
+ * @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md.
  */
 final class FileTransaction
 {

@@ -9,6 +9,7 @@ use Crystoline\Console\Generator\StubGenerator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
+/** @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md. */
 final class MakeControllerCommand extends AbstractMakeCommand
 {
     public function __construct(StubGenerator $generator)

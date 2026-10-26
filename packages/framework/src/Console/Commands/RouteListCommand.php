@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/** @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md. */
 final class RouteListCommand extends Command
 {
     public function __construct(private readonly RouteCollection $routes)

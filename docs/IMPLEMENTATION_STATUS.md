@@ -171,30 +171,47 @@ That test found the `psr/http-message` conflict, which plain `composer require` 
 
 Not verified: the packaging group on PHP 8.5 (the local PHP 8.5 image has no Composer or zip support; the CI job covers it). The dependency audit could not be re-run because Packagist's advisory service timed out repeatedly. Since no third-party version changed, the earlier clean audit applies to the same set. No remote CI run is claimed.
 
+## Ninth milestone: completed — release readiness without publishing
+
+Implemented:
+
+- **Application test scaffold.** The skeleton now has a test scaffold: `tests/TestCase.php` (requests through the full HTTP kernel, `get`/`postJson`, and console commands), example tests in `tests/Application/`, and a `phpunit.xml`. The exported skeleton includes them, with PHPUnit as its only development requirement and a `composer test` script.
+- **Minimum dependency versions.** Running the whole suite at the lowest allowed versions showed that `vlucas/phpdotenv` 5.4, `nyholm/psr7` 1.8.0, `filp/whoops` 2.14, and `symfony/var-dumper` 6.4 print PHP 8.4 deprecation notices. Those notices corrupted HTTP responses and console JSON in 12 tests. The minimums are now phpdotenv `^5.6.1`, Nyholm PSR-7 `^1.8.2`, and Whoops `^2.16`, with a framework `conflict` on `symfony/var-dumper` below 7.4. Locked versions did not change.
+- **Deprecations fail tests.** PHPUnit now fails on deprecations in every configuration. A new CI job runs the whole suite at the lowest allowed versions on PHP 8.4 and 8.5. `XPSR_DEPENDENCIES=lowest` does the same for the per-package packaging tests.
+- **Trusted proxies.** `Forwarded` and `X-Forwarded-*` headers are honored only from `TRUSTED_PROXIES` (IP addresses or CIDR ranges). Previously, the request library trusted `X-Forwarded-Proto` from any client. The framework now declares `symfony/http-foundation`, which it uses for the IP matching.
+- **Wider packaging test.** It now also runs the created project's own tests and checks a `--no-dev --optimize-autoloader` production install.
+- **Documentation.** Added `GETTING_STARTED.md` (a tasks API built step by step), `DEPLOYMENT.md`, `VERSIONING.md` (lockstep versions, what the public API covers, 0.x and 1.x rules), and `CHANGELOG.md`. Classes outside the public API are marked `@internal`.
+
+Verified on 26 October 2026:
+
+- **Test suite:** 292 tests and 1,154 assertions pass on PHP 8.4.27 and PHP 8.5.12. PHPStan level 5, PER style checks for 125 files, syntax checks, strict validation of all four `composer.json` files, and the Composer security audit pass.
+- **Lowest versions:** the whole suite passes at the lowest allowed dependency versions on PHP 8.4.27 and PHP 8.5.12, with deprecations treated as failures. The packaging group passes with current dependencies (4 tests) and with lowest dependencies (3 per-package tests).
+- **Tutorial:** walked through in a project created with `composer create-project`. The generators, the tutorial's files, 9 passing tests, `route:list`, the command, and live requests through `php xpsr serve` (list, JSON 404, 201 with the key, 401 without) all behaved as documented. Switching to Sunrise afterwards left all 9 tests passing.
+
+Not verified: the nginx example in `DEPLOYMENT.md` (Apache and PHP's built-in server are tested). No remote CI run is claimed.
+
 ## Boundaries and remaining work
 
-The first eight milestones are working slices, not completion of all roadmap phases. Packaging is complete inside this repository; the packages are not published.
+The first nine milestones are working slices, not completion of all roadmap phases. Phase 5 is complete except publishing, which needs the repository owner's accounts and decisions.
 
-- Publishing is not done: per-package repositories (subtree split), Packagist registration (check name availability), `v0.1.0` tags, dropping `@dev` constraints, a skeleton lock built against published versions, and a lowest-dependency CI job. See `PACKAGES.md`.
-- The exported skeleton has no tests directory, PHPUnit configuration, or analysis tooling of its own. The monorepo's tooling is not exported.
-- The `setup` presets know the skeleton's route file names; this belongs in a future installer package.
-- Alternative containers need an adapter for XPSR's registration/deferred-group contract; PSR-11 alone only standardizes consumption.
-- Deferred service claims cannot overlap. Replace a provider in configuration, or load its services before overriding their bindings. Rebinding does not rebuild existing consumers automatically.
-- The portable routing grammar intentionally supports static paths, whole-segment placeholders, and simple ASCII constraints. Optional segments, host patterns, arbitrary regex constraints, route caches, and signed/absolute URLs are not supported.
-- Only a single application's repeated-request behavior is covered. Global helpers use the static application instance; this does not establish isolation between multiple application instances or worker-server readiness.
-- Sessions and CSRF remain web integration work. Multipart bodies are parsed only for POST (by PHP). The emitter does not compress, add `Content-Length`, or serve ranges. Only Nyholm PSR-7 is tested, so interchangeability of HTTP-message implementations is not claimed.
-- Twig, Whoops, and `symfony/http-kernel` (used only for HTTP exception classes) are hard framework dependencies, including for API-only applications. They are candidates for optional packages.
-- Cache operations are pending. Native Windows development-server execution and generators have not been verified; tests ran in Linux containers.
-- Generators do not support application-level stub overrides, resource-style controllers, or automatic registration.
+- **Publishing.** Create the GitHub organization and repositories (suggested: `xpsr-php/xpsr` for development, plus read-only split repositories for framework, adapters, and skeleton). Add a subtree-split CI job. Remove the old `crystoline/xpsr` `v1.0.0` from Packagist and point that entry at the skeleton repository. Register the other packages, tag `0.1.0`, drop the `@dev` constraints, and build the skeleton's lock against published versions.
+- **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.
+- **Containers.** Alternative containers need an adapter for XPSR's registration/deferred-group contract; PSR-11 alone only standardizes consumption.
+- **Deferred services.** Deferred service claims cannot overlap. Rebinding does not rebuild existing consumers automatically.
+- **Route grammar.** It intentionally supports static paths, whole-segment placeholders, and simple ASCII constraints. Optional segments, host patterns, arbitrary regex constraints, route caches, and signed/absolute URLs are not supported.
+- **Long-running servers.** Global helpers use the static application instance. Isolation between application instances, and worker-server readiness, are not established.
+- **HTTP gaps.**
+  - Sessions and CSRF remain web integration work.
+  - Multipart bodies are parsed only for POST, by PHP.
+  - The emitter does not compress, add `Content-Length`, or serve ranges.
+  - Only Nyholm PSR-7 is tested.
+  - The request host comes from the client's `Host` header; build absolute URLs from `APP_URL`.
+- **Hard dependencies.** Twig, Whoops, and Symfony HttpKernel/HttpFoundation are hard framework dependencies, including for API-only applications. They are candidates for optional packages.
+- **Not yet available:** cache operations, database integration, authentication, queues, and scheduling (roadmap phase 6).
+- **Windows.** Native Windows execution of the development server and generators is not verified.
 
 ## Next implementation slice
 
-Finish the documentation and skeleton parts of roadmap phase 5 that do not need accounts:
+Publishing comes next, once the GitHub organization and Packagist access exist. The split CI job can be written beforehand, but it can only be tested against real repositories.
 
-- give the exported skeleton its own `tests/` example, `phpunit.xml`, and `composer test` script;
-- write a getting-started tutorial (endpoint, command, adapter switch, tests);
-- write a production deployment guide (document root, `APP_DEBUG`, logging, writable directories, `--no-dev` installs);
-- define the upgrade and versioning policy;
-- add the lowest-dependency CI job.
-
-Publishing needs the repository owner's decisions and accounts (GitHub repositories, Packagist names).
+Without accounts, the most useful next step is roadmap phase 6. Start by making Twig and Whoops optional, so API-only applications do not install them, then add a PSR-16 cache integration with `cache:clear`.

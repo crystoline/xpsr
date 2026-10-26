@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bed44d49eea063e5615c0014c3d17229",
+    "content-hash": "4386b912e3c46d58873d4e0629954977",
     "packages": [
         {
             "name": "crystoline/xpsr-framework",
@@ -12,11 +12,11 @@
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "803786bd9c6c343858d95b65d937976672ee552b"
+                "reference": "6f67a144367fcb7d7a15eb875c9ca89d525027cf"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
-                "filp/whoops": "^2.14",
+                "filp/whoops": "^2.16",
                 "illuminate/config": "^12.0",
                 "nyholm/psr7-server": "^1.1",
                 "php": "^8.4",
@@ -32,10 +32,13 @@
                 "symfony/http-kernel": "^7.4",
                 "symfony/process": "^7.4",
                 "twig/twig": "^3.4",
-                "vlucas/phpdotenv": "^5.4"
+                "vlucas/phpdotenv": "^5.6.1"
+            },
+            "conflict": {
+                "symfony/var-dumper": "<7.4"
             },
             "require-dev": {
-                "nyholm/psr7": "^1.8",
+                "nyholm/psr7": "^1.8.2",
                 "phpunit/phpunit": "^12.5"
             },
             "suggest": {
@@ -78,7 +81,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-fastroute",
-                "reference": "f4e9db534c51ad794c1a6348f6e5cb8ee247f42d"
+                "reference": "00bf475a7f314ae3638e19715f7352e3e92ec324"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.1@dev",
@@ -86,7 +89,7 @@
                 "php": "^8.4"
             },
             "require-dev": {
-                "nyholm/psr7": "^1.8",
+                "nyholm/psr7": "^1.8.2",
                 "phpunit/phpunit": "^12.5"
             },
             "type": "library",
@@ -3317,7 +3320,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-sunrise",
-                "reference": "a0a153c0b5d80139896d3f96f8ef849da17b567c"
+                "reference": "d2793bc8d0f089cdc6a617f125802205c0296423"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.1@dev",
@@ -3326,7 +3329,7 @@
                 "sunrise/http-router": "^2.16"
             },
             "require-dev": {
-                "nyholm/psr7": "^1.8",
+                "nyholm/psr7": "^1.8.2",
                 "phpunit/phpunit": "^12.5"
             },
             "type": "library",

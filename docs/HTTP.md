@@ -47,6 +47,10 @@ Unmatched routes (404) and unsupported methods (405) are thrown as `NotFoundHttp
 
 If the application cannot even boot, `public/index.php` logs the cause with `error_log()` and returns a plain-text "Internal Server Error" with status 500.
 
+## Proxies
+
+`Crystoline\Factory\ServerRequestFactory` builds the request from PHP's globals. It keeps `Forwarded` and `X-Forwarded-*` headers, which set the scheme (for example HTTPS behind a TLS-terminating load balancer), only when the client address matches `app.trusted_proxies`. Configure that list with `TRUSTED_PROXIES`, comma-separated IP addresses or CIDR ranges. From any other address, those headers are removed from the request and its server parameters. See [DEPLOYMENT.md](DEPLOYMENT.md#proxies-and-https).
+
 ## Logging
 
 The default `Psr\Log\LoggerInterface` is `Crystoline\Log\ErrorLogLogger`. It writes through PHP's `error_log()`, so messages go to the web server's error log (Apache, PHP-FPM), to stderr for the CLI and development server, or to the file named by the `error_log` ini setting. Logged exceptions include their stack trace. `LOG_LEVEL` sets the minimum level (`debug` by default; for example `LOG_LEVEL=warning`). Replace the binding in `config/factory.php` to use another PSR-3 logger, such as Monolog.

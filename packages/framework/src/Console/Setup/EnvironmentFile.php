@@ -6,7 +6,11 @@ namespace Crystoline\Console\Setup;
 
 use InvalidArgumentException;
 
-/** Sets keys in .env contents while keeping every other line, comment, and line ending. */
+/**
+ * Sets keys in .env contents while keeping every other line, comment, and line ending.
+ *
+ * @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md.
+ */
 final class EnvironmentFile
 {
     /** @param array<string, string> $values */

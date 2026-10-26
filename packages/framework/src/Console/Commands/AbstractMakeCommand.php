@@ -20,6 +20,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * Shared behavior for make:* commands.
  *
  * Invalid input returns 2 (INVALID); a conflict or filesystem failure returns 1 (FAILURE).
+ *
+ * @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md.
  */
 abstract class AbstractMakeCommand extends Command
 {

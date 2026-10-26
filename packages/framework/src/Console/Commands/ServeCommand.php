@@ -15,6 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Exception\ProcessSignaledException;
 use Symfony\Component\Process\Process;
 
+/** @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md. */
 final class ServeCommand extends Command implements SignalableCommandInterface
 {
     private ?Process $process = null;

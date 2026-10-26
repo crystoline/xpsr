@@ -13,6 +13,8 @@ use LogicException;
  * Class names map to PSR-4 paths below the application source directory. Writes never
  * leave that directory, including through symbolic links, and never replace an existing
  * file unless forced.
+ *
+ * @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md.
  */
 final class StubGenerator
 {
