@@ -51,6 +51,38 @@ jobs:
       - run: composer update --prefer-lowest --prefer-stable --prefer-dist --no-interaction --no-progress
       - run: composer test
 
+  # Publishes packages/* and the skeleton to their read-only repositories, after every other
+  # job passes. Runs only in the organization's repository, on master and on v* tags.
+  # Requires the SPLIT_TOKEN secret: a token with contents read/write access to the
+  # framework, router-fastroute, router-sunrise, and skeleton repositories. See docs/PACKAGES.md.
+  split:
+    needs: [check, lowest-dependencies, packaging]
+    if: >-
+      github.event_name == 'push' && github.repository == 'xpsr-php/xpsr' &&
+      (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v'))
+    runs-on: ubuntu-latest
+    concurrency: split
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+      - name: Split
+        env:
+          SPLIT_TOKEN: ${{ secrets.SPLIT_TOKEN }}
+        run: |
+          if [[ -z "$SPLIT_TOKEN" ]]; then echo "SPLIT_TOKEN is not set." >&2; exit 1; fi
+          base="https://x-access-token:${SPLIT_TOKEN}@github.com/xpsr-php"
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            scripts/split.sh "$base" master "${GITHUB_REF#refs/tags/}"
+          else
+            scripts/split.sh "$base" master
+          fi
+
   # Installs each package on its own and builds a project with composer create-project.
   packaging:
     runs-on: ubuntu-latest

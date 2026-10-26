@@ -274,6 +274,11 @@ final class SetupCommandTest extends TestCase
             {
                 return $package !== 'crystoline/xpsr-router-sunrise';
             }
+
+            public function releaseConstraint(): string
+            {
+                return '^0.1@dev';
+            }
         };
         $command = new SetupCommand(new Application($this->root), $packages, new BootstrapCheck());
         $tester = new CommandTester($command);

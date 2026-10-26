@@ -5,13 +5,18 @@ declare(strict_types=1);
 /*
  * Export the application skeleton (crystoline/xpsr) from this monorepo.
  *
- *   php scripts/export-skeleton.php <empty target directory>
+ *   php scripts/export-skeleton.php <empty target directory> [--release=X.Y.Z]
  *
  * Copies only the files a new application needs, including the application test scaffold
  * (tests/TestCase.php, tests/Application, phpunit.xml), and writes a composer.json without
  * the monorepo-only parts: the path repository for packages/, autoloading for package tests,
- * and analysis/style tooling whose configuration is not exported. composer.lock is not
- * copied: a released skeleton's lock file must be built against published packages.
+ * and analysis/style tooling whose configuration is not exported.
+ *
+ * composer.lock is not exported. Each new application resolves its dependencies at
+ * create-project time and commits its own lock file.
+ *
+ * --release=X.Y.Z replaces the development constraints on XPSR packages (^0.1@dev) with the
+ * release range (^0.1 for 0.1.x, ^1.2 for 1.2.x), for tagging the skeleton.
  */
 
 const SKELETON_PATHS = [
@@ -27,9 +32,21 @@ const MONOREPO_DEV_PACKAGES = ['crystoline/xpsr-router-sunrise', 'friendsofphp/p
 const MONOREPO_SCRIPTS = ['test:packaging', 'analyse', 'style', 'style:fix', 'check'];
 
 $source = dirname(__DIR__);
-$target = $argv[1] ?? '';
+$target = '';
+$release = null;
+foreach (array_slice($argv, 1) as $argument) {
+    if (str_starts_with($argument, '--release=')) {
+        $release = substr($argument, 10);
+    } elseif ($target === '') {
+        $target = $argument;
+    }
+}
 if ($target === '' || (file_exists($target) && (!is_dir($target) || count(scandir($target)) > 2))) {
-    fwrite(STDERR, "Usage: php scripts/export-skeleton.php <empty target directory>\n");
+    fwrite(STDERR, "Usage: php scripts/export-skeleton.php <empty target directory> [--release=X.Y.Z]\n");
+    exit(2);
+}
+if ($release !== null && !preg_match('/\A(\d+)\.(\d+)\.\d+\z/', $release, $version)) {
+    fwrite(STDERR, "--release must be a version such as 0.1.0.\n");
     exit(2);
 }
 if (!is_dir($target) && !mkdir($target, 0777, true)) {
@@ -79,6 +96,15 @@ if (($composer['require-dev'] ?? []) === []) {
 }
 foreach (MONOREPO_SCRIPTS as $script) {
     unset($composer['scripts'][$script]);
+}
+if ($release !== null) {
+    foreach (['require', 'require-dev'] as $section) {
+        foreach (array_keys($composer[$section] ?? []) as $package) {
+            if (str_starts_with($package, 'crystoline/')) {
+                $composer[$section][$package] = "^{$version[1]}.{$version[2]}";
+            }
+        }
+    }
 }
 file_put_contents(
     "{$target}/composer.json",

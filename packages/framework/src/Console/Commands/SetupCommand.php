@@ -36,8 +36,8 @@ final class SetupCommand extends Command
      * Package names match RouteServiceRegistry::ADAPTERS.
      */
     public const ROUTERS = [
-        'fastroute' => ['package' => 'crystoline/xpsr-router-fastroute', 'constraint' => '^0.1@dev', 'label' => 'FastRoute (default)'],
-        'sunrise' => ['package' => 'crystoline/xpsr-router-sunrise', 'constraint' => '^0.1@dev', 'label' => 'Sunrise (migration adapter)'],
+        'fastroute' => ['package' => 'crystoline/xpsr-router-fastroute', 'label' => 'FastRoute (default)'],
+        'sunrise' => ['package' => 'crystoline/xpsr-router-sunrise', 'label' => 'Sunrise (migration adapter)'],
     ];
 
     /** Presets choose which skeleton route files load. */
@@ -112,7 +112,8 @@ final class SetupCommand extends Command
         }
         $requirement = null;
         if ($managed && !$this->packages->isRequired(self::ROUTERS[$router]['package'])) {
-            $requirement = self::ROUTERS[$router]['package'] . ':' . self::ROUTERS[$router]['constraint'];
+            // Adapters are released with the framework, so require the same release range.
+            $requirement = self::ROUTERS[$router]['package'] . ':' . $this->packages->releaseConstraint();
         }
 
         $this->line($output, sprintf(

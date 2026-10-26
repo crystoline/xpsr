@@ -141,7 +141,6 @@ The front-controller suite serves a skeleton copy with PHP's built-in server and
 
 Apache in the PHP 8.4 development image also returned the expected 200, bodyless HEAD, JSON 404, 405 with `Allow`, 400 for malformed JSON, and 204 for OPTIONS, and kept `composer.json` unreachable. The temporary container was removed. Apache error-log delivery of application errors was not separately exercised because the skeleton has no failing route. These are local results; no remote CI run is claimed.
 
-
 ## Eighth milestone: completed — package separation
 
 Implemented:
@@ -190,11 +189,40 @@ Verified on 26 October 2026:
 
 Not verified: the nginx example in `DEPLOYMENT.md` (Apache and PHP's built-in server are tested). No remote CI run is claimed.
 
+## Tenth milestone: completed — publishing automation
+
+Implemented:
+
+- `scripts/split.sh <remote-base> <branch> [tag]` publishes the committed `HEAD` to four read-only repositories:
+  - framework and both adapters through `git subtree split`, with history;
+  - the skeleton from `scripts/export-skeleton.php`, one sync commit per change.
+
+  Branch syncs are idempotent. A release tag pushes tags only and leaves branches alone.
+- A `split` CI job runs the script after every other job passes. It runs only in `xpsr-php/xpsr`, on `master` and `v*` tags, with a `SPLIT_TOKEN` secret.
+- `export-skeleton.php --release=X.Y.Z` writes release constraints (`^X.Y`) for the XPSR packages. The skeleton ships without `composer.lock`, replacing the plan's skeleton-lockfile item; the reason is in `PACKAGES.md`.
+- Every package, and the skeleton, declares the branch alias `dev-master` → `0.1.x-dev`.
+- **Fixed:** `setup` hard-coded `^0.1@dev`, so after a release it installed an adapter's `dev-master` instead of the matching release. It now derives the constraint from the installed framework version (`^0.1` for a release, `^0.1@dev` for development installs).
+- Documented the publishing flow, the token, and the owner-only first-publication steps in `PACKAGES.md`, and the release steps in `VERSIONING.md`.
+- **Fixed:** the previous commit (`80af75c`) added `symfony/http-foundation: ^7.4`, but the lock holds 8.1.9, allowed through `symfony/http-kernel`. That left `composer.lock` out of date, which strict validation, and therefore CI, would reject. The constraint is now `^7.4 || ^8.0`; the suite passes on 8.1.9 (current) and 7.4.0 (lowest). No locked version changed.
+- Added fast tests for `export-skeleton.php`, including `--release` and invalid usage, to the normal suite.
+
+Verified on 26 October 2026: 296 tests and 1,205 assertions pass on PHP 8.4.27. The suite before the export tests (293 tests) also passed on PHP 8.5.12 and at the lowest dependency versions. PHPStan, PER style checks for 126 files, strict validation of all four `composer.json` files, and the packaging group (4 tests) pass.
+
+Also verified, against local bare repositories standing in for GitHub:
+
+- Two branch splits produced identical commits, and the skeleton was unchanged on the second run.
+- A `v0.1.0` release tagged all four repositories. The skeleton's `master` kept `^0.1@dev`, and its tag required `^0.1`.
+- `composer create-project` from those repositories (as VCS repositories) installed framework and FastRoute `0.1.0`, and the application's tests passed.
+- `setup --router=sunrise --install-dependencies` installed the Sunrise adapter `0.1.0` and moved `psr/http-message` to 1.1; the tests still passed.
+- A `0.1.x-dev` project resolved the `master` branches through the branch aliases.
+
+Not verified: the CI `split` job itself (it needs the organization's repositories and secret), pushing over HTTPS with a token, and Packagist's handling of the split repositories.
+
 ## Boundaries and remaining work
 
-The first nine milestones are working slices, not completion of all roadmap phases. Phase 5 is complete except publishing, which needs the repository owner's accounts and decisions.
+The first ten milestones are working slices, not completion of all roadmap phases. Phase 5 is complete except publishing, which needs the repository owner's accounts and decisions.
 
-- **Publishing.** Create the GitHub organization and repositories (suggested: `xpsr-php/xpsr` for development, plus read-only split repositories for framework, adapters, and skeleton). Add a subtree-split CI job. Remove the old `crystoline/xpsr` `v1.0.0` from Packagist and point that entry at the skeleton repository. Register the other packages, tag `0.1.0`, drop the `@dev` constraints, and build the skeleton's lock against published versions.
+- **Publishing.** The split job and release flow are ready and rehearsed (see the tenth milestone). What remains needs the owner's accounts: the `xpsr-php` organization and repositories, the `SPLIT_TOKEN` secret, removal of the old `crystoline/xpsr` `v1.0.0`, Packagist registration, and the `v0.1.0` tag. See "First publication" in `PACKAGES.md`.
 - **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.
 - **Containers.** Alternative containers need an adapter for XPSR's registration/deferred-group contract; PSR-11 alone only standardizes consumption.
 - **Deferred services.** Deferred service claims cannot overlap. Rebinding does not rebuild existing consumers automatically.
@@ -212,6 +240,6 @@ The first nine milestones are working slices, not completion of all roadmap phas
 
 ## Next implementation slice
 
-Publishing comes next, once the GitHub organization and Packagist access exist. The split CI job can be written beforehand, but it can only be tested against real repositories.
+Publishing is ready to run once the GitHub organization, the `SPLIT_TOKEN` secret, and Packagist access exist; follow "First publication" in `PACKAGES.md`.
 
 Without accounts, the most useful next step is roadmap phase 6. Start by making Twig and Whoops optional, so API-only applications do not install them, then add a PSR-16 cache integration with `cache:clear`.

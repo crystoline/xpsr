@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4386b912e3c46d58873d4e0629954977",
+    "content-hash": "12d74a8482a7df10cc3795645347a3d4",
     "packages": [
         {
             "name": "crystoline/xpsr-framework",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "6f67a144367fcb7d7a15eb875c9ca89d525027cf"
+                "reference": "2caa79bbe5dff655c3a2ab12458cc693ba1a2506"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
@@ -29,6 +29,7 @@
                 "psr/log": "^3.0",
                 "symfony/console": "^7.4",
                 "symfony/finder": "^7.4",
+                "symfony/http-foundation": "^7.4 || ^8.0",
                 "symfony/http-kernel": "^7.4",
                 "symfony/process": "^7.4",
                 "twig/twig": "^3.4",
@@ -47,6 +48,11 @@
                 "phpunit/phpunit": "Needed to run Crystoline\\Testing\\RouterContractTestCase in an adapter's own tests"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.1.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Crystoline\\": "src/"
@@ -81,7 +87,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-fastroute",
-                "reference": "00bf475a7f314ae3638e19715f7352e3e92ec324"
+                "reference": "723ad6e347ad429a2d6bb5923fcbbd78c2aec10d"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.1@dev",
@@ -93,6 +99,11 @@
                 "phpunit/phpunit": "^12.5"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.1.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Crystoline\\Router\\FastRoute\\": "src/"
@@ -3320,7 +3331,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-sunrise",
-                "reference": "d2793bc8d0f089cdc6a617f125802205c0296423"
+                "reference": "a61772f99874998025691cdbf7b3a4c86715b8e2"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.1@dev",
@@ -3333,6 +3344,11 @@
                 "phpunit/phpunit": "^12.5"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.1.x-dev"
+                }
+            },
             "autoload": {
                 "psr-4": {
                     "Crystoline\\Router\\Sunrise\\": "src/"

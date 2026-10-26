@@ -26,4 +26,22 @@ final class ComposerPackageInspector implements PackageInspectorInterface
 
         return array_key_exists($package, $require) && InstalledVersions::isInstalled($package, false);
     }
+
+    public function releaseConstraint(): string
+    {
+        $package = 'crystoline/xpsr-framework';
+        $version = InstalledVersions::isInstalled($package) ? InstalledVersions::getVersion($package) : null;
+
+        return self::constraintFor($version);
+    }
+
+    /** @param string|null $version a normalized Composer version, such as 0.1.0.0 or 0.1.9999999.9999999-dev */
+    public static function constraintFor(?string $version): string
+    {
+        if ($version === null || !preg_match('/\A(\d+)\.(\d+)\./', $version, $match)) {
+            return '*';
+        }
+
+        return "^{$match[1]}.{$match[2]}" . (str_ends_with($version, '-dev') ? '@dev' : '');
+    }
 }

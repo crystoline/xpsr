@@ -104,4 +104,14 @@ final class SetupFilesTest extends TestCase
             TemporaryDirectory::remove($root);
         }
     }
+
+    public function testReleaseConstraintFollowsTheInstalledFrameworkVersion(): void
+    {
+        self::assertSame('^0.1', ComposerPackageInspector::constraintFor('0.1.0.0'));
+        self::assertSame('^0.1', ComposerPackageInspector::constraintFor('0.1.7.0'));
+        self::assertSame('^1.2', ComposerPackageInspector::constraintFor('1.2.0.0'));
+        self::assertSame('^0.1@dev', ComposerPackageInspector::constraintFor('0.1.9999999.9999999-dev'), 'A branch alias such as 0.1.x-dev.');
+        self::assertSame('*', ComposerPackageInspector::constraintFor('dev-feature'), 'A branch without an alias.');
+        self::assertSame('*', ComposerPackageInspector::constraintFor(null));
+    }
 }

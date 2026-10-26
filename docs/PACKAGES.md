@@ -29,7 +29,13 @@ Known coupling: the `setup` command's presets name the skeleton's route files (`
 
 ## Versions
 
-All packages are `0.1.x-dev` until the first release. The root path repository assigns that version through its `versions` option, so it does not depend on Git branch detection. Packages require each other with `^0.1@dev`. The `@dev` flags, and setup's `^0.1@dev` constraint, change to `^0.1` with the first tagged release.
+All packages are `0.1.x-dev` until the first release:
+
+- **In this repository**, the root path repository assigns that version through its `versions` option, so it does not depend on Git branch detection.
+- **In the split repositories**, each `composer.json` declares the branch alias `dev-master` → `0.1.x-dev`.
+- **Between packages**, requirements use `^0.1@dev`. Composer ignores stability flags in dependencies, so they also accept the stable `0.1.0` once it is tagged.
+- **The released skeleton** requires `^0.1`: `export-skeleton.php --release` writes that range.
+- **`setup`** derives the adapter constraint from the installed framework: `^0.1` for a 0.1.x release, `^0.1@dev` for a development install. Adapters therefore always match the framework's release line.
 
 ## Working in the monorepo
 
@@ -65,7 +71,7 @@ The script copies the files a new application needs, including the application t
 - autoloading for package tests;
 - the analysis and style tooling and their scripts.
 
-It does not copy `composer.lock`. A released skeleton's lock must be built against the published packages.
+It does not copy `composer.lock`; see [Publishing](#publishing) for why the skeleton ships without one. `--release=X.Y.Z` writes release constraints (`^X.Y`) on the XPSR packages instead of `^0.1@dev`.
 
 The packaging test builds a project from this export with `composer create-project`, using the packages through path repositories without symbolic links. It then checks that:
 
@@ -82,12 +88,50 @@ The packaging test builds a project from this export with `composer create-proje
 
 The CI job `lowest-dependencies` runs the whole suite after `composer update --prefer-lowest --prefer-stable`, with deprecation notices treated as failures. This guards the minimum versions declared in each `composer.json`. It found that `vlucas/phpdotenv` 5.4, `nyholm/psr7` 1.8.0, `filp/whoops` 2.14, and `symfony/var-dumper` 6.4 print PHP 8.4 deprecation notices that corrupt responses and console output. The minimums are therefore `^5.6.1`, `^1.8.2`, and `^2.16`, plus a `conflict` with `symfony/var-dumper` below 7.4.
 
-## Publishing (not done yet)
+## Publishing
 
-Publishing needs, in order:
+`scripts/split.sh` publishes the monorepo into four read-only repositories, and the `split` job in `.github/workflows/ci.yml` runs it after every other CI job passes:
 
-1. **Repositories.** A read-only Git repository per package, kept in sync from this monorepo with a subtree-split job (for example, `splitsh-lite` in CI), and the skeleton from `scripts/export-skeleton.php`.
-2. **Packagist.** Registration of `crystoline/xpsr`, `crystoline/xpsr-framework`, `crystoline/xpsr-router-fastroute`, and `crystoline/xpsr-router-sunrise`. Check name availability first.
-3. **Tags.** Tag `v0.1.0` in each split repository, then drop the `@dev` flags.
-4. **Skeleton lock.** Generate the skeleton's `composer.lock` against the published versions.
-5. **Old prototype.** Delete the existing `crystoline/xpsr` `v1.0.0` (the old prototype) from Packagist and its tag, and point the Packagist entry at the skeleton repository instead of the monorepo. See [VERSIONING.md](VERSIONING.md).
+| Repository | Content | Packagist package |
+|---|---|---|
+| `xpsr-php/framework` | `packages/framework`, with its history (`git subtree split`) | `crystoline/xpsr-framework` |
+| `xpsr-php/router-fastroute` | `packages/router-fastroute`, with its history | `crystoline/xpsr-router-fastroute` |
+| `xpsr-php/router-sunrise` | `packages/router-sunrise`, with its history | `crystoline/xpsr-router-sunrise` |
+| `xpsr-php/skeleton` | the output of `scripts/export-skeleton.php`, one sync commit per change | `crystoline/xpsr` |
+
+- **A push to `master`** updates each repository's `master` branch. Packages declare the branch alias `dev-master` → `0.1.x-dev`, so `^0.1@dev` resolves to it.
+- **A `v*` tag** pushes that tag to every repository and leaves branches alone. The skeleton's tagged commit is exported with `--release`, so it requires the release range (`^0.1`), while its `master` keeps `^0.1@dev`.
+- **Re-running** with the same commit changes nothing.
+- **Inputs:** everything comes from the committed tree, never the working directory.
+
+The skeleton ships without `composer.lock`: each new application resolves its dependencies at `create-project` time and commits its own lock. This replaces the original plan's "commit the skeleton's lockfile". A shipped lock would pin every new application to the versions current at release time.
+
+### Rehearsal
+
+The split and release flow was rehearsed against local bare repositories:
+
+- Splitting twice produced identical commits.
+- A release tagged all four repositories.
+- `composer create-project` from them (as VCS repositories) installed framework and FastRoute `0.1.0`, and the application's tests passed.
+- `setup --router=sunrise --install-dependencies` installed the Sunrise adapter `0.1.0` and moved `psr/http-message` to 1.1.
+- A `0.1.x-dev` project resolved the `master` branches through the branch aliases.
+
+To repeat it locally:
+
+```sh
+for r in framework router-fastroute router-sunrise skeleton; do git init --bare /tmp/remotes/$r.git; done
+scripts/split.sh /tmp/remotes master          # branch sync
+scripts/split.sh /tmp/remotes master v0.1.0   # release
+```
+
+### First publication
+
+Owner-only steps, in order:
+
+1. **Organization and repositories.** Create the `xpsr-php` organization. Transfer this repository to `xpsr-php/xpsr`; GitHub redirects the old URL. Create empty `framework`, `router-fastroute`, `router-sunrise`, and `skeleton` repositories. Mark the four as read-only in their descriptions and point contributors to `xpsr-php/xpsr`.
+2. **Token.** Create a fine-grained token, or a GitHub App, with **Contents: read and write** on those four repositories only. Store it as the `SPLIT_TOKEN` secret of `xpsr-php/xpsr`.
+3. **First sync.** Merge `framework-rebuild` into `master` and push. CI then publishes the four `master` branches.
+4. **Old prototype.** In Packagist, delete the `v1.0.0` version of `crystoline/xpsr` (the old prototype), delete its tag in the old repository, and change the package's repository URL to `https://github.com/xpsr-php/skeleton`.
+5. **Packagist.** Submit `crystoline/xpsr-framework`, `crystoline/xpsr-router-fastroute`, and `crystoline/xpsr-router-sunrise` with their split repositories. Enable the GitHub hook (Packagist's GitHub integration) for all four.
+6. **Release.** Move the `CHANGELOG.md` entries under `0.1.0`, commit, then tag `v0.1.0` in `xpsr-php/xpsr` and push the tag. CI tags all four repositories.
+7. **Check.** In an empty directory, run `composer create-project crystoline/xpsr my-app` and confirm it installs `0.1.0`, including `xpsr-framework` 0.1.0.
