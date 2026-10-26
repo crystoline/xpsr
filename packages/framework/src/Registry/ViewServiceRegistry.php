@@ -11,6 +11,10 @@ use Crystoline\View\ViewHandler;
 use Crystoline\View\ViewHandlerInterface;
 use Psr\Container\ContainerInterface;
 
+/**
+ * Registers the Twig view handler (deferred: Twig loads only when a view is rendered).
+ * Requires twig/twig, which the framework suggests but does not install.
+ */
 class ViewServiceRegistry extends ServiceRegistry
 {
     protected bool $delayed = true;
@@ -22,6 +26,10 @@ class ViewServiceRegistry extends ServiceRegistry
 
             if (!$config instanceof Configuration) {
                 throw new ContainerException('The configuration service must be a Configuration instance.');
+            }
+            // Twig is optional: API-only applications can leave it out until they render a view.
+            if (!class_exists(\Twig\Environment::class)) {
+                throw new ContainerException('Rendering views needs Twig. Run: composer require twig/twig');
             }
 
             return new ViewHandler(

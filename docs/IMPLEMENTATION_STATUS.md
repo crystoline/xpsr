@@ -218,9 +218,22 @@ Also verified, against local bare repositories standing in for GitHub:
 
 Not verified: the CI `split` job itself (it needs the organization's repositories and secret), pushing over HTTPS with a token, and Packagist's handling of the split repositories.
 
+## Eleventh milestone: completed — optional Twig and Whoops
+
+Implemented:
+
+- **Optional dependencies.** `twig/twig` and `filp/whoops` are no longer framework requirements; the framework suggests them.
+  - The skeleton requires Twig, because its web example renders views. It installs Whoops as a development dependency, so `composer install --no-dev` leaves Whoops out.
+  - API-only applications can `composer remove twig/twig`. The view provider is deferred, so Twig loads only when a view is rendered, and it then fails with `composer require twig/twig` in the message.
+- **Built-in debug page.** Without Whoops, debug HTML errors use a built-in page: each exception in the chain with its class, location, and stack trace, all HTML-escaped. `ExceptionHandler` takes an optional `$whoops` argument; `null` means "use it when installed".
+- **Fixed.** Whoops renders nothing under the CLI SAPI by default, so debug HTML responses had empty bodies in application tests and in CLI-based servers. The handler now asks Whoops to render unconditionally.
+- **Lock file.** Whoops moved to the development section at the same version (2.18.7); no other locked version changed.
+
+Verified on 26 October 2026: 300 tests and 1,219 assertions pass on PHP 8.4.27 and PHP 8.5.12, and at the lowest allowed dependency versions with deprecations as failures. PHPStan, PER style checks for 127 files, strict validation of all four `composer.json` files, the security audit, and the packaging group pass. In the packaging group, the framework installs and tests standalone without Twig or Whoops as requirements, and a `--no-dev` application install serves requests without Whoops.
+
 ## Boundaries and remaining work
 
-The first ten milestones are working slices, not completion of all roadmap phases. Phase 5 is complete except publishing, which needs the repository owner's accounts and decisions.
+The first eleven milestones are working slices, not completion of all roadmap phases. Phase 5 is complete except publishing, which needs the repository owner's accounts and decisions.
 
 - **Publishing.** The split job and release flow are ready and rehearsed (see the tenth milestone). What remains needs the owner's accounts: the `xpsr-php` organization and repositories, the `SPLIT_TOKEN` secret, removal of the old `crystoline/xpsr` `v1.0.0`, Packagist registration, and the `v0.1.0` tag. See "First publication" in `PACKAGES.md`.
 - **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.
@@ -234,7 +247,7 @@ The first ten milestones are working slices, not completion of all roadmap phase
   - The emitter does not compress, add `Content-Length`, or serve ranges.
   - Only Nyholm PSR-7 is tested.
   - The request host comes from the client's `Host` header; build absolute URLs from `APP_URL`.
-- **Hard dependencies.** Twig, Whoops, and Symfony HttpKernel/HttpFoundation are hard framework dependencies, including for API-only applications. They are candidates for optional packages.
+- **Hard dependencies.** `symfony/http-kernel` is a framework requirement only for its HTTP exception classes, and it pulls in several other Symfony components. Own exception classes, with the Symfony interface still recognized, would remove it. Twig and Whoops are optional since the eleventh milestone.
 - **Not yet available:** cache operations, database integration, authentication, queues, and scheduling (roadmap phase 6).
 - **Windows.** Native Windows execution of the development server and generators is not verified.
 
@@ -242,4 +255,4 @@ The first ten milestones are working slices, not completion of all roadmap phase
 
 Publishing is ready to run once the GitHub organization, the `SPLIT_TOKEN` secret, and Packagist access exist; follow "First publication" in `PACKAGES.md`.
 
-Without accounts, the most useful next step is roadmap phase 6. Start by making Twig and Whoops optional, so API-only applications do not install them, then add a PSR-16 cache integration with `cache:clear`.
+Without accounts, the next useful steps are: replace the `symfony/http-kernel` dependency with XPSR HTTP exception classes (keeping the Symfony interface working), then start roadmap phase 6 with a PSR-16 cache integration and `cache:clear`.

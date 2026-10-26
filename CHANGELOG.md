@@ -20,6 +20,10 @@ First release of the rebuilt framework. It replaces the earlier prototype, which
 - Router contract test suite for adapter authors (`Crystoline\Testing\RouterContractTestCase`).
 - Documentation: getting started, deployment, HTTP, routing, container, console, packages, and versioning.
 
+### Optional dependencies
+
+- `twig/twig` (views) and `filp/whoops` (debug error pages) are suggestions of the framework, not requirements. The skeleton requires Twig for its web example and installs Whoops for development only. Without Whoops, debug mode shows a plain built-in error page.
+
 ### Requirements
 
 - PHP 8.4 or 8.5.

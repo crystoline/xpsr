@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "12d74a8482a7df10cc3795645347a3d4",
+    "content-hash": "ef519da80558c46192f154082d68fecb",
     "packages": [
         {
             "name": "crystoline/xpsr-framework",
@@ -12,11 +12,10 @@
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "2caa79bbe5dff655c3a2ab12458cc693ba1a2506"
+                "reference": "4a452fbde03d4fe285f511c146650b1e915e11f8"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
-                "filp/whoops": "^2.16",
                 "illuminate/config": "^12.0",
                 "nyholm/psr7-server": "^1.1",
                 "php": "^8.4",
@@ -32,20 +31,23 @@
                 "symfony/http-foundation": "^7.4 || ^8.0",
                 "symfony/http-kernel": "^7.4",
                 "symfony/process": "^7.4",
-                "twig/twig": "^3.4",
                 "vlucas/phpdotenv": "^5.6.1"
             },
             "conflict": {
                 "symfony/var-dumper": "<7.4"
             },
             "require-dev": {
+                "filp/whoops": "^2.16",
                 "nyholm/psr7": "^1.8.2",
-                "phpunit/phpunit": "^12.5"
+                "phpunit/phpunit": "^12.5",
+                "twig/twig": "^3.4"
             },
             "suggest": {
                 "crystoline/xpsr-router-fastroute": "Default router adapter",
                 "crystoline/xpsr-router-sunrise": "Alternative router adapter",
-                "phpunit/phpunit": "Needed to run Crystoline\\Testing\\RouterContractTestCase in an adapter's own tests"
+                "filp/whoops": "Detailed HTML error pages when APP_DEBUG=true (development only)",
+                "phpunit/phpunit": "Needed to run Crystoline\\Testing\\RouterContractTestCase in an adapter's own tests",
+                "twig/twig": "Needed to render views with the view() helper and ViewServiceRegistry"
             },
             "type": "library",
             "extra": {
@@ -128,77 +130,6 @@
                 "symlink": true,
                 "relative": true
             }
-        },
-        {
-            "name": "filp/whoops",
-            "version": "2.18.7",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/filp/whoops.git",
-                "reference": "50670ba239926c50f2073e868f6672f775cd57ec"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/50670ba239926c50f2073e868f6672f775cd57ec",
-                "reference": "50670ba239926c50f2073e868f6672f775cd57ec",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1 || ^8.0",
-                "psr/log": "^1.0.1 || ^2.0 || ^3.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "^1.0",
-                "phpunit/phpunit": "^7.5.20 || ^8.5.8 || ^9.3.3 || ^10.5.58",
-                "symfony/var-dumper": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0"
-            },
-            "suggest": {
-                "symfony/var-dumper": "Pretty print complex values better with var-dumper available",
-                "whoops/soap": "Formats errors as SOAP responses"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.7-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Whoops\\": "src/Whoops/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Filipe Dobreira",
-                    "homepage": "https://github.com/filp",
-                    "role": "Developer"
-                }
-            ],
-            "description": "php error handling for cool kids",
-            "homepage": "https://filp.github.io/whoops/",
-            "keywords": [
-                "error",
-                "exception",
-                "handling",
-                "library",
-                "throwable",
-                "whoops"
-            ],
-            "support": {
-                "issues": "https://github.com/filp/whoops/issues",
-                "source": "https://github.com/filp/whoops/tree/2.18.7"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/denis-sokolov",
-                    "type": "github"
-                }
-            ],
-            "time": "2026-10-18T13:17:38+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -3607,6 +3538,77 @@
                 "source": "https://github.com/php-fig/http-message-util/tree/1.1.5"
             },
             "time": "2020-11-24T22:02:12+00:00"
+        },
+        {
+            "name": "filp/whoops",
+            "version": "2.18.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/filp/whoops.git",
+                "reference": "50670ba239926c50f2073e868f6672f775cd57ec"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/filp/whoops/zipball/50670ba239926c50f2073e868f6672f775cd57ec",
+                "reference": "50670ba239926c50f2073e868f6672f775cd57ec",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1 || ^8.0",
+                "psr/log": "^1.0.1 || ^2.0 || ^3.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.0",
+                "phpunit/phpunit": "^7.5.20 || ^8.5.8 || ^9.3.3 || ^10.5.58",
+                "symfony/var-dumper": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0"
+            },
+            "suggest": {
+                "symfony/var-dumper": "Pretty print complex values better with var-dumper available",
+                "whoops/soap": "Formats errors as SOAP responses"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.7-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Whoops\\": "src/Whoops/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Filipe Dobreira",
+                    "homepage": "https://github.com/filp",
+                    "role": "Developer"
+                }
+            ],
+            "description": "php error handling for cool kids",
+            "homepage": "https://filp.github.io/whoops/",
+            "keywords": [
+                "error",
+                "exception",
+                "handling",
+                "library",
+                "throwable",
+                "whoops"
+            ],
+            "support": {
+                "issues": "https://github.com/filp/whoops/issues",
+                "source": "https://github.com/filp/whoops/tree/2.18.7"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/denis-sokolov",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-10-18T13:17:38+00:00"
         },
         {
             "name": "friendsofphp/php-cs-fixer",

@@ -21,7 +21,7 @@ composer install --no-dev --optimize-autoloader
 
 Commit `composer.json` and `composer.lock`, and install from the lock file on servers. Choose the router adapter during development with `php xpsr setup`, which records the package in `composer.json`. Do not run `setup --install-dependencies` on a production server.
 
-With `--no-dev`, only packages in `require` are installed. The `setup` command already treats an adapter installed only through `require-dev` as missing for this reason. Classes created later with `make:*` need `composer dump-autoload` only if you use `--classmap-authoritative`.
+With `--no-dev`, only packages in `require` are installed. This leaves out Whoops, which only formats debug error pages; if debug is ever enabled in production, a plain built-in page is used instead. API-only applications can also `composer remove twig/twig`. Rendering a view then fails with the install command, but nothing else depends on Twig. The `setup` command already treats an adapter installed only through `require-dev` as missing for this reason. Classes created later with `make:*` need `composer dump-autoload` only if you use `--classmap-authoritative`.
 
 ## Web server
 

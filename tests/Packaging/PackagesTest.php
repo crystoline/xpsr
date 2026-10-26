@@ -126,7 +126,7 @@ final class PackagesTest extends TestCase
         $manifest = json_decode((string) file_get_contents($skeleton . '/composer.json'), true, flags: JSON_THROW_ON_ERROR);
         self::assertArrayNotHasKey('repositories', $manifest);
         self::assertSame(['psr-4' => ['Tests\\' => 'tests/']], $manifest['autoload-dev']);
-        self::assertSame(['phpunit/phpunit'], array_keys($manifest['require-dev']));
+        self::assertSame(['filp/whoops', 'phpunit/phpunit'], array_keys($manifest['require-dev']));
         self::assertFileExists($skeleton . '/phpunit.xml');
         self::assertDirectoryDoesNotExist($skeleton . '/tests/Integration', 'Monorepo tests are not exported.');
 

@@ -9,15 +9,17 @@ crystoline/xpsr (skeleton, repository root)
 ├── crystoline/xpsr-framework          packages/framework
 ├── crystoline/xpsr-router-fastroute   packages/router-fastroute ──► framework, nikic/fast-route
 ├── nyholm/psr7                        PSR-7/17 implementation used by config/factory.php
+├── twig/twig                          views (the web example); API-only apps can remove it
+├── (dev) filp/whoops                  detailed debug error pages
 └── (suggested) crystoline/xpsr-router-sunrise   packages/router-sunrise ──► framework, sunrise/http-router
 ```
 
 | Package | Namespace | Depends on |
 |---|---|---|
-| `crystoline/xpsr-framework` | `Crystoline\` | PSR interfaces, Symfony Console/Process/Finder/HttpKernel, Illuminate Config, phpdotenv, Twig, Whoops, Nyholm PSR-7 server, and any PSR-17 implementation (`psr/http-factory-implementation`). Accepts `psr/http-message` 1.1 or 2.0. |
+| `crystoline/xpsr-framework` | `Crystoline\` | PSR interfaces, Symfony Console/Process/Finder/HttpKernel/HttpFoundation, Illuminate Config, phpdotenv, Nyholm PSR-7 server, and any PSR-17 implementation (`psr/http-factory-implementation`). Accepts `psr/http-message` 1.1 or 2.0. Suggests Twig (views) and Whoops (debug pages), but does not require them. |
 | `crystoline/xpsr-router-fastroute` | `Crystoline\Router\FastRoute\` | framework, `nikic/fast-route` ^1.3 |
 | `crystoline/xpsr-router-sunrise` | `Crystoline\Router\Sunrise\` | framework, `sunrise/http-router` ^2.16, `psr/http-message` ^1.1 |
-| `crystoline/xpsr` | `App\` | framework, FastRoute adapter, `nyholm/psr7` |
+| `crystoline/xpsr` | `App\` | framework, FastRoute adapter, `nyholm/psr7`, `twig/twig`; development: `filp/whoops`, `phpunit/phpunit` |
 
 Rules that keep the split clean:
 

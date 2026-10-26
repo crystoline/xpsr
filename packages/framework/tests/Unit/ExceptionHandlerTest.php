@@ -51,4 +51,41 @@ final class ExceptionHandlerTest extends TestCase
         self::assertSame('60', $response->getHeaderLine('Retry-After'));
         self::assertSame(['message' => 'Try later'], json_decode((string) $response->getBody(), true));
     }
+
+    public function testBuiltInDebugPageWithoutWhoopsShowsTheEscapedExceptionChain(): void
+    {
+        $handler = new ExceptionHandler(new ResponseFactory(), new StreamFactory(), new NullLogger(), true, whoops: false);
+        $request = (new ServerRequestFactory())->createServerRequest('GET', 'http://localhost/');
+        $cause = new \LogicException('root <cause>');
+        $response = $handler->render($request, new RuntimeException('Failed <script>alert(1)</script>', 0, $cause));
+
+        self::assertSame(500, $response->getStatusCode());
+        self::assertSame('text/html; charset=utf-8', $response->getHeaderLine('Content-Type'));
+        $body = (string) $response->getBody();
+        self::assertStringContainsString('Failed &lt;script&gt;alert(1)&lt;/script&gt;', $body);
+        self::assertStringNotContainsString('<script>', $body, 'Exception messages are escaped.');
+        self::assertStringContainsString('root &lt;cause&gt;', $body, 'Previous exceptions are listed.');
+        self::assertStringContainsString('LogicException', $body);
+        self::assertStringContainsString(__FILE__, $body, 'The location and trace are shown.');
+        self::assertStringContainsString('filp/whoops', $body);
+    }
+
+    public function testWhoopsRendersTheDebugPageWhenAvailable(): void
+    {
+        $handler = new ExceptionHandler(new ResponseFactory(), new StreamFactory(), new NullLogger(), true, whoops: true);
+        $request = (new ServerRequestFactory())->createServerRequest('GET', 'http://localhost/');
+        $body = (string) $handler->render($request, new RuntimeException('visible in debug'))->getBody();
+
+        self::assertStringContainsString('visible in debug', $body);
+        self::assertStringContainsString('Whoops', $body);
+    }
+
+    public function testProductionHtmlIgnoresDebugRenderers(): void
+    {
+        foreach ([true, false] as $whoops) {
+            $handler = new ExceptionHandler(new ResponseFactory(), new StreamFactory(), new NullLogger(), false, $whoops);
+            $body = (string) $handler->render((new ServerRequestFactory())->createServerRequest('GET', 'http://localhost/'), new RuntimeException('secret'))->getBody();
+            self::assertSame('<h1>Internal Server Error</h1>', $body);
+        }
+    }
 }

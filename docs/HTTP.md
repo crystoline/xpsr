@@ -40,7 +40,7 @@ The kernel catches every exception from middleware, routing, and handlers and pa
 
 - uses the exception's status for Symfony `HttpExceptionInterface` exceptions (including their headers, such as `Allow`), and 500 for everything else;
 - returns JSON (`{"message": ...}`) when the `Accept` header prefers `application/json` or a `+json` type, and HTML otherwise;
-- shows only the standard reason phrase, such as "Internal Server Error", unless `APP_DEBUG=true`. With debug enabled, JSON includes the exception message and HTML shows the Whoops error page. Debug is off unless explicitly enabled;
+- shows only the standard reason phrase, such as "Internal Server Error", unless `APP_DEBUG=true`. With debug enabled, JSON includes the exception message. HTML shows the Whoops error page if `filp/whoops` is installed (the skeleton installs it as a development dependency); otherwise it shows a plain built-in page with each exception in the chain, its location, and its stack trace. Debug is off unless explicitly enabled;
 - logs 5xx errors, but not 4xx errors, through PSR-3.
 
 Unmatched routes (404) and unsupported methods (405) are thrown as `NotFoundHttpException` and `MethodNotAllowedHttpException`, so they receive the same JSON or HTML body as other errors. Throw these, or `BadRequestHttpException` and others from `symfony/http-kernel`, from your handlers for other client errors.
