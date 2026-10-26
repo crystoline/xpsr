@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.4', '8.5']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '${{ matrix.php }}'
+          extensions: mbstring, dom, xml, xmlwriter, pcntl
+          coverage: none
+          tools: composer:v2
+      - run: composer validate --strict
+      - name: Validate packages
+        run: for package in packages/*; do composer validate --strict --no-check-lock --working-dir="$package"; done
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - name: PHP syntax
+        run: find packages app config routes bootstrap public tests scripts -name '*.php' -not -path '*/vendor/*' -print0 | xargs -0 -n1 php -l
+      - run: php -l xpsr
+      - run: composer check
+      - run: composer audit
+
+  # Installs each package on its own and builds a project with composer create-project.
+  packaging:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.4', '8.5']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '${{ matrix.php }}'
+          extensions: mbstring, dom, xml, xmlwriter, pcntl
+          coverage: none
+          tools: composer:v2
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: composer test:packaging

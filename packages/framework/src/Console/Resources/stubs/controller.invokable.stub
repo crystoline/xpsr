@@ -1,0 +1,19 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Crystoline\Http\Response\ResponseBuilder;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
+final class {{ class }}
+{
+    public function __construct(private readonly ResponseBuilder $responses) {}
+
+    public function __invoke(ServerRequestInterface $request): ResponseInterface
+    {
+        return $this->responses->json(['controller' => '{{ class }}']);
+    }
+}

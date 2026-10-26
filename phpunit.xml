@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12.5/phpunit.xsd"
+         bootstrap="vendor/autoload.php" colors="true" cacheDirectory=".phpunit.cache"
+         failOnWarning="true" failOnRisky="true">
+    <testsuites>
+        <testsuite name="framework"><directory>packages/framework/tests</directory></testsuite>
+        <testsuite name="router-fastroute"><directory>packages/router-fastroute/tests</directory></testsuite>
+        <testsuite name="router-sunrise"><directory>packages/router-sunrise/tests</directory></testsuite>
+        <testsuite name="skeleton"><directory>tests</directory></testsuite>
+    </testsuites>
+    <groups>
+        <!-- Builds a project with composer create-project; needs network access. Run: composer test:packaging -->
+        <exclude><group>packaging</group></exclude>
+    </groups>
+    <source><include><directory>packages</directory></include><exclude><directory>packages/framework/tests</directory><directory>packages/router-fastroute/tests</directory><directory>packages/router-sunrise/tests</directory></exclude></source>
+    <php>
+        <env name="APP_ENV" value="testing" force="true"/>
+        <env name="APP_DEBUG" value="false" force="true"/>
+    </php>
+</phpunit>

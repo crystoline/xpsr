@@ -1,0 +1,20 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Crystoline\ServiceContainer\ServiceRegistry;
+
+final class {{ class }} extends ServiceRegistry
+{
+    public function register(): void
+    {
+        // Bind services here, for example: $this->container->singleton(SomeService::class);
+    }
+
+    public function boot(): void
+    {
+        // Runs after every eager provider has registered its services.
+    }
+}

@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+try {
+    $application = require __DIR__ . '/bootstrap/app.php';
+    exit($application->getConsoleKernel()->run());
+} catch (Throwable $exception) {
+    // Bootstrap failures happen before Console can render command errors.
+    fwrite(STDERR, 'XPSR could not start: ' . $exception->getMessage() . PHP_EOL);
+    exit(1);
+}

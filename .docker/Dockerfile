@@ -1,16 +1,17 @@
-FROM php:7.4.22-apache-buster
+ARG PHP_VERSION=8.4
+FROM php:${PHP_VERSION}-apache
 
-RUN apt-get update
-RUN apt-get install -y git libmcrypt-dev openssl libzip-dev zip libicu-dev zlib1g-dev g++ libpq-dev libssl-dev \
-        && rm -rf /var/lib/apt/lists/*
-RUN pecl channel-update pecl.php.net && pecl install mcrypt-1.0.3 && docker-php-ext-enable mcrypt
-RUN docker-php-ext-install mysqli pdo pdo_mysql zip gettext intl
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends git unzip libonig-dev libxml2-dev \
+    && docker-php-ext-install -j2 mbstring dom xml xmlwriter pcntl \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
-COPY ./ /var/www/html/
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+RUN sed -ri 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf \
+    && a2enmod rewrite
 
-RUN composer install
-RUN a2enmod rewrite && service apache2 restart
-
-WORKDIR /var/www/html/
+WORKDIR /var/www/html
+COPY . .
+EXPOSE 80

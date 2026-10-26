@@ -1,10 +1,13 @@
 <?php
 
-use Sunrise\Http\Message\ResponseFactory;
+declare(strict_types=1);
 
-/** @var Sunrise\Http\Router\RouteCollector $this */
+use Crystoline\Http\Response\ResponseBuilder;
+use Crystoline\Routing\RouteCollection;
+use Psr\Http\Message\ResponseInterface;
 
-$this->get('', '/hello', function ($request) {
-    return (new Sunrise\Http\Message\ResponseFactory)->createJsonResponse(200, ['helloooooooo']);
-});
-
+return static function (RouteCollection $routes): void {
+    $routes->get('/hello', static function (): ResponseInterface {
+        return app()->get(ResponseBuilder::class)->json(['helloooooooo']);
+    })->name('hello');
+};

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controller;
 
-use Crystoline\Xpsr\Application;
+use Crystoline\Application;
 use Psr\Http\Message\RequestInterface;
 
 class HomeController
 {
-
-    public function index(RequestInterface $request){
+    public function index(RequestInterface $request)
+    {
         return view('home.index');
     }
 

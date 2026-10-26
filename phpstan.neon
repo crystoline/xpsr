@@ -1,0 +1,16 @@
+parameters:
+    level: 5
+    tmpDir: var/phpstan
+    paths:
+        - packages/framework/src
+        - packages/framework/tests
+        - packages/router-fastroute/src
+        - packages/router-fastroute/tests
+        - packages/router-sunrise/src
+        - packages/router-sunrise/tests
+        - app
+        - bootstrap
+        - config/factory.php
+        - public/index.php
+        - xpsr
+        - tests

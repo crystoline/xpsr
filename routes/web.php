@@ -1,8 +1,13 @@
 <?php
 
-/** @var Sunrise\Http\Router\RouteCollector $this */
+declare(strict_types=1);
 
-// or you can use an anonymous function as your request handler:
-$this->group( function (\Sunrise\Http\Router\RouteCollector $collector){
-    $this->get('home', '/', [\App\Http\Controller\HomeController::class, 'index'], [\App\Http\Middleware\SessionMiddleware::class]);
-});
+use App\Http\Controller\HomeController;
+use App\Http\Middleware\SessionMiddleware;
+use Crystoline\Routing\RouteCollection;
+
+return static function (RouteCollection $routes): void {
+    $routes->get('/', [HomeController::class, 'index'])
+        ->name('home')
+        ->middleware(SessionMiddleware::class);
+};

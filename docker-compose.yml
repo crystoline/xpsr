@@ -1,12 +1,10 @@
-version: "3.8"
 services:
   app:
-    image: medbase-web:phpapache
-    container_name: medbase-web
+    image: xpsr-dev:php8.4
     build:
       context: .
       dockerfile: .docker/Dockerfile
     volumes:
       - .:/var/www/html
     ports:
-      - "8088:80"
+      - "127.0.0.1:8088:80"
