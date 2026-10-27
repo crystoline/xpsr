@@ -37,7 +37,12 @@ jobs:
       - name: PHP syntax
         run: find packages app config routes bootstrap public tests scripts -name '*.php' -not -path '*/vendor/*' -print0 | xargs -0 -n1 php -l
       - run: php -l xpsr
-      - run: composer check
+      - run: mkdir -p var && composer test -- --log-junit var/junit.xml
+      - name: Annotate failed tests
+        if: failure()
+        run: php scripts/ci-annotate.php var/junit.xml
+      - run: composer analyse
+      - run: composer style
       - run: composer audit
 
   # The whole suite against the lowest versions every constraint allows. PHPUnit fails on
@@ -57,7 +62,10 @@ jobs:
           coverage: none
           tools: composer:v2
       - run: composer update --prefer-lowest --prefer-stable --prefer-dist --no-interaction --no-progress
-      - run: composer test
+      - run: mkdir -p var && composer test -- --log-junit var/junit.xml
+      - name: Annotate failed tests
+        if: failure()
+        run: php scripts/ci-annotate.php var/junit.xml
 
   # Publishes packages/* and the skeleton to their read-only repositories, after every other
   # job passes. Runs only in crystoline/xpsr (not in forks), on master and on v* tags.
@@ -108,4 +116,7 @@ jobs:
           coverage: none
           tools: composer:v2
       - run: composer install --no-interaction --prefer-dist --no-progress
-      - run: composer test:packaging
+      - run: mkdir -p var && composer test:packaging -- --log-junit var/junit.xml
+      - name: Annotate failed tests
+        if: failure()
+        run: php scripts/ci-annotate.php var/junit.xml
