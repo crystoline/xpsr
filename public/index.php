@@ -15,6 +15,9 @@ try {
     // Bootstrap and emission failures happen outside the HTTP kernel's error handling.
     error_log((string) $exception);
     if (!headers_sent()) {
+        // Discard stray buffered output so it does not end up in the error response.
+        while (ob_get_level() > 0 && @ob_end_clean()) {
+        }
         http_response_code(500);
         header('Content-Type: text/plain; charset=utf-8');
         echo 'Internal Server Error';

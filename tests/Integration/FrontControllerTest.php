@@ -63,14 +63,23 @@ PHP);
     }
 
     /** @param array<string, string> $environment */
-    private function startServer(array $environment = []): void
+    /**
+     * @param array<string, string> $environment
+     * @param array<string, string> $ini settings passed with -d. Output buffering is pinned so
+     *                                   results do not depend on the machine's php.ini.
+     */
+    private function startServer(array $environment = [], array $ini = []): void
     {
         $socket = stream_socket_server('tcp://127.0.0.1:0');
         $address = (string) stream_socket_get_name($socket, false);
         $this->port = (int) substr($address, strrpos($address, ':') + 1);
         fclose($socket);
+        $settings = [];
+        foreach ($ini + ['output_buffering' => '0', 'display_errors' => '0'] as $name => $value) {
+            array_push($settings, '-d', "{$name}={$value}");
+        }
         $this->server = new Process(
-            [PHP_BINARY, '-S', '127.0.0.1:' . $this->port, '-t', $this->root . '/public', dirname(__DIR__, 2) . '/packages/framework/src/Console/Resources/server.php'],
+            [PHP_BINARY, ...$settings, '-S', '127.0.0.1:' . $this->port, '-t', $this->root . '/public', dirname(__DIR__, 2) . '/packages/framework/src/Console/Resources/server.php'],
             $this->root,
             $environment + ['APP_DEBUG' => 'false'] + BootstrapCheck::environment(),
             timeout: 30,
@@ -247,6 +256,17 @@ PHP);
         $response = $this->request('GET', '/early-output');
         // Headers went out with the stray output, so the real response can no longer be sent.
         self::assertSame('stray', $response['body']);
-        $this->waitForLog('Cannot send the response: output already started');
+        $this->waitForLog('Cannot send the response: output already started (sent at');
+    }
+
+    public function testBufferedOutputBeforeEmissionBecomesACleanServerError(): void
+    {
+        // The production php.ini buffers output, so stray output is held back instead of sent.
+        $this->startServer(ini: ['output_buffering' => '4096']);
+        $response = $this->request('GET', '/early-output');
+
+        self::assertSame('HTTP/1.1 500 Internal Server Error', $response['status']);
+        self::assertSame('Internal Server Error', $response['body'], 'The stray output is discarded, not sent.');
+        $this->waitForLog('Cannot send the response: output already started (5 bytes in an output buffer)');
     }
 }

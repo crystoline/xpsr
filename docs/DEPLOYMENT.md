@@ -74,7 +74,7 @@ Per-environment settings belong in `config/{APP_ENV}/` files. Each file override
 
 Exceptions become JSON or HTML error responses (see [HTTP.md](HTTP.md)). Server errors (5xx) are logged with their stack trace through PHP's `error_log()`: into the web server's or PHP-FPM's error log, or the file named by the `error_log` ini setting. To use a different logger, bind `Psr\Log\LoggerInterface` in `config/factory.php`, for example to Monolog.
 
-Keep `display_errors=Off` in production. PHP warnings and deprecation notices printed before the response is sent corrupt it: headers can no longer be sent, and the response emitter logs `Cannot send the response: output already started`. XPSR's minimum dependency versions are chosen so that none of them emit deprecation notices on PHP 8.4 or 8.5, and CI checks this.
+Keep `display_errors=Off` in production. PHP warnings and deprecation notices printed before the response would corrupt it. The response emitter refuses to send such a response and logs `Cannot send the response: output already started`. With output buffering on (the production default), the client then gets a clean 500 instead. XPSR's minimum dependency versions are chosen so that none of them emit deprecation notices on PHP 8.4 or 8.5, and CI checks this.
 
 If the application cannot boot at all, `public/index.php` logs the cause and returns a plain "Internal Server Error".
 

@@ -275,6 +275,13 @@ Verified on 26 October 2026:
 - **Packaging:** the group passes with current dependencies (5 tests, including the cache package installed alone) and with lowest dependencies (4 per-package tests).
 - **Not tested:** Redis, APCu, or Memcached pools through the `service` driver.
 
+**First GitHub CI run (27 October 2026).** It failed. GitHub's `setup-php` uses the production `php.ini`, while local runs had none. Reproducing that locally showed two problems:
+
+- **Stray output.** With `output_buffering` on, stray output before the response was buffered rather than sent, so the emitter did not notice and the text ended up in front of the body. The emitter now also detects output waiting in a buffer, and the front controller discards it and returns a clean 500. A front-controller test pins both `output_buffering` settings.
+- **Cache keys.** Symfony Cache validates keys only through `assert()`, which production settings disable. The cache test now checks both behaviors, and the README documents it.
+
+CI now runs the production `php.ini` explicitly, plus one job with the development `php.ini`. Locally, 360 tests pass with and without the production `php.ini`, as do the lowest-version suite and the packaging group.
+
 ## Boundaries and remaining work
 
 The first thirteen milestones are working slices, not completion of all roadmap phases. Phase 5 is complete except publishing, which needs the repository owner's accounts and decisions.

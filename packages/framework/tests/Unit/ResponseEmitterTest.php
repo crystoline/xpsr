@@ -135,7 +135,7 @@ final class ResponseEmitterTest extends TestCase
     public function testRefusesToEmitAfterOutputStarted(): void
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('output already started at /app/view.php:12');
+        $this->expectExceptionMessage('output already started (/app/view.php:12)');
         try {
             $this->emitter(outputStartedAt: '/app/view.php:12')->emit(new Response(200, [], 'body'));
         } finally {

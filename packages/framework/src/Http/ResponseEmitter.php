@@ -25,7 +25,7 @@ final class ResponseEmitter
     /**
      * @param int $chunkSize bytes read from the body per write
      * @param (Closure(string, bool, int): void)|null $header replaces PHP's header() in tests
-     * @param (Closure(): ?string)|null $outputStartedAt "file:line" once output has started, otherwise null
+     * @param (Closure(): ?string)|null $outputStartedAt where earlier output is, once there is any, otherwise null
      */
     public function __construct(private readonly int $chunkSize = 8192, ?Closure $header = null, ?Closure $outputStartedAt = null)
     {
@@ -35,15 +35,19 @@ final class ResponseEmitter
         $this->header = $header ?? static function (string $line, bool $replace, int $status): void {
             header($line, $replace, $status);
         };
-        $this->outputStartedAt = $outputStartedAt ?? static fn(): ?string => headers_sent($file, $line) ? "{$file}:{$line}" : null;
+        $this->outputStartedAt = $outputStartedAt ?? self::detectOutput(...);
     }
 
-    /** @throws RuntimeException when output has already started, because headers can no longer be sent */
+    /**
+     * @throws RuntimeException when output was already sent or is waiting in an output buffer.
+     *                          Sent output means headers can no longer be set; buffered output would
+     *                          silently end up in front of the response body.
+     */
     public function emit(ResponseInterface $response): void
     {
         $startedAt = ($this->outputStartedAt)();
         if ($startedAt !== null) {
-            throw new RuntimeException("Cannot send the response: output already started at {$startedAt}.");
+            throw new RuntimeException("Cannot send the response: output already started ({$startedAt}).");
         }
 
         $status = $response->getStatusCode();
@@ -61,6 +65,21 @@ final class ResponseEmitter
         if ($status >= 200 && !in_array($status, self::BODYLESS, true)) {
             $this->emitBody($response);
         }
+    }
+
+    /**
+     * "file:line" where output was sent, or the size of output waiting in a buffer. With
+     * output_buffering on (the production php.ini default), stray output is buffered rather than
+     * sent, so headers_sent() alone would not notice it.
+     */
+    private static function detectOutput(): ?string
+    {
+        if (headers_sent($file, $line)) {
+            return "sent at {$file}:{$line}";
+        }
+        $buffered = ob_get_level() > 0 ? (int) ob_get_length() : 0;
+
+        return $buffered > 0 ? "{$buffered} bytes in an output buffer" : null;
     }
 
     private function emitBody(ResponseInterface $response): void

@@ -99,12 +99,26 @@ final class CacheServiceRegistryTest extends TestCase
         $cache->set('gone', 'value', 0);
         self::assertFalse($cache->has('gone'), 'A TTL of zero or less removes the item.');
 
-        // psr/simple-cache 1.x exception interfaces do not extend Throwable, so check by instanceof.
+    }
+
+    public function testReservedKeyCharactersAreRejectedOnlyWhenAssertionsRun(): void
+    {
+        // Symfony Cache validates keys through assert(), for speed. With assertions on (the
+        // development default), reserved characters are rejected as PSR-16 requires. With
+        // zend.assertions=-1 (the production php.ini), they are accepted and still work.
+        $cache = $this->container()->get(CacheInterface::class);
+        $rejected = null;
         try {
-            $cache->get('invalid{key}');
-            self::fail('Reserved characters in keys must be rejected.');
+            $cache->set('invalid{key}', 'value');
         } catch (\Throwable $exception) {
-            self::assertInstanceOf(InvalidKeyException::class, $exception);
+            $rejected = $exception;
+        }
+        if (ini_get('zend.assertions') === '1') {
+            // psr/simple-cache 1.x exception interfaces do not extend Throwable, so check by instanceof.
+            self::assertInstanceOf(InvalidKeyException::class, $rejected);
+        } else {
+            self::assertNull($rejected);
+            self::assertSame('value', $cache->get('invalid{key}'));
         }
     }
 

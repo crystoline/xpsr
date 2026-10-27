@@ -53,4 +53,6 @@ For example, Redis with Symfony's adapter, bound in `config/factory.php`:
 
 Then set `'driver' => 'service', 'service' => 'cache.redis'` in `config/cache.php`. Only the `file`, `array`, `null`, and `service` wiring is tested by this package; Redis itself is not.
 
+Use keys made of letters, digits, `_`, and `.`. PSR-16 reserves `{}()/\@:`. Symfony Cache rejects reserved characters only while PHP assertions run (`zend.assertions=1`, the development default), to keep production fast. With the production `php.ini` they are accepted, so catch mistakes in development.
+
 `php xpsr cache:clear` removes every item in the configured cache (for shared storage, only under its namespace) and exits with 1 if the storage reports a failure.

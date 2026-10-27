@@ -86,7 +86,12 @@ The default `Psr\Log\LoggerInterface` is `Crystoline\Log\ErrorLogLogger`. It wri
 2. The status line, last, with the response's status passed on every header call. This prevents PHP from changing the status, for example turning a `Location` header into a 302.
 3. The body, in 8 KiB chunks. Seekable bodies are rewound first. A valid `Content-Length` caps the bytes sent. Non-seekable (streamed) bodies are flushed after each chunk so clients receive them as they are produced. Emission stops if the client disconnects. Statuses 1xx, 204, 205, and 304 never send a body.
 
-If output has already started, for example from an `echo` or a PHP warning, headers can no longer be sent. The emitter then throws instead of sending a partial response silently. `public/index.php` logs `Cannot send the response: output already started at file:line`. Return output in the response body instead of echoing it.
+If output has already started, for example from an `echo` or a PHP warning, the emitter throws instead of sending a corrupted response. `public/index.php` then logs `Cannot send the response: output already started (…)`. What clients receive depends on the setting:
+
+- **`output_buffering=Off`:** the output was already sent with headers, so the client receives that output, and the log says where it started (`sent at file:line`).
+- **`output_buffering` on (the production `php.ini` default):** the output is still in a buffer. The emitter detects it (`N bytes in an output buffer`), and the front controller discards it and returns a clean 500 "Internal Server Error". Without that check, the stray text would silently precede the response body.
+
+Return output in the response body instead of echoing it.
 
 The emitter does not add `Content-Length`, compress, or handle range requests; the web server or middleware can do that.
 
