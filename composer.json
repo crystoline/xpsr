@@ -10,6 +10,7 @@
     "twig/twig": "^3.4"
   },
   "require-dev": {
+    "crystoline/xpsr-cache": "^0.1@dev",
     "crystoline/xpsr-router-sunrise": "^0.1@dev",
     "filp/whoops": "^2.16",
     "friendsofphp/php-cs-fixer": "^3.64",
@@ -18,6 +19,7 @@
     "symfony/http-kernel": "^7.4"
   },
   "suggest": {
+    "crystoline/xpsr-cache": "Application cache (PSR-16 and PSR-6) and the cache:clear command",
     "crystoline/xpsr-router-sunrise": "Sunrise router adapter. Select it with: php xpsr setup --router=sunrise --install-dependencies"
   },
   "repositories": [
@@ -27,6 +29,7 @@
       "options": {
         "symlink": true,
         "versions": {
+          "crystoline/xpsr-cache": "0.1.x-dev",
           "crystoline/xpsr-framework": "0.1.x-dev",
           "crystoline/xpsr-router-fastroute": "0.1.x-dev",
           "crystoline/xpsr-router-sunrise": "0.1.x-dev"
@@ -43,6 +46,7 @@
   "autoload-dev": {
     "psr-4": {
       "Tests\\": "tests/",
+      "Crystoline\\Cache\\Tests\\": "packages/cache/tests/",
       "Crystoline\\Tests\\": "packages/framework/tests/",
       "Crystoline\\Router\\FastRoute\\Tests\\": "packages/router-fastroute/tests/",
       "Crystoline\\Router\\Sunrise\\Tests\\": "packages/router-sunrise/tests/"

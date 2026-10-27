@@ -8,6 +8,8 @@ parameters:
         - packages/router-fastroute/tests
         - packages/router-sunrise/src
         - packages/router-sunrise/tests
+        - packages/cache/src
+        - packages/cache/tests
         - app
         - bootstrap
         - config/factory.php

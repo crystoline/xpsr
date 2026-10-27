@@ -11,13 +11,15 @@ crystoline/xpsr (skeleton, repository root)
 ├── nyholm/psr7                        PSR-7/17 implementation used by config/factory.php
 ├── twig/twig                          views (the web example); API-only apps can remove it
 ├── (dev) filp/whoops                  detailed debug error pages
-└── (suggested) crystoline/xpsr-router-sunrise   packages/router-sunrise ──► framework, sunrise/http-router
+├── (suggested) crystoline/xpsr-router-sunrise   packages/router-sunrise ──► framework, sunrise/http-router
+└── (suggested) crystoline/xpsr-cache            packages/cache ──► framework, symfony/cache
 ```
 
 | Package | Namespace | Depends on |
 |---|---|---|
 | `crystoline/xpsr-framework` | `Crystoline\` | PSR interfaces, Symfony Console/Process/Finder, Illuminate Config, phpdotenv, Nyholm PSR-7 server, and any PSR-17 implementation (`psr/http-factory-implementation`). Accepts `psr/http-message` 1.1 or 2.0. Suggests Twig (views) and Whoops (debug pages), but does not require them. |
 | `crystoline/xpsr-router-fastroute` | `Crystoline\Router\FastRoute\` | framework, `nikic/fast-route` ^1.3 |
+| `crystoline/xpsr-cache` | `Crystoline\Cache\` | framework, `symfony/cache` ^7.4, `psr/cache` 2 or 3, `psr/simple-cache` 1 to 3 (1.x keeps it installable next to the Sunrise adapter) |
 | `crystoline/xpsr-router-sunrise` | `Crystoline\Router\Sunrise\` | framework, `sunrise/http-router` ^2.16, `psr/http-message` ^1.1 |
 | `crystoline/xpsr` | `App\` | framework, FastRoute adapter, `nyholm/psr7`, `twig/twig`; development: `filp/whoops`, `phpunit/phpunit` |
 
@@ -92,14 +94,17 @@ The CI job `lowest-dependencies` runs the whole suite after `composer update --p
 
 ## Publishing
 
-`scripts/split.sh` publishes the monorepo into four read-only repositories, and the `split` job in `.github/workflows/ci.yml` runs it after every other CI job passes:
+`scripts/split.sh` publishes the monorepo into five read-only repositories, and the `split` job in `.github/workflows/ci.yml` runs it after every other CI job passes:
 
 | Repository | Content | Packagist package |
 |---|---|---|
-| `xpsr-php/framework` | `packages/framework`, with its history (`git subtree split`) | `crystoline/xpsr-framework` |
-| `xpsr-php/router-fastroute` | `packages/router-fastroute`, with its history | `crystoline/xpsr-router-fastroute` |
-| `xpsr-php/router-sunrise` | `packages/router-sunrise`, with its history | `crystoline/xpsr-router-sunrise` |
-| `xpsr-php/skeleton` | the output of `scripts/export-skeleton.php`, one sync commit per change | `crystoline/xpsr` |
+| `crystoline/xpsr-framework` | `packages/framework`, with its history (`git subtree split`) | `crystoline/xpsr-framework` |
+| `crystoline/xpsr-router-fastroute` | `packages/router-fastroute`, with its history | `crystoline/xpsr-router-fastroute` |
+| `crystoline/xpsr-router-sunrise` | `packages/router-sunrise`, with its history | `crystoline/xpsr-router-sunrise` |
+| `crystoline/xpsr-cache` | `packages/cache`, with its history | `crystoline/xpsr-cache` |
+| `crystoline/xpsr-skeleton` | the output of `scripts/export-skeleton.php`, one sync commit per change | `crystoline/xpsr` |
+
+Each repository is named after its Composer package without the vendor prefix. The skeleton is the exception: its package is `crystoline/xpsr`, so that `composer create-project crystoline/xpsr` works, but its repository is `xpsr-skeleton`, because `crystoline/xpsr` is this monorepo. Development, issues, and pull requests happen in `crystoline/xpsr`. The other five repositories are read-only mirrors.
 
 - **A push to `master`** updates each repository's `master` branch. Packages declare the branch alias `dev-master` → `0.1.x-dev`, so `^0.1@dev` resolves to it.
 - **A `v*` tag** pushes that tag to every repository and leaves branches alone. The skeleton's tagged commit is exported with `--release`, so it requires the release range (`^0.1`), while its `master` keeps `^0.1@dev`.
@@ -113,7 +118,7 @@ The skeleton ships without `composer.lock`: each new application resolves its de
 The split and release flow was rehearsed against local bare repositories:
 
 - Splitting twice produced identical commits.
-- A release tagged all four repositories.
+- A release tagged every repository.
 - `composer create-project` from them (as VCS repositories) installed framework and FastRoute `0.1.0`, and the application's tests passed.
 - `setup --router=sunrise --install-dependencies` installed the Sunrise adapter `0.1.0` and moved `psr/http-message` to 1.1.
 - A `0.1.x-dev` project resolved the `master` branches through the branch aliases.
@@ -121,7 +126,7 @@ The split and release flow was rehearsed against local bare repositories:
 To repeat it locally:
 
 ```sh
-for r in framework router-fastroute router-sunrise skeleton; do git init --bare /tmp/remotes/$r.git; done
+for r in xpsr-framework xpsr-router-fastroute xpsr-router-sunrise xpsr-cache xpsr-skeleton; do git init --bare /tmp/remotes/$r.git; done
 scripts/split.sh /tmp/remotes master          # branch sync
 scripts/split.sh /tmp/remotes master v0.1.0   # release
 ```
@@ -130,10 +135,10 @@ scripts/split.sh /tmp/remotes master v0.1.0   # release
 
 Owner-only steps, in order:
 
-1. **Organization and repositories.** Create the `xpsr-php` organization. Transfer this repository to `xpsr-php/xpsr`; GitHub redirects the old URL. Create empty `framework`, `router-fastroute`, `router-sunrise`, and `skeleton` repositories. Mark the four as read-only in their descriptions and point contributors to `xpsr-php/xpsr`.
-2. **Token.** Create a fine-grained token, or a GitHub App, with **Contents: read and write** on those four repositories only. Store it as the `SPLIT_TOKEN` secret of `xpsr-php/xpsr`.
-3. **First sync.** Merge `framework-rebuild` into `master` and push. CI then publishes the four `master` branches.
-4. **Old prototype.** In Packagist, delete the `v1.0.0` version of `crystoline/xpsr` (the old prototype), delete its tag in the old repository, and change the package's repository URL to `https://github.com/xpsr-php/skeleton`.
-5. **Packagist.** Submit `crystoline/xpsr-framework`, `crystoline/xpsr-router-fastroute`, and `crystoline/xpsr-router-sunrise` with their split repositories. Enable the GitHub hook (Packagist's GitHub integration) for all four.
-6. **Release.** Move the `CHANGELOG.md` entries under `0.1.0`, commit, then tag `v0.1.0` in `xpsr-php/xpsr` and push the tag. CI tags all four repositories.
+1. **Repositories.** Create five empty public repositories under `crystoline`: `xpsr-framework`, `xpsr-router-fastroute`, `xpsr-router-sunrise`, `xpsr-cache`, and `xpsr-skeleton`. Describe each as a read-only mirror of `crystoline/xpsr`, and consider turning off issues and pull requests there.
+2. **Token.** Create a fine-grained personal access token with access to those five repositories only, with **Contents: read and write**. Store it as the `SPLIT_TOKEN` Actions secret of `crystoline/xpsr`: Settings → Secrets and variables → Actions.
+3. **First sync.** Merge `framework-rebuild` into `master` and push. When CI passes, the `split` job publishes the five `master` branches.
+4. **Old prototype.** In Packagist, delete the `v1.0.0` version of `crystoline/xpsr` (the old prototype), and delete the `v1.0.0` tag in `crystoline/xpsr`. Change the package's repository URL to `https://github.com/crystoline/xpsr-skeleton`.
+5. **Packagist.** Submit `crystoline/xpsr-framework`, `crystoline/xpsr-router-fastroute`, `crystoline/xpsr-router-sunrise`, and `crystoline/xpsr-cache` with their repositories. Enable Packagist's GitHub integration so all five update automatically.
+6. **Release.** Move the `CHANGELOG.md` entries under `0.1.0`, commit, then tag `v0.1.0` in `crystoline/xpsr` and push the tag. CI tags all five mirrors.
 7. **Check.** In an empty directory, run `composer create-project crystoline/xpsr my-app` and confirm it installs `0.1.0`, including `xpsr-framework` 0.1.0.

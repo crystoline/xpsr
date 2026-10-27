@@ -52,13 +52,14 @@ jobs:
       - run: composer test
 
   # Publishes packages/* and the skeleton to their read-only repositories, after every other
-  # job passes. Runs only in the organization's repository, on master and on v* tags.
-  # Requires the SPLIT_TOKEN secret: a token with contents read/write access to the
-  # framework, router-fastroute, router-sunrise, and skeleton repositories. See docs/PACKAGES.md.
+  # job passes. Runs only in crystoline/xpsr (not in forks), on master and on v* tags.
+  # Requires the SPLIT_TOKEN secret: a token with contents read/write access to
+  # xpsr-framework, xpsr-router-fastroute, xpsr-router-sunrise, xpsr-cache, and xpsr-skeleton.
+  # See docs/PACKAGES.md.
   split:
     needs: [check, lowest-dependencies, packaging]
     if: >-
-      github.event_name == 'push' && github.repository == 'xpsr-php/xpsr' &&
+      github.event_name == 'push' && github.repository == 'crystoline/xpsr' &&
       (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v'))
     runs-on: ubuntu-latest
     concurrency: split
@@ -76,7 +77,7 @@ jobs:
           SPLIT_TOKEN: ${{ secrets.SPLIT_TOKEN }}
         run: |
           if [[ -z "$SPLIT_TOKEN" ]]; then echo "SPLIT_TOKEN is not set." >&2; exit 1; fi
-          base="https://x-access-token:${SPLIT_TOKEN}@github.com/xpsr-php"
+          base="https://x-access-token:${SPLIT_TOKEN}@github.com/crystoline"
           if [[ "$GITHUB_REF" == refs/tags/* ]]; then
             scripts/split.sh "$base" master "${GITHUB_REF#refs/tags/}"
           else

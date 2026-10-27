@@ -5,23 +5,26 @@
 #   scripts/split.sh <remote-base> <branch> [tag]
 #
 #   remote-base  where the package repositories live, for example
-#                https://x-access-token:TOKEN@github.com/xpsr-php, or a local directory of bare
-#                repositories for testing. Each repository is <remote-base>/<name>.git.
+#                https://x-access-token:TOKEN@github.com/crystoline, or a local directory of
+#                bare repositories for testing. Each repository is <remote-base>/<name>.git.
 #   branch       the branch to update in every package repository, for example master.
 #   tag          optional release tag such as v0.1.0. With a tag, only tags are pushed and
 #                branches are left alone: the tagged commit may be older than the branch tip.
 #                The skeleton's release commit (with ^X.Y constraints, see export-skeleton.php)
 #                is built on top of <branch> and reachable only through the tag.
 #
-# Everything is taken from the committed HEAD, never from the working tree.
+# Everything is taken from the committed HEAD, never from the working tree. Each repository
+# is named after its Composer package without the vendor prefix:
 #
-#   packages/framework         -> framework.git          (git subtree split: history preserved)
-#   packages/router-fastroute  -> router-fastroute.git
-#   packages/router-sunrise    -> router-sunrise.git
-#   scripts/export-skeleton.php output -> skeleton.git   (one sync commit per change)
+#   packages/framework         -> xpsr-framework.git         crystoline/xpsr-framework
+#   packages/router-fastroute  -> xpsr-router-fastroute.git  crystoline/xpsr-router-fastroute
+#   packages/router-sunrise    -> xpsr-router-sunrise.git    crystoline/xpsr-router-sunrise
+#   packages/cache             -> xpsr-cache.git             crystoline/xpsr-cache
+#   export-skeleton.php output -> xpsr-skeleton.git          crystoline/xpsr
 #
-# Re-running with the same HEAD changes nothing: subtree splits are deterministic, and the
-# skeleton is committed only when its exported files differ.
+# Packages keep their history (git subtree split). The skeleton gets one sync commit per
+# change. Re-running with the same HEAD changes nothing: subtree splits are deterministic, and
+# the skeleton is committed only when its exported files differ.
 set -euo pipefail
 
 if [[ $# -lt 2 || $# -gt 3 ]]; then
@@ -54,9 +57,10 @@ push() {
     fi
 }
 
-for package in framework router-fastroute router-sunrise; do
-    commit=$(git subtree split --quiet --prefix="packages/$package" "$head")
-    push "$root" "$package" "$commit"
+for package in framework router-fastroute router-sunrise cache; do
+    # -q rather than --quiet: older git-subtree versions (Git 2.25) accept only the short form.
+    commit=$(git subtree split -q --prefix="packages/$package" "$head")
+    push "$root" "xpsr-$package" "$commit"
 done
 
 # The skeleton is generated, so it is exported from the committed tree and committed on top
@@ -73,7 +77,7 @@ git init --quiet "$work/skeleton"
 cd "$work/skeleton"
 git config user.name "$(git -C "$root" log -1 --format=%an "$head")"
 git config user.email "$(git -C "$root" log -1 --format=%ae "$head")"
-if git fetch --quiet "$base/skeleton.git" "refs/heads/$branch" 2> /dev/null; then
+if git fetch --quiet "$base/xpsr-skeleton.git" "refs/heads/$branch" 2> /dev/null; then
     git checkout --quiet -b "$branch" FETCH_HEAD
 else
     git checkout --quiet --orphan "$branch"
@@ -82,9 +86,9 @@ git rm -r --quiet --force --ignore-unmatch . > /dev/null
 cp -a "$work/export/." .
 git add --all
 if git diff --cached --quiet && git rev-parse --verify --quiet HEAD > /dev/null; then
-    echo "skeleton: unchanged"
+    echo "xpsr-skeleton: unchanged"
 else
     git commit --quiet -m "Sync skeleton from monorepo ${head:0:12}"
 fi
 cd "$root"
-push "$work/skeleton" skeleton "$(git -C "$work/skeleton" rev-parse HEAD)"
+push "$work/skeleton" xpsr-skeleton "$(git -C "$work/skeleton" rev-parse HEAD)"

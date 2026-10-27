@@ -28,7 +28,7 @@ const SKELETON_PATHS = [
 const SKELETON_TESTS = ['tests/TestCase.php', 'tests/Application'];
 
 /** require-dev entries and scripts that only make sense inside the monorepo. */
-const MONOREPO_DEV_PACKAGES = ['crystoline/xpsr-router-sunrise', 'friendsofphp/php-cs-fixer', 'phpstan/phpstan', 'symfony/http-kernel'];
+const MONOREPO_DEV_PACKAGES = ['crystoline/xpsr-cache', 'crystoline/xpsr-router-sunrise', 'friendsofphp/php-cs-fixer', 'phpstan/phpstan', 'symfony/http-kernel'];
 const MONOREPO_SCRIPTS = ['test:packaging', 'analyse', 'style', 'style:fix', 'check'];
 
 $source = dirname(__DIR__);

@@ -20,6 +20,10 @@ First release of the rebuilt framework. It replaces the earlier prototype, which
 - Router contract test suite for adapter authors (`Crystoline\Testing\RouterContractTestCase`).
 - Documentation: getting started, deployment, HTTP, routing, container, console, packages, and versioning.
 
+### Cache
+
+- `crystoline/xpsr-cache`: an optional package providing the application cache as PSR-16 and PSR-6, backed by Symfony Cache, with `file`, `array`, `null`, and `service` drivers and a `cache:clear` command.
+
 ### HTTP exceptions
 
 - `Crystoline\Http\Exception\*`: `HttpException`, `HttpExceptionInterface`, and classes for 400, 401, 403, 404, 405, 409, 413, 415, 422, 429, and 503. The framework no longer depends on `symfony/http-kernel` or `symfony/http-foundation`. Symfony's HttpKernel exceptions are still rendered with their status when that package is installed.

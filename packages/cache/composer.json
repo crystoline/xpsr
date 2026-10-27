@@ -1,0 +1,38 @@
+{
+  "name": "crystoline/xpsr-cache",
+  "description": "PSR-16 and PSR-6 caching for XPSR applications, backed by Symfony Cache, with a cache:clear command",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Adekunle",
+      "email": "crystoline@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.4",
+    "crystoline/xpsr-framework": "^0.1@dev",
+    "psr/cache": "^2.0 || ^3.0",
+    "psr/simple-cache": "^1.0 || ^2.0 || ^3.0",
+    "symfony/cache": "^7.4"
+  },
+  "require-dev": {
+    "nyholm/psr7": "^1.8.2",
+    "phpunit/phpunit": "^12.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Crystoline\\Cache\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Crystoline\\Cache\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.1.x-dev"
+    }
+  }
+}

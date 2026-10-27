@@ -198,7 +198,7 @@ Implemented:
   - the skeleton from `scripts/export-skeleton.php`, one sync commit per change.
 
   Branch syncs are idempotent. A release tag pushes tags only and leaves branches alone.
-- A `split` CI job runs the script after every other job passes. It runs only in `xpsr-php/xpsr`, on `master` and `v*` tags, with a `SPLIT_TOKEN` secret.
+- A `split` CI job runs the script after every other job passes. It runs only in `crystoline/xpsr`, on `master` and `v*` tags, with a `SPLIT_TOKEN` secret.
 - `export-skeleton.php --release=X.Y.Z` writes release constraints (`^X.Y`) for the XPSR packages. The skeleton ships without `composer.lock`, replacing the plan's skeleton-lockfile item; the reason is in `PACKAGES.md`.
 - Every package, and the skeleton, declares the branch alias `dev-master` → `0.1.x-dev`.
 - **Fixed:** `setup` hard-coded `^0.1@dev`, so after a release it installed an adapter's `dev-master` instead of the matching release. It now derives the constraint from the installed framework version (`^0.1` for a release, `^0.1@dev` for development installs).
@@ -252,11 +252,41 @@ Verified on 26 October 2026:
 - **Tutorial:** walked through again in a freshly created project, with the same results.
 - **Fresh install:** its `--no-dev` install contains only Console, Process, and Finder (plus their contracts and polyfills) from Symfony, and serves a JSON 404 correctly.
 
+## Thirteenth milestone: completed — optional application cache
+
+Implemented:
+
+- **New package.** `crystoline/xpsr-cache` (`packages/cache`, `Crystoline\Cache\`) is a fifth package. `CacheServiceRegistry` provides one application cache as PSR-16 and PSR-6 over the same storage, backed by Symfony Cache.
+- **Drivers:**
+  - `file` (default, `var/cache/app`);
+  - `array` (per process);
+  - `null` (stores nothing);
+  - `service`, which uses any PSR-6 pool bound in the container. This is the route to Redis, APCu, or Memcached without the package claiming untested drivers.
+- **Configuration.** Options live in `config/cache.php` (`driver`, `path`, `namespace`, `default_ttl`, `service`). Invalid values fail on first use with the setting's name.
+- **`php xpsr cache:clear`.** It is registered only when the console is present, and exits 1 if storage reports a failure.
+- **Optional.** The skeleton does not install the package; applications run `composer require crystoline/xpsr-cache` and add the provider. The monorepo, split script, packaging tests, PHPUnit, and PHPStan include it; the skeleton export leaves it out.
+- **Compatibility fix.** Requiring `psr/simple-cache` 3 made the package impossible to install next to the Sunrise adapter, whose router library needs 1.x. The package accepts versions 1 to 3, and its tests handle the 1.x exception interfaces, which do not extend `Throwable`.
+- **Packaging fix.** Installed alone, the package also needed a PSR-17 implementation to satisfy the framework. It now has `nyholm/psr7` as a development dependency, as the adapters do.
+
+Verified on 26 October 2026:
+
+- **Suite:** 358 tests and 1,335 assertions pass on PHP 8.4.27 and PHP 8.5.12, and at the lowest allowed dependency versions with deprecations as failures.
+- **Static checks:** PHPStan, PER style checks for 146 files, strict validation of all five `composer.json` files, and the security audit pass.
+- **Packaging:** the group passes with current dependencies (5 tests, including the cache package installed alone) and with lowest dependencies (4 per-package tests).
+- **Not tested:** Redis, APCu, or Memcached pools through the `service` driver.
+
 ## Boundaries and remaining work
 
-The first twelve milestones are working slices, not completion of all roadmap phases. Phase 5 is complete except publishing, which needs the repository owner's accounts and decisions.
+The first thirteen milestones are working slices, not completion of all roadmap phases. Phase 5 is complete except publishing, which needs the repository owner's accounts and decisions.
 
-- **Publishing.** The split job and release flow are ready and rehearsed (see the tenth milestone). What remains needs the owner's accounts: the `xpsr-php` organization and repositories, the `SPLIT_TOKEN` secret, removal of the old `crystoline/xpsr` `v1.0.0`, Packagist registration, and the `v0.1.0` tag. See "First publication" in `PACKAGES.md`.
+- **Publishing.** The split job and release flow are ready and rehearsed (see the tenth milestone). The mirror repositories `crystoline/xpsr-framework`, `xpsr-router-fastroute`, `xpsr-router-sunrise`, and `xpsr-cache` exist (created 27 October 2026, empty). Still needed:
+
+  - the `crystoline/xpsr-skeleton` repository;
+  - the `SPLIT_TOKEN` secret;
+  - merging `framework-rebuild` into `master` and pushing;
+  - removing the old `crystoline/xpsr` `v1.0.0` and re-pointing that Packagist entry at `xpsr-skeleton`;
+  - Packagist registration of the other packages;
+  - the `v0.1.0` tag. See "First publication" in `PACKAGES.md`.
 - **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.
 - **Containers.** Alternative containers need an adapter for XPSR's registration/deferred-group contract; PSR-11 alone only standardizes consumption.
 - **Deferred services.** Deferred service claims cannot overlap. Rebinding does not rebuild existing consumers automatically.
@@ -269,11 +299,11 @@ The first twelve milestones are working slices, not completion of all roadmap ph
   - Only Nyholm PSR-7 is tested.
   - The request host comes from the client's `Host` header; build absolute URLs from `APP_URL`.
 - **Dependencies.** The framework's remaining third-party requirements are Symfony Console, Process, and Finder; Illuminate Config; phpdotenv; and Nyholm's PSR-7 server helper. Finder only lists configuration files, and Illuminate Config pulls in parts of Illuminate Support, so both are candidates for small in-house replacements.
-- **Not yet available:** cache operations, database integration, authentication, queues, and scheduling (roadmap phase 6).
+- **Not yet available:** database integration, authentication, queues, scheduling, events, and an outgoing HTTP client (roadmap phase 6). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
 
 ## Next implementation slice
 
 Publishing is ready to run once the GitHub organization, the `SPLIT_TOKEN` secret, and Packagist access exist; follow "First publication" in `PACKAGES.md`.
 
-Without accounts, start roadmap phase 6 with a PSR-16 cache integration and a `cache:clear` command. It should be an optional package, so applications that do not cache stay unaffected.
+Without accounts, continue roadmap phase 6. Candidates, in order of how many applications need them: an outgoing PSR-18 HTTP client integration; PSR-14 events; a route cache built on the cache package; then database integration.

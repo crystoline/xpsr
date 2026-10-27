@@ -94,6 +94,7 @@ final class PackagesTest extends TestCase
         yield 'framework' => ['framework'];
         yield 'FastRoute adapter' => ['router-fastroute'];
         yield 'Sunrise adapter' => ['router-sunrise'];
+        yield 'cache' => ['cache'];
     }
 
     #[DataProvider('packages')]
