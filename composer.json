@@ -23,6 +23,9 @@
   },
   "suggest": {
     "crystoline/xpsr-cache": "Application cache (PSR-16 and PSR-6) and the cache:clear command",
+    "crystoline/xpsr-database": "Database connections (Doctrine DBAL) and migrations",
+    "crystoline/xpsr-http-client": "Outgoing HTTP: a configured PSR-18 client and named clients",
+    "crystoline/xpsr-orm-doctrine": "Doctrine ORM entities on the XPSR database connection",
     "crystoline/xpsr-router-sunrise": "Sunrise router adapter. Select it with: php xpsr setup --router=sunrise --install-dependencies"
   },
   "repositories": [

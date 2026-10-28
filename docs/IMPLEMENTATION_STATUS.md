@@ -403,4 +403,4 @@ The first twenty-one milestones are working slices, not completion of all roadma
 
 ## Next implementation slice
 
-Publish `crystoline/xpsr-http-client` and `crystoline/xpsr-database` once their repositories exist, then release 0.2.0. After that, follow the ordered component plan in `FRAMEWORK_PLAN.md` section 10, starting with the Doctrine ORM adapter; settle each component's open decisions with the user before starting it. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.
+`crystoline/xpsr-http-client`, `crystoline/xpsr-database`, and `crystoline/xpsr-orm-doctrine` are published to their mirror repositories. Submit them to Packagist, then release 0.2.0. After that, follow the ordered component plan in `FRAMEWORK_PLAN.md` section 10, next with Monolog logging and rate limiting; settle each component's open decisions with the user before starting it. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.
