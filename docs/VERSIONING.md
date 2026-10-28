@@ -26,12 +26,12 @@ Not covered:
 
 ## Before 1.0
 
-XPSR is in its 0.x series. Composer reads `^0.1` as "0.1.0 or newer, below 0.2.0", so:
+XPSR is in its 0.x series. Composer reads `^0.2` as "0.2.0 or newer, below 0.3.0", so:
 
-- **Patch releases (0.1.1, 0.1.2, …)** contain fixes only. They never break the public API.
-- **Minor releases (0.2.0, 0.3.0, …)** may break the public API. Every break is listed under **Breaking** in `CHANGELOG.md`, with migration steps in `UPGRADE.md`.
+- **Patch releases (0.2.1, 0.2.2, …)** contain fixes only. They never break the public API.
+- **Minor releases (0.3.0, 0.4.0, …)** may break the public API. Every break is listed under **Breaking** in `CHANGELOG.md`, with migration steps in [UPGRADE.md](../UPGRADE.md).
 
-Require `^0.1` and upgrade between minor versions deliberately.
+Require `^0.2` and upgrade between minor versions deliberately.
 
 ## From 1.0
 

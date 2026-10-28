@@ -4,19 +4,14 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+## 0.2.0 (2026-10-28)
+
+Upgrade steps are in [UPGRADE.md](UPGRADE.md#from-01-to-02).
+
 ### Breaking
 
-- **Every class moves from `Crystoline\` to `Crystoline\Xpsr\`**, for example `Crystoline\Application` to `Crystoline\Xpsr\Application`, `Crystoline\Cache\CacheServiceRegistry` to `Crystoline\Xpsr\Cache\CacheServiceRegistry`, and `Crystoline\Router\FastRoute\FastRouteRouter` to `Crystoline\Xpsr\Router\FastRoute\FastRouteRouter`. The vendor namespace is no longer taken by one product, and it matches the `crystoline/xpsr-*` package names. There are no aliases for the old names.
-
-  To upgrade an application, change its requirements to `^0.2`, rewrite the references in its own code and configuration, and update:
-
-  ```sh
-  grep -rlE 'Crystoline\\' app bootstrap config public routes tests \
-      | xargs perl -pi -e 's/\bnamespace Crystoline;/namespace Crystoline\\Xpsr;/g; s/\bCrystoline(\\+)(?!Xpsr\b)/Crystoline${1}Xpsr${1}/g'
-  composer update 'crystoline/*'
-  ```
-
-  The second pattern keeps the backslash style of each reference, so it also rewrites names written with double backslashes, such as `ROUTER_ADAPTER` class names in strings. Check the result with `composer test`.
+- **Every class moves from `Crystoline\` to `Crystoline\Xpsr\`**, for example `Crystoline\Application` to `Crystoline\Xpsr\Application`, `Crystoline\Cache\CacheServiceRegistry` to `Crystoline\Xpsr\Cache\CacheServiceRegistry`, and `Crystoline\Router\FastRoute\FastRouteRouter` to `Crystoline\Xpsr\Router\FastRoute\FastRouteRouter`. The vendor namespace is no longer taken by one product, and it matches the `crystoline/xpsr-*` package names. There are no aliases for the old names; `UPGRADE.md` has a command that rewrites them.
+- **The `database_path()` helper is removed.** It pointed at a `database/` directory XPSR does not use; migrations live in `migrations/`. The 0.1 skeleton's `config/database.php` calls it, so replace or delete that file when upgrading.
 
 ### Added
 
@@ -34,7 +29,6 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ### Changed
 
-- The `database_path()` helper is removed. It pointed at a `database/` directory XPSR does not use; migrations live in `migrations/`.
 - The skeleton's `config/database.php` is replaced: the previous file was unused and came from another framework. The new one configures SQLite, MySQL, and PostgreSQL connections for `crystoline/xpsr-database`.
 
 ### Fixed
