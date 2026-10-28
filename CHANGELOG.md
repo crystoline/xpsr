@@ -4,6 +4,12 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+### Added
+
+- `crystoline/xpsr-log-monolog`: an optional package that makes Monolog the application logger, writing to stderr, a file, daily files, or syslog (`LOG_CHANNEL`), as lines or JSON (`LOG_FORMAT`, JSON by default in production), with a request ID on every line from `RequestIdMiddleware`, which also echoes it in `X-Request-Id`. See [its README](packages/log-monolog/README.md).
+- Rate limiting in `crystoline/xpsr-cache`: named sliding-window limits in `config/rate_limit.php`, attached with `->middleware(RateLimit::named('login'))` or through `app.middleware`. Clients are counted by address through the trusted proxies, or by a custom key resolver. Over the limit, 429 with `Retry-After`; `X-RateLimit-Limit` and `X-RateLimit-Remaining` on every response. See [its README](packages/cache/README.md#rate-limiting).
+- `Crystoline\Xpsr\Http\ClientIp`: the client address of a request, read through the trusted proxies' `X-Forwarded-For` chain.
+
 ## 0.2.0 (2026-10-28)
 
 Upgrade steps are in [UPGRADE.md](UPGRADE.md#from-01-to-02).

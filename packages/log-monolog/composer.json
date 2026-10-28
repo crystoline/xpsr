@@ -1,0 +1,41 @@
+{
+  "name": "crystoline/xpsr-log-monolog",
+  "description": "Monolog logging for XPSR applications: stderr, file, daily, or syslog output, line or JSON format, and a request ID on every log line",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Adekunle",
+      "email": "crystoline@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.4",
+    "crystoline/xpsr-framework": "^0.2@dev",
+    "monolog/monolog": "^3.9",
+    "psr/container": "^2.0",
+    "psr/http-message": "^1.1 || ^2.0",
+    "psr/http-server-handler": "^1.0",
+    "psr/http-server-middleware": "^1.0",
+    "psr/log": "^3.0"
+  },
+  "require-dev": {
+    "nyholm/psr7": "^1.8.2",
+    "phpunit/phpunit": "^12.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Log\\Monolog\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Log\\Monolog\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.2.x-dev"
+    }
+  }
+}

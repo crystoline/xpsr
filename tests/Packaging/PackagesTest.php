@@ -98,6 +98,7 @@ final class PackagesTest extends TestCase
         yield 'HTTP client' => ['http-client'];
         yield 'database' => ['database'];
         yield 'Doctrine ORM adapter' => ['orm-doctrine'];
+        yield 'Monolog logging' => ['log-monolog'];
     }
 
     #[DataProvider('packages')]

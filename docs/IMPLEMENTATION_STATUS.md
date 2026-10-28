@@ -401,6 +401,15 @@ The first twenty-one milestones are working slices, not completion of all roadma
 - **Not yet available:** an ORM, authentication, queues, scheduling, validation, and fuller sessions/CSRF (roadmap phase 6). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
 
+## Twenty-second milestone: completed — Monolog logging and rate limiting
+
+Built with the choices accepted on 28 October 2026 (`FRAMEWORK_PLAN.md` section 9):
+
+- **Monolog.** New package `crystoline/xpsr-log-monolog` (`Crystoline\Xpsr\Log\Monolog\`), not published yet. `MonologServiceRegistry` rebinds `Psr\Log\LoggerInterface`, so the exception handler's reports go through Monolog. Channels `stderr`, `file`, `daily`, and `syslog`; `line` or `json` format (JSON by default in production); `LOG_LEVEL`; placeholders interpolated with `PsrLogMessageProcessor`; stack traces for logged exceptions. `RequestIdMiddleware` keeps a safe incoming `X-Request-Id` or generates one, and `RequestIdProcessor` adds it to every line, including the error report for an exception that escapes the middleware.
+- **Rate limiting.** In `crystoline/xpsr-cache`: a `RateLimitMiddleware` service per limit in `rate_limit.limits`, named with `RateLimit::named()`, on `symfony/rate-limiter`'s sliding window with the application cache as storage. `IpKeyResolver` counts by client address through the new framework class `Http\ClientIp`, which reads `X-Forwarded-For` from the right through the trusted proxies; `ClientKeyResolverInterface` allows other identities. Over the limit, `TooManyRequestsHttpException` renders 429 with `Retry-After` and the rate-limit headers.
+
+Verified on 28 October 2026: 549 tests pass with PHPStan and style checks, including both packages in the skeleton's full HTTP kernel (a limit through `app.middleware` reaching 429, and a 500 logged as JSON with its request ID).
+
 ## Release 0.2.0 (28 October 2026)
 
 Tagged `v0.2.0` in all eight repositories. Packagist serves 0.2.0 for every package, including the new `crystoline/xpsr-http-client`, `crystoline/xpsr-database`, and `crystoline/xpsr-orm-doctrine`. Checked from Packagist with the production `php.ini`:

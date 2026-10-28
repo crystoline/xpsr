@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "91c2d043e12e31638e230d9d24bf93d1",
+    "content-hash": "098677714fab8ecb79c60f6f8d622eb2",
     "packages": [
         {
             "name": "crystoline/xpsr-framework",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "160a65ccb8d548ff1b636b4dd0f7bb7a58a0b2ca"
+                "reference": "07e6761b8a43f59ba0d9c8145e2519286b35e905"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
@@ -91,7 +91,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-fastroute",
-                "reference": "2d9c4bcdf31633850f41b8f01ce85f82ab8b8063"
+                "reference": "28e040461d8f1ef995edeaf8d152a47ff250cac1"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.2@dev",
@@ -2856,14 +2856,18 @@
             "dist": {
                 "type": "path",
                 "url": "packages/cache",
-                "reference": "94e5a3529e294877206c16c3d4cce02bc8e1417f"
+                "reference": "d88aa42ac3d077627debdd68ddd7ee70415ff0db"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.2@dev",
                 "php": "^8.4",
                 "psr/cache": "^2.0 || ^3.0",
+                "psr/http-message": "^1.1 || ^2.0",
+                "psr/http-server-handler": "^1.0",
+                "psr/http-server-middleware": "^1.0",
                 "psr/simple-cache": "^1.0 || ^2.0 || ^3.0",
-                "symfony/cache": "^7.4"
+                "symfony/cache": "^7.4",
+                "symfony/rate-limiter": "^7.4"
             },
             "require-dev": {
                 "nyholm/psr7": "^1.8.2",
@@ -2906,7 +2910,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/database",
-                "reference": "553a2f2ad566d39a63f22ce79462c8ff42244368"
+                "reference": "6597c750f0358599a11bf840bf37c340e31281d2"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.2@dev",
@@ -2963,7 +2967,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/http-client",
-                "reference": "69d81822bf4eda44fa76d0451c23206b7f01c67d"
+                "reference": "375d69def24604905044512e7b99de2a2d9c3b7e"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.2@dev",
@@ -3013,12 +3017,65 @@
             }
         },
         {
+            "name": "crystoline/xpsr-log-monolog",
+            "version": "0.2.x-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/log-monolog",
+                "reference": "282393a2b135fefe02d0ed265d89685b70a21325"
+            },
+            "require": {
+                "crystoline/xpsr-framework": "^0.2@dev",
+                "monolog/monolog": "^3.9",
+                "php": "^8.4",
+                "psr/container": "^2.0",
+                "psr/http-message": "^1.1 || ^2.0",
+                "psr/http-server-handler": "^1.0",
+                "psr/http-server-middleware": "^1.0",
+                "psr/log": "^3.0"
+            },
+            "require-dev": {
+                "nyholm/psr7": "^1.8.2",
+                "phpunit/phpunit": "^12.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\Log\\Monolog\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\Log\\Monolog\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adekunle",
+                    "email": "crystoline@gmail.com"
+                }
+            ],
+            "description": "Monolog logging for XPSR applications: stderr, file, daily, or syslog output, line or JSON format, and a request ID on every log line",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "crystoline/xpsr-orm-doctrine",
             "version": "0.2.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/orm-doctrine",
-                "reference": "f29b05067c6e93a33be7c0855cd7a829656946e5"
+                "reference": "b9a967faa47b63d3f6d4b43b548548630aaf25bc"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.2@dev",
@@ -3075,7 +3132,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-sunrise",
-                "reference": "5a34e355f1e0d44582c0c1488242f0321eb6da13"
+                "reference": "f0d2114b8b34e330f7af5c5eb8c8bd2ac0f584cb"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.2@dev",
@@ -4275,6 +4332,111 @@
                 }
             ],
             "time": "2026-09-22T09:54:55+00:00"
+        },
+        {
+            "name": "monolog/monolog",
+            "version": "3.12.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Seldaek/monolog.git",
+                "reference": "d7059e4c691d05ea1222b5124bed0f961be46e15"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/d7059e4c691d05ea1222b5124bed0f961be46e15",
+                "reference": "d7059e4c691d05ea1222b5124bed0f961be46e15",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "psr/log": "^2.0 || ^3.0"
+            },
+            "provide": {
+                "psr/log-implementation": "3.0.0"
+            },
+            "require-dev": {
+                "aws/aws-sdk-php": "^3.0",
+                "doctrine/couchdb": "~1.0@dev",
+                "elasticsearch/elasticsearch": "^7 || ^8",
+                "ext-json": "*",
+                "graylog2/gelf-php": "^1.4.2 || ^2.0",
+                "guzzlehttp/guzzle": "^7.4.5",
+                "guzzlehttp/psr7": "^2.2",
+                "mongodb/mongodb": "^1.8 || ^2.0",
+                "php-amqplib/php-amqplib": "~2.4 || ^3",
+                "php-console/php-console": "^3.1.8",
+                "phpstan/phpstan": "^2",
+                "phpstan/phpstan-deprecation-rules": "^2",
+                "phpstan/phpstan-strict-rules": "^2",
+                "phpunit/phpunit": "^10.5.17 || ^11.0.7",
+                "predis/predis": "^1.1 || ^2",
+                "psr/clock": "^1.0",
+                "rollbar/rollbar": "^4.0",
+                "ruflin/elastica": "^7 || ^8",
+                "symfony/mailer": "^5.4 || ^6",
+                "symfony/mime": "^5.4 || ^6"
+            },
+            "suggest": {
+                "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
+                "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
+                "elasticsearch/elasticsearch": "Allow sending log messages to an Elasticsearch server via official client",
+                "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
+                "ext-curl": "Required to send log messages using the IFTTTHandler, the LogglyHandler, the SendGridHandler, the SlackWebhookHandler or the TelegramBotHandler",
+                "ext-mbstring": "Allow to work properly with unicode symbols",
+                "ext-mongodb": "Allow sending log messages to a MongoDB server (via driver)",
+                "ext-openssl": "Required to send log messages using SSL",
+                "ext-sockets": "Allow sending log messages to a Syslog server (via UDP driver)",
+                "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
+                "mongodb/mongodb": "Allow sending log messages to a MongoDB server (via library)",
+                "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
+                "psr/clock": "Required to pass a clock to the Logger and control the timestamp of log records",
+                "rollbar/rollbar": "Allow sending log messages to Rollbar",
+                "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Monolog\\": "src/Monolog"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "https://seld.be"
+                }
+            ],
+            "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
+            "homepage": "https://github.com/Seldaek/monolog",
+            "keywords": [
+                "log",
+                "logging",
+                "psr-3"
+            ],
+            "support": {
+                "issues": "https://github.com/Seldaek/monolog/issues",
+                "source": "https://github.com/Seldaek/monolog/tree/3.12.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Seldaek",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/monolog/monolog",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-09-29T19:21:12+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -7927,6 +8089,80 @@
             "time": "2026-09-25T15:46:47+00:00"
         },
         {
+            "name": "symfony/rate-limiter",
+            "version": "v7.4.18",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/rate-limiter.git",
+                "reference": "6703d040ab83401b27f3c7b29ff4c8c8106fedba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/rate-limiter/zipball/6703d040ab83401b27f3c7b29ff4c8c8106fedba",
+                "reference": "6703d040ab83401b27f3c7b29ff4c8c8106fedba",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "symfony/options-resolver": "^7.3|^8.0"
+            },
+            "require-dev": {
+                "psr/cache": "^1.0|^2.0|^3.0",
+                "symfony/lock": "^6.4|^7.0|^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\RateLimiter\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Wouter de Jong",
+                    "email": "wouter@wouterj.nl"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides a Token Bucket implementation to rate limit input and output in your application",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "limiter",
+                "rate-limiter"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/rate-limiter/tree/v7.4.18"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-08-07T15:34:54+00:00"
+        },
+        {
             "name": "symfony/stopwatch",
             "version": "v8.1.0",
             "source": {
@@ -8220,6 +8456,7 @@
         "crystoline/xpsr-database": 20,
         "crystoline/xpsr-framework": 20,
         "crystoline/xpsr-http-client": 20,
+        "crystoline/xpsr-log-monolog": 20,
         "crystoline/xpsr-orm-doctrine": 20,
         "crystoline/xpsr-router-fastroute": 20,
         "crystoline/xpsr-router-sunrise": 20

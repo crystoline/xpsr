@@ -103,7 +103,7 @@ Invalid settings, such as an origin with a path, fail when the HTTP kernel is bu
 
 ## Logging
 
-The default `Psr\Log\LoggerInterface` is `Crystoline\Xpsr\Log\ErrorLogLogger`. It writes through PHP's `error_log()`, so messages go to the web server's error log (Apache, PHP-FPM), to stderr for the CLI and development server, or to the file named by the `error_log` ini setting. Logged exceptions include their stack trace. `LOG_LEVEL` sets the minimum level (`debug` by default; for example `LOG_LEVEL=warning`). Replace the binding in `config/factory.php` to use another PSR-3 logger, such as Monolog.
+The default `Psr\Log\LoggerInterface` is `Crystoline\Xpsr\Log\ErrorLogLogger`. It writes through PHP's `error_log()`, so messages go to the web server's error log (Apache, PHP-FPM), to stderr for the CLI and development server, or to the file named by the `error_log` ini setting. Logged exceptions include their stack trace. `LOG_LEVEL` sets the minimum level (`debug` by default; for example `LOG_LEVEL=warning`). Replace the binding in `config/factory.php` to use another PSR-3 logger, or install `crystoline/xpsr-log-monolog` for Monolog with stderr, file, daily, or syslog output, JSON lines, and request IDs.
 
 ## Sending the response
 
