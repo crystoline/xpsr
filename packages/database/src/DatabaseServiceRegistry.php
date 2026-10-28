@@ -10,11 +10,15 @@ use Crystoline\Xpsr\Console\CommandRegistry;
 use Crystoline\Xpsr\Database\Console\MakeMigrationCommand;
 use Crystoline\Xpsr\Database\Console\MigrateCommand;
 use Crystoline\Xpsr\Database\Console\MigrateRollbackCommand;
+use Crystoline\Xpsr\Database\Console\MakeSessionTableCommand;
 use Crystoline\Xpsr\Database\Console\MigrateStatusCommand;
 use Crystoline\Xpsr\Database\Migration\MigratorFactoryInterface;
+use Crystoline\Xpsr\Database\Session\DatabaseSessionStore;
 use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\Session\SessionOptions;
 use Doctrine\DBAL\Connection;
 use InvalidArgumentException;
+use Psr\Clock\ClockInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -27,8 +31,9 @@ use Psr\Log\LoggerInterface;
  *   Crystoline\Xpsr\Database\Migration\MigratorFactoryInterface     the runner the commands use: the
  *                                                                   service in database.migrations.runner
  *
- * and migrate, migrate:rollback, migrate:status, and make:migration when the console is part
- * of the application. Configuration lives in config/database.php.
+ * the session store for session.store "database", and migrate, migrate:rollback,
+ * migrate:status, make:migration, and make:session-table when the console is part of the
+ * application. Configuration lives in config/database.php.
  */
 final class DatabaseServiceRegistry extends ServiceRegistry
 {
@@ -69,9 +74,20 @@ final class DatabaseServiceRegistry extends ServiceRegistry
 
             return $factory;
         }, shared: true);
-        foreach ([MigrateCommand::class, MigrateRollbackCommand::class, MigrateStatusCommand::class, MakeMigrationCommand::class] as $command) {
+        foreach ([MigrateCommand::class, MigrateRollbackCommand::class, MigrateStatusCommand::class, MakeMigrationCommand::class, MakeSessionTableCommand::class] as $command) {
             $this->container->bind($command);
         }
+        // session.store "database", resolved by the framework's SessionServiceRegistry.
+        $this->container->factory('session.store.database', static function (ContainerInterface $container): DatabaseSessionStore {
+            $options = $container->get(SessionOptions::class);
+
+            return new DatabaseSessionStore(
+                $container->get(ConnectionManager::class)->connection($options->connection),
+                $options->table,
+                $options->lifetime,
+                $container->get(ClockInterface::class),
+            );
+        }, shared: true);
     }
 
     public function boot(): void
@@ -84,6 +100,7 @@ final class DatabaseServiceRegistry extends ServiceRegistry
         $commands->register('migrate:rollback', MigrateRollbackCommand::class, 'Roll back the last batch of migrations.');
         $commands->register('migrate:status', MigrateStatusCommand::class, 'Show which migrations have run.');
         $commands->register('make:migration', MakeMigrationCommand::class, 'Create a migration file.');
+        $commands->register('make:session-table', MakeSessionTableCommand::class, 'Create the migration for the database session table.');
     }
 
     /** @return array<array-key, mixed> */

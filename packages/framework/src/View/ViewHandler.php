@@ -45,6 +45,16 @@ class ViewHandler implements ViewHandlerInterface
         ];
     }
 
+    /**
+     * Make a PHP callable available in templates as a function, for example
+     * addFunction('asset', fn(string $path): string => '/build/' . $path). Add functions before the
+     * first render. With $html, the result is written without escaping, so it must be safe HTML.
+     */
+    public function addFunction(string $name, callable $function, bool $html = false): void
+    {
+        $this->engine->addFunction(new \Twig\TwigFunction($name, $function, $html ? ['is_safe' => ['html']] : []));
+    }
+
     public function render(string $view, array $data = []): string
     {
         $view = str_replace('.', '/', $view);

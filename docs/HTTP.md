@@ -99,6 +99,10 @@ What it does:
 
 Invalid settings, such as an origin with a path, fail when the HTTP kernel is built, with the setting's name.
 
+## Sessions and cookies
+
+The skeleton's `routes/web.php` puts its routes in a group with `Crystoline\Xpsr\Session\SessionMiddleware`, which gives each request its browser's session (`Session::of($request)`), and `CsrfMiddleware`, which rejects form posts and other unsafe requests without the session's CSRF token (403). `routes/api.php` has neither. `Crystoline\Xpsr\Http\Cookie` writes other cookies with safe defaults, and `ResponseBuilder::redirect()` answers 303 after a form post. See [SESSIONS.md](SESSIONS.md).
+
 ## Proxies
 
 `Crystoline\Xpsr\Factory\ServerRequestFactory` builds the request from PHP's globals. It keeps `Forwarded` and `X-Forwarded-*` headers, which set the scheme (for example HTTPS behind a TLS-terminating load balancer), only when the client address matches `app.trusted_proxies`. Configure that list with `TRUSTED_PROXIES`, comma-separated IP addresses or CIDR ranges. From any other address, those headers are removed from the request and its server parameters. See [DEPLOYMENT.md](DEPLOYMENT.md#proxies-and-https).

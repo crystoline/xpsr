@@ -10,6 +10,8 @@ use Crystoline\Xpsr\Cache\RateLimit\ClientKeyResolverInterface;
 use Crystoline\Xpsr\Cache\RateLimit\IpKeyResolver;
 use Crystoline\Xpsr\Cache\RateLimit\RateLimit;
 use Crystoline\Xpsr\Cache\RateLimit\RateLimitMiddleware;
+use Crystoline\Xpsr\Cache\Session\CacheSessionStore;
+use Crystoline\Xpsr\Session\SessionOptions;
 use Crystoline\Xpsr\Configuration;
 use Crystoline\Xpsr\Console\CommandRegistry;
 use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
@@ -17,6 +19,7 @@ use DateInterval;
 use DateTimeImmutable;
 use InvalidArgumentException;
 use Psr\Cache\CacheItemPoolInterface;
+use Psr\Clock\ClockInterface;
 use Psr\Container\ContainerInterface;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
@@ -29,7 +32,8 @@ use Symfony\Component\RateLimiter\Storage\CacheStorage;
 /**
  * Registers one application cache, available as PSR-16 (Psr\SimpleCache\CacheInterface) and
  * PSR-6 (Psr\Cache\CacheItemPoolInterface) over the same storage, the cache:clear command, and a
- * rate-limit middleware service for each limit in config/rate_limit.php (RateLimit::named()).
+ * rate-limit middleware service for each limit in config/rate_limit.php (RateLimit::named()),
+ * and the session store for session.store "cache".
  *
  * Configuration (config/cache.php, all optional):
  *
@@ -58,6 +62,16 @@ final class CacheServiceRegistry extends ServiceRegistry
         );
         $this->container->bind(CacheClearCommand::class);
         $this->container->singleton(IpKeyResolver::class);
+        // session.store "cache", resolved by the framework's SessionServiceRegistry.
+        $this->container->factory(
+            'session.store.cache',
+            static fn(ContainerInterface $container): CacheSessionStore => new CacheSessionStore(
+                $container->get(CacheInterface::class),
+                $container->get(SessionOptions::class)->lifetime,
+                $container->get(ClockInterface::class),
+            ),
+            shared: true,
+        );
 
         // One middleware service per configured rate limit: RateLimit::named($name).
         $limits = $this->container->get(Configuration::class)->get('rate_limit.limits', []);

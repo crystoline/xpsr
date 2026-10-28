@@ -4,6 +4,22 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+Upgrade steps are in [UPGRADE.md](UPGRADE.md#unreleased-changes-since-03).
+
+### Added
+
+- Sessions in the framework (`Crystoline\Xpsr\Session\`): `SessionMiddleware` and `Session::of($request)` with values, flash values, `regenerate()`, and `invalidate()`; file and array stores; `config/session.php`; `SessionServiceRegistry`; and `php xpsr session:prune`. Sessions do not use PHP's `session_start()`, store only JSON data, and set a cookie only once they hold something. See [docs/SESSIONS.md](docs/SESSIONS.md).
+- CSRF protection: `CsrfMiddleware` (403 without the session's token in `_token` or `X-CSRF-Token`), and the Twig functions `csrf_field()`, `csrf_token()`, and `session()`.
+- Session stores in packages: `CacheSessionStore` in `crystoline/xpsr-cache` (`SESSION_STORE=cache`), and `DatabaseSessionStore` with `php xpsr make:session-table` in `crystoline/xpsr-database` (`SESSION_STORE=database`). `Crystoline\Xpsr\Testing\SessionStoreContractTestCase` checks custom stores.
+- `Crystoline\Xpsr\Http\Cookie`, for `Set-Cookie` headers with safe defaults.
+- `ResponseBuilder::redirect()`, 303 by default, and `ViewHandler::addFunction()`.
+- Application tests keep cookies between requests, and `TestCase` gains `postForm()`, `csrfToken()`, `withSession()`, `session()`, and `send()`.
+
+### Changed
+
+- New projects list `SessionServiceRegistry` in `app.registry`, and `routes/web.php` puts its routes in a group with `SessionMiddleware` and `CsrfMiddleware`. The skeleton's example `App\Http\Middleware\SessionMiddleware` and `App\Registry\SessionServiceRegistry`, which did not work, are removed, and `config/session.php` takes new options.
+- `crystoline/xpsr-cache` and `crystoline/xpsr-database` require `psr/clock`.
+
 ## 0.3.0 (2026-10-28)
 
 Nothing breaks; upgrade steps are in [UPGRADE.md](UPGRADE.md#from-02-to-03).

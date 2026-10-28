@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use Crystoline\Xpsr\Application;
-use App\Registry\SessionServiceRegistry;
 use Crystoline\Xpsr\Contracts\Container\ContainerBuilderInterface;
 use Crystoline\Xpsr\ServiceContainer\ServiceContainer;
 use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\Session\SessionManager;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
@@ -83,14 +83,13 @@ final class ApplicationLifecycleTest extends TestCase
         $application->boot();
     }
 
-    public function testOptionalSessionProviderDoesNotStartASessionDuringConsoleBoot(): void
+    public function testTheSessionProviderNeverStartsAPhpSession(): void
     {
         $status = session_status();
         $application = new Application(dirname(__DIR__, 2));
-        $configuration = $application->getConfig();
-        $configuration->set('app.registry', [...$configuration->get('app.registry'), SessionServiceRegistry::class]);
         $application->boot();
         self::assertSame($status, session_status());
-        self::assertTrue($application->has(\SessionHandler::class));
+        self::assertInstanceOf(SessionManager::class, $application->get(SessionManager::class));
+        self::assertSame($status, session_status(), 'XPSR sessions do not use session_start().');
     }
 }

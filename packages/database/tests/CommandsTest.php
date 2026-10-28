@@ -53,7 +53,7 @@ final class CommandsTest extends TestCase
         self::assertSame($connection, $this->application->get(ConnectionManager::class)->connection());
         self::assertSame($this->workspace->migrations, $this->application->get(MigratorFactory::class)->directory());
         $commands = $this->application->get(CommandRegistry::class)->all();
-        foreach (['migrate', 'migrate:rollback', 'migrate:status', 'make:migration'] as $name) {
+        foreach (['migrate', 'migrate:rollback', 'migrate:status', 'make:migration', 'make:session-table'] as $name) {
             self::assertArrayHasKey($name, $commands);
         }
     }

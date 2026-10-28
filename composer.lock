@@ -2856,12 +2856,13 @@
             "dist": {
                 "type": "path",
                 "url": "packages/cache",
-                "reference": "a37b4df3d647234b137544ec60af506fb742ccc5"
+                "reference": "a16f9e60f531ff1870e853ff4a3dc3dee985278e"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
                 "php": "^8.4",
                 "psr/cache": "^2.0 || ^3.0",
+                "psr/clock": "^1.0",
                 "psr/http-message": "^1.1 || ^2.0",
                 "psr/http-server-handler": "^1.0",
                 "psr/http-server-middleware": "^1.0",
@@ -2910,12 +2911,13 @@
             "dist": {
                 "type": "path",
                 "url": "packages/database",
-                "reference": "aa5766993003131e590159754bcc8d4c70135a03"
+                "reference": "39f72b119a08529eca21cc72deaf125d269315df"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
                 "doctrine/dbal": "^4.5",
                 "php": "^8.4",
+                "psr/clock": "^1.0",
                 "psr/container": "^2.0",
                 "psr/log": "^3.0",
                 "symfony/console": "^7.4"

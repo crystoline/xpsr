@@ -57,6 +57,10 @@ Use keys made of letters, digits, `_`, and `.`. PSR-16 reserves `{}()/\@:`. Symf
 
 `php xpsr cache:clear` removes every item in the configured cache (for shared storage, only under its namespace) and exits with 1 if the storage reports a failure.
 
+## Sessions
+
+With `SESSION_STORE=cache` (or `'store' => 'cache'` in `config/session.php`), sessions are kept in this cache under `xpsr_session.<id>`, each with the session lifetime as its time to live. Use a cache that outlives requests, and a shared one such as Redis when there are several servers. `cache:clear` deletes every session. See the XPSR repository's `docs/SESSIONS.md`.
+
 ## Rate limiting
 
 The package also limits how often clients may call routes, using [Symfony RateLimiter](https://symfony.com/doc/current/rate_limiter.html) with a sliding window, and keeps the counts in this cache.

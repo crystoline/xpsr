@@ -88,7 +88,14 @@ TRUSTED_PROXIES=10.0.0.0/8,192.168.0.10
 
 ## Writable directories
 
-The default application writes nothing to disk at runtime. If you enable Twig's template cache, set `view_cache_dir` (for example in `config/production/app.php`) to a directory the web server user can write, such as `var/cache/views`, and clear it on each deploy.
+Sessions are kept in `var/sessions` by default, so the web server user must be able to write there; the directory is created with mode 0700 on first use. Nothing else is written at runtime. If you enable Twig's template cache, set `view_cache_dir` (for example in `config/production/app.php`) to a directory the web server user can write, such as `var/cache/views`, and clear it on each deploy.
+
+## Sessions
+
+- **Several servers** need a shared store: `SESSION_STORE=database` (after `php xpsr make:session-table` and `migrate`), or `cache` with a shared cache such as Redis. The `file` store only sees its own server's sessions.
+- **HTTPS.** The session cookie is marked Secure when the request came over HTTPS. Behind a TLS-terminating proxy, list it in `TRUSTED_PROXIES`, or set `session.cookie.secure` to `true`.
+- **Expired sessions** are removed by about one request in 100 (`session.prune_every`). With `prune_every` set to `0`, run `php xpsr session:prune` from cron instead.
+- Deploying does not sign anybody out, unless the store is the cache and the deploy runs `cache:clear`.
 
 ## Performance
 
@@ -98,7 +105,6 @@ The default application writes nothing to disk at runtime. If you enable Twig's 
 
 ## Not provided yet
 
-- **Sessions and CSRF.** The skeleton does not start sessions. The included `SessionServiceRegistry` is an unregistered example, not a hardened session integration. For browser forms, add a session and CSRF solution yourself.
 - **Process supervision for workers or queues.** XPSR has no queue or worker runtime.
 - **Long-running servers** (RoadRunner, FrankenPHP worker mode, Swoole). Isolation between requests in a single long-running process has not been verified.
 

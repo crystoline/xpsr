@@ -10,6 +10,7 @@
     <php>
         <!-- Tests use config/testing/*.php overrides if present, and never show debug details. -->
         <env name="APP_ENV" value="testing" force="true"/>
-        <env name="APP_DEBUG" value="false" force="true"/>
+        <!-- Sessions in memory, so tests leave no files in var/sessions. -->
+        <env name="SESSION_STORE" value="array" force="true"/>
     </php>
 </phpunit>

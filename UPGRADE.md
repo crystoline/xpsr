@@ -2,6 +2,31 @@
 
 Steps for moving an application between minor versions. What changed is in [CHANGELOG.md](CHANGELOG.md); what each kind of release promises is in [docs/VERSIONING.md](docs/VERSIONING.md).
 
+## Unreleased changes since 0.3
+
+These steps apply to the next release. Nothing breaks for applications that do not use sessions; the steps below add them.
+
+### Sessions and CSRF (optional)
+
+1. Add `Crystoline\Xpsr\Registry\SessionServiceRegistry::class` to `app.registry` in `config/app.php`.
+2. Replace `config/session.php` with the new skeleton's version. The old file's `lifetime` was a number of minutes; it is now a period such as `'2 hours'`, and `SESSION_LIFETIME=120` must become `SESSION_LIFETIME="2 hours"`.
+3. Put browser routes in a group with the middleware, in `routes/web.php`:
+
+   ```php
+   use Crystoline\Xpsr\Session\CsrfMiddleware;
+   use Crystoline\Xpsr\Session\SessionMiddleware;
+
+   $routes->group('', static function (RouteCollection $routes): void {
+       // your web routes
+   }, middleware: [SessionMiddleware::class, CsrfMiddleware::class]);
+   ```
+
+   Add `{{ csrf_field() }}` to every form those routes receive.
+4. Delete the 0.x skeleton's `app/Http/Middleware/SessionMiddleware.php` and `app/Registry/SessionServiceRegistry.php` if you never changed them. They did nothing useful; the first imported classes from other projects.
+5. Add `<env name="SESSION_STORE" value="array" force="true"/>` to the `<php>` section of `phpunit.xml`, and copy the new `tests/TestCase.php` for its cookie and session helpers.
+
+See [docs/SESSIONS.md](docs/SESSIONS.md).
+
 ## From 0.2 to 0.3
 
 0.3 only adds features, so the upgrade is a version change. Run the steps from the project root.

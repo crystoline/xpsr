@@ -1,0 +1,35 @@
+<?php
+
+declare(strict_types=1);
+
+use Crystoline\Xpsr\Database\Migration\Migration;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\Index;
+use Doctrine\DBAL\Schema\PrimaryKeyConstraint;
+use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\Types;
+
+/** The table for session.store "database" (Crystoline\Xpsr\Database\Session\DatabaseSessionStore). */
+return new class extends Migration {
+    public function up(Connection $db): void
+    {
+        $db->createSchemaManager()->createTable(
+            Table::editor()
+                ->setUnquotedName({{ table }})
+                ->setColumns(
+                    Column::editor()->setUnquotedName('id')->setTypeName(Types::STRING)->setLength(128)->create(),
+                    Column::editor()->setUnquotedName('payload')->setTypeName(Types::TEXT)->create(),
+                    Column::editor()->setUnquotedName('last_activity')->setTypeName(Types::INTEGER)->create(),
+                )
+                ->setPrimaryKeyConstraint(PrimaryKeyConstraint::editor()->setUnquotedColumnNames('id')->create())
+                ->setIndexes(Index::editor()->setUnquotedName({{ index }})->setUnquotedColumnNames('last_activity')->create())
+                ->create(),
+        );
+    }
+
+    public function down(Connection $db): void
+    {
+        $db->createSchemaManager()->dropTable({{ table }});
+    }
+};

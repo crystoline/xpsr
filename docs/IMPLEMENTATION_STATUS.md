@@ -392,14 +392,25 @@ The first twenty-one milestones are working slices, not completion of all roadma
 - **Route grammar.** It intentionally supports static paths, whole-segment placeholders, and simple ASCII constraints. Optional segments, host patterns, arbitrary regex constraints, route caches, and signed/absolute URLs are not supported.
 - **Long-running servers.** Global helpers use the static application instance. Isolation between application instances, and worker-server readiness, are not established.
 - **HTTP gaps.**
-  - Sessions and CSRF remain web integration work.
   - Multipart bodies are parsed only for POST, by PHP.
   - The emitter does not compress, add `Content-Length`, or serve ranges.
   - Only Nyholm PSR-7 is tested.
   - The request host comes from the client's `Host` header; build absolute URLs from `APP_URL`.
 - **Dependencies.** The framework's remaining third-party requirements are Symfony Console, Process, and Finder; Illuminate Config; phpdotenv; and Nyholm's PSR-7 server helper. Finder only lists configuration files, and Illuminate Config pulls in parts of Illuminate Support, so both are candidates for small in-house replacements.
-- **Not yet available:** an ORM, authentication, queues, scheduling, validation, and fuller sessions/CSRF (roadmap phase 6). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
+- **Not yet available:** authentication, queues, mail, scheduling, and file storage (roadmap phase 6; `FRAMEWORK_PLAN.md` section 10). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
+
+## Twenty-fourth milestone: completed — sessions, cookies, and CSRF
+
+Built with the choices accepted on 28 October 2026 (`FRAMEWORK_PLAN.md` section 9):
+
+- **Sessions.** `Crystoline\Xpsr\Session\`: `Session` (values as JSON data, flash values for the next request, `regenerate()`, `invalidate()`, the CSRF token), `SessionMiddleware`, `SessionManager`, and `SessionStoreInterface` with `FileSessionStore` and `ArraySessionStore`. A session is stored, and its cookie sent, only once it holds something. Unknown or malformed IDs from the browser get a new random ID. `SessionServiceRegistry` reads `config/session.php` and registers `session:prune`; the skeleton lists it and replaces its old example `SessionMiddleware` and `SessionServiceRegistry`, which used `session_start()`.
+- **Stores in packages.** `crystoline/xpsr-cache` provides `CacheSessionStore`; `crystoline/xpsr-database` provides `DatabaseSessionStore` and `make:session-table`. Every store passes `Testing\SessionStoreContractTestCase`; the database store also on MySQL 8.4, MariaDB 11, and PostgreSQL 17.
+- **CSRF.** `CsrfMiddleware` checks the `_token` field or `X-CSRF-Token` header on every method except GET, HEAD, OPTIONS, and TRACE, and throws `InvalidCsrfTokenException` (403, with its message in every environment). Twig gets `csrf_field()`, `csrf_token()`, and `session()`. The skeleton applies both middleware to a group in `routes/web.php`.
+- **Cookies and redirects.** `Http\Cookie` builds `Set-Cookie` headers with HttpOnly, Secure, and SameSite=Lax by default. `ResponseBuilder::redirect()` answers 303 by default. `ViewHandler::addFunction()` adds Twig functions.
+- **Tests.** The skeleton `TestCase` keeps cookies between requests in a test and adds `postForm()`, `csrfToken()`, `withSession()`, `session()`, and `send()`. `phpunit.xml` sets `SESSION_STORE=array`.
+
+Verified on 28 October 2026: 673 tests pass with PHPStan and style checks, including a form, a flash message after a redirect, login and logout through the skeleton's full HTTP kernel, and the database store on all four databases.
 
 ## Twenty-third milestone: completed — request validation
 

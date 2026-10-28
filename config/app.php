@@ -9,6 +9,7 @@ use Crystoline\Xpsr\Registry\ConsoleServiceRegistry;
 use Crystoline\Xpsr\Registry\EventServiceRegistry;
 use App\Registry\CommandServiceRegistry;
 use Crystoline\Xpsr\Registry\RouteServiceRegistry;
+use Crystoline\Xpsr\Registry\SessionServiceRegistry;
 use Crystoline\Xpsr\Registry\ViewServiceRegistry;
 
 return [
@@ -34,6 +35,7 @@ return [
         FactoryRegistry::class,
         RouteServiceRegistry::class,
         ViewServiceRegistry::class,
+        SessionServiceRegistry::class,
         EventServiceRegistry::class,
         ConsoleServiceRegistry::class,
         CommandServiceRegistry::class,

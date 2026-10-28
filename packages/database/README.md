@@ -184,6 +184,17 @@ final class OrderTest extends TestCase
 
 The transaction is rolled back after every test, together with any transactions the code under test left open. It covers everything that uses XPSR's connections. MySQL and MariaDB commit implicitly on schema changes, so do not change the schema inside such a test.
 
+## Sessions
+
+The package provides the store for `SESSION_STORE=database`. Create its table, named by `session.database.table` (default `sessions`):
+
+```sh
+php xpsr make:session-table
+php xpsr migrate
+```
+
+The table has `id`, `payload`, and an indexed `last_activity` (Unix time). `session.database.connection` picks a connection other than the default. Expired rows are deleted by `session:prune` and by about one request in `session.prune_every`. See the XPSR repository's `docs/SESSIONS.md`.
+
 ## Using another migration runner
 
 The `migrate`, `migrate:rollback`, and `migrate:status` commands talk only to `Crystoline\Xpsr\Database\Migration\MigratorInterface`. They get it from the factory named in `database.migrations.runner`, which is XPSR's own runner, `Crystoline\Xpsr\Database\MigratorFactory`, by default. A package can provide another runner, for example one backed by Doctrine Migrations, and the commands and their output stay the same:
