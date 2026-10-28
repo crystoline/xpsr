@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aaecdd713e7e43f97ecc87ba1a23ae45",
+    "content-hash": "1de7a83f7eb3ab9042e34870d09ada23",
     "packages": [
         {
             "name": "crystoline/xpsr-framework",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "7e5c61aa709ad6057b7e0bae03d5d88d377cc54b"
+                "reference": "1a9f0124417b7fac372770f9fb39371c61dfd029"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
@@ -35,7 +35,7 @@
                 "symfony/var-dumper": "<7.4"
             },
             "require-dev": {
-                "filp/whoops": "^2.16",
+                "filp/whoops": "^2.18.4",
                 "nyholm/psr7": "^1.8.2",
                 "phpunit/phpunit": "^12.5",
                 "symfony/http-kernel": "^7.4",

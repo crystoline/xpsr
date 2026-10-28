@@ -90,7 +90,7 @@ The packaging test builds a project from this export with `composer create-proje
 
 ## Lowest dependency versions
 
-The CI job `lowest-dependencies` runs the whole suite after `composer update --prefer-lowest --prefer-stable`, with deprecation notices treated as failures. This guards the minimum versions declared in each `composer.json`. It found that `vlucas/phpdotenv` 5.4, `nyholm/psr7` 1.8.0, `filp/whoops` 2.14, and `symfony/var-dumper` 6.4 print PHP 8.4 deprecation notices that corrupt responses and console output. The minimums are therefore `^5.6.1`, `^1.8.2`, and `^2.16`, plus a `conflict` with `symfony/var-dumper` below 7.4.
+The CI job `lowest-dependencies` runs the whole suite after `composer update --prefer-lowest --prefer-stable`, with deprecation notices treated as failures. This guards the minimum versions declared in each `composer.json`. It found that `vlucas/phpdotenv` 5.4, `nyholm/psr7` 1.8.0, `filp/whoops` 2.14, and `symfony/var-dumper` 6.4 print PHP 8.4 deprecation notices that corrupt responses and console output. The minimums are therefore `^5.6.1`, `^1.8.2`, and `^2.16`, plus a `conflict` with `symfony/var-dumper` below 7.4. On PHP 8.5, Whoops before 2.18.4 also uses a deprecated `(integer)` cast, so the Whoops minimum is now `^2.18.4`.
 
 ## Publishing
 

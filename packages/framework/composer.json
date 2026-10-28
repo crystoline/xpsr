@@ -27,7 +27,7 @@
     "vlucas/phpdotenv": "^5.6.1"
   },
   "require-dev": {
-    "filp/whoops": "^2.16",
+    "filp/whoops": "^2.18.4",
     "nyholm/psr7": "^1.8.2",
     "phpunit/phpunit": "^12.5",
     "symfony/http-kernel": "^7.4",
