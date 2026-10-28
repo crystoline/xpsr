@@ -313,9 +313,20 @@ Verified on 28 October 2026:
 - **Real requests:** the package's tests send requests to PHP's built-in server. They cover headers, bodies, error statuses, redirects with and without a limit, base URIs, connection failures, timeouts, and request exceptions.
 - **Packaging:** 6 tests pass with current and with lowest dependencies, including this package installed alone.
 
+## Sixteenth milestone: completed — faster route building, no route cache
+
+The planned route cache was measured first. Building routes turned out to be slow, but because of a defect rather than missing caching:
+
+- **The defect.** `RouteDefinition::pattern()` parsed a new `RoutePattern` on every call. Each constrained parameter was then re-checked against all 128 ASCII characters. `RouteCollection::all()` sorted with a comparator that parsed two patterns per comparison, and the adapters call `all()`. Building 30 routes took 14.5 ms and 300 routes 276 ms on every request.
+- **The fix.** A definition keeps its parsed pattern and replaces it only when a constraint is added. Validated constraints are remembered for the process. The collection orders its routes and indexes their names once, when it freezes.
+- **Result.** 30 routes take 0.8 ms and 300 routes 5.7 ms, including the FastRoute adapter, which is 18 to 48 times faster. `named()` and URL generation no longer scan every route. A whole skeleton request (construct, boot, handle) takes 0.7 ms with OPcache.
+- **No route cache.** At these numbers a cache would save a few milliseconds only for very large route sets. It would also have to refuse closures and objects as handlers, which the skeleton's own `/hello` route uses. It is left out; `DEPLOYMENT.md` gives the numbers.
+
+Verified on 28 October 2026: 428 tests pass, PHPStan and style checks pass, and new tests cover pattern reuse, ordering, the name index, and repeated rejection of an invalid constraint.
+
 ## Boundaries and remaining work
 
-The first fifteen milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
+The first sixteen milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
 
 - **Publishing.** Live since 28 October 2026. CI publishes `master` to the five mirror repositories under `crystoline`, and Packagist serves all five packages from them. The first release is `0.1.0`. The old prototype's `v1.0.0` is removed from Packagist; its git tag remains in `crystoline/xpsr`, where it no longer affects installs.
 - **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.
@@ -330,9 +341,9 @@ The first fifteen milestones are working slices, not completion of all roadmap p
   - Only Nyholm PSR-7 is tested.
   - The request host comes from the client's `Host` header; build absolute URLs from `APP_URL`.
 - **Dependencies.** The framework's remaining third-party requirements are Symfony Console, Process, and Finder; Illuminate Config; phpdotenv; and Nyholm's PSR-7 server helper. Finder only lists configuration files, and Illuminate Config pulls in parts of Illuminate Support, so both are candidates for small in-house replacements.
-- **Not yet available:** database integration, authentication, queues, and scheduling (roadmap phase 6). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request.
+- **Not yet available:** database integration, authentication, queues, and scheduling (roadmap phase 6). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
 
 ## Next implementation slice
 
-Continue roadmap phase 6. Candidates, in order of how many applications need them: a route cache, then database integration. Publish `crystoline/xpsr-http-client` once its repository exists. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.
+Continue roadmap phase 6 with database integration. Publish `crystoline/xpsr-http-client` once its repository exists. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.

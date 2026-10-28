@@ -106,6 +106,41 @@ final class RouteCollectionTest extends TestCase
         $urls->generate('unknown');
     }
 
+    public function testPatternsAreParsedOnceAndOrderingIsComputedOnFreeze(): void
+    {
+        $routes = new RouteCollection();
+        $dynamic = $routes->get('/users/{id}', 'show')->name('users.show');
+        $first = $dynamic->pattern();
+        self::assertSame($first, $dynamic->pattern(), 'The pattern is reused.');
+        $dynamic->where('id', '\d+');
+        self::assertNotSame($first, $dynamic->pattern(), 'A constraint produces a new pattern.');
+        self::assertSame([['/users/'], ['id', '\d+']], [array_slice($dynamic->pattern()->parts(), 0, 1), $dynamic->pattern()->parts()[1]]);
+        $static = $routes->get('/users', 'index')->name('users.index');
+        $later = $routes->get('/about', 'about');
+
+        self::assertSame([$static, $later, $dynamic], $routes->all(), 'Static routes first, each group in declaration order.');
+        self::assertSame($routes->all(), $routes->all());
+        self::assertSame($dynamic, $routes->named('users.show'));
+        self::assertSame('/users/7', (new UrlGenerator($routes))->generate('users.show', ['id' => 7]));
+    }
+
+    public function testAnInvalidConstraintIsRejectedEveryTime(): void
+    {
+        foreach ([1, 2] as $attempt) {
+            try {
+                (new RouteCollection())->get('/{id}', 'handler')->where('id', '[A-z]+');
+                self::fail("Attempt {$attempt}: the constraint was accepted.");
+            } catch (InvalidArgumentException $exception) {
+                self::assertStringContainsString('Constraint ranges may only match', $exception->getMessage());
+            }
+        }
+        // A valid constraint stays valid once remembered.
+        foreach ([1, 2] as $attempt) {
+            (new RouteCollection())->get('/{slug}', 'handler')->where('slug', '[a-z0-9-]+');
+        }
+        $this->addToAssertionCount(1);
+    }
+
     public function testGroupContextRestoredWhenCallbackThrows(): void
     {
         $routes = new RouteCollection();

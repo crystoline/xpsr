@@ -16,6 +16,8 @@ final class RouteDefinition
     private array $defaults = [];
     private array $middleware = [];
     private bool $frozen = false;
+    /** Parsed once per path and constraint set; patterns are immutable. */
+    private RoutePattern $pattern;
 
     /** @param array<array-key, mixed> $methods Validated at the registration boundary. */
     public function __construct(
@@ -37,7 +39,7 @@ final class RouteDefinition
                 && (is_string($handler[0]) || is_object($handler[0])) && is_string($handler[1]))) {
             throw new InvalidArgumentException('A route handler must be a service ID, callable, controller pair, or PSR-15 handler.');
         }
-        new RoutePattern($path);
+        $this->pattern = new RoutePattern($path);
     }
 
     public function name(string $name): self
@@ -54,7 +56,7 @@ final class RouteDefinition
     {
         $this->assertMutable();
         $constraints = [...$this->constraints, $parameter => $pattern];
-        new RoutePattern($this->path, $constraints);
+        $this->pattern = new RoutePattern($this->path, $constraints);
         $this->constraints = $constraints;
         return $this;
     }
@@ -92,7 +94,7 @@ final class RouteDefinition
     }
     public function pattern(): RoutePattern
     {
-        return new RoutePattern($this->path, $this->constraints);
+        return $this->pattern;
     }
 
     /** @internal Collections freeze definitions before adapters or URL generators consume them. */

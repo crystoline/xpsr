@@ -41,19 +41,7 @@ final class RoutePattern
             }
             $regex = $constraints[$name] ?? '[^/]+';
             if (isset($constraints[$name])) {
-                if (!is_string($regex) || ($regex !== '\d+' && !preg_match('/\A\[[A-Za-z0-9_-]+\]\+\z/', $regex))
-                    || @preg_match('#\A(?:' . $regex . ')\z#D', '') === false) {
-                    throw new InvalidArgumentException('Portable constraints support \d+ or a positive ASCII character class followed by +.');
-                }
-                // Ranges such as A-z include punctuation which would be percent-encoded.
-                // Keep constrained values identical in their decoded and wire representations.
-                for ($code = 0; $code < 128; ++$code) {
-                    $character = chr($code);
-                    if (preg_match('#\A(?:' . $regex . ')\z#D', $character)
-                        && !preg_match('/\A[A-Za-z0-9_-]\z/', $character)) {
-                        throw new InvalidArgumentException('Constraint ranges may only match ASCII letters, digits, underscores, and hyphens.');
-                    }
-                }
+                self::validateConstraint($regex);
             }
             $this->parameters[$name] = $regex;
             $this->parts[] = [$name, $regex];
@@ -123,6 +111,30 @@ final class RoutePattern
             $segment = rawurlencode($decoded);
         }
         return implode('/', $segments);
+    }
+
+    /** @var array<string, true> Constraints already validated in this process. */
+    private static array $validConstraints = [];
+
+    private static function validateConstraint(mixed $regex): void
+    {
+        if (is_string($regex) && isset(self::$validConstraints[$regex])) {
+            return;
+        }
+        if (!is_string($regex) || ($regex !== '\d+' && !preg_match('/\A\[[A-Za-z0-9_-]+\]\+\z/', $regex))
+            || @preg_match('#\A(?:' . $regex . ')\z#D', '') === false) {
+            throw new InvalidArgumentException('Portable constraints support \d+ or a positive ASCII character class followed by +.');
+        }
+        // Ranges such as A-z include punctuation which would be percent-encoded.
+        // Keep constrained values identical in their decoded and wire representations.
+        for ($code = 0; $code < 128; ++$code) {
+            $character = chr($code);
+            if (preg_match('#\A(?:' . $regex . ')\z#D', $character)
+                && !preg_match('/\A[A-Za-z0-9_-]\z/', $character)) {
+                throw new InvalidArgumentException('Constraint ranges may only match ASCII letters, digits, underscores, and hyphens.');
+            }
+        }
+        self::$validConstraints[$regex] = true;
     }
 
     private static function validSegment(string $value): bool

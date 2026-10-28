@@ -13,6 +13,10 @@ final class RouteCollection
     /** @var list<RouteDefinition> */
     private array $routes = [];
     private bool $frozen = false;
+    /** @var list<RouteDefinition> Static routes first, built when the collection freezes. */
+    private array $ordered = [];
+    /** @var array<string, RouteDefinition> */
+    private array $byName = [];
     private string $prefix = '';
     private string $namePrefix = '';
     private array $middleware = [];
@@ -80,19 +84,13 @@ final class RouteCollection
     public function all(): array
     {
         $this->freeze();
-        $routes = $this->routes;
-        usort($routes, static fn(RouteDefinition $a, RouteDefinition $b) => $b->pattern()->isStatic() <=> $a->pattern()->isStatic());
-        return $routes;
+        return $this->ordered;
     }
 
     public function named(string $name): RouteDefinition
     {
-        foreach ($this->all() as $route) {
-            if ($route->getName() === $name) {
-                return $route;
-            }
-        }
-        throw new InvalidArgumentException("Unknown route name: {$name}");
+        $this->freeze();
+        return $this->byName[$name] ?? throw new InvalidArgumentException("Unknown route name: {$name}");
     }
 
     public function freeze(): void
@@ -122,9 +120,19 @@ final class RouteCollection
                 $signatures[$signature] = true;
             }
         }
+        $static = $dynamic = [];
         foreach ($this->routes as $route) {
             $route->freeze();
+            if ($route->getName() !== null) {
+                $this->byName[$route->getName()] = $route;
+            }
+            if ($route->pattern()->isStatic()) {
+                $static[] = $route;
+            } else {
+                $dynamic[] = $route;
+            }
         }
+        $this->ordered = [...$static, ...$dynamic];
         $this->frozen = true;
     }
 

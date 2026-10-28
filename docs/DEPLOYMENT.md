@@ -94,7 +94,7 @@ The default application writes nothing to disk at runtime. If you enable Twig's 
 
 - Enable OPcache. With `opcache.validate_timestamps=0`, reload PHP-FPM or Apache on every deploy.
 - `--optimize-autoloader` builds a class map for faster autoloading.
-- Route and configuration caches are not available yet; route files and configuration load on each request.
+- Route files and configuration load on each request; there is no route or configuration cache. With OPcache, the skeleton boots and answers a request in under 1 ms, and building 300 routes with the FastRoute adapter takes about 6 ms (measured on PHP 8.4 in Docker). An application with thousands of routes may still notice the build time.
 
 ## Not provided yet
 
