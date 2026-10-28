@@ -4,16 +4,16 @@
   "type": "project",
   "require": {
     "php": "^8.4",
-    "crystoline/xpsr-framework": "^0.1@dev",
-    "crystoline/xpsr-router-fastroute": "^0.1@dev",
+    "crystoline/xpsr-framework": "^0.2@dev",
+    "crystoline/xpsr-router-fastroute": "^0.2@dev",
     "nyholm/psr7": "^1.8.2",
     "twig/twig": "^3.4"
   },
   "require-dev": {
-    "crystoline/xpsr-cache": "^0.1@dev",
-    "crystoline/xpsr-database": "^0.1@dev",
-    "crystoline/xpsr-http-client": "^0.1@dev",
-    "crystoline/xpsr-router-sunrise": "^0.1@dev",
+    "crystoline/xpsr-cache": "^0.2@dev",
+    "crystoline/xpsr-database": "^0.2@dev",
+    "crystoline/xpsr-http-client": "^0.2@dev",
+    "crystoline/xpsr-router-sunrise": "^0.2@dev",
     "filp/whoops": "^2.18.4",
     "friendsofphp/php-cs-fixer": "^3.64",
     "phpstan/phpstan": "^2.1",
@@ -31,12 +31,12 @@
       "options": {
         "symlink": true,
         "versions": {
-          "crystoline/xpsr-cache": "0.1.x-dev",
-          "crystoline/xpsr-database": "0.1.x-dev",
-          "crystoline/xpsr-framework": "0.1.x-dev",
-          "crystoline/xpsr-http-client": "0.1.x-dev",
-          "crystoline/xpsr-router-fastroute": "0.1.x-dev",
-          "crystoline/xpsr-router-sunrise": "0.1.x-dev"
+          "crystoline/xpsr-cache": "0.2.x-dev",
+          "crystoline/xpsr-database": "0.2.x-dev",
+          "crystoline/xpsr-framework": "0.2.x-dev",
+          "crystoline/xpsr-http-client": "0.2.x-dev",
+          "crystoline/xpsr-router-fastroute": "0.2.x-dev",
+          "crystoline/xpsr-router-sunrise": "0.2.x-dev"
         }
       }
     }
@@ -80,7 +80,7 @@
   ],
   "extra": {
     "branch-alias": {
-      "dev-master": "0.1.x-dev"
+      "dev-master": "0.2.x-dev"
     }
   }
 }

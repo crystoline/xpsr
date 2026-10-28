@@ -37,13 +37,15 @@ Known coupling: the `setup` command's presets name the skeleton's route files (`
 
 ## Versions
 
-All packages are `0.1.x-dev` until the first release:
+`master` is the development line of the next minor release, currently `0.2.x-dev`. When a release starts a new line, such as 0.3, change every occurrence below in one commit.
 
 - **In this repository**, the root path repository assigns that version through its `versions` option, so it does not depend on Git branch detection.
-- **In the split repositories**, each `composer.json` declares the branch alias `dev-master` → `0.1.x-dev`.
-- **Between packages**, requirements use `^0.1@dev`. Composer ignores stability flags in dependencies, so they also accept the stable `0.1.0` once it is tagged.
-- **The released skeleton** requires `^0.1`: `export-skeleton.php --release` writes that range.
-- **`setup`** derives the adapter constraint from the installed framework: `^0.1` for a 0.1.x release, `^0.1@dev` for a development install. Adapters therefore always match the framework's release line.
+- **In the split repositories**, each `composer.json` declares the branch alias `dev-master` → `0.2.x-dev`.
+- **Between packages**, requirements use `^0.2@dev`. Composer ignores stability flags in dependencies, so they also accept the stable `0.2.0` once it is tagged.
+- **The released skeleton** requires `^0.2`: `export-skeleton.php --release` writes that range.
+- **`setup`** derives the adapter constraint from the installed framework: `^0.2` for a 0.2.x release, `^0.2@dev` for a development install. Adapters therefore always match the framework's release line.
+
+`master` moved to `0.2.x-dev` with the namespace change, so that a project following `0.1.x-dev` did not receive it.
 
 ## Working in the monorepo
 
@@ -79,7 +81,7 @@ The script copies the files a new application needs, including the application t
 - autoloading for package tests;
 - the analysis and style tooling and their scripts.
 
-It does not copy `composer.lock`; see [Publishing](#publishing) for why the skeleton ships without one. `--release=X.Y.Z` writes release constraints (`^X.Y`) on the XPSR packages instead of `^0.1@dev`.
+It does not copy `composer.lock`; see [Publishing](#publishing) for why the skeleton ships without one. `--release=X.Y.Z` writes release constraints (`^X.Y`) on the XPSR packages instead of `^0.2@dev`.
 
 The packaging test builds a project from this export with `composer create-project`, using the packages through path repositories without symbolic links. It then checks that:
 
@@ -112,8 +114,8 @@ The CI job `lowest-dependencies` runs the whole suite after `composer update --p
 
 Each repository is named after its Composer package without the vendor prefix. The skeleton is the exception: its package is `crystoline/xpsr`, so that `composer create-project crystoline/xpsr` works, but its repository is `xpsr-skeleton`, because `crystoline/xpsr` is this monorepo. Development, issues, and pull requests happen in `crystoline/xpsr`. The other five repositories are read-only mirrors.
 
-- **A push to `master`** updates each repository's `master` branch. Packages declare the branch alias `dev-master` → `0.1.x-dev`, so `^0.1@dev` resolves to it.
-- **A `v*` tag** pushes that tag to every repository and leaves branches alone. The skeleton's tagged commit is exported with `--release`, so it requires the release range (`^0.1`), while its `master` keeps `^0.1@dev`.
+- **A push to `master`** updates each repository's `master` branch. Packages declare the branch alias `dev-master` → `0.2.x-dev`, so `^0.2@dev` resolves to it.
+- **A `v*` tag** pushes that tag to every repository and leaves branches alone. The skeleton's tagged commit is exported with `--release`, so it requires the release range (`^0.2`), while its `master` keeps `^0.2@dev`.
 - **Re-running** with the same commit changes nothing.
 - **Inputs:** everything comes from the committed tree, never the working directory.
 
@@ -153,7 +155,7 @@ Owner-only steps, in order:
 
 A new package can be developed and tested in `packages/` before it has a mirror. Wire it into the monorepo the way `packages/cache` is:
 
-- `composer.json` in the package, with the `dev-master` → `0.1.x-dev` branch alias, its own `phpunit.xml.dist`, `.gitignore`, `LICENSE`, and `README.md`;
+- `composer.json` in the package, with the `dev-master` branch alias of the current line (see [Versions](#versions)), its own `phpunit.xml.dist`, `.gitignore`, `LICENSE`, and `README.md`;
 - the root `composer.json`: `require-dev`, the path repository's `versions`, and `autoload-dev` for its tests;
 - `phpunit.xml` (a test suite and a `source` exclusion), `phpstan.neon` (its `src` and `tests`), and the packages list in `tests/Packaging/PackagesTest.php`;
 - `MONOREPO_DEV_PACKAGES` in `scripts/export-skeleton.php`, so the skeleton does not require it.

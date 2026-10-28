@@ -15,9 +15,9 @@ To try unreleased changes, create a project from a clone of the XPSR repository 
 
 ```sh
 php scripts/export-skeleton.php /tmp/xpsr-skeleton
-composer create-project crystoline/xpsr my-app 0.1.x-dev --add-repository \
-  --repository='{"type":"path","url":"/tmp/xpsr-skeleton","options":{"symlink":false,"versions":{"crystoline/xpsr":"0.1.x-dev"}}}' \
-  --repository='{"type":"path","url":"'"$PWD"'/packages/*","options":{"symlink":false,"versions":{"crystoline/xpsr-framework":"0.1.x-dev","crystoline/xpsr-router-fastroute":"0.1.x-dev","crystoline/xpsr-router-sunrise":"0.1.x-dev"}}}'
+composer create-project crystoline/xpsr my-app 0.2.x-dev --add-repository \
+  --repository='{"type":"path","url":"/tmp/xpsr-skeleton","options":{"symlink":false,"versions":{"crystoline/xpsr":"0.2.x-dev"}}}' \
+  --repository='{"type":"path","url":"'"$PWD"'/packages/*","options":{"symlink":false,"versions":{"crystoline/xpsr-framework":"0.2.x-dev","crystoline/xpsr-router-fastroute":"0.2.x-dev","crystoline/xpsr-router-sunrise":"0.2.x-dev"}}}'
 cd my-app
 ```
 

@@ -136,11 +136,11 @@ final class PackagesTest extends TestCase
         $skeletonRepository = json_encode([
             'type' => 'path',
             'url' => $skeleton,
-            'options' => ['symlink' => false, 'versions' => ['crystoline/xpsr' => '0.1.x-dev']],
+            'options' => ['symlink' => false, 'versions' => ['crystoline/xpsr' => '0.2.x-dev']],
         ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES);
         $project = $this->work . '/my app';
         $this->composer([
-            'create-project', 'crystoline/xpsr', $project, '0.1.x-dev',
+            'create-project', 'crystoline/xpsr', $project, '0.2.x-dev',
             '--repository=' . $skeletonRepository,
             '--repository=' . $this->packagesRepository(),
             '--add-repository',
@@ -157,7 +157,7 @@ final class PackagesTest extends TestCase
 
         // A real `composer require` of the Sunrise adapter, run by setup.
         $output = $xpsr('setup', '--router=sunrise', '--preset=web', '--install-dependencies', '--no-interaction', '--composer=' . end($this->composer));
-        self::assertStringContainsString('Installed crystoline/xpsr-router-sunrise:^0.1@dev.', $output);
+        self::assertStringContainsString('Installed crystoline/xpsr-router-sunrise:^0.2@dev.', $output);
         self::assertStringContainsString('matched by Crystoline\Xpsr\Router\Sunrise\SunriseRouter', $output);
         $manifest = json_decode((string) file_get_contents($project . '/composer.json'), true, flags: JSON_THROW_ON_ERROR);
         self::assertArrayHasKey('crystoline/xpsr-router-sunrise', $manifest['require']);

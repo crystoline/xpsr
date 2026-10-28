@@ -11,7 +11,7 @@
   ],
   "require": {
     "php": "^8.4",
-    "crystoline/xpsr-framework": "^0.1@dev",
+    "crystoline/xpsr-framework": "^0.2@dev",
     "psr/http-client": "^1.0.3",
     "psr/http-factory": "^1.1",
     "psr/http-message": "^1.1 || ^2.0",
@@ -37,7 +37,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.1.x-dev"
+      "dev-master": "0.2.x-dev"
     }
   }
 }
