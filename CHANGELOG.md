@@ -2,7 +2,9 @@
 
 All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIONING.md) for what each kind of release promises.
 
-## Unreleased (0.1.0)
+## Unreleased
+
+## 0.1.0 (2026-10-28)
 
 First release of the rebuilt framework. It replaces the earlier prototype, which was published as `crystoline/xpsr` `v1.0.0`; there is no upgrade path from it. Start a new project and move application code across.
 

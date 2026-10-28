@@ -6,14 +6,12 @@ You need PHP 8.4 or newer and Composer 2. On Linux and macOS, `php xpsr serve` a
 
 ## 1. Create a project
 
-Once XPSR is published, a project starts with:
-
 ```sh
 composer create-project crystoline/xpsr my-app
 cd my-app
 ```
 
-Until then, create one from a clone of the XPSR repository:
+To try unreleased changes, create a project from a clone of the XPSR repository instead:
 
 ```sh
 php scripts/export-skeleton.php /tmp/xpsr-skeleton
@@ -350,7 +348,7 @@ php xpsr setup --router=sunrise --install-dependencies
 
 ```text
 Router: sunrise. Preset: api.
-Installed crystoline/xpsr-router-sunrise:^0.1@dev.
+Installed crystoline/xpsr-router-sunrise:^0.1.
 Set ROUTER_ADAPTER=sunrise in .env.
 Bootstrap check passed: 4 route(s); 3 without placeholders matched by Crystoline\Router\Sunrise\SunriseRouter.
 ```

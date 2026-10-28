@@ -286,14 +286,7 @@ CI now runs the production `php.ini` explicitly, plus one job with the developme
 
 The first thirteen milestones are working slices, not completion of all roadmap phases. Phase 5 is complete except publishing, which needs the repository owner's accounts and decisions.
 
-- **Publishing.** The split job and release flow are ready and rehearsed (see the tenth milestone). The mirror repositories `crystoline/xpsr-framework`, `xpsr-router-fastroute`, `xpsr-router-sunrise`, and `xpsr-cache` exist (created 27 October 2026, empty). Still needed:
-
-  - the `crystoline/xpsr-skeleton` repository;
-  - the `SPLIT_TOKEN` secret;
-  - merging `framework-rebuild` into `master` and pushing;
-  - removing the old `crystoline/xpsr` `v1.0.0` and re-pointing that Packagist entry at `xpsr-skeleton`;
-  - Packagist registration of the other packages;
-  - the `v0.1.0` tag. See "First publication" in `PACKAGES.md`.
+- **Publishing.** Live since 28 October 2026. CI publishes `master` to the five mirror repositories under `crystoline`, and Packagist serves all five packages from them. The first release is `0.1.0`. The old prototype's `v1.0.0` is removed from Packagist; its git tag remains in `crystoline/xpsr`, where it no longer affects installs.
 - **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.
 - **Containers.** Alternative containers need an adapter for XPSR's registration/deferred-group contract; PSR-11 alone only standardizes consumption.
 - **Deferred services.** Deferred service claims cannot overlap. Rebinding does not rebuild existing consumers automatically.
