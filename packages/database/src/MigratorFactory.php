@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Crystoline\Xpsr\Database;
 
+use Crystoline\Xpsr\Database\Migration\MigratorFactoryInterface;
 use Crystoline\Xpsr\Database\Migration\Migrator;
 use InvalidArgumentException;
 
@@ -13,7 +14,7 @@ use InvalidArgumentException;
  *   path   directory of migration files, relative to the application root (default migrations)
  *   table  table that records which migrations ran (default migrations)
  */
-final class MigratorFactory
+final class MigratorFactory implements MigratorFactoryInterface
 {
     /** @param array<array-key, mixed> $config the "database.migrations" configuration */
     public function __construct(

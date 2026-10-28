@@ -26,6 +26,7 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 - `crystoline/xpsr-http-client`: an optional package providing a configured PSR-18 client, named clients (`http_client.<name>`) with their own base URL and headers, Symfony's `HttpClientInterface`, and `Testing\FakeClient` for tests. Options live in `config/http_client.php`. See [its README](packages/http-client/README.md).
 - `swap($id, $replacement)` in the application `tests/TestCase.php`, to replace a service in a test.
 - `crystoline/xpsr-database`: an optional package providing Doctrine DBAL connections configured in `config/database.php`, and migrations with `migrate`, `migrate:rollback`, `migrate:status`, and `make:migration`. In production, migrations need `--force` or a confirmation. See [its README](packages/database/README.md).
+- Database extension points: the migrate commands use `MigratorInterface`, chosen with `database.migrations.runner`, so another runner can replace XPSR's; `Testing\MigratorContractTestCase` checks a runner; `Testing\DatabaseTransactions` rolls back each test's database writes.
 
 ### Changed
 

@@ -15,7 +15,7 @@ use Throwable;
  * Migration files are named <YYYYMMDDHHMMSS>_<name>.php (UTC) and run in name order. Each run
  * of migrate() is a batch; rollback() undoes the last batch, or a number of migrations.
  */
-final class Migrator
+final class Migrator implements MigratorInterface
 {
     public const FILE_PATTERN = '/\A\d{14}_[a-z0-9_]+\z/';
 

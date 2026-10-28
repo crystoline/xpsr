@@ -11,6 +11,7 @@ use Crystoline\Xpsr\Database\Console\MakeMigrationCommand;
 use Crystoline\Xpsr\Database\Console\MigrateCommand;
 use Crystoline\Xpsr\Database\Console\MigrateRollbackCommand;
 use Crystoline\Xpsr\Database\Console\MigrateStatusCommand;
+use Crystoline\Xpsr\Database\Migration\MigratorFactoryInterface;
 use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
 use Doctrine\DBAL\Connection;
 use InvalidArgumentException;
@@ -20,9 +21,11 @@ use Psr\Log\LoggerInterface;
 /**
  * Registers database connections and the migration commands:
  *
- *   Crystoline\Xpsr\Database\ConnectionManager  every configured connection, by name
- *   Doctrine\DBAL\Connection               the default connection
- *   Crystoline\Xpsr\Database\MigratorFactory    migrations for any connection
+ *   Crystoline\Xpsr\Database\ConnectionManager                      every configured connection, by name
+ *   Doctrine\DBAL\Connection                                        the default connection
+ *   Crystoline\Xpsr\Database\MigratorFactory                        XPSR's migration runner
+ *   Crystoline\Xpsr\Database\Migration\MigratorFactoryInterface     the runner the commands use: the
+ *                                                                   service in database.migrations.runner
  *
  * and migrate, migrate:rollback, migrate:status, and make:migration when the console is part
  * of the application. Configuration lives in config/database.php.
@@ -54,6 +57,17 @@ final class DatabaseServiceRegistry extends ServiceRegistry
                 $migrations,
                 $container->get(Application::class)->getRootDir(),
             );
+        }, shared: true);
+        // The runner behind migrate, migrate:rollback, and migrate:status; replaceable by a package.
+        $this->container->factory(MigratorFactoryInterface::class, static function (ContainerInterface $container): MigratorFactoryInterface {
+            $migrations = self::config($container)['migrations'] ?? [];
+            $runner = is_array($migrations) ? ($migrations['runner'] ?? MigratorFactory::class) : MigratorFactory::class;
+            $factory = is_string($runner) && $runner !== '' ? $container->get($runner) : null;
+            if (!$factory instanceof MigratorFactoryInterface) {
+                throw new InvalidArgumentException('database.migrations.runner must name a service implementing ' . MigratorFactoryInterface::class . '.');
+            }
+
+            return $factory;
         }, shared: true);
         foreach ([MigrateCommand::class, MigrateRollbackCommand::class, MigrateStatusCommand::class, MakeMigrationCommand::class] as $command) {
             $this->container->bind($command);

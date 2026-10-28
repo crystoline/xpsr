@@ -352,9 +352,19 @@ Not provided: an ORM or query objects, seeders, `migrate:fresh`, and schema dump
 
 Verified on 28 October 2026: 458 tests pass on PHP 8.4 with and without the production `php.ini`, on PHP 8.5, and at the lowest allowed versions, and the packaging group passes.
 
+## Nineteenth milestone: completed — extensible database foundation
+
+The first step of the integration plan in `FRAMEWORK_PLAN.md` section 10, so that ORM adapters and other migration runners can be added without breaking changes:
+
+- **Runner contract.** `MigratorInterface` and `MigratorFactoryInterface`. The migrate commands use only these, and `database.migrations.runner` names the factory; XPSR's `Migrator` and `MigratorFactory` are the default.
+- **Contract suite.** `Testing\MigratorContractTestCase`, with four hooks. XPSR's runner passes it.
+- **Test transactions.** `Testing\DatabaseTransactions` wraps tests in transactions on any connection and rolls back everything afterwards, including nested and unclosed transactions. A skeleton test uses it with the application `TestCase`.
+
+Verified on 28 October 2026: 469 tests pass, with PHPStan and style checks.
+
 ## Boundaries and remaining work
 
-The first eighteen milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
+The first nineteen milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
 
 - **Publishing.** Live since 28 October 2026. CI publishes `master` to the five mirror repositories under `crystoline`, and Packagist serves all five packages from them. The first release is `0.1.0`. The old prototype's `v1.0.0` is removed from Packagist; its git tag remains in `crystoline/xpsr`, where it no longer affects installs.
 - **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.
@@ -374,4 +384,4 @@ The first eighteen milestones are working slices, not completion of all roadmap 
 
 ## Next implementation slice
 
-Publish `crystoline/xpsr-http-client` and `crystoline/xpsr-database` once their repositories exist, then release 0.2.0. The remaining phase 6 modules (validation, sessions and CSRF, authentication, queues, scheduling) each need design decisions first. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.
+Publish `crystoline/xpsr-http-client` and `crystoline/xpsr-database` once their repositories exist, then release 0.2.0. After that, follow the ordered component plan in `FRAMEWORK_PLAN.md` section 10, starting with the Doctrine ORM adapter; settle each component's open decisions with the user before starting it. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.

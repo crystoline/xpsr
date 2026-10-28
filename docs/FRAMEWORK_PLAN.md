@@ -294,3 +294,50 @@ Later decisions, 28 October 2026:
 | Migrations | Files live in `migrations/` at the project root, named `<YYYYMMDDHHMMSS>_<name>.php` in UTC, and return an anonymous `Migration` subclass so that names never collide. |
 
 If maintaining a completely independent HTTP-message or console implementation is an explicit project goal, treat it as an additional component with its own specification and tests. It should not block completion of the framework lifecycle and routing design.
+
+## 10. Extensible integrations and planned components
+
+Agreed on 28 October 2026. This section plans work that is not implemented yet, except where it says so.
+
+### The rule for integrations
+
+Every component follows the router's model: **XPSR owns a small contract, the configuration, the console commands, and a shared contract test suite; adapters wrap mature libraries and must pass that suite.** Applications choose an adapter the way they choose a router, with `composer require` and a provider line, or with `php xpsr setup`.
+
+Where a PSR exists, it already provides the portability, and the "adapter" is only a choice of implementation: cache (PSR-16 and PSR-6), the HTTP client (PSR-18), events (PSR-14), logging (PSR-3), and the clock (PSR-20). Where no common API can exist, as with ORMs, XPSR does not wrap the library's API. The adapter integrates it (configuration, container, connection sharing, commands, request lifecycle, testing) and application code uses the library directly.
+
+### Database and ORM adapters
+
+```text
+crystoline/xpsr-database          foundation: connections, migrations, contracts, test helpers
+├── crystoline/xpsr-orm-doctrine  Doctrine ORM adapter (first)
+├── crystoline/xpsr-orm-eloquent  Eloquent adapter (second)
+└── crystoline/xpsr-orm-cycle     Cycle ORM adapter (later, if wanted)
+```
+
+- **Foundation (implemented).** `crystoline/xpsr-database` keeps Doctrine DBAL as the one connection layer: DBAL already hides the differences between database servers, and a second abstraction over the DBAL, Illuminate, and Cycle query builders would be a weaker DBAL. One configuration and one connection per name, shared by every adapter, so the ORM, plain queries, and test rollbacks see the same transaction. The migrate commands talk only to `MigratorInterface`, selected with `database.migrations.runner`; `DatabaseTransactions` wraps tests in transactions; `MigratorContractTestCase` is the runner contract suite.
+- **Doctrine ORM adapter.** Builds the `EntityManager` on XPSR's DBAL connection, with entity directories and attribute mapping in `config/orm.php`. Clears the entity manager after each request (needed for long-running servers). Registers Doctrine's schema validation and proxy commands under XPSR's console. Optionally provides a Doctrine Migrations runner through `MigratorFactoryInterface`, for schema-diff migrations.
+- **Eloquent adapter.** Configures `illuminate/database` on the PDO of XPSR's connection, so transactions stay shared. Optionally provides a runner for Eloquent-style migrations. Check compatibility with the `illuminate/*` versions the framework already uses.
+- **Cycle ORM adapter.** Only if requested: Cycle opens its own connections, so sharing transactions needs more work.
+- **ORM contract suite.** Every ORM adapter must show that it uses XPSR's connection (its writes are visible to DBAL inside the same transaction and undone by a rollback), resets its state between requests, and can be replaced in tests with `swap()`.
+- **Choosing.** `php xpsr setup --orm=doctrine|eloquent|none`, like `--router`: installs the package, adds the provider, and writes the configuration.
+
+### Planned components, in order
+
+| Order | Component | Approach | Open decisions |
+|---|---|---|---|
+| 1 | Doctrine ORM adapter | As above. | Default entity directory and mapping; proxy directory under `var/`. |
+| 2 | Eloquent adapter | As above. | Whether to offer Eloquent's migrations and schema builder. |
+| 3 | CORS middleware | Small, own PSR-15 middleware in the framework. | Configuration keys; preflight caching. |
+| 4 | Monolog logging | Adapter package behind PSR-3, replacing `ErrorLogLogger` when installed. | Default handlers per environment. |
+| 5 | Clock (PSR-20) | `symfony/clock`, registered as `Psr\Clock\ClockInterface`, with a frozen clock for tests. | Framework or package. |
+| 6 | Rate limiting | Middleware on `symfony/rate-limiter`, storing state in `crystoline/xpsr-cache`, answering with `TooManyRequestsHttpException`. | Limits per route or group; client identity (IP, token). |
+| 7 | Validation | Request validation that answers 422 with field errors. Adapters for `symfony/validator`, and possibly a small built-in rule set. | Error body format; validating route input and JSON bodies. |
+| 8 | Authentication and authorization | Token or JWT authentication for APIs (`lcobucci/jwt`), sessions for web applications, and policies for authorization. | Needs its own design: guards, user providers, the policy API. |
+| 9 | Sessions, cookies, and CSRF | PSR-15 middleware with file, cache, or database storage; replaces the skeleton's example `SessionMiddleware`. | Cookie defaults; CSRF token delivery. |
+| 10 | Queues and jobs | Wrap Symfony Messenger (database, Redis, AMQP, SQS transports) rather than build an engine; `php xpsr queue:work`. | Job API; failure handling and retries. |
+| 11 | Mail | `symfony/mailer`, configured by a DSN. | Templates through the view layer. |
+| 12 | Scheduler | `php xpsr schedule:run` from one cron entry. | Own small scheduler or `symfony/scheduler`. |
+| 13 | File storage | `league/flysystem`: local, S3, and others. | Disk configuration format. |
+| 14 | View adapters | `ViewHandlerInterface` exists; add Plates or Latte next to Twig, with a contract suite, as Sunrise sits next to FastRoute. | Which engines are wanted. |
+
+Before each component starts, its open decisions are settled with the user and recorded in section 9.

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Crystoline\Xpsr\Database\Console;
 
 use Crystoline\Xpsr\Configuration;
-use Crystoline\Xpsr\Database\MigratorFactory;
+use Crystoline\Xpsr\Database\Migration\MigratorFactoryInterface;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /** @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md. */
 final class MigrateStatusCommand extends MigrationCommand
 {
-    public function __construct(MigratorFactory $migrators, Configuration $config)
+    public function __construct(MigratorFactoryInterface $migrators, Configuration $config)
     {
         parent::__construct($migrators, $config, 'migrate:status');
     }
@@ -37,7 +37,7 @@ final class MigrateStatusCommand extends MigrationCommand
             return self::SUCCESS;
         }
         if ($status === []) {
-            $output->writeln(OutputFormatter::escape('No migrations in ' . $this->migrators->displayPath() . '/.'));
+            $output->writeln('No migrations found.');
 
             return self::SUCCESS;
         }

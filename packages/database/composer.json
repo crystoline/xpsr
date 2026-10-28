@@ -24,7 +24,8 @@
   "suggest": {
     "ext-pdo_sqlite": "For SQLite databases",
     "ext-pdo_mysql": "For MySQL and MariaDB databases",
-    "ext-pdo_pgsql": "For PostgreSQL databases"
+    "ext-pdo_pgsql": "For PostgreSQL databases",
+    "phpunit/phpunit": "Needed for the DatabaseTransactions and MigratorContractTestCase test helpers"
   },
   "autoload": {
     "psr-4": {

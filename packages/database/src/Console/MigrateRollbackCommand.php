@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Crystoline\Xpsr\Database\Console;
 
 use Crystoline\Xpsr\Configuration;
-use Crystoline\Xpsr\Database\MigratorFactory;
+use Crystoline\Xpsr\Database\Migration\MigratorFactoryInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,7 +14,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /** @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md. */
 final class MigrateRollbackCommand extends MigrationCommand
 {
-    public function __construct(MigratorFactory $migrators, Configuration $config)
+    public function __construct(MigratorFactoryInterface $migrators, Configuration $config)
     {
         parent::__construct($migrators, $config, 'migrate:rollback');
     }

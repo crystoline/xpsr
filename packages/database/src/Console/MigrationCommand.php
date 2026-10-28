@@ -6,7 +6,7 @@ namespace Crystoline\Xpsr\Database\Console;
 
 use Crystoline\Xpsr\Configuration;
 use Crystoline\Xpsr\Database\Migration\MigrationException;
-use Crystoline\Xpsr\Database\MigratorFactory;
+use Crystoline\Xpsr\Database\Migration\MigratorFactoryInterface;
 use Doctrine\DBAL\Exception as DbalException;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
@@ -28,7 +28,7 @@ abstract class MigrationCommand extends Command
     private int $completed = 0;
 
     public function __construct(
-        protected readonly MigratorFactory $migrators,
+        protected readonly MigratorFactoryInterface $migrators,
         protected readonly Configuration $config,
         string $name,
     ) {

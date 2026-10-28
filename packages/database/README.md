@@ -164,13 +164,42 @@ protected function setUp(): void
 
 SQLite differs from MySQL and PostgreSQL in places, such as type checking and some SQL functions. Run the suite against your production database type as well before relying on it.
 
+To test against a real database without leaving data behind, migrate it once and wrap each test in a transaction with `Crystoline\Xpsr\Database\Testing\DatabaseTransactions`:
+
+```php
+use Crystoline\Xpsr\Database\Testing\DatabaseTransactions;
+
+final class OrderTest extends TestCase
+{
+    use DatabaseTransactions;
+
+    protected function setUp(): void
+    {
+        $this->beginDatabaseTransaction();           // or beginDatabaseTransaction('main', 'reporting')
+    }
+}
+```
+
+The transaction is rolled back after every test, together with any transactions the code under test left open. It covers everything that uses XPSR's connections. MySQL and MariaDB commit implicitly on schema changes, so do not change the schema inside such a test.
+
+## Using another migration runner
+
+The `migrate`, `migrate:rollback`, and `migrate:status` commands talk only to `Crystoline\Xpsr\Database\Migration\MigratorInterface`. They get it from the factory named in `database.migrations.runner`, which is XPSR's own runner, `Crystoline\Xpsr\Database\MigratorFactory`, by default. A package can provide another runner, for example one backed by Doctrine Migrations, and the commands and their output stay the same:
+
+```php
+'migrations' => ['runner' => App\Database\DoctrineMigratorFactory::class],
+```
+
+A runner implements `MigratorInterface` and a factory implementing `MigratorFactoryInterface`. Prove it with the shared contract suite by extending `Crystoline\Xpsr\Database\Testing\MigratorContractTestCase` and implementing its four hooks: `migrator()`, `addMigration()`, `addFailingMigration()`, and `tableExists()`. XPSR's runner passes the same suite. `make:migration` writes files for XPSR's runner only; another runner brings its own generator.
+
 ## Services
 
 | Service | Provides |
 |---|---|
 | `Doctrine\DBAL\Connection` | The default connection. Shared. |
 | `Crystoline\Xpsr\Database\ConnectionManager` | Every configured connection, by name: `connection('reporting')`. Shared. |
-| `Crystoline\Xpsr\Database\MigratorFactory` | `create(?string $connection)` returns a `Migrator` for running migrations from code. |
+| `Crystoline\Xpsr\Database\Migration\MigratorFactoryInterface` | The runner the migrate commands use: `create(?string $connection)` returns a `MigratorInterface`. |
+| `Crystoline\Xpsr\Database\MigratorFactory` | XPSR's own runner, for timestamped files in `migrations/`. |
 
 This package's tests run against SQLite, and against MySQL 8.4, MariaDB 11, and PostgreSQL 17 when `XPSR_TEST_MYSQL_URL` or `XPSR_TEST_PGSQL_URL` is set.
 

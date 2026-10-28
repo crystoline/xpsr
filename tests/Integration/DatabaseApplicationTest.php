@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use Crystoline\Xpsr\Database\DatabaseServiceRegistry;
+use Crystoline\Xpsr\Database\Testing\DatabaseTransactions;
 use Crystoline\Xpsr\Tests\Fixtures\TemporaryDirectory;
 use Doctrine\DBAL\Connection;
 use Tests\TestCase;
@@ -15,6 +16,8 @@ use Tests\TestCase;
  */
 final class DatabaseApplicationTest extends TestCase
 {
+    use DatabaseTransactions;
+
     private string $migrations;
 
     protected function setUp(): void
@@ -67,6 +70,18 @@ PHP);
         [$status, $output] = $this->console('migrate:status', ['--json' => true]);
         self::assertSame(0, $status);
         self::assertSame('ran', json_decode($output, true, flags: JSON_THROW_ON_ERROR)[0]['status']);
+    }
+
+    public function testDatabaseTransactionsWorkWithTheSkeletonTestCase(): void
+    {
+        self::assertSame(0, $this->console('migrate')[0]);
+        $this->beginDatabaseTransaction();
+        $db = $this->application()->get(Connection::class);
+        $db->insert('tasks', ['title' => 'temporary']);
+        self::assertSame(1, (int) $db->fetchOne('SELECT COUNT(*) FROM tasks'));
+
+        $this->rollBackDatabaseTransactions(); // what the #[After] hook does after each test
+        self::assertSame(0, (int) $db->fetchOne('SELECT COUNT(*) FROM tasks'));
     }
 
     public function testEachTestStartsWithAnEmptyDatabase(): void
