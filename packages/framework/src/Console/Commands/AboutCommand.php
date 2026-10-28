@@ -33,7 +33,7 @@ final class AboutCommand extends Command
         // Deliberately select fields; never dump the full configuration or environment.
         $information = [
             'framework' => 'XPSR',
-            'version' => ConsoleKernel::VERSION,
+            'version' => ConsoleKernel::version(),
             'application' => $config->get('app.name', 'XPSR'),
             'environment' => $config->get('app.env', 'production'),
             'debug' => (bool) $config->get('app.debug', false),
