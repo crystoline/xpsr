@@ -25,13 +25,6 @@ if (!function_exists('env')) {
     }
 }
 
-if (!function_exists('database_path')) {
-    function database_path(string $path): string
-    {
-        return root_dir('database' . DIRECTORY_SEPARATOR . $path);
-    }
-}
-
 if (!function_exists('app')) {
     function app(): Application
     {

@@ -97,7 +97,7 @@ final class MakeMigrationCommand extends Command
             return self::FAILURE;
         }
 
-        $file = gmdate('Y_m_d_His', ($this->clock)()) . "_{$name}.php";
+        $file = gmdate('YmdHis', ($this->clock)()) . "_{$name}.php";
         $stub = match (true) {
             $create !== null => 'migration.create',
             $table !== null => 'migration.table',

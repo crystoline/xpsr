@@ -15,6 +15,7 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ### Changed
 
+- The `database_path()` helper is removed. It pointed at a `database/` directory XPSR does not use; migrations live in `migrations/`.
 - The skeleton's `config/database.php` is replaced: the previous file was unused and came from another framework. The new one configures SQLite, MySQL, and PostgreSQL connections for `crystoline/xpsr-database`.
 
 ### Fixed

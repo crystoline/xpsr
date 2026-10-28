@@ -10,7 +10,7 @@ use InvalidArgumentException;
 /**
  * Builds a Migrator for a connection from the "database.migrations" configuration:
  *
- *   path   directory of migration files, relative to the application root (default database/migrations)
+ *   path   directory of migration files, relative to the application root (default migrations)
  *   table  table that records which migrations ran (default migrations)
  */
 final class MigratorFactory
@@ -35,7 +35,7 @@ final class MigratorFactory
     /** The absolute migrations directory. */
     public function directory(): string
     {
-        $path = $this->config['path'] ?? 'database/migrations';
+        $path = $this->config['path'] ?? 'migrations';
         if (!is_string($path) || $path === '') {
             throw new InvalidArgumentException('database.migrations.path must be a directory path.');
         }
@@ -47,8 +47,8 @@ final class MigratorFactory
     /** The migrations directory as configured, for messages. */
     public function displayPath(): string
     {
-        $path = $this->config['path'] ?? 'database/migrations';
+        $path = $this->config['path'] ?? 'migrations';
 
-        return is_string($path) ? rtrim($path, '/\\') : 'database/migrations';
+        return is_string($path) ? rtrim($path, '/\\') : 'migrations';
     }
 }

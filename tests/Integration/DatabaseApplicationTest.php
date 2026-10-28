@@ -29,7 +29,7 @@ final class DatabaseApplicationTest extends TestCase
         $provider = new DatabaseServiceRegistry($application->getContainer());
         $provider->register();
         $provider->boot();
-        file_put_contents($this->migrations . '/2026_01_01_000000_create_tasks_table.php', <<<'PHP'
+        file_put_contents($this->migrations . '/20260101000000_create_tasks_table.php', <<<'PHP'
 <?php
 
 use Crystoline\Database\Migration\Migration;

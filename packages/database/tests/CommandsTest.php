@@ -36,7 +36,7 @@ final class CommandsTest extends TestCase
         $config->set('database', [
             'default' => 'sqlite',
             'connections' => ['sqlite' => ['driver' => 'pdo_sqlite', 'path' => 'var/database.sqlite']],
-            'migrations' => ['path' => 'database/migrations', 'table' => 'migrations'],
+            'migrations' => ['path' => 'migrations', 'table' => 'migrations'],
         ]);
         $this->application->boot();
     }
@@ -60,19 +60,19 @@ final class CommandsTest extends TestCase
 
     public function testMigrateStatusAndRollbackReportEachMigration(): void
     {
-        $this->workspace->migration('2026_01_01_000000_create_users', "\$db->executeStatement('CREATE TABLE users (id INTEGER PRIMARY KEY)');", "\$db->executeStatement('DROP TABLE users');");
-        $this->workspace->migration('2026_01_02_000000_create_posts', "\$db->executeStatement('CREATE TABLE posts (id INTEGER PRIMARY KEY)');", "\$db->executeStatement('DROP TABLE posts');");
+        $this->workspace->migration('20260101000000_create_users', "\$db->executeStatement('CREATE TABLE users (id INTEGER PRIMARY KEY)');", "\$db->executeStatement('DROP TABLE users');");
+        $this->workspace->migration('20260102000000_create_posts', "\$db->executeStatement('CREATE TABLE posts (id INTEGER PRIMARY KEY)');", "\$db->executeStatement('DROP TABLE posts');");
 
         $status = $this->command(MigrateStatusCommand::class);
         self::assertSame(0, $status->getStatusCode());
-        self::assertStringContainsString('2026_01_01_000000_create_users', $status->getDisplay());
+        self::assertStringContainsString('20260101000000_create_users', $status->getDisplay());
         self::assertStringContainsString('0 ran, 2 pending.', $status->getDisplay());
 
         $migrate = $this->command(MigrateCommand::class);
         self::assertSame(0, $migrate->getStatusCode());
         self::assertSame(
-            "Migrating: 2026_01_01_000000_create_users\nMigrated:  2026_01_01_000000_create_users\n"
-            . "Migrating: 2026_01_02_000000_create_posts\nMigrated:  2026_01_02_000000_create_posts\nRan 2 migration(s).\n",
+            "Migrating: 20260101000000_create_users\nMigrated:  20260101000000_create_users\n"
+            . "Migrating: 20260102000000_create_posts\nMigrated:  20260102000000_create_posts\nRan 2 migration(s).\n",
             $migrate->getDisplay(),
         );
         self::assertSame("Nothing to migrate.\n", $this->command(MigrateCommand::class)->getDisplay());
@@ -85,18 +85,18 @@ final class CommandsTest extends TestCase
 
         $rollback = $this->command(MigrateRollbackCommand::class, ['--steps' => '1']);
         self::assertSame(0, $rollback->getStatusCode());
-        self::assertSame("Rolling back: 2026_01_02_000000_create_posts\nRolled back:  2026_01_02_000000_create_posts\nRolled back 1 migration(s).\n", $rollback->getDisplay());
+        self::assertSame("Rolling back: 20260102000000_create_posts\nRolled back:  20260102000000_create_posts\nRolled back 1 migration(s).\n", $rollback->getDisplay());
         self::assertSame(0, $this->command(MigrateRollbackCommand::class)->getStatusCode());
         self::assertSame("Nothing to roll back.\n", $this->command(MigrateRollbackCommand::class)->getDisplay());
     }
 
     public function testFailuresAreReportedOnStderrWithStatusOne(): void
     {
-        $this->workspace->migration('2026_01_01_000000_create_users', "\$db->executeStatement('CREATE TABLE users (id INTEGER PRIMARY KEY)');");
-        $this->workspace->migration('2026_01_02_000000_broken', "\$db->executeStatement('NOT SQL');");
+        $this->workspace->migration('20260101000000_create_users', "\$db->executeStatement('CREATE TABLE users (id INTEGER PRIMARY KEY)');");
+        $this->workspace->migration('20260102000000_broken', "\$db->executeStatement('NOT SQL');");
         $migrate = $this->command(MigrateCommand::class);
         self::assertSame(1, $migrate->getStatusCode());
-        self::assertStringContainsString('Migration 2026_01_02_000000_broken failed', $migrate->getErrorOutput());
+        self::assertStringContainsString('Migration 20260102000000_broken failed', $migrate->getErrorOutput());
         self::assertStringContainsString('The 1 migration(s) before it in this run completed.', $migrate->getErrorOutput());
         self::assertStringNotContainsString('Ran ', $migrate->getDisplay());
 
@@ -111,7 +111,7 @@ final class CommandsTest extends TestCase
 
     public function testProductionNeedsForceOrConfirmation(): void
     {
-        $this->workspace->migration('2026_01_01_000000_create_users', "\$db->executeStatement('CREATE TABLE users (id INTEGER PRIMARY KEY)');", "\$db->executeStatement('DROP TABLE users');");
+        $this->workspace->migration('20260101000000_create_users', "\$db->executeStatement('CREATE TABLE users (id INTEGER PRIMARY KEY)');", "\$db->executeStatement('DROP TABLE users');");
         $this->application->getConfig()->set('app.env', 'production');
 
         $refused = $this->command(MigrateCommand::class);
@@ -148,13 +148,13 @@ final class CommandsTest extends TestCase
 
         $create = $make(['name' => 'CreateUsersTable', '--create' => 'users']);
         self::assertSame(0, $create->getStatusCode(), $create->getErrorOutput());
-        self::assertSame("Created database/migrations/2026_01_01_000000_create_users_table.php\nNext: fill in up() and down(), then run: php xpsr migrate\n", $create->getDisplay());
+        self::assertSame("Created migrations/20260101000000_create_users_table.php\nNext: fill in up() and down(), then run: php xpsr migrate\n", $create->getDisplay());
         self::assertSame(0, $make(['name' => 'add_email_to_users', '--table' => 'users'])->getStatusCode());
         self::assertSame(0, $make(['name' => 'seed-roles'])->getStatusCode());
         self::assertSame([
-            '2026_01_01_000000_create_users_table.php',
-            '2026_01_01_000001_add_email_to_users.php',
-            '2026_01_01_000002_seed_roles.php',
+            '20260101000000_create_users_table.php',
+            '20260101000001_add_email_to_users.php',
+            '20260101000002_seed_roles.php',
         ], array_map(basename(...), glob($this->workspace->migrations . '/*.php') ?: []));
         foreach (glob($this->workspace->migrations . '/*.php') ?: [] as $file) {
             exec(escapeshellarg(PHP_BINARY) . ' -l ' . escapeshellarg($file) . ' 2>&1', $lint, $code);

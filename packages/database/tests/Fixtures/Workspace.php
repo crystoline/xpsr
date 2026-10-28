@@ -16,7 +16,7 @@ final class Workspace
     public function __construct()
     {
         $this->root = sys_get_temp_dir() . '/xpsr-database-' . bin2hex(random_bytes(6));
-        $this->migrations = $this->root . '/database/migrations';
+        $this->migrations = $this->root . '/migrations';
         mkdir($this->migrations, 0777, true);
     }
 

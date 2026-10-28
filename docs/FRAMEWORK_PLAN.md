@@ -285,4 +285,11 @@ The user accepted all of these defaults on 26 October 2026:
 | Distribution | One development repository initially; library + skeleton + optional adapters by the first reusable release. |
 | Product focus | Lightweight web/API framework with explicit integrations; additional application services arrive as modules. |
 
+Later decisions, 28 October 2026:
+
+| Decision | Choice |
+| --- | --- |
+| Conventions | XPSR is not modeled on Laravel. Folder layout, file names, and helpers are chosen on their merits, and a Laravel convention is kept only when it is the better option. The skeleton stays flat: `app/`, `config/`, `routes/`, `views/`, `public/`, `migrations/`, and `var/` for runtime files. |
+| Migrations | Files live in `migrations/` at the project root, named `<YYYYMMDDHHMMSS>_<name>.php` in UTC, and return an anonymous `Migration` subclass so that names never collide. |
+
 If maintaining a completely independent HTTP-message or console implementation is an explicit project goal, treat it as an additional component with its own specification and tests. It should not block completion of the framework lifecycle and routing design.

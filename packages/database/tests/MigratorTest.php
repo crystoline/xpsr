@@ -60,24 +60,24 @@ final class MigratorTest extends TestCase
     public function testMigrateRunsPendingFilesInOrderAsOneBatch(string $database): void
     {
         $migrator = $this->migrator($database);
-        $this->workspace->migration('2026_01_02_000000_create_posts', $this->create('posts'), $this->drop('posts'));
-        $this->workspace->migration('2026_01_01_000000_create_users', $this->create('users'), $this->drop('users'));
-        self::assertSame(['2026_01_01_000000_create_users', '2026_01_02_000000_create_posts'], $migrator->pending());
+        $this->workspace->migration('20260102000000_create_posts', $this->create('posts'), $this->drop('posts'));
+        $this->workspace->migration('20260101000000_create_users', $this->create('users'), $this->drop('users'));
+        self::assertSame(['20260101000000_create_users', '20260102000000_create_posts'], $migrator->pending());
 
         $order = [];
         $ran = $migrator->migrate(static function (string $name) use (&$order): void {
             $order[] = $name;
         });
 
-        self::assertSame(['2026_01_01_000000_create_users', '2026_01_02_000000_create_posts'], $ran);
+        self::assertSame(['20260101000000_create_users', '20260102000000_create_posts'], $ran);
         self::assertSame($ran, $order);
         self::assertTrue($this->tableExists('users'));
         self::assertTrue($this->tableExists('posts'));
         self::assertSame([], $migrator->pending());
         self::assertSame([], $migrator->migrate(), 'Nothing runs twice.');
         self::assertSame([
-            ['migration' => '2026_01_01_000000_create_users', 'status' => 'ran', 'batch' => 1],
-            ['migration' => '2026_01_02_000000_create_posts', 'status' => 'ran', 'batch' => 1],
+            ['migration' => '20260101000000_create_users', 'status' => 'ran', 'batch' => 1],
+            ['migration' => '20260102000000_create_posts', 'status' => 'ran', 'batch' => 1],
         ], $migrator->status());
     }
 
@@ -85,21 +85,21 @@ final class MigratorTest extends TestCase
     public function testRollbackUndoesTheLastBatchOrANumberOfMigrations(string $database): void
     {
         $migrator = $this->migrator($database);
-        $this->workspace->migration('2026_01_01_000000_create_users', $this->create('users'), $this->drop('users'));
+        $this->workspace->migration('20260101000000_create_users', $this->create('users'), $this->drop('users'));
         $migrator->migrate();
-        $this->workspace->migration('2026_01_02_000000_create_posts', $this->create('posts'), $this->drop('posts'));
-        $this->workspace->migration('2026_01_03_000000_create_broken', $this->create('broken'), $this->drop('broken'));
+        $this->workspace->migration('20260102000000_create_posts', $this->create('posts'), $this->drop('posts'));
+        $this->workspace->migration('20260103000000_create_broken', $this->create('broken'), $this->drop('broken'));
         $migrator->migrate();
         self::assertSame([1, 2, 2], array_column($migrator->status(), 'batch'));
 
-        self::assertSame(['2026_01_03_000000_create_broken', '2026_01_02_000000_create_posts'], $migrator->rollback());
+        self::assertSame(['20260103000000_create_broken', '20260102000000_create_posts'], $migrator->rollback());
         self::assertFalse($this->tableExists('posts'));
         self::assertTrue($this->tableExists('users'));
         self::assertSame(['ran', 'pending', 'pending'], array_column($migrator->status(), 'status'));
 
         $migrator->migrate();
-        self::assertSame(['2026_01_03_000000_create_broken'], $migrator->rollback(steps: 1));
-        self::assertSame(['2026_01_02_000000_create_posts', '2026_01_01_000000_create_users'], $migrator->rollback(steps: 5));
+        self::assertSame(['20260103000000_create_broken'], $migrator->rollback(steps: 1));
+        self::assertSame(['20260102000000_create_posts', '20260101000000_create_users'], $migrator->rollback(steps: 5));
         self::assertSame([], $migrator->rollback(), 'Nothing left to roll back.');
         self::assertFalse($this->tableExists('users'));
     }
@@ -108,15 +108,15 @@ final class MigratorTest extends TestCase
     public function testAFailedMigrationIsNotRecordedAndStopsTheRun(string $database): void
     {
         $migrator = $this->migrator($database);
-        $this->workspace->migration('2026_01_01_000000_create_users', $this->create('users'), $this->drop('users'));
-        $this->workspace->migration('2026_01_02_000000_broken', $this->create('broken') . "\n        \$db->executeStatement('SELECT * FROM missing_table_{$this->suffix}');");
-        $this->workspace->migration('2026_01_03_000000_create_posts', $this->create('posts'), $this->drop('posts'));
+        $this->workspace->migration('20260101000000_create_users', $this->create('users'), $this->drop('users'));
+        $this->workspace->migration('20260102000000_broken', $this->create('broken') . "\n        \$db->executeStatement('SELECT * FROM missing_table_{$this->suffix}');");
+        $this->workspace->migration('20260103000000_create_posts', $this->create('posts'), $this->drop('posts'));
 
         try {
             $migrator->migrate();
             self::fail('The broken migration did not fail.');
         } catch (MigrationException $exception) {
-            self::assertStringStartsWith('Migration 2026_01_02_000000_broken failed: ', $exception->getMessage());
+            self::assertStringStartsWith('Migration 20260102000000_broken failed: ', $exception->getMessage());
             self::assertNotNull($exception->getPrevious());
         }
         self::assertSame(['ran', 'pending', 'pending'], array_column($migrator->status(), 'status'));
@@ -130,7 +130,7 @@ final class MigratorTest extends TestCase
     {
         $migrator = $this->migrator('sqlite');
         $this->workspace->migration(
-            '2026_01_01_000000_partial',
+            '20260101000000_partial',
             $this->create('broken') . "\n        throw new RuntimeException('stop');",
             extra: 'protected bool $transactional = false;',
         );
@@ -146,22 +146,22 @@ final class MigratorTest extends TestCase
     public function testRollingBackAMigrationWithoutDownFails(): void
     {
         $migrator = $this->migrator('sqlite');
-        $this->workspace->migration('2026_01_01_000000_create_users', $this->create('users'));
+        $this->workspace->migration('20260101000000_create_users', $this->create('users'));
         $migrator->migrate();
         $this->expectException(MigrationException::class);
-        $this->expectExceptionMessage('Rollback of 2026_01_01_000000_create_users failed: This migration cannot be rolled back: it has no down() method.');
+        $this->expectExceptionMessage('Rollback of 20260101000000_create_users failed: This migration cannot be rolled back: it has no down() method.');
         $migrator->rollback();
     }
 
     public function testMigrationsWhoseFileWasDeletedAreReportedAndCannotBeRolledBack(): void
     {
         $migrator = $this->migrator('sqlite');
-        $file = $this->workspace->migration('2026_01_01_000000_create_users', $this->create('users'), $this->drop('users'));
+        $file = $this->workspace->migration('20260101000000_create_users', $this->create('users'), $this->drop('users'));
         $migrator->migrate();
         unlink($file);
-        self::assertSame([['migration' => '2026_01_01_000000_create_users', 'status' => 'missing', 'batch' => 1]], $migrator->status());
+        self::assertSame([['migration' => '20260101000000_create_users', 'status' => 'missing', 'batch' => 1]], $migrator->status());
         $this->expectException(MigrationException::class);
-        $this->expectExceptionMessage('Cannot roll back 2026_01_01_000000_create_users: it has run, but');
+        $this->expectExceptionMessage('Cannot roll back 20260101000000_create_users: it has run, but');
         $migrator->rollback();
     }
 
@@ -173,12 +173,12 @@ final class MigratorTest extends TestCase
             $migrator->pending();
             self::fail('A badly named file was accepted.');
         } catch (MigrationException $exception) {
-            self::assertStringContainsString('Migration file CreateUsers.php is not named like 2026_01_31_120000_create_users_table.php.', $exception->getMessage());
+            self::assertStringContainsString('Migration file CreateUsers.php is not named like 20260131120000_create_users_table.php.', $exception->getMessage());
         }
         unlink($this->workspace->migrations . '/CreateUsers.php');
-        file_put_contents($this->workspace->migrations . '/2026_01_01_000000_nothing.php', '<?php return 42;');
+        file_put_contents($this->workspace->migrations . '/20260101000000_nothing.php', '<?php return 42;');
         $this->expectException(MigrationException::class);
-        $this->expectExceptionMessage('Migration 2026_01_01_000000_nothing must return an instance of Crystoline\Database\Migration\Migration');
+        $this->expectExceptionMessage('Migration 20260101000000_nothing must return an instance of Crystoline\Database\Migration\Migration');
         $migrator->migrate();
     }
 

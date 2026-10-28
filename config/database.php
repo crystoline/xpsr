@@ -38,7 +38,7 @@ return [
     ],
 
     'migrations' => [
-        'path' => 'database/migrations',
+        'path' => 'migrations',
         'table' => 'migrations',
     ],
 

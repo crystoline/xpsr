@@ -58,7 +58,7 @@ return [
         ],
         'reporting' => ['url' => env('REPORTING_DATABASE_URL')],
     ],
-    'migrations' => ['path' => 'database/migrations', 'table' => 'migrations'],
+    'migrations' => ['path' => 'migrations', 'table' => 'migrations'],
     'log_queries' => false,
 ];
 ```
@@ -86,7 +86,7 @@ $reports = $connections->connection('reporting');
 php xpsr make:migration create_users_table --create=users
 ```
 
-This writes `database/migrations/2026_10_28_120000_create_users_table.php`. A migration file returns a `Crystoline\Database\Migration\Migration`, usually an anonymous class:
+This writes `migrations/20261028120000_create_users_table.php`: a UTC timestamp (year, month, day, hour, minute, second), an underscore, and the name. Migrations run in file-name order, which is the order they were created. A migration file returns a `Crystoline\Database\Migration\Migration`, usually an anonymous class:
 
 ```php
 use Crystoline\Database\Migration\Migration;

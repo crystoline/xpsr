@@ -12,12 +12,12 @@ use Throwable;
 /**
  * Runs and rolls back the migrations in one directory against one connection.
  *
- * Migration files are named <YYYY>_<MM>_<DD>_<HHMMSS>_<name>.php and run in name order. Each
- * run of migrate() is a batch; rollback() undoes the last batch, or a number of migrations.
+ * Migration files are named <YYYYMMDDHHMMSS>_<name>.php (UTC) and run in name order. Each run
+ * of migrate() is a batch; rollback() undoes the last batch, or a number of migrations.
  */
 final class Migrator
 {
-    public const FILE_PATTERN = '/\A\d{4}_\d{2}_\d{2}_\d{6}_[a-z0-9_]+\z/';
+    public const FILE_PATTERN = '/\A\d{14}_[a-z0-9_]+\z/';
 
     private readonly MigrationRepository $repository;
 
@@ -142,7 +142,7 @@ final class Migrator
             $name = basename($file, '.php');
             if (!preg_match(self::FILE_PATTERN, $name)) {
                 throw new MigrationException(sprintf(
-                    'Migration file %s is not named like 2026_01_31_120000_create_users_table.php. Rename it, or move it out of %s.',
+                    'Migration file %s is not named like 20260131120000_create_users_table.php. Rename it, or move it out of %s.',
                     basename($file),
                     $this->directory,
                 ));
