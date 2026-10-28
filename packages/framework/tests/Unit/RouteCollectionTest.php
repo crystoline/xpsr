@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Tests\Unit;
+namespace Crystoline\Xpsr\Tests\Unit;
 
-use Crystoline\Routing\RouteCollection;
-use Crystoline\Routing\RoutePattern;
-use Crystoline\Routing\UrlGenerator;
+use Crystoline\Xpsr\Routing\RouteCollection;
+use Crystoline\Xpsr\Routing\RoutePattern;
+use Crystoline\Xpsr\Routing\UrlGenerator;
 use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;

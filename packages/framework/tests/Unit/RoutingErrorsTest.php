@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Tests\Unit;
+namespace Crystoline\Xpsr\Tests\Unit;
 
-use Crystoline\Contracts\Routing\RouterInterface;
-use Crystoline\Exception\ExceptionHandlerInterface;
-use Crystoline\Http\HttpKernel;
-use Crystoline\Routing\HandlerResolver;
-use Crystoline\Routing\RouteCollection;
-use Crystoline\Routing\RouteDefinition;
-use Crystoline\Routing\RouteDispatcher;
-use Crystoline\Routing\RouteMatch;
-use Crystoline\ServiceContainer\ServiceContainer;
+use Crystoline\Xpsr\Contracts\Routing\RouterInterface;
+use Crystoline\Xpsr\Exception\ExceptionHandlerInterface;
+use Crystoline\Xpsr\Http\HttpKernel;
+use Crystoline\Xpsr\Routing\HandlerResolver;
+use Crystoline\Xpsr\Routing\RouteCollection;
+use Crystoline\Xpsr\Routing\RouteDefinition;
+use Crystoline\Xpsr\Routing\RouteDispatcher;
+use Crystoline\Xpsr\Routing\RouteMatch;
+use Crystoline\Xpsr\ServiceContainer\ServiceContainer;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;

@@ -9,7 +9,7 @@ composer require crystoline/xpsr-http-client
 Add the provider to `app.registry` in `config/app.php`:
 
 ```php
-Crystoline\HttpClient\HttpClientServiceRegistry::class,
+Crystoline\Xpsr\HttpClient\HttpClientServiceRegistry::class,
 ```
 
 Then inject the client. Requests and responses are PSR-7 messages from the application's PSR-17 factories:
@@ -93,10 +93,10 @@ foreach ($responses as $response) {
 
 ## Testing
 
-`Crystoline\HttpClient\Testing\FakeClient` answers requests from a queue and records them, so tests never reach the network. Replace the client with `swap()` from the skeleton's `tests/TestCase.php`:
+`Crystoline\Xpsr\HttpClient\Testing\FakeClient` answers requests from a queue and records them, so tests never reach the network. Replace the client with `swap()` from the skeleton's `tests/TestCase.php`:
 
 ```php
-use Crystoline\HttpClient\Testing\FakeClient;
+use Crystoline\Xpsr\HttpClient\Testing\FakeClient;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;

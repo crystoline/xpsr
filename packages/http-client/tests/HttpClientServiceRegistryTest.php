@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\HttpClient\Tests;
+namespace Crystoline\Xpsr\HttpClient\Tests;
 
-use Crystoline\Configuration;
-use Crystoline\Foundation\ServiceProviderManager;
-use Crystoline\HttpClient\HttpClientOptions;
-use Crystoline\HttpClient\HttpClientServiceRegistry;
-use Crystoline\HttpClient\Tests\Fixtures\TestServer;
-use Crystoline\ServiceContainer\ContainerException;
-use Crystoline\ServiceContainer\ServiceContainer;
+use Crystoline\Xpsr\Configuration;
+use Crystoline\Xpsr\Foundation\ServiceProviderManager;
+use Crystoline\Xpsr\HttpClient\HttpClientOptions;
+use Crystoline\Xpsr\HttpClient\HttpClientServiceRegistry;
+use Crystoline\Xpsr\HttpClient\Tests\Fixtures\TestServer;
+use Crystoline\Xpsr\ServiceContainer\ContainerException;
+use Crystoline\Xpsr\ServiceContainer\ServiceContainer;
 use InvalidArgumentException;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Response;

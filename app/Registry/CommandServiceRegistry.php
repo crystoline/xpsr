@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Registry;
 
 use App\Console\Commands\GreetCommand;
-use Crystoline\Console\CommandRegistry;
-use Crystoline\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\Console\CommandRegistry;
+use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
 
 final class CommandServiceRegistry extends ServiceRegistry
 {

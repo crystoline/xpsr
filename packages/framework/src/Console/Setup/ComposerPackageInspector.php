@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Console\Setup;
+namespace Crystoline\Xpsr\Console\Setup;
 
 use Composer\InstalledVersions;
 

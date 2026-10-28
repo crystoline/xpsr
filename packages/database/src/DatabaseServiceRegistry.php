@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Database;
+namespace Crystoline\Xpsr\Database;
 
-use Crystoline\Application;
-use Crystoline\Configuration;
-use Crystoline\Console\CommandRegistry;
-use Crystoline\Database\Console\MakeMigrationCommand;
-use Crystoline\Database\Console\MigrateCommand;
-use Crystoline\Database\Console\MigrateRollbackCommand;
-use Crystoline\Database\Console\MigrateStatusCommand;
-use Crystoline\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\Application;
+use Crystoline\Xpsr\Configuration;
+use Crystoline\Xpsr\Console\CommandRegistry;
+use Crystoline\Xpsr\Database\Console\MakeMigrationCommand;
+use Crystoline\Xpsr\Database\Console\MigrateCommand;
+use Crystoline\Xpsr\Database\Console\MigrateRollbackCommand;
+use Crystoline\Xpsr\Database\Console\MigrateStatusCommand;
+use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
 use Doctrine\DBAL\Connection;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
@@ -20,9 +20,9 @@ use Psr\Log\LoggerInterface;
 /**
  * Registers database connections and the migration commands:
  *
- *   Crystoline\Database\ConnectionManager  every configured connection, by name
+ *   Crystoline\Xpsr\Database\ConnectionManager  every configured connection, by name
  *   Doctrine\DBAL\Connection               the default connection
- *   Crystoline\Database\MigratorFactory    migrations for any connection
+ *   Crystoline\Xpsr\Database\MigratorFactory    migrations for any connection
  *
  * and migrate, migrate:rollback, migrate:status, and make:migration when the console is part
  * of the application. Configuration lives in config/database.php.

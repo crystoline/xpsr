@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Console;
+namespace Crystoline\Xpsr\Console;
 
 use InvalidArgumentException;
 

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Console\Commands;
+namespace Crystoline\Xpsr\Console\Commands;
 
-use Crystoline\Application;
-use Crystoline\Console\ConsoleKernel;
+use Crystoline\Xpsr\Application;
+use Crystoline\Xpsr\Console\ConsoleKernel;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Helper\Table;

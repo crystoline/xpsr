@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\HttpClient\Testing;
+namespace Crystoline\Xpsr\HttpClient\Testing;
 
 use Closure;
 use LogicException;

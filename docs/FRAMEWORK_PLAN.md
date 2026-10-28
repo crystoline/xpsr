@@ -290,6 +290,7 @@ Later decisions, 28 October 2026:
 | Decision | Choice |
 | --- | --- |
 | Conventions | XPSR is not modeled on Laravel. Folder layout, file names, and helpers are chosen on their merits, and a Laravel convention is kept only when it is the better option. The skeleton stays flat: `app/`, `config/`, `routes/`, `views/`, `public/`, `migrations/`, and `var/` for runtime files. |
+| Namespace | `Crystoline\Xpsr\` replaces `Crystoline\` (the 26 October choice), from 0.2.0. The framework owns the root of `Crystoline\Xpsr\`; each package takes a sub-namespace such as `Crystoline\Xpsr\Cache\`. This leaves the vendor namespace free for other projects and matches the `crystoline/xpsr-*` package names. |
 | Migrations | Files live in `migrations/` at the project root, named `<YYYYMMDDHHMMSS>_<name>.php` in UTC, and return an anonymous `Migration` subclass so that names never collide. |
 
 If maintaining a completely independent HTTP-message or console implementation is an explicit project goal, treat it as an additional component with its own specification and tests. It should not block completion of the framework lifecycle and routing design.

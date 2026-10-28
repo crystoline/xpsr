@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
-use Crystoline\Database\DatabaseServiceRegistry;
-use Crystoline\Tests\Fixtures\TemporaryDirectory;
+use Crystoline\Xpsr\Database\DatabaseServiceRegistry;
+use Crystoline\Xpsr\Tests\Fixtures\TemporaryDirectory;
 use Doctrine\DBAL\Connection;
 use Tests\TestCase;
 
@@ -32,7 +32,7 @@ final class DatabaseApplicationTest extends TestCase
         file_put_contents($this->migrations . '/20260101000000_create_tasks_table.php', <<<'PHP'
 <?php
 
-use Crystoline\Database\Migration\Migration;
+use Crystoline\Xpsr\Database\Migration\Migration;
 use Doctrine\DBAL\Connection;
 
 return new class extends Migration {

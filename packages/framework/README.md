@@ -13,7 +13,7 @@ Most applications start from the `crystoline/xpsr` skeleton instead of requiring
 
 ## Writing a router adapter
 
-Implement `Crystoline\Contracts\Routing\RouterInterface`, usually by extending `Crystoline\Routing\AbstractRouter`. Then prove it with the shared contract suite: extend `Crystoline\Testing\RouterContractTestCase` in your tests and return your router from `createRouter()`. The suite needs `phpunit/phpunit` and `nyholm/psr7` as development dependencies.
+Implement `Crystoline\Xpsr\Contracts\Routing\RouterInterface`, usually by extending `Crystoline\Xpsr\Routing\AbstractRouter`. Then prove it with the shared contract suite: extend `Crystoline\Xpsr\Testing\RouterContractTestCase` in your tests and return your router from `createRouter()`. The suite needs `phpunit/phpunit` and `nyholm/psr7` as development dependencies.
 
 ## Tests
 

@@ -2,7 +2,7 @@
 
 XPSR includes a [PSR-14](https://www.php-fig.org/psr/psr-14/) event dispatcher. Code that wants to announce something dispatches an event object; listeners registered for that event react to it. The code that dispatches does not need to know who listens.
 
-New applications have it enabled: `Crystoline\Registry\EventServiceRegistry` is listed in `app.registry` in `config/app.php`. To add it to an existing application, add that line and create `config/events.php` as shown below.
+New applications have it enabled: `Crystoline\Xpsr\Registry\EventServiceRegistry` is listed in `app.registry` in `config/app.php`. To add it to an existing application, add that line and create `config/events.php` as shown below.
 
 ## Create an event and a listener
 
@@ -69,7 +69,7 @@ $this->events->dispatch(new UserRegistered($user->id, $user->email));
 - **Order.** Higher priorities run first. Listeners with the same priority run in the order they were registered: `config/events.php` first, in the order listed, then listeners added by providers.
 - **Synchronous.** Listeners run immediately, one after another, in the process that dispatched the event. `dispatch()` returns the same event object, so listeners can record results on it for the caller.
 - **Errors.** An exception thrown by a listener stops the dispatch and reaches the code that called `dispatch()`. Later listeners do not run.
-- **Stopping.** An event that implements `Psr\EventDispatcher\StoppableEventInterface` can be stopped by a listener. `Crystoline\Events\StoppableEvent` is an optional base class with a `stopPropagation()` method. The dispatcher checks before every listener, so a stopped event reaches no further listeners, and an event that arrives already stopped reaches none.
+- **Stopping.** An event that implements `Psr\EventDispatcher\StoppableEventInterface` can be stopped by a listener. `Crystoline\Xpsr\Events\StoppableEvent` is an optional base class with a `stopPropagation()` method. The dispatcher checks before every listener, so a stopped event reaches no further listeners, and an event that arrives already stopped reaches none.
 - **Lazy construction.** Listener classes are built from the container only when an event reaches them, every time it does (unless the container shares them). A listener after a stopped event is never built.
 
 ## Listener forms
@@ -87,7 +87,7 @@ Malformed listeners are rejected when they are registered, with a message naming
 Providers can add listeners in their `boot()` method, for example to set a priority or to register listeners only when a feature is enabled:
 
 ```php
-use Crystoline\Events\ListenerProvider;
+use Crystoline\Xpsr\Events\ListenerProvider;
 
 public function boot(): void
 {
@@ -100,7 +100,7 @@ public function boot(): void
 
 | Service | Provides |
 |---|---|
-| `Psr\EventDispatcher\EventDispatcherInterface` | The dispatcher (also `Crystoline\Events\EventDispatcher`). Shared. |
-| `Psr\EventDispatcher\ListenerProviderInterface` | The listener provider (also `Crystoline\Events\ListenerProvider`). Shared. |
+| `Psr\EventDispatcher\EventDispatcherInterface` | The dispatcher (also `Crystoline\Xpsr\Events\EventDispatcher`). Shared. |
+| `Psr\EventDispatcher\ListenerProviderInterface` | The listener provider (also `Crystoline\Xpsr\Events\ListenerProvider`). Shared. |
 
 The framework does not dispatch events of its own yet. Queued or asynchronous listeners are not provided; a listener that should not delay a response can hand the work to a queue once queue support exists.

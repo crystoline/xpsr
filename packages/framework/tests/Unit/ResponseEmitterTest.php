@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Tests\Unit;
+namespace Crystoline\Xpsr\Tests\Unit;
 
-use Crystoline\Http\ResponseEmitter;
+use Crystoline\Xpsr\Http\ResponseEmitter;
 use InvalidArgumentException;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Response;
@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
-use Crystoline\Tests\Fixtures\Http\ChunkedStream;
+use Crystoline\Xpsr\Tests\Fixtures\Http\ChunkedStream;
 
 final class ResponseEmitterTest extends TestCase
 {

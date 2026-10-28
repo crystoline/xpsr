@@ -1,6 +1,6 @@
 <?php
 
-namespace Crystoline\Exception;
+namespace Crystoline\Xpsr\Exception;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;

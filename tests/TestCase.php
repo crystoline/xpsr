@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Crystoline\Application;
+use Crystoline\Xpsr\Application;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Message\ResponseInterface;

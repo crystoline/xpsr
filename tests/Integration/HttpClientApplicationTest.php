@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
-use Crystoline\Contracts\Routing\RouterInterface;
-use Crystoline\HttpClient\HttpClientServiceRegistry;
-use Crystoline\HttpClient\Testing\FakeClient;
+use Crystoline\Xpsr\Contracts\Routing\RouterInterface;
+use Crystoline\Xpsr\HttpClient\HttpClientServiceRegistry;
+use Crystoline\Xpsr\HttpClient\Testing\FakeClient;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Client\ClientInterface;
 use Symfony\Component\HttpClient\Psr18Client;

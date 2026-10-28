@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-use Crystoline\Http\Middleware\BodyParsingMiddleware;
-use Crystoline\Registry\FactoryRegistry;
-use Crystoline\Registry\ConsoleServiceRegistry;
-use Crystoline\Registry\EventServiceRegistry;
+use Crystoline\Xpsr\Http\Middleware\BodyParsingMiddleware;
+use Crystoline\Xpsr\Registry\FactoryRegistry;
+use Crystoline\Xpsr\Registry\ConsoleServiceRegistry;
+use Crystoline\Xpsr\Registry\EventServiceRegistry;
 use App\Registry\CommandServiceRegistry;
-use Crystoline\Registry\RouteServiceRegistry;
-use Crystoline\Registry\ViewServiceRegistry;
+use Crystoline\Xpsr\Registry\RouteServiceRegistry;
+use Crystoline\Xpsr\Registry\ViewServiceRegistry;
 
 return [
     'name' => env('APP_NAME', 'XPSR'),

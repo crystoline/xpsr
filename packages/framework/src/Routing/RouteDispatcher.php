@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Routing;
+namespace Crystoline\Xpsr\Routing;
 
-use Crystoline\Contracts\Routing\RouterInterface;
-use Crystoline\Http\MiddlewarePipeline;
+use Crystoline\Xpsr\Contracts\Routing\RouterInterface;
+use Crystoline\Xpsr\Http\MiddlewarePipeline;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Crystoline\Http\Exception\MethodNotAllowedHttpException;
-use Crystoline\Http\Exception\NotFoundHttpException;
+use Crystoline\Xpsr\Http\Exception\MethodNotAllowedHttpException;
+use Crystoline\Xpsr\Http\Exception\NotFoundHttpException;
 use UnexpectedValueException;
 
 /** @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md. */

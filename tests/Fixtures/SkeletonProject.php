@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Fixtures;
 
-use Crystoline\Tests\Fixtures\TemporaryDirectory;
+use Crystoline\Xpsr\Tests\Fixtures\TemporaryDirectory;
 use FilesystemIterator;
 use PHPUnit\Framework\Assert;
 use RecursiveDirectoryIterator;

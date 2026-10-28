@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Contracts\Routing;
+namespace Crystoline\Xpsr\Contracts\Routing;
 
 interface UrlGeneratorInterface
 {

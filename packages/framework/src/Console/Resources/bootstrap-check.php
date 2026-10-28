@@ -10,8 +10,8 @@ declare(strict_types=1);
  * on failure. Route handlers and middleware are never executed.
  */
 
-use Crystoline\Contracts\Routing\RouterInterface;
-use Crystoline\Routing\RouteCollection;
+use Crystoline\Xpsr\Contracts\Routing\RouterInterface;
+use Crystoline\Xpsr\Routing\RouteCollection;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 
 ini_set('display_errors', 'stderr');

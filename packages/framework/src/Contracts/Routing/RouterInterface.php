@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Contracts\Routing;
+namespace Crystoline\Xpsr\Contracts\Routing;
 
-use Crystoline\Routing\RouteMatch;
+use Crystoline\Xpsr\Routing\RouteMatch;
 use Psr\Http\Message\ServerRequestInterface;
 
 interface RouterInterface

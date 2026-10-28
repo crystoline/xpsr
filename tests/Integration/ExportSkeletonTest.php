@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
-use Crystoline\Tests\Fixtures\TemporaryDirectory;
+use Crystoline\Xpsr\Tests\Fixtures\TemporaryDirectory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Process\Process;
 

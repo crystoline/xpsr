@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Database\Tests\Fixtures;
+namespace Crystoline\Xpsr\Database\Tests\Fixtures;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -32,7 +32,7 @@ final class Workspace
 
 declare(strict_types=1);
 
-use Crystoline\\Database\\Migration\\Migration;
+use Crystoline\\Xpsr\\Database\\Migration\\Migration;
 use Doctrine\\DBAL\\Connection;
 
 return new class extends Migration {

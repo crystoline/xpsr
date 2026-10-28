@@ -64,7 +64,7 @@ Configure PSR-15 middleware classes or instances in `config/app.php` under `midd
 
 Configuration loads from `config/*.php` and then `config/{APP_ENV}/*.php`, with a default environment of `production`. Environment files load before configuration; paths are resolved from the application root.
 
-Routing defaults to FastRoute. Set `ROUTER_ADAPTER=sunrise` to switch adapters without changing route declarations. Each route file returns a callable accepting `Crystoline\Routing\RouteCollection`; handlers receive the server request and return a PSR-7 response. The framework handles 404/405, HEAD fallback and body suppression, and automatic OPTIONS. See [docs/ROUTING.md](docs/ROUTING.md) for route groups, constraints, middleware, named URLs, adapter contracts, and migration from the earlier Sunrise syntax.
+Routing defaults to FastRoute. Set `ROUTER_ADAPTER=sunrise` to switch adapters without changing route declarations. Each route file returns a callable accepting `Crystoline\Xpsr\Routing\RouteCollection`; handlers receive the server request and return a PSR-7 response. The framework handles 404/405, HEAD fallback and body suppression, and automatic OPTIONS. See [docs/ROUTING.md](docs/ROUTING.md) for route groups, constraints, middleware, named URLs, adapter contracts, and migration from the earlier Sunrise syntax.
 
 ## Console commands
 

@@ -86,7 +86,7 @@ Put commands in `app/Console/Commands/` (or start one with `php xpsr make:comman
 ```php
 namespace App\Console\Commands;
 
-use Crystoline\Configuration;
+use Crystoline\Xpsr\Configuration;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -122,8 +122,8 @@ Use an eager provider to bind services in `register()` and add command metadata 
 namespace App\Registry;
 
 use App\Console\Commands\WelcomeCommand;
-use Crystoline\Console\CommandRegistry;
-use Crystoline\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\Console\CommandRegistry;
+use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
 
 final class WelcomeServiceRegistry extends ServiceRegistry
 {
@@ -144,7 +144,7 @@ final class WelcomeServiceRegistry extends ServiceRegistry
 }
 ```
 
-Add this provider to `app.registry` in `config/app.php`, keeping `Crystoline\Registry\ConsoleServiceRegistry`. The included `App\Registry\CommandServiceRegistry` and `app:greet` command demonstrate this pattern.
+Add this provider to `app.registry` in `config/app.php`, keeping `Crystoline\Xpsr\Registry\ConsoleServiceRegistry`. The included `App\Registry\CommandServiceRegistry` and `app:greet` command demonstrate this pattern.
 
 Command registration specifies the name, service ID, description, and optional aliases. This metadata is authoritative, including when the command class declares a different name or aliases. Names are lowercase words separated by colons, with digits, underscores, and hyphens permitted after each word's first letter. Duplicate names/aliases and Symfony's reserved names (`list`, `help`, `completion`, `_complete`) fail explicitly.
 

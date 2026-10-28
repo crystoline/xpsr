@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Http\Middleware;
+namespace Crystoline\Xpsr\Http\Middleware;
 
 use InvalidArgumentException;
 use JsonException;
@@ -10,8 +10,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Crystoline\Http\Exception\BadRequestHttpException;
-use Crystoline\Http\Exception\PayloadTooLargeHttpException;
+use Crystoline\Xpsr\Http\Exception\BadRequestHttpException;
+use Crystoline\Xpsr\Http\Exception\PayloadTooLargeHttpException;
 
 /**
  * Fills getParsedBody() for request bodies PHP does not parse itself.

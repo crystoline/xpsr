@@ -9,7 +9,7 @@ php xpsr setup --router=sunrise --install-dependencies
 
 Route files stay the same whichever adapter you choose. Sunrise 2.x requires `psr/http-message` 1.x, so installing this adapter keeps the application on that major version.
 
-The adapter passes XPSR's shared router contract suite (`Crystoline\Testing\RouterContractTestCase`):
+The adapter passes XPSR's shared router contract suite (`Crystoline\Xpsr\Testing\RouterContractTestCase`):
 
 ```sh
 composer install

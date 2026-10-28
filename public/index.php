@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Crystoline\Http\ResponseEmitter;
+use Crystoline\Xpsr\Http\ResponseEmitter;
 use Psr\Http\Message\ServerRequestInterface;
 
 try {

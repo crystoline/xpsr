@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
-use Crystoline\Application;
+use Crystoline\Xpsr\Application;
 use App\Registry\SessionServiceRegistry;
-use Crystoline\Contracts\Container\ContainerBuilderInterface;
-use Crystoline\ServiceContainer\ServiceContainer;
-use Crystoline\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\Contracts\Container\ContainerBuilderInterface;
+use Crystoline\Xpsr\ServiceContainer\ServiceContainer;
+use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use RuntimeException;
-use Crystoline\Tests\Fixtures\Container\Dependency;
-use Crystoline\Tests\Fixtures\Container\InvokableService;
+use Crystoline\Xpsr\Tests\Fixtures\Container\Dependency;
+use Crystoline\Xpsr\Tests\Fixtures\Container\InvokableService;
 
 final class ApplicationLifecycleTest extends TestCase
 {

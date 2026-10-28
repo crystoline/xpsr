@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\ServiceContainer;
+namespace Crystoline\Xpsr\ServiceContainer;
 
 use Closure;
-use Crystoline\Contracts\Container\ContainerBuilderInterface;
-use Crystoline\Contracts\Container\ContainerInterface;
+use Crystoline\Xpsr\Contracts\Container\ContainerBuilderInterface;
+use Crystoline\Xpsr\Contracts\Container\ContainerInterface;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionClass;

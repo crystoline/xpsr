@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Database\Tests;
+namespace Crystoline\Xpsr\Database\Tests;
 
-use Crystoline\Database\ConnectionManager;
-use Crystoline\Database\Tests\Fixtures\Workspace;
+use Crystoline\Xpsr\Database\ConnectionManager;
+use Crystoline\Xpsr\Database\Tests\Fixtures\Workspace;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;

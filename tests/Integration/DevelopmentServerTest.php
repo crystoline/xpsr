@@ -26,14 +26,14 @@ final class DevelopmentServerTest extends TestCase
         }
         $this->write('xpsr', file_get_contents($project . '/xpsr'));
         $this->write('bootstrap/app.php', '<?php require_once ' . var_export($project . '/vendor/autoload.php', true)
-            . '; $app = new \Crystoline\Application(dirname(__DIR__)); $app->boot(); return $app;');
-        $this->write('config/app.php', '<?php return ["registry" => [\Crystoline\Registry\FactoryRegistry::class, \Crystoline\Registry\RouteServiceRegistry::class, \Crystoline\Registry\ConsoleServiceRegistry::class]];');
+            . '; $app = new \Crystoline\Xpsr\Application(dirname(__DIR__)); $app->boot(); return $app;');
+        $this->write('config/app.php', '<?php return ["registry" => [\Crystoline\Xpsr\Registry\FactoryRegistry::class, \Crystoline\Xpsr\Registry\RouteServiceRegistry::class, \Crystoline\Xpsr\Registry\ConsoleServiceRegistry::class]];');
         $this->write('config/factory.php', '<?php return require ' . var_export($project . '/config/factory.php', true) . ';');
         $this->write('config/routing.php', '<?php return ["files" => ["routes/web.php"]];');
         $this->write('routes/web.php', <<<'PHP'
 <?php
-return static function (\Crystoline\Routing\RouteCollection $routes): void {
-    $routes->get('/hello.json', static fn() => (new \Crystoline\Http\Response\ResponseBuilder(new \Nyholm\Psr7\Factory\Psr17Factory(), new \Nyholm\Psr7\Factory\Psr17Factory()))->json(['ok' => true]));
+return static function (\Crystoline\Xpsr\Routing\RouteCollection $routes): void {
+    $routes->get('/hello.json', static fn() => (new \Crystoline\Xpsr\Http\Response\ResponseBuilder(new \Nyholm\Psr7\Factory\Psr17Factory(), new \Nyholm\Psr7\Factory\Psr17Factory()))->json(['ok' => true]));
 };
 PHP);
         $this->write('public/index.php', file_get_contents($project . '/public/index.php'));

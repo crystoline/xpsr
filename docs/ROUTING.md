@@ -1,6 +1,6 @@
 # Portable routing
 
-XPSR owns route definitions, handler execution, middleware, and URL generation. Matching is supplied by an adapter implementing `Crystoline\Contracts\Routing\RouterInterface`. There is no PSR router registration interface: runtime requests and responses use PSR-7, handlers and middleware use PSR-15, factories use PSR-17, and service resolution uses PSR-11.
+XPSR owns route definitions, handler execution, middleware, and URL generation. Matching is supplied by an adapter implementing `Crystoline\Xpsr\Contracts\Routing\RouterInterface`. There is no PSR router registration interface: runtime requests and responses use PSR-7, handlers and middleware use PSR-15, factories use PSR-17, and service resolution uses PSR-11.
 
 ## Choose an adapter
 
@@ -10,8 +10,8 @@ Each adapter is its own Composer package, so an application installs only the ro
 
 | `ROUTER_ADAPTER` | Package | Class | Router library |
 |---|---|---|---|
-| `fastroute` | `crystoline/xpsr-router-fastroute` | `Crystoline\Router\FastRoute\FastRouteRouter` | FastRoute 1.3 |
-| `sunrise` | `crystoline/xpsr-router-sunrise` | `Crystoline\Router\Sunrise\SunriseRouter` | Sunrise 2.16 (needs `psr/http-message` 1.x) |
+| `fastroute` | `crystoline/xpsr-router-fastroute` | `Crystoline\Xpsr\Router\FastRoute\FastRouteRouter` | FastRoute 1.3 |
+| `sunrise` | `crystoline/xpsr-router-sunrise` | `Crystoline\Xpsr\Router\Sunrise\SunriseRouter` | Sunrise 2.16 (needs `psr/http-message` 1.x) |
 
 The skeleton requires the FastRoute adapter. The Sunrise adapter is a suggestion and, in this repository, a development requirement so both adapters are tested. A `composer install --no-dev` deployment includes Sunrise only after `composer require crystoline/xpsr-router-sunrise`, which setup runs for you. The framework knows these two names without depending on either package. If the selected adapter is not installed, resolving the router fails with the setup command to run.
 
@@ -26,7 +26,7 @@ Each configured route file returns a callable accepting the shared collection. P
 ```php
 use App\Http\Controller\UserController;
 use App\Http\Middleware\Authenticate;
-use Crystoline\Routing\RouteCollection;
+use Crystoline\Xpsr\Routing\RouteCollection;
 
 return static function (RouteCollection $routes): void {
     $routes->get('/users/{id}', [UserController::class, 'show'])
@@ -92,16 +92,16 @@ Middleware entries must be PSR-15 instances or service IDs resolving to them. Ex
 
 `Allow` combines matching methods across overlapping definitions, adds HEAD when GET exists, and adds OPTIONS. Automatic OPTIONS does not run route middleware and does not provide CORS authorization headers. Put cross-cutting policy in global middleware or declare an explicit OPTIONS route. The kernel does not infer Content-Length for HEAD.
 
-404 and 405 are thrown by `RouteDispatcher` as `Crystoline\Http\Exception\NotFoundHttpException` and `MethodNotAllowedHttpException` (the latter carries `Allow`). The kernel's exception handler renders them with the same JSON or HTML body as other errors; see `HTTP.md`. Global middleware therefore sees these outcomes as exceptions, not as 404/405 responses. A middleware that needs a fallback for unmatched paths should catch `NotFoundHttpException`.
+404 and 405 are thrown by `RouteDispatcher` as `Crystoline\Xpsr\Http\Exception\NotFoundHttpException` and `MethodNotAllowedHttpException` (the latter carries `Allow`). The kernel's exception handler renders them with the same JSON or HTML body as other errors; see `HTTP.md`. Global middleware therefore sees these outcomes as exceptions, not as 404/405 responses. A middleware that needs a fallback for unmatched paths should catch `NotFoundHttpException`.
 
 Direct use of `RouteDispatcher` bypasses the outer kernel, including HEAD body suppression and error rendering, so 404/405 surface as exceptions. Applications should use `Application::getHttpKernel()`.
 
 ## Named URLs
 
-Inject `Crystoline\Contracts\Routing\UrlGeneratorInterface` or resolve it from the application:
+Inject `Crystoline\Xpsr\Contracts\Routing\UrlGeneratorInterface` or resolve it from the application:
 
 ```php
-$urls = $application->get(\Crystoline\Contracts\Routing\UrlGeneratorInterface::class);
+$urls = $application->get(\Crystoline\Xpsr\Contracts\Routing\UrlGeneratorInterface::class);
 $path = $urls->generate('users.show', ['id' => 42], ['tab' => 'profile details']);
 // /users/42?tab=profile%20details
 ```
@@ -112,7 +112,7 @@ Parameters accept strings and integers. Unknown route names, missing/extra path 
 
 `RouterInterface::match(ServerRequestInterface): RouteMatch` returns a matched definition and decoded parameters, or a missing result. A missing result with an empty allowed-method list means 404; a nonempty list means method-not-allowed (or automatic OPTIONS when requested). Matching never invokes controllers or middleware.
 
-Custom adapters must implement the documented ordering, normalization, HEAD fallback, and allowed-method policy. `AbstractRouter` supplies that policy for the built-in adapters; its native matcher must perform exact-method matching with encoded parameters. To prove an adapter, extend `Crystoline\Testing\RouterContractTestCase` in its tests and implement `createRouter()`. Both official adapters run exactly this suite (it needs `phpunit/phpunit` and `nyholm/psr7` as development dependencies).
+Custom adapters must implement the documented ordering, normalization, HEAD fallback, and allowed-method policy. `AbstractRouter` supplies that policy for the built-in adapters; its native matcher must perform exact-method matching with encoded parameters. To prove an adapter, extend `Crystoline\Xpsr\Testing\RouterContractTestCase` in its tests and implement `createRouter()`. Both official adapters run exactly this suite (it needs `phpunit/phpunit` and `nyholm/psr7` as development dependencies).
 
 The previous `RouterInterface::dispatch()`, Sunrise-bound route files, framework `Routing\Router` wrapper, and `getUnderlyingRouter()` are replaced by this API. Move native registrations to callable collection files; update custom kernel construction to pass a PSR-15 terminal handler, exception handler, PSR-17 stream factory, and optional middleware. Native Sunrise route handlers/middleware are no longer executed by the adapter.
 

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\HttpClient;
+namespace Crystoline\Xpsr\HttpClient;
 
-use Crystoline\Configuration;
-use Crystoline\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\Configuration;
+use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Client\ClientInterface;

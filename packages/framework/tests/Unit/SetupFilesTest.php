@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Tests\Unit;
+namespace Crystoline\Xpsr\Tests\Unit;
 
-use Crystoline\Console\Setup\ComposerPackageInspector;
-use Crystoline\Console\Setup\EnvironmentFile;
-use Crystoline\Console\Setup\FileTransaction;
+use Crystoline\Xpsr\Console\Setup\ComposerPackageInspector;
+use Crystoline\Xpsr\Console\Setup\EnvironmentFile;
+use Crystoline\Xpsr\Console\Setup\FileTransaction;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Crystoline\Tests\Fixtures\TemporaryDirectory;
+use Crystoline\Xpsr\Tests\Fixtures\TemporaryDirectory;
 
 final class SetupFilesTest extends TestCase
 {

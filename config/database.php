@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 // Database connections, used by the optional crystoline/xpsr-database package:
 //   composer require crystoline/xpsr-database
-// then add Crystoline\Database\DatabaseServiceRegistry::class to app.registry in config/app.php.
+// then add Crystoline\Xpsr\Database\DatabaseServiceRegistry::class to app.registry in config/app.php.
 // Connection options are Doctrine DBAL connection parameters; see packages/database/README.md.
 return [
     'default' => env('DB_CONNECTION', 'sqlite'),

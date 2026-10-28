@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Exception;
+namespace Crystoline\Xpsr\Exception;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
-use Crystoline\Http\Exception\HttpExceptionInterface;
+use Crystoline\Xpsr\Http\Exception\HttpExceptionInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface as SymfonyHttpExceptionInterface;
 use Throwable;

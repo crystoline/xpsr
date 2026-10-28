@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Registry;
+namespace Crystoline\Xpsr\Registry;
 
-use Crystoline\Configuration;
-use Crystoline\ServiceContainer\ContainerException;
-use Crystoline\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\Configuration;
+use Crystoline\Xpsr\ServiceContainer\ContainerException;
+use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
 use Psr\Container\ContainerInterface;
 
 class FactoryRegistry extends ServiceRegistry

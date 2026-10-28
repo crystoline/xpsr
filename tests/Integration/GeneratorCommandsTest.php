@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use Closure;
-use Crystoline\Application;
-use Crystoline\Console\Commands\MakeProviderCommand;
-use Crystoline\Registry\ConsoleServiceRegistry;
-use Crystoline\Registry\EventServiceRegistry;
-use Crystoline\Registry\FactoryRegistry;
-use Crystoline\Registry\RouteServiceRegistry;
-use Crystoline\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\Application;
+use Crystoline\Xpsr\Console\Commands\MakeProviderCommand;
+use Crystoline\Xpsr\Registry\ConsoleServiceRegistry;
+use Crystoline\Xpsr\Registry\EventServiceRegistry;
+use Crystoline\Xpsr\Registry\FactoryRegistry;
+use Crystoline\Xpsr\Registry\RouteServiceRegistry;
+use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -21,7 +21,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Tester\CommandTester;
 use Tests\Fixtures\Console\BufferedConsoleOutput;
-use Crystoline\Tests\Fixtures\TemporaryDirectory;
+use Crystoline\Xpsr\Tests\Fixtures\TemporaryDirectory;
 
 final class GeneratorCommandsTest extends TestCase
 {
@@ -122,7 +122,7 @@ final class GeneratorCommandsTest extends TestCase
         // Route the generated controllers through the generated middleware and boot the generated provider.
         file_put_contents($this->root . '/routes/web.php', <<<PHP
 <?php
-return static function (\\Crystoline\\Routing\\RouteCollection \$routes): void {
+return static function (\\Crystoline\\Xpsr\\Routing\\RouteCollection \$routes): void {
     \$routes->get('/users', [\\{$ns}\\Http\\Controller\\Admin\\UserController::class, 'index'])
         ->middleware(\\{$ns}\\Http\\Middleware\\AuditRequests::class);
     \$routes->get('/ping', \\{$ns}\\Http\\Controller\\PingController::class);

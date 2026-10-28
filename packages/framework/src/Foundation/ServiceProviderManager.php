@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Foundation;
+namespace Crystoline\Xpsr\Foundation;
 
-use Crystoline\Contracts\Container\ContainerInterface;
-use Crystoline\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\Contracts\Container\ContainerInterface;
+use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
 use LogicException;
 use RuntimeException;
 use Throwable;

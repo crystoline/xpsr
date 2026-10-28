@@ -13,7 +13,7 @@ ResponseEmitter ─ headers, status line, body
 
 ## Request bodies
 
-PHP parses `application/x-www-form-urlencoded` and `multipart/form-data` only for POST. The skeleton enables `Crystoline\Http\Middleware\BodyParsingMiddleware` in `config/app.php` to cover the rest:
+PHP parses `application/x-www-form-urlencoded` and `multipart/form-data` only for POST. The skeleton enables `Crystoline\Xpsr\Http\Middleware\BodyParsingMiddleware` in `config/app.php` to cover the rest:
 
 | Content type | Methods | `getParsedBody()` |
 |---|---|---|
@@ -29,14 +29,14 @@ Malformed JSON, or JSON that is a string, number, or `null` rather than an objec
 Because this is global middleware, it runs before routing. A malformed JSON body sent with an unsupported method gets 400, not 405. To change the limit, bind the middleware in `config/factory.php`:
 
 ```php
-Crystoline\Http\Middleware\BodyParsingMiddleware::class => static fn() => new Crystoline\Http\Middleware\BodyParsingMiddleware(5 * 1024 * 1024),
+Crystoline\Xpsr\Http\Middleware\BodyParsingMiddleware::class => static fn() => new Crystoline\Xpsr\Http\Middleware\BodyParsingMiddleware(5 * 1024 * 1024),
 ```
 
 Remove it from `app.middleware` to handle bodies yourself.
 
 ## Errors
 
-The kernel catches every exception from middleware, routing, and handlers and passes it to `Crystoline\Exception\ExceptionHandlerInterface`. The default `ExceptionHandler`:
+The kernel catches every exception from middleware, routing, and handlers and passes it to `Crystoline\Xpsr\Exception\ExceptionHandlerInterface`. The default `ExceptionHandler`:
 
 - uses the exception's status and headers (such as `Allow`) for HTTP exceptions, and 500 for everything else;
 - returns JSON (`{"message": ...}`) when the `Accept` header prefers `application/json` or a `+json` type, and HTML otherwise;
@@ -45,7 +45,7 @@ The kernel catches every exception from middleware, routing, and handlers and pa
 
 ### HTTP exceptions
 
-Throw these from handlers and middleware to send an error status. They are in `Crystoline\Http\Exception`:
+Throw these from handlers and middleware to send an error status. They are in `Crystoline\Xpsr\Http\Exception`:
 
 | Class | Status | Extra constructor argument |
 |---|---|---|
@@ -62,7 +62,7 @@ Throw these from handlers and middleware to send an error status. They are in `C
 | `ServiceUnavailableHttpException` | 503 | |
 | `HttpException` | any 400–599 | `$statusCode` first |
 
-The other arguments are `$message`, `$previous`, `$headers`, and `$code`. The message reaches clients only when `APP_DEBUG=true`. Statuses 500 and above are logged; client errors are not. To create your own, implement `Crystoline\Http\Exception\HttpExceptionInterface` or extend `HttpException`.
+The other arguments are `$message`, `$previous`, `$headers`, and `$code`. The message reaches clients only when `APP_DEBUG=true`. Statuses 500 and above are logged; client errors are not. To create your own, implement `Crystoline\Xpsr\Http\Exception\HttpExceptionInterface` or extend `HttpException`.
 
 Unmatched routes (404) and unsupported methods (405) are thrown as `NotFoundHttpException` and `MethodNotAllowedHttpException`, so they receive the same JSON or HTML body as other errors.
 
@@ -72,15 +72,15 @@ If the application cannot even boot, `public/index.php` logs the cause with `err
 
 ## Proxies
 
-`Crystoline\Factory\ServerRequestFactory` builds the request from PHP's globals. It keeps `Forwarded` and `X-Forwarded-*` headers, which set the scheme (for example HTTPS behind a TLS-terminating load balancer), only when the client address matches `app.trusted_proxies`. Configure that list with `TRUSTED_PROXIES`, comma-separated IP addresses or CIDR ranges. From any other address, those headers are removed from the request and its server parameters. See [DEPLOYMENT.md](DEPLOYMENT.md#proxies-and-https).
+`Crystoline\Xpsr\Factory\ServerRequestFactory` builds the request from PHP's globals. It keeps `Forwarded` and `X-Forwarded-*` headers, which set the scheme (for example HTTPS behind a TLS-terminating load balancer), only when the client address matches `app.trusted_proxies`. Configure that list with `TRUSTED_PROXIES`, comma-separated IP addresses or CIDR ranges. From any other address, those headers are removed from the request and its server parameters. See [DEPLOYMENT.md](DEPLOYMENT.md#proxies-and-https).
 
 ## Logging
 
-The default `Psr\Log\LoggerInterface` is `Crystoline\Log\ErrorLogLogger`. It writes through PHP's `error_log()`, so messages go to the web server's error log (Apache, PHP-FPM), to stderr for the CLI and development server, or to the file named by the `error_log` ini setting. Logged exceptions include their stack trace. `LOG_LEVEL` sets the minimum level (`debug` by default; for example `LOG_LEVEL=warning`). Replace the binding in `config/factory.php` to use another PSR-3 logger, such as Monolog.
+The default `Psr\Log\LoggerInterface` is `Crystoline\Xpsr\Log\ErrorLogLogger`. It writes through PHP's `error_log()`, so messages go to the web server's error log (Apache, PHP-FPM), to stderr for the CLI and development server, or to the file named by the `error_log` ini setting. Logged exceptions include their stack trace. `LOG_LEVEL` sets the minimum level (`debug` by default; for example `LOG_LEVEL=warning`). Replace the binding in `config/factory.php` to use another PSR-3 logger, such as Monolog.
 
 ## Sending the response
 
-`Crystoline\Http\ResponseEmitter` sends:
+`Crystoline\Xpsr\Http\ResponseEmitter` sends:
 
 1. Every header value in order. Repeated values become separate header lines, and `Set-Cookie` never replaces earlier cookies, including ones set by PHP's session functions.
 2. The status line, last, with the response's status passed on every header call. This prevents PHP from changing the status, for example turning a `Location` header into a 302.

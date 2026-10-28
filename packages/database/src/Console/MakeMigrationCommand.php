@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Database\Console;
+namespace Crystoline\Xpsr\Database\Console;
 
 use Closure;
-use Crystoline\Database\Migration\Migrator;
-use Crystoline\Database\MigratorFactory;
+use Crystoline\Xpsr\Database\Migration\Migrator;
+use Crystoline\Xpsr\Database\MigratorFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Input\InputArgument;

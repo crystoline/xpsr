@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Console\Commands;
+namespace Crystoline\Xpsr\Console\Commands;
 
 use Closure;
-use Crystoline\Routing\RouteCollection;
+use Crystoline\Xpsr\Routing\RouteCollection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Helper\Table;

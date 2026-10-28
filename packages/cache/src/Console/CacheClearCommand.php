@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Cache\Console;
+namespace Crystoline\Xpsr\Cache\Console;
 
-use Crystoline\Cache\CacheServiceRegistry;
-use Crystoline\Configuration;
+use Crystoline\Xpsr\Cache\CacheServiceRegistry;
+use Crystoline\Xpsr\Configuration;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatter;

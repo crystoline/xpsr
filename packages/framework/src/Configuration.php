@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline;
+namespace Crystoline\Xpsr;
 
 use Illuminate\Config\Repository;
 use RuntimeException;

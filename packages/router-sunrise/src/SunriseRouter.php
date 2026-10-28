@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Router\Sunrise;
+namespace Crystoline\Xpsr\Router\Sunrise;
 
-use Crystoline\Routing\AbstractRouter;
-use Crystoline\Routing\RouteCollection;
-use Crystoline\Routing\RouteDefinition;
-use Crystoline\Routing\RouteMatch;
+use Crystoline\Xpsr\Routing\AbstractRouter;
+use Crystoline\Xpsr\Routing\RouteCollection;
+use Crystoline\Xpsr\Routing\RouteDefinition;
+use Crystoline\Xpsr\Routing\RouteMatch;
 use LogicException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

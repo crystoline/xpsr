@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Tests\Unit;
+namespace Crystoline\Xpsr\Tests\Unit;
 
-use Crystoline\Http\Middleware\BodyParsingMiddleware;
+use Crystoline\Xpsr\Http\Middleware\BodyParsingMiddleware;
 use InvalidArgumentException;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Response;
@@ -14,8 +14,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Crystoline\Http\Exception\HttpExceptionInterface;
-use Crystoline\Tests\Fixtures\Http\ChunkedStream;
+use Crystoline\Xpsr\Http\Exception\HttpExceptionInterface;
+use Crystoline\Xpsr\Tests\Fixtures\Http\ChunkedStream;
 
 final class BodyParsingMiddlewareTest extends TestCase
 {

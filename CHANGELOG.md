@@ -4,9 +4,23 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+### Breaking
+
+- **Every class moves from `Crystoline\` to `Crystoline\Xpsr\`**, for example `Crystoline\Application` to `Crystoline\Xpsr\Application`, `Crystoline\Cache\CacheServiceRegistry` to `Crystoline\Xpsr\Cache\CacheServiceRegistry`, and `Crystoline\Router\FastRoute\FastRouteRouter` to `Crystoline\Xpsr\Router\FastRoute\FastRouteRouter`. The vendor namespace is no longer taken by one product, and it matches the `crystoline/xpsr-*` package names. There are no aliases for the old names.
+
+  To upgrade an application, change its requirements to `^0.2`, rewrite the references in its own code and configuration, and update:
+
+  ```sh
+  grep -rlE 'Crystoline\\' app bootstrap config public routes tests \
+      | xargs perl -pi -e 's/\bnamespace Crystoline;/namespace Crystoline\\Xpsr;/g; s/\bCrystoline(\\+)(?!Xpsr\b)/Crystoline${1}Xpsr${1}/g'
+  composer update 'crystoline/*'
+  ```
+
+  The second pattern keeps the backslash style of each reference, so it also rewrites names written with double backslashes, such as `ROUTER_ADAPTER` class names in strings. Check the result with `composer test`.
+
 ### Added
 
-- PSR-14 events: `Crystoline\Events\EventDispatcher`, `ListenerProvider`, and the optional `StoppableEvent` base class, registered by `Crystoline\Registry\EventServiceRegistry`. Listeners are listed in `config/events.php` or added by providers with a priority. See [docs/EVENTS.md](docs/EVENTS.md).
+- PSR-14 events: `Crystoline\Xpsr\Events\EventDispatcher`, `ListenerProvider`, and the optional `StoppableEvent` base class, registered by `Crystoline\Xpsr\Registry\EventServiceRegistry`. Listeners are listed in `config/events.php` or added by providers with a priority. See [docs/EVENTS.md](docs/EVENTS.md).
 - `php xpsr event:list`, `make:event`, and `make:listener`.
 - New projects list `EventServiceRegistry` in `app.registry` and include `config/events.php`. Existing projects can add both to use events.
 - `crystoline/xpsr-http-client`: an optional package providing a configured PSR-18 client, named clients (`http_client.<name>`) with their own base URL and headers, Symfony's `HttpClientInterface`, and `Testing\FakeClient` for tests. Options live in `config/http_client.php`. See [its README](packages/http-client/README.md).

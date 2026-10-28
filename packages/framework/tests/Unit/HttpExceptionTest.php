@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Tests\Unit;
+namespace Crystoline\Xpsr\Tests\Unit;
 
-use Crystoline\Exception\ExceptionHandler;
-use Crystoline\Http\Exception\BadRequestHttpException;
-use Crystoline\Http\Exception\ConflictHttpException;
-use Crystoline\Http\Exception\ForbiddenHttpException;
-use Crystoline\Http\Exception\HttpException;
-use Crystoline\Http\Exception\HttpExceptionInterface;
-use Crystoline\Http\Exception\MethodNotAllowedHttpException;
-use Crystoline\Http\Exception\NotFoundHttpException;
-use Crystoline\Http\Exception\PayloadTooLargeHttpException;
-use Crystoline\Http\Exception\ServiceUnavailableHttpException;
-use Crystoline\Http\Exception\TooManyRequestsHttpException;
-use Crystoline\Http\Exception\UnauthorizedHttpException;
-use Crystoline\Http\Exception\UnprocessableEntityHttpException;
-use Crystoline\Http\Exception\UnsupportedMediaTypeHttpException;
+use Crystoline\Xpsr\Exception\ExceptionHandler;
+use Crystoline\Xpsr\Http\Exception\BadRequestHttpException;
+use Crystoline\Xpsr\Http\Exception\ConflictHttpException;
+use Crystoline\Xpsr\Http\Exception\ForbiddenHttpException;
+use Crystoline\Xpsr\Http\Exception\HttpException;
+use Crystoline\Xpsr\Http\Exception\HttpExceptionInterface;
+use Crystoline\Xpsr\Http\Exception\MethodNotAllowedHttpException;
+use Crystoline\Xpsr\Http\Exception\NotFoundHttpException;
+use Crystoline\Xpsr\Http\Exception\PayloadTooLargeHttpException;
+use Crystoline\Xpsr\Http\Exception\ServiceUnavailableHttpException;
+use Crystoline\Xpsr\Http\Exception\TooManyRequestsHttpException;
+use Crystoline\Xpsr\Http\Exception\UnauthorizedHttpException;
+use Crystoline\Xpsr\Http\Exception\UnprocessableEntityHttpException;
+use Crystoline\Xpsr\Http\Exception\UnsupportedMediaTypeHttpException;
 use InvalidArgumentException;
 use LogicException;
 use Nyholm\Psr7\Factory\Psr17Factory;

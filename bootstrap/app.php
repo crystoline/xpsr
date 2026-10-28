@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Crystoline\Application;
+use Crystoline\Xpsr\Application;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 

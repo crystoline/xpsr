@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Database;
+namespace Crystoline\Xpsr\Database;
 
-use Crystoline\Database\Migration\Migrator;
+use Crystoline\Xpsr\Database\Migration\Migrator;
 use InvalidArgumentException;
 
 /**

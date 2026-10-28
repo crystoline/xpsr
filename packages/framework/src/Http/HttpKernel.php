@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Http;
+namespace Crystoline\Xpsr\Http;
 
-use Crystoline\Exception\ExceptionHandlerInterface;
+use Crystoline\Xpsr\Exception\ExceptionHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;

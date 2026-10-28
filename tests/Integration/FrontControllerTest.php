@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
-use Crystoline\Console\Setup\BootstrapCheck;
+use Crystoline\Xpsr\Console\Setup\BootstrapCheck;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\Process\Process;
 use Tests\Fixtures\SkeletonProject;
-use Crystoline\Tests\Fixtures\TemporaryDirectory;
+use Crystoline\Xpsr\Tests\Fixtures\TemporaryDirectory;
 
 /**
  * Serves a skeleton copy with PHP's built-in server and talks raw HTTP to public/index.php.
@@ -27,10 +27,10 @@ final class FrontControllerTest extends TestCase
         file_put_contents($this->root . '/routes/test.php', <<<'PHP'
 <?php
 
-use Crystoline\Routing\RouteCollection;
+use Crystoline\Xpsr\Routing\RouteCollection;
 use Nyholm\Psr7\Response;
 use Psr\Http\Message\ServerRequestInterface;
-use Crystoline\Tests\Fixtures\Http\ChunkedStream;
+use Crystoline\Xpsr\Tests\Fixtures\Http\ChunkedStream;
 
 return static function (RouteCollection $routes): void {
     $routes->get('/headers', static fn() => (new Response(201, ['X-Multi' => ['a', 'b']], 'made', '1.1', 'Made'))

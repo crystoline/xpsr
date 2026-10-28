@@ -9,7 +9,7 @@ composer require crystoline/xpsr-cache
 Add the provider to `app.registry` in `config/app.php`:
 
 ```php
-Crystoline\Cache\CacheServiceRegistry::class,
+Crystoline\Xpsr\Cache\CacheServiceRegistry::class,
 ```
 
 Then inject the cache wherever you need it:

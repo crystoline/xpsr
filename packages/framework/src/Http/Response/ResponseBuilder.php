@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Http\Response;
+namespace Crystoline\Xpsr\Http\Response;
 
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;

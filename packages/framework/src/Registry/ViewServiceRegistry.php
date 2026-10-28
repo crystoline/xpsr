@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Registry;
+namespace Crystoline\Xpsr\Registry;
 
-use Crystoline\Configuration;
-use Crystoline\ServiceContainer\ContainerException;
-use Crystoline\ServiceContainer\ServiceRegistry;
-use Crystoline\View\ViewHandler;
-use Crystoline\View\ViewHandlerInterface;
+use Crystoline\Xpsr\Configuration;
+use Crystoline\Xpsr\ServiceContainer\ContainerException;
+use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\View\ViewHandler;
+use Crystoline\Xpsr\View\ViewHandlerInterface;
 use Psr\Container\ContainerInterface;
 
 /**

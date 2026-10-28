@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Tests\Unit;
+namespace Crystoline\Xpsr\Tests\Unit;
 
 use Countable;
-use Crystoline\Configuration;
-use Crystoline\Console\CommandRegistry;
-use Crystoline\Console\Commands\EventListCommand;
-use Crystoline\Events\EventDispatcher;
-use Crystoline\Events\ListenerProvider;
-use Crystoline\Events\StoppableEvent;
-use Crystoline\Foundation\ServiceProviderManager;
-use Crystoline\Registry\EventServiceRegistry;
-use Crystoline\ServiceContainer\ContainerException;
-use Crystoline\ServiceContainer\ServiceContainer;
+use Crystoline\Xpsr\Configuration;
+use Crystoline\Xpsr\Console\CommandRegistry;
+use Crystoline\Xpsr\Console\Commands\EventListCommand;
+use Crystoline\Xpsr\Events\EventDispatcher;
+use Crystoline\Xpsr\Events\ListenerProvider;
+use Crystoline\Xpsr\Events\StoppableEvent;
+use Crystoline\Xpsr\Foundation\ServiceProviderManager;
+use Crystoline\Xpsr\Registry\EventServiceRegistry;
+use Crystoline\Xpsr\ServiceContainer\ContainerException;
+use Crystoline\Xpsr\ServiceContainer\ServiceContainer;
 use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;

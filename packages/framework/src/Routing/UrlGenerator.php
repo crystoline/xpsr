@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Routing;
+namespace Crystoline\Xpsr\Routing;
 
-use Crystoline\Contracts\Routing\UrlGeneratorInterface;
+use Crystoline\Xpsr\Contracts\Routing\UrlGeneratorInterface;
 
 final class UrlGenerator implements UrlGeneratorInterface
 {

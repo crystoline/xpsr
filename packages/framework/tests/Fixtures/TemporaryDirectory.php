@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Tests\Fixtures;
+namespace Crystoline\Xpsr\Tests\Fixtures;
 
 use FilesystemIterator;
 use RecursiveDirectoryIterator;

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use Crystoline\Http\Response\ResponseBuilder;
-use Crystoline\Routing\RouteCollection;
+use Crystoline\Xpsr\Http\Response\ResponseBuilder;
+use Crystoline\Xpsr\Routing\RouteCollection;
 use Psr\Http\Message\ResponseInterface;
 
 return static function (RouteCollection $routes): void {

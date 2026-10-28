@@ -2,7 +2,7 @@
 
 namespace App\Http\Controller;
 
-use Crystoline\Application;
+use Crystoline\Xpsr\Application;
 use Psr\Http\Message\RequestInterface;
 
 class HomeController

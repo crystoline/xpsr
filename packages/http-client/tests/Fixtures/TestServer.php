@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\HttpClient\Tests\Fixtures;
+namespace Crystoline\Xpsr\HttpClient\Tests\Fixtures;
 
 use RuntimeException;
 

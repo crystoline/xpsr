@@ -19,19 +19,19 @@ crystoline/xpsr (skeleton, repository root)
 
 | Package | Namespace | Depends on |
 |---|---|---|
-| `crystoline/xpsr-framework` | `Crystoline\` | PSR interfaces, Symfony Console/Process/Finder, Illuminate Config, phpdotenv, Nyholm PSR-7 server, and any PSR-17 implementation (`psr/http-factory-implementation`). Accepts `psr/http-message` 1.1 or 2.0. Suggests Twig (views) and Whoops (debug pages), but does not require them. |
-| `crystoline/xpsr-router-fastroute` | `Crystoline\Router\FastRoute\` | framework, `nikic/fast-route` ^1.3 |
-| `crystoline/xpsr-cache` | `Crystoline\Cache\` | framework, `symfony/cache` ^7.4, `psr/cache` 2 or 3, `psr/simple-cache` 1 to 3 (1.x keeps it installable next to the Sunrise adapter) |
-| `crystoline/xpsr-database` | `Crystoline\Database\` | framework, `doctrine/dbal` ^4.5. Not published yet; see [Adding a package](#adding-a-package). |
-| `crystoline/xpsr-http-client` | `Crystoline\HttpClient\` | framework, `symfony/http-client` ^7.4, `psr/http-client` ^1.0.3. Not published yet; see [Adding a package](#adding-a-package). |
-| `crystoline/xpsr-router-sunrise` | `Crystoline\Router\Sunrise\` | framework, `sunrise/http-router` ^2.16, `psr/http-message` ^1.1 |
+| `crystoline/xpsr-framework` | `Crystoline\Xpsr\` | PSR interfaces, Symfony Console/Process/Finder, Illuminate Config, phpdotenv, Nyholm PSR-7 server, and any PSR-17 implementation (`psr/http-factory-implementation`). Accepts `psr/http-message` 1.1 or 2.0. Suggests Twig (views) and Whoops (debug pages), but does not require them. |
+| `crystoline/xpsr-router-fastroute` | `Crystoline\Xpsr\Router\FastRoute\` | framework, `nikic/fast-route` ^1.3 |
+| `crystoline/xpsr-cache` | `Crystoline\Xpsr\Cache\` | framework, `symfony/cache` ^7.4, `psr/cache` 2 or 3, `psr/simple-cache` 1 to 3 (1.x keeps it installable next to the Sunrise adapter) |
+| `crystoline/xpsr-database` | `Crystoline\Xpsr\Database\` | framework, `doctrine/dbal` ^4.5. Not published yet; see [Adding a package](#adding-a-package). |
+| `crystoline/xpsr-http-client` | `Crystoline\Xpsr\HttpClient\` | framework, `symfony/http-client` ^7.4, `psr/http-client` ^1.0.3. Not published yet; see [Adding a package](#adding-a-package). |
+| `crystoline/xpsr-router-sunrise` | `Crystoline\Xpsr\Router\Sunrise\` | framework, `sunrise/http-router` ^2.16, `psr/http-message` ^1.1 |
 | `crystoline/xpsr` | `App\` | framework, FastRoute adapter, `nyholm/psr7`, `twig/twig`; development: `filp/whoops`, `phpunit/phpunit` |
 
 Rules that keep the split clean:
 
 - The framework must not reference `App\`, skeleton paths, or adapter classes. It knows the official adapter names (`fastroute`, `sunrise`) and their class names only as strings in `RouteServiceRegistry::ADAPTERS`. If the selected adapter is missing, it reports which package to install.
 - Adapters depend on the framework, never on each other.
-- Shared test fixtures live in the framework's tests (`Crystoline\Tests\Fixtures\`). Fixtures that need the skeleton live in the root `tests/`.
+- Shared test fixtures live in the framework's tests (`Crystoline\Xpsr\Tests\Fixtures\`). Fixtures that need the skeleton live in the root `tests/`.
 
 Known coupling: the `setup` command's presets name the skeleton's route files (`routes/api.php`, `routes/web.php`), and its routing template matches the skeleton's `config/routing.php`. This belongs in an installer package once `xpsr new` exists.
 
@@ -60,7 +60,7 @@ Where tests go:
 
 | Test | Location |
 |---|---|
-| Framework unit tests | `packages/framework/tests` (`Crystoline\Tests\`) |
+| Framework unit tests | `packages/framework/tests` (`Crystoline\Xpsr\Tests\`) |
 | Adapter tests (the shared router contract) | `packages/router-*/tests` |
 | Tests that need the skeleton's files: application boot, console, generators, setup, front controller | `tests/` (`Tests\`) |
 | Installing packages separately and `composer create-project` | `tests/Packaging` (group `packaging`, excluded from `composer test`) |

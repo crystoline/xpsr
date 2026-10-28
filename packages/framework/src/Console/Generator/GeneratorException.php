@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Console\Generator;
+namespace Crystoline\Xpsr\Console\Generator;
 
 use RuntimeException;
 

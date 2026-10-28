@@ -1,6 +1,6 @@
 <?php
 
-namespace Crystoline\View;
+namespace Crystoline\Xpsr\View;
 
 class ViewHandler implements ViewHandlerInterface
 {

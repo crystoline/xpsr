@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Packaging;
 
-use Crystoline\Console\Setup\BootstrapCheck;
-use Crystoline\Tests\Fixtures\TemporaryDirectory;
+use Crystoline\Xpsr\Console\Setup\BootstrapCheck;
+use Crystoline\Xpsr\Tests\Fixtures\TemporaryDirectory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
@@ -158,7 +158,7 @@ final class PackagesTest extends TestCase
         // A real `composer require` of the Sunrise adapter, run by setup.
         $output = $xpsr('setup', '--router=sunrise', '--preset=web', '--install-dependencies', '--no-interaction', '--composer=' . end($this->composer));
         self::assertStringContainsString('Installed crystoline/xpsr-router-sunrise:^0.1@dev.', $output);
-        self::assertStringContainsString('matched by Crystoline\Router\Sunrise\SunriseRouter', $output);
+        self::assertStringContainsString('matched by Crystoline\Xpsr\Router\Sunrise\SunriseRouter', $output);
         $manifest = json_decode((string) file_get_contents($project . '/composer.json'), true, flags: JSON_THROW_ON_ERROR);
         self::assertArrayHasKey('crystoline/xpsr-router-sunrise', $manifest['require']);
         self::assertSame('sunrise', json_decode($xpsr('about', '--json'), true)['router']);

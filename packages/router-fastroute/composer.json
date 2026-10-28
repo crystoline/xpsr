@@ -20,12 +20,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Crystoline\\Router\\FastRoute\\": "src/"
+      "Crystoline\\Xpsr\\Router\\FastRoute\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Crystoline\\Router\\FastRoute\\Tests\\": "tests/"
+      "Crystoline\\Xpsr\\Router\\FastRoute\\Tests\\": "tests/"
     }
   },
   "extra": {

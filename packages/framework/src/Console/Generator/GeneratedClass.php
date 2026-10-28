@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Console\Generator;
+namespace Crystoline\Xpsr\Console\Generator;
 
 /**
  * A validated generator target: where the class lives and where its file goes.

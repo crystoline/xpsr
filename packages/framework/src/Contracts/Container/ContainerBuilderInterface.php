@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Contracts\Container;
+namespace Crystoline\Xpsr\Contracts\Container;
 
 use Closure;
 

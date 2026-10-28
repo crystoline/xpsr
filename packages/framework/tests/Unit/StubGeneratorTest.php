@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Tests\Unit;
+namespace Crystoline\Xpsr\Tests\Unit;
 
-use Crystoline\Console\Commands\MakeCommandCommand;
-use Crystoline\Console\Generator\GeneratorException;
-use Crystoline\Console\Generator\StubGenerator;
+use Crystoline\Xpsr\Console\Commands\MakeCommandCommand;
+use Crystoline\Xpsr\Console\Generator\GeneratorException;
+use Crystoline\Xpsr\Console\Generator\StubGenerator;
 use InvalidArgumentException;
 use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Crystoline\Tests\Fixtures\TemporaryDirectory;
+use Crystoline\Xpsr\Tests\Fixtures\TemporaryDirectory;
 
 final class StubGeneratorTest extends TestCase
 {

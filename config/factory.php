@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-use Crystoline\Configuration;
-use Crystoline\Exception\ExceptionHandler;
-use Crystoline\Exception\ExceptionHandlerInterface;
-use Crystoline\Factory\ServerRequestFactory;
-use Crystoline\Log\ErrorLogLogger;
+use Crystoline\Xpsr\Configuration;
+use Crystoline\Xpsr\Exception\ExceptionHandler;
+use Crystoline\Xpsr\Exception\ExceptionHandlerInterface;
+use Crystoline\Xpsr\Factory\ServerRequestFactory;
+use Crystoline\Xpsr\Log\ErrorLogLogger;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestFactoryInterface;

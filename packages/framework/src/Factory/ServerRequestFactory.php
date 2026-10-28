@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Factory;
+namespace Crystoline\Xpsr\Factory;
 
-use Crystoline\Configuration;
+use Crystoline\Xpsr\Configuration;
 use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
@@ -12,7 +12,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
-use Crystoline\Http\IpRange;
+use Crystoline\Xpsr\Http\IpRange;
 
 /**
  * Creates the server request from PHP globals.

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Routing;
+namespace Crystoline\Xpsr\Routing;
 
-use Crystoline\Contracts\Routing\RouterInterface;
+use Crystoline\Xpsr\Contracts\Routing\RouterInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /** Shared HTTP policy; nativeMatch must match only the supplied method, without fallback. */

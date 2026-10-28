@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Console\Commands;
+namespace Crystoline\Xpsr\Console\Commands;
 
-use Crystoline\Console\CommandRegistry;
-use Crystoline\Console\Generator\GeneratedClass;
-use Crystoline\Console\Generator\StubGenerator;
+use Crystoline\Xpsr\Console\CommandRegistry;
+use Crystoline\Xpsr\Console\Generator\GeneratedClass;
+use Crystoline\Xpsr\Console\Generator\StubGenerator;
 use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -82,7 +82,7 @@ final class MakeCommandCommand extends AbstractMakeCommand
         return [
             'Next: register it in a provider, as App\Registry\CommandServiceRegistry does:',
             "    register(): \$this->container->bind({$class});",
-            '    boot():     $this->container->get(\Crystoline\Console\CommandRegistry::class)',
+            '    boot():     $this->container->get(\Crystoline\Xpsr\Console\CommandRegistry::class)',
             "                    ->register({$replacements['command']}, {$class}, {$replacements['description']});",
         ];
     }

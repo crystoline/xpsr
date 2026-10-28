@@ -28,12 +28,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Crystoline\\Database\\": "src/"
+      "Crystoline\\Xpsr\\Database\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Crystoline\\Database\\Tests\\": "tests/"
+      "Crystoline\\Xpsr\\Database\\Tests\\": "tests/"
     }
   },
   "extra": {

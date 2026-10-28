@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Router\Sunrise\Tests;
+namespace Crystoline\Xpsr\Router\Sunrise\Tests;
 
-use Crystoline\Contracts\Routing\RouterInterface;
-use Crystoline\Router\Sunrise\SunriseRouter;
-use Crystoline\Routing\RouteCollection;
-use Crystoline\Testing\RouterContractTestCase;
+use Crystoline\Xpsr\Contracts\Routing\RouterInterface;
+use Crystoline\Xpsr\Router\Sunrise\SunriseRouter;
+use Crystoline\Xpsr\Routing\RouteCollection;
+use Crystoline\Xpsr\Testing\RouterContractTestCase;
 
 final class SunriseRouterTest extends RouterContractTestCase
 {

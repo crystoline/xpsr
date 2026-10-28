@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Http\Exception;
+namespace Crystoline\Xpsr\Http\Exception;
 
 use InvalidArgumentException;
 use RuntimeException;

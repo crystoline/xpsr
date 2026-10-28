@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Log;
+namespace Crystoline\Xpsr\Log;
 
 use Closure;
 use DateTimeInterface;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Tests\Unit;
+namespace Crystoline\Xpsr\Tests\Unit;
 
-use Crystoline\Exception\ExceptionHandlerInterface;
-use Crystoline\Http\HttpKernel;
+use Crystoline\Xpsr\Exception\ExceptionHandlerInterface;
+use Crystoline\Xpsr\Http\HttpKernel;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

@@ -30,7 +30,7 @@ php xpsr setup --router=fastroute --preset=api
 ```text
 Router: fastroute. Preset: api.
 Write config/routing.php to load routes/api.php.
-Bootstrap check passed: 1 route(s); 1 without placeholders matched by Crystoline\Router\FastRoute\FastRouteRouter.
+Bootstrap check passed: 1 route(s); 1 without placeholders matched by Crystoline\Xpsr\Router\FastRoute\FastRouteRouter.
 ```
 
 Start the development server and keep it running in another terminal:
@@ -55,11 +55,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controller;
 
-use Crystoline\Http\Response\ResponseBuilder;
+use Crystoline\Xpsr\Http\Response\ResponseBuilder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Crystoline\Http\Exception\BadRequestHttpException;
-use Crystoline\Http\Exception\NotFoundHttpException;
+use Crystoline\Xpsr\Http\Exception\BadRequestHttpException;
+use Crystoline\Xpsr\Http\Exception\NotFoundHttpException;
 
 final class TaskController
 {
@@ -100,7 +100,7 @@ Things to notice:
 - **Injection:** the constructor's `ResponseBuilder` is supplied by the container. Controllers need no registration.
 - **Route parameters:** the `{id}` placeholder arrives as a request attribute.
 - **Request bodies:** JSON is already decoded in `getParsedBody()`, by the body-parsing middleware the skeleton enables.
-- **Errors:** throwing one of XPSR's HTTP exceptions (`Crystoline\Http\Exception\*`) produces that status code. API clients get `{"message": "Bad Request"}`; the detailed message appears only with `APP_DEBUG=true`.
+- **Errors:** throwing one of XPSR's HTTP exceptions (`Crystoline\Xpsr\Http\Exception\*`) produces that status code. API clients get `{"message": "Bad Request"}`; the detailed message appears only with `APP_DEBUG=true`.
 
 Add the routes to `routes/api.php`:
 
@@ -111,8 +111,8 @@ declare(strict_types=1);
 
 use App\Http\Controller\TaskController;
 use App\Http\Middleware\RequireApiKey;
-use Crystoline\Http\Response\ResponseBuilder;
-use Crystoline\Routing\RouteCollection;
+use Crystoline\Xpsr\Http\Response\ResponseBuilder;
+use Crystoline\Xpsr\Routing\RouteCollection;
 use Psr\Http\Message\ResponseInterface;
 
 return static function (RouteCollection $routes): void {
@@ -143,8 +143,8 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
-use Crystoline\Configuration;
-use Crystoline\Http\Response\ResponseBuilder;
+use Crystoline\Xpsr\Configuration;
+use Crystoline\Xpsr\Http\Response\ResponseBuilder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -237,8 +237,8 @@ namespace App\Registry;
 
 use App\Console\Commands\GreetCommand;
 use App\Console\Commands\TaskCountCommand;
-use Crystoline\Console\CommandRegistry;
-use Crystoline\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\Console\CommandRegistry;
+use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
 
 final class CommandServiceRegistry extends ServiceRegistry
 {
@@ -350,7 +350,7 @@ php xpsr setup --router=sunrise --install-dependencies
 Router: sunrise. Preset: api.
 Installed crystoline/xpsr-router-sunrise:^0.1.
 Set ROUTER_ADAPTER=sunrise in .env.
-Bootstrap check passed: 4 route(s); 3 without placeholders matched by Crystoline\Router\Sunrise\SunriseRouter.
+Bootstrap check passed: 4 route(s); 3 without placeholders matched by Crystoline\Xpsr\Router\Sunrise\SunriseRouter.
 ```
 
 Run `composer test` again: the same 9 tests pass without changing a route or controller. Switch back with `php xpsr setup --router=fastroute`.

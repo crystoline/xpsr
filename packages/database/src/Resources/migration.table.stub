@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Crystoline\Database\Migration\Migration;
+use Crystoline\Xpsr\Database\Migration\Migration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\TableEditor;

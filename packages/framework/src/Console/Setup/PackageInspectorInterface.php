@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Console\Setup;
+namespace Crystoline\Xpsr\Console\Setup;
 
 /** @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md. */
 interface PackageInspectorInterface

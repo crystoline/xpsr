@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Cache\Tests;
+namespace Crystoline\Xpsr\Cache\Tests;
 
-use Crystoline\Application;
-use Crystoline\Cache\CacheServiceRegistry;
-use Crystoline\Cache\Console\CacheClearCommand;
-use Crystoline\Configuration;
-use Crystoline\Console\CommandRegistry;
-use Crystoline\Registry\ConsoleServiceRegistry;
-use Crystoline\ServiceContainer\ServiceContainer;
+use Crystoline\Xpsr\Application;
+use Crystoline\Xpsr\Cache\CacheServiceRegistry;
+use Crystoline\Xpsr\Cache\Console\CacheClearCommand;
+use Crystoline\Xpsr\Configuration;
+use Crystoline\Xpsr\Console\CommandRegistry;
+use Crystoline\Xpsr\Registry\ConsoleServiceRegistry;
+use Crystoline\Xpsr\ServiceContainer\ServiceContainer;
 use FilesystemIterator;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;

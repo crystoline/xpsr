@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Http;
+namespace Crystoline\Xpsr\Http;
 
 /**
  * Matches IPv4 and IPv6 addresses against exact addresses and CIDR ranges, such as

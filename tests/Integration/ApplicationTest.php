@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
-use Crystoline\Application;
-use Crystoline\Configuration;
+use Crystoline\Xpsr\Application;
+use Crystoline\Xpsr\Configuration;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;

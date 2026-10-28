@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\ServiceContainer;
+namespace Crystoline\Xpsr\ServiceContainer;
 
 use Closure;
 use Throwable;

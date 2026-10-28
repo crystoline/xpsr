@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
-use Crystoline\Application;
-use Crystoline\Console\Commands\RouteListCommand;
-use Crystoline\Console\Commands\ServeCommand;
-use Crystoline\Routing\RouteCollection;
+use Crystoline\Xpsr\Application;
+use Crystoline\Xpsr\Console\Commands\RouteListCommand;
+use Crystoline\Xpsr\Console\Commands\ServeCommand;
+use Crystoline\Xpsr\Routing\RouteCollection;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\ArrayInput;

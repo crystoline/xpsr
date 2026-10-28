@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Routing;
+namespace Crystoline\Xpsr\Routing;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;

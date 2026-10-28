@@ -1,6 +1,6 @@
 # Container and provider lifecycle
 
-The application owns a container. It no longer extends `ServiceContainer`. Runtime factories, controllers, and integrations can consume `Psr\Container\ContainerInterface` from `psr/container` 2.x. The framework's registration API is separate: `ContainerBuilderInterface` defines writes, while `Crystoline\Contracts\Container\ContainerInterface` combines registration and PSR-11 consumption for bootstrapping and providers.
+The application owns a container. It no longer extends `ServiceContainer`. Runtime factories, controllers, and integrations can consume `Psr\Container\ContainerInterface` from `psr/container` 2.x. The framework's registration API is separate: `ContainerBuilderInterface` defines writes, while `Crystoline\Xpsr\Contracts\Container\ContainerInterface` combines registration and PSR-11 consumption for bootstrapping and providers.
 
 ```php
 $application = require __DIR__ . '/../bootstrap/app.php';

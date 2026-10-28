@@ -27,12 +27,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Crystoline\\HttpClient\\": "src/"
+      "Crystoline\\Xpsr\\HttpClient\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Crystoline\\HttpClient\\Tests\\": "tests/"
+      "Crystoline\\Xpsr\\HttpClient\\Tests\\": "tests/"
     }
   },
   "extra": {

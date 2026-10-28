@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Database\Tests;
+namespace Crystoline\Xpsr\Database\Tests;
 
-use Crystoline\Database\ConnectionManager;
-use Crystoline\Database\Migration\MigrationException;
-use Crystoline\Database\Migration\Migrator;
-use Crystoline\Database\Tests\Fixtures\Workspace;
+use Crystoline\Xpsr\Database\ConnectionManager;
+use Crystoline\Xpsr\Database\Migration\MigrationException;
+use Crystoline\Xpsr\Database\Migration\Migrator;
+use Crystoline\Xpsr\Database\Tests\Fixtures\Workspace;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -178,7 +178,7 @@ final class MigratorTest extends TestCase
         unlink($this->workspace->migrations . '/CreateUsers.php');
         file_put_contents($this->workspace->migrations . '/20260101000000_nothing.php', '<?php return 42;');
         $this->expectException(MigrationException::class);
-        $this->expectExceptionMessage('Migration 20260101000000_nothing must return an instance of Crystoline\Database\Migration\Migration');
+        $this->expectExceptionMessage('Migration 20260101000000_nothing must return an instance of Crystoline\Xpsr\Database\Migration\Migration');
         $migrator->migrate();
     }
 

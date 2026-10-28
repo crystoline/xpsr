@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Database\Console;
+namespace Crystoline\Xpsr\Database\Console;
 
-use Crystoline\Configuration;
-use Crystoline\Database\MigratorFactory;
+use Crystoline\Xpsr\Configuration;
+use Crystoline\Xpsr\Database\MigratorFactory;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Database\Console;
+namespace Crystoline\Xpsr\Database\Console;
 
-use Crystoline\Configuration;
-use Crystoline\Database\Migration\MigrationException;
-use Crystoline\Database\MigratorFactory;
+use Crystoline\Xpsr\Configuration;
+use Crystoline\Xpsr\Database\Migration\MigrationException;
+use Crystoline\Xpsr\Database\MigratorFactory;
 use Doctrine\DBAL\Exception as DbalException;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;

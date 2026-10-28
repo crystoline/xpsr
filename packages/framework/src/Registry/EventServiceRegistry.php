@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Registry;
+namespace Crystoline\Xpsr\Registry;
 
-use Crystoline\Configuration;
-use Crystoline\Console\CommandRegistry;
-use Crystoline\Console\Commands\EventListCommand;
-use Crystoline\Console\Commands\MakeEventCommand;
-use Crystoline\Console\Commands\MakeListenerCommand;
-use Crystoline\Events\EventDispatcher;
-use Crystoline\Events\ListenerProvider;
-use Crystoline\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\Configuration;
+use Crystoline\Xpsr\Console\CommandRegistry;
+use Crystoline\Xpsr\Console\Commands\EventListCommand;
+use Crystoline\Xpsr\Console\Commands\MakeEventCommand;
+use Crystoline\Xpsr\Console\Commands\MakeListenerCommand;
+use Crystoline\Xpsr\Events\EventDispatcher;
+use Crystoline\Xpsr\Events\ListenerProvider;
+use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;

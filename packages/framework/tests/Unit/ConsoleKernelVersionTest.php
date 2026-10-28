@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Tests\Unit;
+namespace Crystoline\Xpsr\Tests\Unit;
 
 use Composer\InstalledVersions;
-use Crystoline\Console\ConsoleKernel;
+use Crystoline\Xpsr\Console\ConsoleKernel;
 use PHPUnit\Framework\TestCase;
 
 final class ConsoleKernelVersionTest extends TestCase

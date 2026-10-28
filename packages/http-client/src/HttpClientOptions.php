@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\HttpClient;
+namespace Crystoline\Xpsr\HttpClient;
 
 use InvalidArgumentException;
 

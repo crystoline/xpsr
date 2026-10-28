@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Tests\Unit;
+namespace Crystoline\Xpsr\Tests\Unit;
 
-use Crystoline\Log\ErrorLogLogger;
+use Crystoline\Xpsr\Log\ErrorLogLogger;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\InvalidArgumentException;

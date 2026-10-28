@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
-use Crystoline\Application;
-use Crystoline\Contracts\Routing\RouterInterface;
-use Crystoline\Contracts\Routing\UrlGeneratorInterface;
-use Crystoline\Router\FastRoute\FastRouteRouter;
-use Crystoline\Router\Sunrise\SunriseRouter;
-use Crystoline\ServiceContainer\ContainerException;
+use Crystoline\Xpsr\Application;
+use Crystoline\Xpsr\Contracts\Routing\RouterInterface;
+use Crystoline\Xpsr\Contracts\Routing\UrlGeneratorInterface;
+use Crystoline\Xpsr\Router\FastRoute\FastRouteRouter;
+use Crystoline\Xpsr\Router\Sunrise\SunriseRouter;
+use Crystoline\Xpsr\ServiceContainer\ContainerException;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;

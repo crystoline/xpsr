@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Tests\Unit;
+namespace Crystoline\Xpsr\Tests\Unit;
 
-use Crystoline\ServiceContainer\ContainerException;
-use Crystoline\ServiceContainer\ServiceContainer;
+use Crystoline\Xpsr\ServiceContainer\ContainerException;
+use Crystoline\Xpsr\ServiceContainer\ServiceContainer;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -13,7 +13,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
 use stdClass;
-use Crystoline\Tests\Fixtures\Container as Fixture;
+use Crystoline\Xpsr\Tests\Fixtures\Container as Fixture;
 
 final class ServiceContainerTest extends TestCase
 {

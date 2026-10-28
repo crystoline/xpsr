@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Cache;
+namespace Crystoline\Xpsr\Cache;
 
-use Crystoline\Application;
-use Crystoline\Cache\Console\CacheClearCommand;
-use Crystoline\Configuration;
-use Crystoline\Console\CommandRegistry;
-use Crystoline\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\Application;
+use Crystoline\Xpsr\Cache\Console\CacheClearCommand;
+use Crystoline\Xpsr\Configuration;
+use Crystoline\Xpsr\Console\CommandRegistry;
+use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
 use InvalidArgumentException;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Container\ContainerInterface;

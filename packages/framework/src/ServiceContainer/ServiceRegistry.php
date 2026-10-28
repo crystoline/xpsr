@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\ServiceContainer;
+namespace Crystoline\Xpsr\ServiceContainer;
 
-use Crystoline\Contracts\Container\ContainerInterface;
+use Crystoline\Xpsr\Contracts\Container\ContainerInterface;
 
 abstract class ServiceRegistry
 {

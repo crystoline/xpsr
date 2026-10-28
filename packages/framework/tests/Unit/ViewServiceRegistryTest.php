@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Tests\Unit;
+namespace Crystoline\Xpsr\Tests\Unit;
 
-use Crystoline\Configuration;
-use Crystoline\Registry\ViewServiceRegistry;
-use Crystoline\ServiceContainer\ServiceContainer;
-use Crystoline\Tests\Fixtures\TemporaryDirectory;
-use Crystoline\View\ViewHandlerInterface;
+use Crystoline\Xpsr\Configuration;
+use Crystoline\Xpsr\Registry\ViewServiceRegistry;
+use Crystoline\Xpsr\ServiceContainer\ServiceContainer;
+use Crystoline\Xpsr\Tests\Fixtures\TemporaryDirectory;
+use Crystoline\Xpsr\View\ViewHandlerInterface;
 use PHPUnit\Framework\TestCase;
 
 final class ViewServiceRegistryTest extends TestCase

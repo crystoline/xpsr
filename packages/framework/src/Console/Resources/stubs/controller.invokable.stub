@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace {{ namespace }};
 
-use Crystoline\Http\Response\ResponseBuilder;
+use Crystoline\Xpsr\Http\Response\ResponseBuilder;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

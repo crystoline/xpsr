@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Database\Migration;
+namespace Crystoline\Xpsr\Database\Migration;
 
 use RuntimeException;
 

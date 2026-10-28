@@ -42,11 +42,11 @@
     "crystoline/xpsr-router-sunrise": "Alternative router adapter",
     "filp/whoops": "Detailed HTML error pages when APP_DEBUG=true (development only)",
     "twig/twig": "Needed to render views with the view() helper and ViewServiceRegistry",
-    "phpunit/phpunit": "Needed to run Crystoline\\Testing\\RouterContractTestCase in an adapter's own tests"
+    "phpunit/phpunit": "Needed to run Crystoline\\Xpsr\\Testing\\RouterContractTestCase in an adapter's own tests"
   },
   "autoload": {
     "psr-4": {
-      "Crystoline\\": "src/"
+      "Crystoline\\Xpsr\\": "src/"
     },
     "files": [
       "src/helpers.php"
@@ -54,7 +54,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Crystoline\\Tests\\": "tests/"
+      "Crystoline\\Xpsr\\Tests\\": "tests/"
     }
   },
   "extra": {

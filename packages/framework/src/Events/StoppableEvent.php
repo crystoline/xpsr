@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Events;
+namespace Crystoline\Xpsr\Events;
 
 use Psr\EventDispatcher\StoppableEventInterface;
 

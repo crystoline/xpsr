@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Console\Commands;
+namespace Crystoline\Xpsr\Console\Commands;
 
-use Crystoline\Console\Generator\GeneratedClass;
-use Crystoline\Console\Generator\StubGenerator;
+use Crystoline\Xpsr\Console\Generator\GeneratedClass;
+use Crystoline\Xpsr\Console\Generator\StubGenerator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 

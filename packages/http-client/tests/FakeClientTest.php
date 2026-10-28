@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\HttpClient\Tests;
+namespace Crystoline\Xpsr\HttpClient\Tests;
 
-use Crystoline\HttpClient\Testing\FakeClient;
+use Crystoline\Xpsr\HttpClient\Testing\FakeClient;
 use LogicException;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\TestCase;

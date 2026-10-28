@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
-use Crystoline\Application;
-use Crystoline\Console\CommandRegistry;
-use Crystoline\Console\ConsoleKernel;
-use Crystoline\Routing\RouteCollection;
-use Crystoline\ServiceContainer\ServiceContainer;
-use Crystoline\Contracts\Routing\RouterInterface;
+use Crystoline\Xpsr\Application;
+use Crystoline\Xpsr\Console\CommandRegistry;
+use Crystoline\Xpsr\Console\ConsoleKernel;
+use Crystoline\Xpsr\Routing\RouteCollection;
+use Crystoline\Xpsr\ServiceContainer\ServiceContainer;
+use Crystoline\Xpsr\Contracts\Routing\RouterInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;

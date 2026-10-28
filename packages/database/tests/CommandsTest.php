@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Database\Tests;
+namespace Crystoline\Xpsr\Database\Tests;
 
-use Crystoline\Application;
-use Crystoline\Console\CommandRegistry;
-use Crystoline\Database\ConnectionManager;
-use Crystoline\Database\Console\MakeMigrationCommand;
-use Crystoline\Database\Console\MigrateCommand;
-use Crystoline\Database\Console\MigrateRollbackCommand;
-use Crystoline\Database\Console\MigrateStatusCommand;
-use Crystoline\Database\DatabaseServiceRegistry;
-use Crystoline\Database\MigratorFactory;
-use Crystoline\Database\Tests\Fixtures\Workspace;
-use Crystoline\Registry\ConsoleServiceRegistry;
+use Crystoline\Xpsr\Application;
+use Crystoline\Xpsr\Console\CommandRegistry;
+use Crystoline\Xpsr\Database\ConnectionManager;
+use Crystoline\Xpsr\Database\Console\MakeMigrationCommand;
+use Crystoline\Xpsr\Database\Console\MigrateCommand;
+use Crystoline\Xpsr\Database\Console\MigrateRollbackCommand;
+use Crystoline\Xpsr\Database\Console\MigrateStatusCommand;
+use Crystoline\Xpsr\Database\DatabaseServiceRegistry;
+use Crystoline\Xpsr\Database\MigratorFactory;
+use Crystoline\Xpsr\Database\Tests\Fixtures\Workspace;
+use Crystoline\Xpsr\Registry\ConsoleServiceRegistry;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;

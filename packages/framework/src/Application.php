@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Crystoline;
+namespace Crystoline\Xpsr;
 
-use Crystoline\Contracts\Container\ContainerBuilderInterface;
-use Crystoline\Contracts\Container\ContainerInterface;
-use Crystoline\Console\ConsoleKernel;
-use Crystoline\Routing\RouteDispatcher;
-use Crystoline\Exception\ExceptionHandlerInterface;
-use Crystoline\Foundation\ServiceProviderManager;
-use Crystoline\Http\HttpKernel;
-use Crystoline\ServiceContainer\ServiceContainer;
+use Crystoline\Xpsr\Contracts\Container\ContainerBuilderInterface;
+use Crystoline\Xpsr\Contracts\Container\ContainerInterface;
+use Crystoline\Xpsr\Console\ConsoleKernel;
+use Crystoline\Xpsr\Routing\RouteDispatcher;
+use Crystoline\Xpsr\Exception\ExceptionHandlerInterface;
+use Crystoline\Xpsr\Foundation\ServiceProviderManager;
+use Crystoline\Xpsr\Http\HttpKernel;
+use Crystoline\Xpsr\ServiceContainer\ServiceContainer;
 use Dotenv\Dotenv;
 use InvalidArgumentException;
 use LogicException;

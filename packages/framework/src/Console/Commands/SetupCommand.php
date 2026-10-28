@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Console\Commands;
+namespace Crystoline\Xpsr\Console\Commands;
 
-use Crystoline\Application;
-use Crystoline\Console\Setup\BootstrapCheck;
-use Crystoline\Console\Setup\EnvironmentFile;
-use Crystoline\Console\Setup\FileTransaction;
-use Crystoline\Console\Setup\PackageInspectorInterface;
+use Crystoline\Xpsr\Application;
+use Crystoline\Xpsr\Console\Setup\BootstrapCheck;
+use Crystoline\Xpsr\Console\Setup\EnvironmentFile;
+use Crystoline\Xpsr\Console\Setup\FileTransaction;
+use Crystoline\Xpsr\Console\Setup\PackageInspectorInterface;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatter;

@@ -21,12 +21,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Crystoline\\Router\\Sunrise\\": "src/"
+      "Crystoline\\Xpsr\\Router\\Sunrise\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Crystoline\\Router\\Sunrise\\Tests\\": "tests/"
+      "Crystoline\\Xpsr\\Router\\Sunrise\\Tests\\": "tests/"
     }
   },
   "extra": {

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Registry;
+namespace Crystoline\Xpsr\Registry;
 
-use Crystoline\Application;
-use Crystoline\Configuration;
-use Crystoline\Contracts\Routing\RouterInterface;
-use Crystoline\Contracts\Routing\UrlGeneratorInterface;
-use Crystoline\Routing\RouteCollection;
-use Crystoline\Routing\UrlGenerator;
-use Crystoline\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\Application;
+use Crystoline\Xpsr\Configuration;
+use Crystoline\Xpsr\Contracts\Routing\RouterInterface;
+use Crystoline\Xpsr\Contracts\Routing\UrlGeneratorInterface;
+use Crystoline\Xpsr\Routing\RouteCollection;
+use Crystoline\Xpsr\Routing\UrlGenerator;
+use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 
@@ -21,8 +21,8 @@ class RouteServiceRegistry extends ServiceRegistry
      * framework does not depend on any adapter package.
      */
     public const ADAPTERS = [
-        'fastroute' => ['class' => 'Crystoline\Router\FastRoute\FastRouteRouter', 'package' => 'crystoline/xpsr-router-fastroute'],
-        'sunrise' => ['class' => 'Crystoline\Router\Sunrise\SunriseRouter', 'package' => 'crystoline/xpsr-router-sunrise'],
+        'fastroute' => ['class' => 'Crystoline\Xpsr\Router\FastRoute\FastRouteRouter', 'package' => 'crystoline/xpsr-router-fastroute'],
+        'sunrise' => ['class' => 'Crystoline\Xpsr\Router\Sunrise\SunriseRouter', 'package' => 'crystoline/xpsr-router-sunrise'],
     ];
 
     public function providedServices(): array

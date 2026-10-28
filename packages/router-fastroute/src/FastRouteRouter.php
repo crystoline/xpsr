@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Router\FastRoute;
+namespace Crystoline\Xpsr\Router\FastRoute;
 
-use Crystoline\Routing\AbstractRouter;
-use Crystoline\Routing\RouteCollection;
-use Crystoline\Routing\RouteMatch;
+use Crystoline\Xpsr\Routing\AbstractRouter;
+use Crystoline\Xpsr\Routing\RouteCollection;
+use Crystoline\Xpsr\Routing\RouteMatch;
 use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
 use FastRoute\Dispatcher;
 use FastRoute\Dispatcher\GroupCountBased;

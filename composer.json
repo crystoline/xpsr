@@ -50,12 +50,12 @@
   "autoload-dev": {
     "psr-4": {
       "Tests\\": "tests/",
-      "Crystoline\\Cache\\Tests\\": "packages/cache/tests/",
-      "Crystoline\\Database\\Tests\\": "packages/database/tests/",
-      "Crystoline\\Tests\\": "packages/framework/tests/",
-      "Crystoline\\HttpClient\\Tests\\": "packages/http-client/tests/",
-      "Crystoline\\Router\\FastRoute\\Tests\\": "packages/router-fastroute/tests/",
-      "Crystoline\\Router\\Sunrise\\Tests\\": "packages/router-sunrise/tests/"
+      "Crystoline\\Xpsr\\Cache\\Tests\\": "packages/cache/tests/",
+      "Crystoline\\Xpsr\\Database\\Tests\\": "packages/database/tests/",
+      "Crystoline\\Xpsr\\Tests\\": "packages/framework/tests/",
+      "Crystoline\\Xpsr\\HttpClient\\Tests\\": "packages/http-client/tests/",
+      "Crystoline\\Xpsr\\Router\\FastRoute\\Tests\\": "packages/router-fastroute/tests/",
+      "Crystoline\\Xpsr\\Router\\Sunrise\\Tests\\": "packages/router-sunrise/tests/"
     }
   },
   "scripts": {

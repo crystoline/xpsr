@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Registry;
+namespace Crystoline\Xpsr\Registry;
 
-use Crystoline\Application;
-use Crystoline\Configuration;
-use Crystoline\Console\CommandRegistry;
-use Crystoline\Console\Commands\AboutCommand;
-use Crystoline\Console\Commands\MakeCommandCommand;
-use Crystoline\Console\Commands\MakeControllerCommand;
-use Crystoline\Console\Commands\MakeMiddlewareCommand;
-use Crystoline\Console\Commands\MakeProviderCommand;
-use Crystoline\Console\Commands\RouteListCommand;
-use Crystoline\Console\Commands\ServeCommand;
-use Crystoline\Console\Commands\SetupCommand;
-use Crystoline\Console\ConsoleKernel;
-use Crystoline\Console\Generator\StubGenerator;
-use Crystoline\Console\Setup\ComposerPackageInspector;
-use Crystoline\Console\Setup\PackageInspectorInterface;
-use Crystoline\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\Application;
+use Crystoline\Xpsr\Configuration;
+use Crystoline\Xpsr\Console\CommandRegistry;
+use Crystoline\Xpsr\Console\Commands\AboutCommand;
+use Crystoline\Xpsr\Console\Commands\MakeCommandCommand;
+use Crystoline\Xpsr\Console\Commands\MakeControllerCommand;
+use Crystoline\Xpsr\Console\Commands\MakeMiddlewareCommand;
+use Crystoline\Xpsr\Console\Commands\MakeProviderCommand;
+use Crystoline\Xpsr\Console\Commands\RouteListCommand;
+use Crystoline\Xpsr\Console\Commands\ServeCommand;
+use Crystoline\Xpsr\Console\Commands\SetupCommand;
+use Crystoline\Xpsr\Console\ConsoleKernel;
+use Crystoline\Xpsr\Console\Generator\StubGenerator;
+use Crystoline\Xpsr\Console\Setup\ComposerPackageInspector;
+use Crystoline\Xpsr\Console\Setup\PackageInspectorInterface;
+use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 

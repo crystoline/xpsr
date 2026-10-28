@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Router\FastRoute\Tests;
+namespace Crystoline\Xpsr\Router\FastRoute\Tests;
 
-use Crystoline\Contracts\Routing\RouterInterface;
-use Crystoline\Router\FastRoute\FastRouteRouter;
-use Crystoline\Routing\RouteCollection;
-use Crystoline\Testing\RouterContractTestCase;
+use Crystoline\Xpsr\Contracts\Routing\RouterInterface;
+use Crystoline\Xpsr\Router\FastRoute\FastRouteRouter;
+use Crystoline\Xpsr\Routing\RouteCollection;
+use Crystoline\Xpsr\Testing\RouterContractTestCase;
 
 final class FastRouteRouterTest extends RouterContractTestCase
 {

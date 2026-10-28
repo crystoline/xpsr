@@ -9,7 +9,7 @@ composer require crystoline/xpsr-database
 Add the provider to `app.registry` in `config/app.php`:
 
 ```php
-Crystoline\Database\DatabaseServiceRegistry::class,
+Crystoline\Xpsr\Database\DatabaseServiceRegistry::class,
 ```
 
 The skeleton's `config/database.php` already has SQLite, MySQL, and PostgreSQL connections. The default is SQLite in `var/database.sqlite`, which needs no server; the `pdo_sqlite` extension must be loaded. To use MySQL, set in `.env`:
@@ -74,7 +74,7 @@ return [
 
 A relative SQLite `path` is resolved against the project root, and its directory is created if needed. Invalid settings fail when the connection is first used, with the setting's name.
 
-Other connections come from `Crystoline\Database\ConnectionManager`:
+Other connections come from `Crystoline\Xpsr\Database\ConnectionManager`:
 
 ```php
 $reports = $connections->connection('reporting');
@@ -86,10 +86,10 @@ $reports = $connections->connection('reporting');
 php xpsr make:migration create_users_table --create=users
 ```
 
-This writes `migrations/20261028120000_create_users_table.php`: a UTC timestamp (year, month, day, hour, minute, second), an underscore, and the name. Migrations run in file-name order, which is the order they were created. A migration file returns a `Crystoline\Database\Migration\Migration`, usually an anonymous class:
+This writes `migrations/20261028120000_create_users_table.php`: a UTC timestamp (year, month, day, hour, minute, second), an underscore, and the name. Migrations run in file-name order, which is the order they were created. A migration file returns a `Crystoline\Xpsr\Database\Migration\Migration`, usually an anonymous class:
 
 ```php
-use Crystoline\Database\Migration\Migration;
+use Crystoline\Xpsr\Database\Migration\Migration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\PrimaryKeyConstraint;
@@ -169,8 +169,8 @@ SQLite differs from MySQL and PostgreSQL in places, such as type checking and so
 | Service | Provides |
 |---|---|
 | `Doctrine\DBAL\Connection` | The default connection. Shared. |
-| `Crystoline\Database\ConnectionManager` | Every configured connection, by name: `connection('reporting')`. Shared. |
-| `Crystoline\Database\MigratorFactory` | `create(?string $connection)` returns a `Migrator` for running migrations from code. |
+| `Crystoline\Xpsr\Database\ConnectionManager` | Every configured connection, by name: `connection('reporting')`. Shared. |
+| `Crystoline\Xpsr\Database\MigratorFactory` | `create(?string $connection)` returns a `Migrator` for running migrations from code. |
 
 This package's tests run against SQLite, and against MySQL 8.4, MariaDB 11, and PostgreSQL 17 when `XPSR_TEST_MYSQL_URL` or `XPSR_TEST_PGSQL_URL` is set.
 

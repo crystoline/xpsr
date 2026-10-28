@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Database;
+namespace Crystoline\Xpsr\Database;
 
 use Doctrine\DBAL\Configuration as DbalConfiguration;
 use Doctrine\DBAL\Connection;

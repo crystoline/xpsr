@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "292eeece015e54aa82676fa89febd8b7a92577b5"
+                "reference": "02982cd024e29ac69c37007bf18b4febf6a3eeda"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
@@ -46,7 +46,7 @@
                 "crystoline/xpsr-router-fastroute": "Default router adapter",
                 "crystoline/xpsr-router-sunrise": "Alternative router adapter",
                 "filp/whoops": "Detailed HTML error pages when APP_DEBUG=true (development only)",
-                "phpunit/phpunit": "Needed to run Crystoline\\Testing\\RouterContractTestCase in an adapter's own tests",
+                "phpunit/phpunit": "Needed to run Crystoline\\Xpsr\\Testing\\RouterContractTestCase in an adapter's own tests",
                 "twig/twig": "Needed to render views with the view() helper and ViewServiceRegistry"
             },
             "type": "library",
@@ -57,7 +57,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Crystoline\\": "src/"
+                    "Crystoline\\Xpsr\\": "src/"
                 },
                 "files": [
                     "src/helpers.php"
@@ -65,7 +65,7 @@
             },
             "autoload-dev": {
                 "psr-4": {
-                    "Crystoline\\Tests\\": "tests/"
+                    "Crystoline\\Xpsr\\Tests\\": "tests/"
                 }
             },
             "license": [
@@ -89,7 +89,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-fastroute",
-                "reference": "b4e7b370b73a8604fcc1840b608e84edbce9f718"
+                "reference": "1a318ee71be79a67cea84c0daac8a6d0154a2b26"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.1@dev",
@@ -108,12 +108,12 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Crystoline\\Router\\FastRoute\\": "src/"
+                    "Crystoline\\Xpsr\\Router\\FastRoute\\": "src/"
                 }
             },
             "autoload-dev": {
                 "psr-4": {
-                    "Crystoline\\Router\\FastRoute\\Tests\\": "tests/"
+                    "Crystoline\\Xpsr\\Router\\FastRoute\\Tests\\": "tests/"
                 }
             },
             "license": [
@@ -2728,7 +2728,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/cache",
-                "reference": "eee9aca520938bb58cc6cbf0cd80d727e9fc4520"
+                "reference": "57e40a8be3577124ac376c7c8e43a9d0b5ef61da"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.1@dev",
@@ -2749,12 +2749,12 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Crystoline\\Cache\\": "src/"
+                    "Crystoline\\Xpsr\\Cache\\": "src/"
                 }
             },
             "autoload-dev": {
                 "psr-4": {
-                    "Crystoline\\Cache\\Tests\\": "tests/"
+                    "Crystoline\\Xpsr\\Cache\\Tests\\": "tests/"
                 }
             },
             "license": [
@@ -2778,7 +2778,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/database",
-                "reference": "be96701dd15110c73ca5a584a39477f0bede036b"
+                "reference": "ace7cebf20f90e5770ee155b826b5ed350166715"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.1@dev",
@@ -2805,12 +2805,12 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Crystoline\\Database\\": "src/"
+                    "Crystoline\\Xpsr\\Database\\": "src/"
                 }
             },
             "autoload-dev": {
                 "psr-4": {
-                    "Crystoline\\Database\\Tests\\": "tests/"
+                    "Crystoline\\Xpsr\\Database\\Tests\\": "tests/"
                 }
             },
             "license": [
@@ -2834,7 +2834,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/http-client",
-                "reference": "372a5377947013253e0726a7ed8f4c0e3975c523"
+                "reference": "3dd954b209e7c88e6945dc0fe604defe09e57b55"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.1@dev",
@@ -2860,12 +2860,12 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Crystoline\\HttpClient\\": "src/"
+                    "Crystoline\\Xpsr\\HttpClient\\": "src/"
                 }
             },
             "autoload-dev": {
                 "psr-4": {
-                    "Crystoline\\HttpClient\\Tests\\": "tests/"
+                    "Crystoline\\Xpsr\\HttpClient\\Tests\\": "tests/"
                 }
             },
             "license": [
@@ -2889,7 +2889,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-sunrise",
-                "reference": "0f22bca1bcaa4a303c4157a8987cbf6a19f99f75"
+                "reference": "b52f57bad0530c1d56446d59f08aae0ce75a5109"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.1@dev",
@@ -2909,12 +2909,12 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Crystoline\\Router\\Sunrise\\": "src/"
+                    "Crystoline\\Xpsr\\Router\\Sunrise\\": "src/"
                 }
             },
             "autoload-dev": {
                 "psr-4": {
-                    "Crystoline\\Router\\Sunrise\\Tests\\": "tests/"
+                    "Crystoline\\Xpsr\\Router\\Sunrise\\Tests\\": "tests/"
                 }
             },
             "license": [

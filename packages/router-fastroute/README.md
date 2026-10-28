@@ -8,7 +8,7 @@ composer require crystoline/xpsr-router-fastroute
 
 Select it with `ROUTER_ADAPTER=fastroute`, or run `php xpsr setup --router=fastroute`. Route files stay the same whichever adapter you choose.
 
-The adapter passes XPSR's shared router contract suite (`Crystoline\Testing\RouterContractTestCase`):
+The adapter passes XPSR's shared router contract suite (`Crystoline\Xpsr\Testing\RouterContractTestCase`):
 
 ```sh
 composer install

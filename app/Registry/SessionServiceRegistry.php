@@ -2,8 +2,8 @@
 
 namespace App\Registry;
 
-use Crystoline\Configuration;
-use Crystoline\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\Configuration;
+use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
 use SessionHandler;
 
 class SessionServiceRegistry extends ServiceRegistry

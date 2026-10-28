@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use Crystoline\Application;
-use Crystoline\Http\Response\ResponseBuilder;
-use Crystoline\View\ViewHandlerInterface;
+use Crystoline\Xpsr\Application;
+use Crystoline\Xpsr\Http\Response\ResponseBuilder;
+use Crystoline\Xpsr\View\ViewHandlerInterface;
 use Psr\Http\Message\ResponseInterface;
 
 if (!function_exists('config')) {

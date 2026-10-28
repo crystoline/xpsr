@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\Integration;
 
-use Crystoline\Application;
-use Crystoline\Console\Commands\SetupCommand;
-use Crystoline\Console\Setup\BootstrapCheck;
-use Crystoline\Console\Setup\PackageInspectorInterface;
+use Crystoline\Xpsr\Application;
+use Crystoline\Xpsr\Console\Commands\SetupCommand;
+use Crystoline\Xpsr\Console\Setup\BootstrapCheck;
+use Crystoline\Xpsr\Console\Setup\PackageInspectorInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Process\Process;
 use Tests\Fixtures\SkeletonProject;
-use Crystoline\Tests\Fixtures\TemporaryDirectory;
+use Crystoline\Xpsr\Tests\Fixtures\TemporaryDirectory;
 
 final class SetupCommandTest extends TestCase
 {
@@ -197,7 +197,7 @@ final class SetupCommandTest extends TestCase
     {
         $custom = "<?php\n\nreturn [\n    'adapter' => env('ROUTER_ADAPTER', 'fastroute'),\n    'files' => ['routes/api.php', 'routes/web.php', 'routes/admin.php'],\n];\n";
         file_put_contents($this->root . '/config/routing.php', $custom);
-        file_put_contents($this->root . '/routes/admin.php', "<?php\nreturn static function (\\Crystoline\\Routing\\RouteCollection \$routes): void {\n    \$routes->get('/admin', static fn() => null)->name('admin');\n};\n");
+        file_put_contents($this->root . '/routes/admin.php', "<?php\nreturn static function (\\Crystoline\\Xpsr\\Routing\\RouteCollection \$routes): void {\n    \$routes->get('/admin', static fn() => null)->name('admin');\n};\n");
 
         [$status, , $stderr] = $this->runSetup(['--router=fastroute', '--preset=api']);
         self::assertSame(1, $status);
@@ -239,11 +239,11 @@ final class SetupCommandTest extends TestCase
 
     public function testCustomAdapterIsKeptWhenNoRouterIsChosen(): void
     {
-        $env = "ROUTER_ADAPTER=Crystoline\\Router\\FastRoute\\FastRouteRouter\n";
+        $env = "ROUTER_ADAPTER=Crystoline\\Xpsr\\Router\\FastRoute\\FastRouteRouter\n";
         file_put_contents($this->root . '/.env', $env);
         [$status, $stdout, $stderr] = $this->runSetup([]);
         self::assertSame(0, $status, $stderr);
-        self::assertStringContainsString('Router: custom (Crystoline\Router\FastRoute\FastRouteRouter), unchanged.', $stdout);
+        self::assertStringContainsString('Router: custom (Crystoline\Xpsr\Router\FastRoute\FastRouteRouter), unchanged.', $stdout);
         self::assertSame($env, $this->file('.env'));
         self::assertSame([], $this->composerCalls());
     }

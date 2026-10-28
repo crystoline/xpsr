@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Tests\Fixtures\Container;
+namespace Crystoline\Xpsr\Tests\Fixtures\Container;
 
 final class ScalarConsumer
 {

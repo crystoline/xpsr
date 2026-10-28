@@ -117,7 +117,7 @@ Fresh-project tests copy the skeleton into a directory whose path contains space
 
 Implemented:
 
-- Replaced the untested `ResponseWriter` with `Crystoline\Http\ResponseEmitter`:
+- Replaced the untested `ResponseWriter` with `Crystoline\Xpsr\Http\ResponseEmitter`:
   - Repeated headers become separate lines; `Set-Cookie` never replaces earlier cookies.
   - The response's status is passed with every header and the status line goes last, so `Location` cannot turn into 302. There is no trailing space when the reason phrase is empty.
   - A valid `Content-Length` caps the body. Streamed bodies are flushed per chunk. 1xx/204/205/304 send no body.
@@ -148,11 +148,11 @@ Implemented:
 - Removed the unused legacy classes: custom request classes and traits, `HttpRequestFactory`, `HeaderSecurity`, `RouteHandlerInterface`, and `ApplicationHandlerInterface`. Their earlier versions remain in Git history.
 - Split the code into Composer packages developed in this repository, with the root as the application skeleton (`crystoline/xpsr`):
   - `crystoline/xpsr-framework` (`packages/framework`): everything previously under `src/Crystoline`, plus the global helpers.
-  - `crystoline/xpsr-router-fastroute` and `crystoline/xpsr-router-sunrise`: the adapters, now `Crystoline\Router\FastRoute\FastRouteRouter` and `Crystoline\Router\Sunrise\SunriseRouter`.
+  - `crystoline/xpsr-router-fastroute` and `crystoline/xpsr-router-sunrise`: the adapters, now `Crystoline\Xpsr\Router\FastRoute\FastRouteRouter` and `Crystoline\Xpsr\Router\Sunrise\SunriseRouter`.
   - The skeleton requires the framework and FastRoute adapter through a path repository. Sunrise is a suggestion and a development requirement.
 - The framework names the official adapters only as strings, so it has no dependency on either. A missing adapter fails with the setup command to run. `setup` now installs the adapter packages, using `--update-with-dependencies` so Composer can move `psr/http-message` to the major version Sunrise needs.
 - The framework accepts `psr/http-message` 1.1 or 2.0. Only the Sunrise adapter pins 1.x.
-- The shared routing suite is now `Crystoline\Testing\RouterContractTestCase`, shipped with the framework. Each adapter package runs it from its own tests; third-party adapters can do the same.
+- The shared routing suite is now `Crystoline\Xpsr\Testing\RouterContractTestCase`, shipped with the framework. Each adapter package runs it from its own tests; third-party adapters can do the same.
 - Tests moved with their code: framework unit tests to `packages/framework/tests`, adapter contract tests to each adapter, and skeleton integration tests stay in `tests/`. Each package has its own `phpunit.xml.dist`, README, license, and strict-valid `composer.json`.
 - Added `scripts/export-skeleton.php`, which produces the releasable skeleton without monorepo-only configuration, and a `packaging` test group (`composer test:packaging`) with a matching CI job.
 - PHPStan level 5 and PER style checks now cover all package source and tests and the application code, instead of a hand-picked list. Newly covered files received formatting-only fixes; `helpers.php` received type declarations, a corrected docblock, and a `function_exists` guard for `join_paths()`.
@@ -235,7 +235,7 @@ Verified on 26 October 2026: 300 tests and 1,219 assertions pass on PHP 8.4.27 a
 
 Implemented:
 
-- **XPSR HTTP exceptions.** `Crystoline\Http\Exception`:
+- **XPSR HTTP exceptions.** `Crystoline\Xpsr\Http\Exception`:
   - `HttpExceptionInterface` and `HttpException`, which rejects statuses outside 400–599;
   - classes for 400, 401 (with the `WWW-Authenticate` challenge), 403, 404, 405 (with `Allow`), 409, 413, 415, 422, 429 (optional `Retry-After`), and 503.
 
@@ -256,7 +256,7 @@ Verified on 26 October 2026:
 
 Implemented:
 
-- **New package.** `crystoline/xpsr-cache` (`packages/cache`, `Crystoline\Cache\`) is a fifth package. `CacheServiceRegistry` provides one application cache as PSR-16 and PSR-6 over the same storage, backed by Symfony Cache.
+- **New package.** `crystoline/xpsr-cache` (`packages/cache`, `Crystoline\Xpsr\Cache\`) is a fifth package. `CacheServiceRegistry` provides one application cache as PSR-16 and PSR-6 over the same storage, backed by Symfony Cache.
 - **Drivers:**
   - `file` (default, `var/cache/app`);
   - `array` (per process);
@@ -286,7 +286,7 @@ CI now runs the production `php.ini` explicitly, plus one job with the developme
 
 Implemented:
 
-- **In the framework.** Events need only the `psr/event-dispatcher` interfaces, so they live in `crystoline/xpsr-framework` (`Crystoline\Events\`) rather than a separate package. An application that never dispatches an event pays only for a few container definitions.
+- **In the framework.** Events need only the `psr/event-dispatcher` interfaces, so they live in `crystoline/xpsr-framework` (`Crystoline\Xpsr\Events\`) rather than a separate package. An application that never dispatches an event pays only for a few container definitions.
 - **Dispatcher.** `EventDispatcher` calls listeners synchronously and returns the event. A stoppable event is checked before every listener, including the first. Listener exceptions reach the caller.
 - **Listener provider.** `ListenerProvider` matches events by class, parent class, or interface, and orders listeners by priority, then registration order. Listeners are service IDs, `[service, method]` pairs, or callables. Service listeners are built from the container only when an event reaches them. Malformed listeners and unknown event classes are rejected when registered.
 - **Configuration.** `EventServiceRegistry` reads `events.listeners` from `config/events.php`; providers can add listeners with priorities in `boot()`. New projects list the registry in `app.registry` and include an empty `config/events.php`.
@@ -301,7 +301,7 @@ Not provided: framework-dispatched lifecycle events, and queued or asynchronous 
 
 Implemented:
 
-- **New package.** `crystoline/xpsr-http-client` (`packages/http-client`, `Crystoline\HttpClient\`), backed by Symfony HttpClient. It is not published yet: its mirror repository does not exist, so `scripts/split.sh` leaves it out of `PUBLISHED`.
+- **New package.** `crystoline/xpsr-http-client` (`packages/http-client`, `Crystoline\Xpsr\HttpClient\`), backed by Symfony HttpClient. It is not published yet: its mirror repository does not exist, so `scripts/split.sh` leaves it out of `PUBLISHED`.
 - **Services.** `HttpClientServiceRegistry` registers a shared PSR-18 `ClientInterface` whose responses come from the application's PSR-17 factories, Symfony's `HttpClientInterface` for streaming and concurrent requests, and one PSR-18 client per entry in `http_client.clients`, as `http_client.<name>`. Named clients share the default client's connections.
 - **Options.** `config/http_client.php` sets `timeout`, `max_duration`, `max_redirects`, and default `headers`; named clients add `base_uri`. Unknown options and malformed values, including header values with line breaks, fail with the setting's name.
 - **Testing.** `Testing\FakeClient` answers from a queue of responses or closures and records requests. The skeleton's `TestCase` gained `swap()`, which replaces a service, including one from a deferred provider.
@@ -328,7 +328,7 @@ Verified on 28 October 2026: 428 tests pass, PHPStan and style checks pass, and 
 
 Implemented:
 
-- **New package.** `crystoline/xpsr-database` (`packages/database`, `Crystoline\Database\`), backed by Doctrine DBAL 4.5. It is not an ORM. Like the HTTP client, it is not published yet.
+- **New package.** `crystoline/xpsr-database` (`packages/database`, `Crystoline\Xpsr\Database\`), backed by Doctrine DBAL 4.5. It is not an ORM. Like the HTTP client, it is not published yet.
 - **Connections.** `ConnectionManager` builds named connections from `config/database.php`, with DBAL parameters or a URL. A relative SQLite path resolves against the project root and its directory is created. `log_queries` logs through the application's PSR-3 logger. `Doctrine\DBAL\Connection` is the default connection; DBAL connects on the first query.
 - **Migrations.** Timestamped files under `migrations` each return a `Migration`. `Migrator` runs pending files as a batch and rolls back by batch or by count. It reports each migration as ran, pending, or "ran, file missing". On PostgreSQL and SQLite each migration runs in a transaction with its bookkeeping; MySQL and MariaDB commit DDL implicitly, which is documented. `Migration::alterTable()` applies a table change through DBAL's comparator.
 - **Commands.** `migrate`, `migrate:rollback --steps=N`, `migrate:status --json`, and `make:migration --create|--table`; all take `--connection`. With `APP_ENV=production`, changing the database needs `--force` or a confirmation.
@@ -345,9 +345,16 @@ Verified on 28 October 2026:
 
 Not provided: an ORM or query objects, seeders, `migrate:fresh`, and schema dumps.
 
+## Eighteenth milestone: completed — `Crystoline\Xpsr\` namespace and XPSR's own conventions
+
+- **Namespace.** Every class moved from `Crystoline\` to `Crystoline\Xpsr\`, in all seven packages, the skeleton, stubs, and documentation. `CHANGELOG.md` gives a command that upgrades an application; applied to the 0.1.1 skeleton, it produces the same references as the renamed skeleton.
+- **Conventions.** Migrations moved from Laravel's `database/migrations` to `migrations/`, with compact UTC timestamps (`20261028120000_name.php`). The `database_path()` helper is removed. `FRAMEWORK_PLAN.md` records both decisions.
+
+Verified on 28 October 2026: 458 tests pass on PHP 8.4 with and without the production `php.ini`, on PHP 8.5, and at the lowest allowed versions, and the packaging group passes.
+
 ## Boundaries and remaining work
 
-The first seventeen milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
+The first eighteen milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
 
 - **Publishing.** Live since 28 October 2026. CI publishes `master` to the five mirror repositories under `crystoline`, and Packagist serves all five packages from them. The first release is `0.1.0`. The old prototype's `v1.0.0` is removed from Packagist; its git tag remains in `crystoline/xpsr`, where it no longer affects installs.
 - **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.

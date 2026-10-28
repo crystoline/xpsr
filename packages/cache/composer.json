@@ -22,12 +22,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Crystoline\\Cache\\": "src/"
+      "Crystoline\\Xpsr\\Cache\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Crystoline\\Cache\\Tests\\": "tests/"
+      "Crystoline\\Xpsr\\Cache\\Tests\\": "tests/"
     }
   },
   "extra": {

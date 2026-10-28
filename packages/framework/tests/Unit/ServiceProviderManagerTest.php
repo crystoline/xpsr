@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Crystoline\Tests\Unit;
+namespace Crystoline\Xpsr\Tests\Unit;
 
-use Crystoline\Foundation\ServiceProviderManager;
-use Crystoline\ServiceContainer\ContainerException;
-use Crystoline\ServiceContainer\ServiceContainer;
-use Crystoline\ServiceContainer\ServiceRegistry;
+use Crystoline\Xpsr\Foundation\ServiceProviderManager;
+use Crystoline\Xpsr\ServiceContainer\ContainerException;
+use Crystoline\Xpsr\ServiceContainer\ServiceContainer;
+use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use stdClass;
