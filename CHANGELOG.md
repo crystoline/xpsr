@@ -4,6 +4,8 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+## 0.1.1 (2026-10-28)
+
 ### Fixed
 
 - `php xpsr about` and `php xpsr --version` report the installed framework version, such as `0.1.1`, instead of always saying `development`.
