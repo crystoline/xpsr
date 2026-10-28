@@ -2,6 +2,27 @@
 
 Steps for moving an application between minor versions. What changed is in [CHANGELOG.md](CHANGELOG.md); what each kind of release promises is in [docs/VERSIONING.md](docs/VERSIONING.md).
 
+## From 0.2 to 0.3
+
+0.3 only adds features, so the upgrade is a version change. Run the steps from the project root.
+
+### 1. Require 0.3
+
+In `composer.json`, change every `crystoline/xpsr-*` requirement from `^0.2` to `^0.3`, then run:
+
+```sh
+composer update 'crystoline/*' --with-dependencies
+composer test
+```
+
+### 2. Optional: use the new features
+
+None of these is needed to keep an application working.
+
+- **Validation:** `composer require crystoline/xpsr-validation`, add `Crystoline\Xpsr\Validation\Symfony\ValidationServiceRegistry` to `app.registry`, and create input classes with `php xpsr make:input`. See [its README](packages/validation/README.md).
+- **Monolog logging:** `composer require crystoline/xpsr-log-monolog` and add `Crystoline\Xpsr\Log\Monolog\MonologServiceRegistry` to `app.registry`. See [its README](packages/log-monolog/README.md).
+- **Rate limiting:** with `crystoline/xpsr-cache` installed, add `config/rate_limit.php` and attach `RateLimit::named('...')` to routes. See [the cache README](packages/cache/README.md#rate-limiting).
+
 ## From 0.1 to 0.2
 
 Run the steps from the project root, then `composer test`.

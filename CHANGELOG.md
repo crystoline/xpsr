@@ -4,6 +4,10 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+## 0.3.0 (2026-10-28)
+
+Nothing breaks; upgrade steps are in [UPGRADE.md](UPGRADE.md#from-02-to-03).
+
 ### Added
 
 - `crystoline/xpsr-log-monolog`: an optional package that makes Monolog the application logger, writing to stderr, a file, daily files, or syslog (`LOG_CHANNEL`), as lines or JSON (`LOG_FORMAT`, JSON by default in production), with a request ID on every line from `RequestIdMiddleware`, which also echoes it in `X-Request-Id`. See [its README](packages/log-monolog/README.md).

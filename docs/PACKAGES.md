@@ -43,15 +43,15 @@ Known coupling: the `setup` command's presets name the skeleton's route files (`
 
 ## Versions
 
-`master` is the development line of the next minor release, currently `0.2.x-dev`. When a release starts a new line, such as 0.3, change every occurrence below in one commit.
+`master` is the development line of the next minor release, currently `0.3.x-dev`. When a release starts a new line, such as 0.4, change every occurrence below in one commit.
 
 - **In this repository**, the root path repository assigns that version through its `versions` option, so it does not depend on Git branch detection.
-- **In the split repositories**, each `composer.json` declares the branch alias `dev-master` → `0.2.x-dev`.
-- **Between packages**, requirements use `^0.2@dev`. Composer ignores stability flags in dependencies, so they also accept the stable `0.2.0` once it is tagged.
-- **The released skeleton** requires `^0.2`: `export-skeleton.php --release` writes that range.
-- **`setup`** derives the adapter constraint from the installed framework: `^0.2` for a 0.2.x release, `^0.2@dev` for a development install. Adapters therefore always match the framework's release line.
+- **In the split repositories**, each `composer.json` declares the branch alias `dev-master` → `0.3.x-dev`.
+- **Between packages**, requirements use `^0.3@dev`. Composer ignores stability flags in dependencies, so they also accept the stable `0.3.0` once it is tagged.
+- **The released skeleton** requires `^0.3`: `export-skeleton.php --release` writes that range.
+- **`setup`** derives the adapter constraint from the installed framework: `^0.3` for a 0.3.x release, `^0.3@dev` for a development install. Adapters therefore always match the framework's release line.
 
-`master` moved to `0.2.x-dev` with the namespace change, so that a project following `0.1.x-dev` did not receive it.
+`master` moved to `0.2.x-dev` with the namespace change, so that a project following `0.1.x-dev` did not receive it, and to `0.3.x-dev` with the 0.3.0 release.
 
 ## Working in the monorepo
 
@@ -123,8 +123,8 @@ The CI job `lowest-dependencies` runs the whole suite after `composer update --p
 
 Each repository is named after its Composer package without the vendor prefix. The skeleton is the exception: its package is `crystoline/xpsr`, so that `composer create-project crystoline/xpsr` works, but its repository is `xpsr-skeleton`, because `crystoline/xpsr` is this monorepo. Development, issues, and pull requests happen in `crystoline/xpsr`. The other ten repositories are read-only mirrors.
 
-- **A push to `master`** updates each repository's `master` branch. Packages declare the branch alias `dev-master` → `0.2.x-dev`, so `^0.2@dev` resolves to it.
-- **A `v*` tag** pushes that tag to every repository and leaves branches alone. The skeleton's tagged commit is exported with `--release`, so it requires the release range (`^0.2`), while its `master` keeps `^0.2@dev`.
+- **A push to `master`** updates each repository's `master` branch. Packages declare the branch alias `dev-master` → `0.3.x-dev`, so `^0.3@dev` resolves to it.
+- **A `v*` tag** pushes that tag to every repository and leaves branches alone. The skeleton's tagged commit is exported with `--release`, so it requires the release range (`^0.3`), while its `master` keeps `^0.3@dev`.
 - **Re-running** with the same commit changes nothing.
 - **Inputs:** everything comes from the committed tree, never the working directory.
 

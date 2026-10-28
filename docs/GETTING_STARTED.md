@@ -15,9 +15,9 @@ To try unreleased changes, create a project from a clone of the XPSR repository 
 
 ```sh
 php scripts/export-skeleton.php /tmp/xpsr-skeleton
-composer create-project crystoline/xpsr my-app 0.2.x-dev --add-repository \
-  --repository='{"type":"path","url":"/tmp/xpsr-skeleton","options":{"symlink":false,"versions":{"crystoline/xpsr":"0.2.x-dev"}}}' \
-  --repository='{"type":"path","url":"'"$PWD"'/packages/*","options":{"symlink":false,"versions":{"crystoline/xpsr-framework":"0.2.x-dev","crystoline/xpsr-router-fastroute":"0.2.x-dev","crystoline/xpsr-router-sunrise":"0.2.x-dev"}}}'
+composer create-project crystoline/xpsr my-app 0.3.x-dev --add-repository \
+  --repository='{"type":"path","url":"/tmp/xpsr-skeleton","options":{"symlink":false,"versions":{"crystoline/xpsr":"0.3.x-dev"}}}' \
+  --repository='{"type":"path","url":"'"$PWD"'/packages/*","options":{"symlink":false,"versions":{"crystoline/xpsr-framework":"0.3.x-dev","crystoline/xpsr-router-fastroute":"0.3.x-dev","crystoline/xpsr-router-sunrise":"0.3.x-dev"}}}'
 cd my-app
 ```
 
@@ -348,7 +348,7 @@ php xpsr setup --router=sunrise --install-dependencies
 
 ```text
 Router: sunrise. Preset: api.
-Installed crystoline/xpsr-router-sunrise:^0.2.
+Installed crystoline/xpsr-router-sunrise:^0.3.
 Set ROUTER_ADAPTER=sunrise in .env.
 Bootstrap check passed: 4 route(s); 3 without placeholders matched by Crystoline\Xpsr\Router\Sunrise\SunriseRouter.
 ```

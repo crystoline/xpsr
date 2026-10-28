@@ -43,12 +43,12 @@ final class ExportSkeletonTest extends TestCase
         self::assertSame(0, $this->export($target)[0]);
 
         $manifest = $this->manifest($target);
-        self::assertSame('^0.2@dev', $manifest['require']['crystoline/xpsr-framework']);
-        self::assertSame('^0.2@dev', $manifest['require']['crystoline/xpsr-router-fastroute']);
+        self::assertSame('^0.3@dev', $manifest['require']['crystoline/xpsr-framework']);
+        self::assertSame('^0.3@dev', $manifest['require']['crystoline/xpsr-router-fastroute']);
         self::assertArrayNotHasKey('repositories', $manifest);
         self::assertSame(['psr-4' => ['Tests\\' => 'tests/']], $manifest['autoload-dev']);
         self::assertSame(['filp/whoops', 'phpunit/phpunit'], array_keys($manifest['require-dev']));
-        self::assertSame(['dev-master' => '0.2.x-dev'], $manifest['extra']['branch-alias']);
+        self::assertSame(['dev-master' => '0.3.x-dev'], $manifest['extra']['branch-alias']);
         foreach (['test:packaging', 'analyse', 'style', 'check'] as $script) {
             self::assertArrayNotHasKey($script, $manifest['scripts']);
         }
