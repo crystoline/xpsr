@@ -132,7 +132,7 @@ jobs:
   # job passes. Runs only in crystoline/xpsr (not in forks), on master and on v* tags.
   # Requires the SPLIT_TOKEN secret: a token with contents read/write access to
   # xpsr-framework, xpsr-router-fastroute, xpsr-router-sunrise, xpsr-cache, xpsr-http-client,
-  # xpsr-database, xpsr-orm-doctrine, and xpsr-skeleton.
+  # xpsr-database, xpsr-orm-doctrine, xpsr-log-monolog, and xpsr-skeleton.
   # See docs/PACKAGES.md.
   split:
     needs: [check, lowest-dependencies, packaging, database]

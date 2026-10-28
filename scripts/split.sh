@@ -23,6 +23,7 @@
 #   packages/http-client       -> xpsr-http-client.git       crystoline/xpsr-http-client
 #   packages/database          -> xpsr-database.git          crystoline/xpsr-database
 #   packages/orm-doctrine      -> xpsr-orm-doctrine.git      crystoline/xpsr-orm-doctrine
+#   packages/log-monolog       -> xpsr-log-monolog.git       crystoline/xpsr-log-monolog
 #   export-skeleton.php output -> xpsr-skeleton.git          crystoline/xpsr
 #
 # Packages keep their history (git subtree split). The skeleton gets one sync commit per
@@ -62,7 +63,7 @@ push() {
 
 # Packages under packages/ that have a mirror repository. A package missing from this list is
 # developed and tested here but not published; see "Adding a package" in docs/PACKAGES.md.
-PUBLISHED=(framework router-fastroute router-sunrise cache http-client database orm-doctrine)
+PUBLISHED=(framework router-fastroute router-sunrise cache http-client database orm-doctrine log-monolog)
 
 for directory in packages/*/; do
     package=$(basename "$directory")

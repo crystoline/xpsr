@@ -16,7 +16,7 @@ crystoline/xpsr (skeleton, repository root)
 ├── (suggested) crystoline/xpsr-http-client     packages/http-client ──► framework, symfony/http-client
 ├── (suggested) crystoline/xpsr-database        packages/database ──► framework, doctrine/dbal
 ├── (suggested) crystoline/xpsr-orm-doctrine    packages/orm-doctrine ──► framework, database, doctrine/orm
-└── (not published yet) crystoline/xpsr-log-monolog  packages/log-monolog ──► framework, monolog/monolog
+└── (suggested) crystoline/xpsr-log-monolog     packages/log-monolog ──► framework, monolog/monolog
 ```
 
 | Package | Namespace | Depends on |
@@ -26,7 +26,7 @@ crystoline/xpsr (skeleton, repository root)
 | `crystoline/xpsr-cache` | `Crystoline\Xpsr\Cache\` | framework, `symfony/cache` ^7.4, `symfony/rate-limiter` ^7.4, `psr/cache` 2 or 3, `psr/simple-cache` 1 to 3 (1.x keeps it installable next to the Sunrise adapter) |
 | `crystoline/xpsr-database` | `Crystoline\Xpsr\Database\` | framework, `doctrine/dbal` ^4.5. |
 | `crystoline/xpsr-orm-doctrine` | `Crystoline\Xpsr\Orm\Doctrine\` | framework, database, `doctrine/orm` ^3.7, `doctrine/persistence` ^4.1, `symfony/cache` ^7.4. |
-| `crystoline/xpsr-log-monolog` | `Crystoline\Xpsr\Log\Monolog\` | framework, `monolog/monolog` ^3.9. Not published yet; see [Adding a package](#adding-a-package). |
+| `crystoline/xpsr-log-monolog` | `Crystoline\Xpsr\Log\Monolog\` | framework, `monolog/monolog` ^3.9. |
 | `crystoline/xpsr-http-client` | `Crystoline\Xpsr\HttpClient\` | framework, `symfony/http-client` ^7.4, `psr/http-client` ^1.0.3. |
 | `crystoline/xpsr-router-sunrise` | `Crystoline\Xpsr\Router\Sunrise\` | framework, `sunrise/http-router` ^2.16, `psr/http-message` ^1.1 |
 | `crystoline/xpsr` | `App\` | framework, FastRoute adapter, `nyholm/psr7`, `twig/twig`; development: `filp/whoops`, `phpunit/phpunit` |
@@ -104,7 +104,7 @@ The CI job `lowest-dependencies` runs the whole suite after `composer update --p
 
 ## Publishing
 
-`scripts/split.sh` publishes the monorepo into eight read-only repositories, and the `split` job in `.github/workflows/ci.yml` runs it after every other CI job passes:
+`scripts/split.sh` publishes the monorepo into nine read-only repositories, and the `split` job in `.github/workflows/ci.yml` runs it after every other CI job passes:
 
 | Repository | Content | Packagist package |
 |---|---|---|
@@ -115,11 +115,10 @@ The CI job `lowest-dependencies` runs the whole suite after `composer update --p
 | `crystoline/xpsr-http-client` | `packages/http-client`, with its history | `crystoline/xpsr-http-client` |
 | `crystoline/xpsr-database` | `packages/database`, with its history | `crystoline/xpsr-database` |
 | `crystoline/xpsr-orm-doctrine` | `packages/orm-doctrine`, with its history | `crystoline/xpsr-orm-doctrine` |
+| `crystoline/xpsr-log-monolog` | `packages/log-monolog`, with its history | `crystoline/xpsr-log-monolog` |
 | `crystoline/xpsr-skeleton` | the output of `scripts/export-skeleton.php`, one sync commit per change | `crystoline/xpsr` |
 
-`packages/log-monolog` has no repository yet, so the split skips it (it is not in `PUBLISHED`).
-
-Each repository is named after its Composer package without the vendor prefix. The skeleton is the exception: its package is `crystoline/xpsr`, so that `composer create-project crystoline/xpsr` works, but its repository is `xpsr-skeleton`, because `crystoline/xpsr` is this monorepo. Development, issues, and pull requests happen in `crystoline/xpsr`. The other eight repositories are read-only mirrors.
+Each repository is named after its Composer package without the vendor prefix. The skeleton is the exception: its package is `crystoline/xpsr`, so that `composer create-project crystoline/xpsr` works, but its repository is `xpsr-skeleton`, because `crystoline/xpsr` is this monorepo. Development, issues, and pull requests happen in `crystoline/xpsr`. The other nine repositories are read-only mirrors.
 
 - **A push to `master`** updates each repository's `master` branch. Packages declare the branch alias `dev-master` → `0.2.x-dev`, so `^0.2@dev` resolves to it.
 - **A `v*` tag** pushes that tag to every repository and leaves branches alone. The skeleton's tagged commit is exported with `--release`, so it requires the release range (`^0.2`), while its `master` keeps `^0.2@dev`.
