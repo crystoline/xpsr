@@ -82,8 +82,9 @@ final class SessionServiceRegistryTest extends TestCase
     {
         yield 'cache without its package' => [['store' => 'cache'], 'session.store cache needs crystoline/xpsr-cache: run composer require crystoline/xpsr-cache, and add Crystoline\Xpsr\Cache\CacheServiceRegistry to app.registry.'];
         yield 'database without its package' => [['store' => 'database'], 'add Crystoline\Xpsr\Database\DatabaseServiceRegistry to app.registry'];
-        yield 'an unknown name' => [['store' => 'redis'], '"redis" is none of these'];
-        yield 'a service that is not a store' => [['store' => Psr17Factory::class], 'must implement'];
+        // Not "redis": with the phpredis extension loaded, that names its Redis class.
+        yield 'an unknown name' => [['store' => 'sessions-in-the-cloud'], '"sessions-in-the-cloud" is none of these'];
+        yield 'a service that is not a store' => [['store' => Psr17Factory::class], 'is a service that does not implement Crystoline\Xpsr\Session\SessionStoreInterface. Use file, cache, database, array, or a session store service.'];
     }
 
     /** @param array<string, mixed> $config */

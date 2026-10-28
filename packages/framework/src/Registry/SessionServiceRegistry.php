@@ -71,7 +71,7 @@ final class SessionServiceRegistry extends ServiceRegistry
             }
             $store = $container->get($id);
             if (!$store instanceof SessionStoreInterface) {
-                throw new InvalidArgumentException("session.store \"{$name}\" must implement " . SessionStoreInterface::class . '.');
+                throw new InvalidArgumentException("session.store \"{$name}\" is a service that does not implement " . SessionStoreInterface::class . '. Use file, cache, database, array, or a session store service.');
             }
 
             return $store;
