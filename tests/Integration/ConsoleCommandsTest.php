@@ -37,6 +37,17 @@ final class ConsoleCommandsTest extends TestCase
         self::assertSame(['App\Http\Middleware\SessionMiddleware'], $routes[1]['middleware']);
     }
 
+    public function testSkeletonProvidesTheEventDispatcherAndEventList(): void
+    {
+        $app = new Application(dirname(__DIR__, 2));
+        $output = new BufferedConsoleOutput();
+        $status = $app->getConsoleKernel()->run(new ArrayInput(['command' => 'event:list', '--json' => true]), $output);
+        self::assertSame(0, $status, $output->errors());
+        self::assertSame([], json_decode($output->fetch(), true, flags: JSON_THROW_ON_ERROR), 'The skeleton ships with no listeners.');
+        $event = new \stdClass();
+        self::assertSame($event, $app->get(\Psr\EventDispatcher\EventDispatcherInterface::class)->dispatch($event));
+    }
+
     public function testRouteFiltersAndMetadataDoNotInstantiateHandlers(): void
     {
         $routes = new RouteCollection();

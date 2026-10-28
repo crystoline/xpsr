@@ -1,0 +1,14 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+final class {{ class }}
+{
+    // Inject dependencies through a constructor; listeners are built by the container.
+    public function __invoke({{ event_type }} $event): void
+    {
+        // React to the event here.
+    }
+}

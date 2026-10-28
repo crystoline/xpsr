@@ -1,0 +1,11 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+final class {{ class }}
+{
+    // Describe what happened with readonly properties, for example: public readonly int $userId.
+    public function __construct() {}
+}

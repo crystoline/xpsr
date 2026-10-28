@@ -20,6 +20,9 @@ php xpsr make:controller PingController --invokable
 php xpsr make:middleware EnsureJsonRequest
 php xpsr make:command SendReportCommand --command=app:send-report --description="Send the daily report."
 php xpsr make:provider BillingServiceRegistry
+php xpsr make:event UserRegistered
+php xpsr make:listener SendWelcomeEmail --event=UserRegistered
+php xpsr event:list
 ```
 
 `php xpsr` defaults to `list`. Standard help, verbosity, non-interactive mode (`--no-interaction`), and shell completion are supplied by Symfony Console. `composer serve` delegates to `php xpsr serve`. The executable resolves its bootstrap from its own directory and works when invoked by absolute path from another working directory.
@@ -27,6 +30,8 @@ php xpsr make:provider BillingServiceRegistry
 `about` reports an explicit selection of application/runtime settings: framework, framework version, application name, environment, debug status, PHP version, configured router, and root directory. It does not dump credentials, resolve the router, load route files, or perform a full deployment health check. The version is the installed `crystoline/xpsr-framework` version as Composer recorded it, such as `0.1.1` for a release or `0.1.x-dev` for a development install; `php xpsr --version` shows the same. It reads `development` only if Composer has no record of the framework.
 
 `route:list` reads the shared route collection, so its output is independent of the selected adapter. It lists declared methods, path, name, handler, and inherited/route middleware without instantiating controllers or middleware. `--method` filters declared methods case-insensitively; `--path` and `--name` use case-sensitive substring matches. Filters combine with AND. HEAD fallback and automatic OPTIONS are implicit and do not create extra rows. `--json` returns an array (including an empty array when nothing matches).
+
+`event:list` shows each event listener with its priority, in the order listeners run. `--event` filters event class names by a case-insensitive substring, and `--json` returns an array. It and the `make:event` and `make:listener` generators come from `EventServiceRegistry`; see [EVENTS.md](EVENTS.md).
 
 ## Set up a project
 
@@ -59,10 +64,12 @@ The `make:*` commands render XPSR stubs into the application source directory:
 | `make:middleware` | `App\Http\Middleware` / `app/Http/Middleware/` | PSR-15 `MiddlewareInterface` implementation that passes the request on. |
 | `make:command` | `App\Console\Commands` / `app/Console/Commands/` | Symfony `Command` subclass. `--command` sets the console name; otherwise `SendReportCommand` becomes `app:send-report`. `--description` sets the description. |
 | `make:provider` | `App\Registry` / `app/Registry/` | `ServiceRegistry` subclass with empty `register()` and `boot()` hooks. |
+| `make:event` | `App\Events` / `app/Events/` | Final event class with an empty constructor for its readonly properties. |
+| `make:listener` | `App\Listeners` / `app/Listeners/` | Final class with `__invoke()`. `--event=UserRegistered` types the parameter as `App\Events\UserRegistered`; a name starting with `\` is used as written. Without `--event` the parameter is `object`. Warns on stderr if the event class does not exist yet. |
 
 The name argument is relative to the namespace in the table. `Admin/UserController` and `Admin\UserController` both produce `App\Http\Controller\Admin\UserController` in `app/Http/Controller/Admin/UserController.php`; missing subdirectories are created. Each part of the name must be an ASCII PHP identifier and must not be a reserved PHP word or a Windows device name such as `Con`. The generator does not add or remove suffixes.
 
-Generators never register what they create, because XPSR has no directory scanning. After writing a file they print the next step: a route line for controllers, `->middleware()` or `app.middleware` for middleware, provider registration lines for commands, and the `app.registry` entry for providers. `make:command` warns on stderr if the chosen console name is already registered.
+Generators never register what they create, because XPSR has no directory scanning. After writing a file they print the next step: a route line for controllers, `->middleware()` or `app.middleware` for middleware, provider registration lines for commands, the `app.registry` entry for providers, and the `config/events.php` line for listeners. `make:command` warns on stderr if the chosen console name is already registered.
 
 The application namespace and directory come from `app.namespace` (default `App`) and `app.source_dir` (default `app`) in `config/app.php`. They must match the PSR-4 entry in `composer.json`. `app.source_dir` must be a relative path, and the directory must already exist.
 

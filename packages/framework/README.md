@@ -1,6 +1,6 @@
 # crystoline/xpsr-framework
 
-The XPSR framework library: application lifecycle and configuration, the PSR-11 container and provider lifecycle, the PSR-15 HTTP kernel and middleware, portable route definitions and the router contract, error rendering and PSR-3 logging, the response emitter, and the `xpsr` console with its generators and setup command.
+The XPSR framework library: application lifecycle and configuration, the PSR-11 container and provider lifecycle, the PSR-15 HTTP kernel and middleware, portable route definitions and the router contract, error rendering and PSR-3 logging, the response emitter, the PSR-14 event dispatcher, and the `xpsr` console with its generators and setup command.
 
 It does not include a router implementation. Install an adapter alongside it:
 

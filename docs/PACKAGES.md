@@ -142,3 +142,19 @@ Owner-only steps, in order:
 5. **Packagist.** Submit `crystoline/xpsr-framework`, `crystoline/xpsr-router-fastroute`, `crystoline/xpsr-router-sunrise`, and `crystoline/xpsr-cache` with their repositories. Enable Packagist's GitHub integration so all five update automatically.
 6. **Release.** Move the `CHANGELOG.md` entries under `0.1.0`, commit, then tag `v0.1.0` in `crystoline/xpsr` and push the tag. CI tags all five mirrors.
 7. **Check.** In an empty directory, run `composer create-project crystoline/xpsr my-app` and confirm it installs `0.1.0`, including `xpsr-framework` 0.1.0.
+
+### Adding a package
+
+A new package can be developed and tested in `packages/` before it has a mirror. Wire it into the monorepo the way `packages/cache` is:
+
+- `composer.json` in the package, with the `dev-master` → `0.1.x-dev` branch alias, its own `phpunit.xml.dist`, `.gitignore`, `LICENSE`, and `README.md`;
+- the root `composer.json`: `require-dev`, the path repository's `versions`, and `autoload-dev` for its tests;
+- `phpunit.xml` (a test suite and a `source` exclusion), `phpstan.neon` (its `src` and `tests`), and the packages list in `tests/Packaging/PackagesTest.php`;
+- `MONOREPO_DEV_PACKAGES` in `scripts/export-skeleton.php`, so the skeleton does not require it.
+
+`scripts/split.sh` publishes only the packages in its `PUBLISHED` list, so an unpublished package does not break the `split` job. To publish one:
+
+1. **Repository.** Create an empty public repository `crystoline/xpsr-<name>` and describe it as a read-only mirror.
+2. **Token.** Give the `SPLIT_TOKEN` token **Contents: read and write** access to the new repository too.
+3. **Split.** Add `<name>` to `PUBLISHED` in `scripts/split.sh`, add the package to the publishing table above and to the skeleton's `suggest` if applications should discover it, commit, and push. CI publishes its `master`.
+4. **Packagist.** Submit `https://github.com/crystoline/xpsr-<name>`. The next release tag then tags it with the other packages.

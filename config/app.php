@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Crystoline\Http\Middleware\BodyParsingMiddleware;
 use Crystoline\Registry\FactoryRegistry;
 use Crystoline\Registry\ConsoleServiceRegistry;
+use Crystoline\Registry\EventServiceRegistry;
 use App\Registry\CommandServiceRegistry;
 use Crystoline\Registry\RouteServiceRegistry;
 use Crystoline\Registry\ViewServiceRegistry;
@@ -32,6 +33,7 @@ return [
         FactoryRegistry::class,
         RouteServiceRegistry::class,
         ViewServiceRegistry::class,
+        EventServiceRegistry::class,
         ConsoleServiceRegistry::class,
         CommandServiceRegistry::class,
     ],

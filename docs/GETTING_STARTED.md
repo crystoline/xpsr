@@ -361,4 +361,5 @@ Run `composer test` again: the same 9 tests pass without changing a route or con
 - [ROUTING.md](ROUTING.md): groups, named URLs (`UrlGeneratorInterface`), constraints, and HEAD/OPTIONS behavior.
 - [CONTAINER.md](CONTAINER.md): bindings, factories, and service providers (`php xpsr make:provider`).
 - [CONSOLE.md](CONSOLE.md): every command and generator.
+- [EVENTS.md](EVENTS.md): dispatching events and writing listeners.
 - [DEPLOYMENT.md](DEPLOYMENT.md): running an XPSR application in production.

@@ -10,9 +10,9 @@ XPSR follows [Semantic Versioning](https://semver.org/). This page defines what 
 
 The backward-compatibility promise covers:
 
-- **Classes, interfaces, and their public methods** in `crystoline/*` packages, unless marked `@internal`. This includes `Crystoline\Contracts\*`, the container, `ServiceRegistry`, `Application`, `Configuration`, the HTTP kernel, middleware, response builder and emitter, the HTTP exceptions (`Crystoline\Http\Exception\*`), `IpRange`, routing definitions (`RouteCollection`, `RouteDefinition`, `RouteMatch`, `AbstractRouter`), the URL generator, the exception handler, the logger, and `Crystoline\Testing\RouterContractTestCase`.
+- **Classes, interfaces, and their public methods** in `crystoline/*` packages, unless marked `@internal`. This includes `Crystoline\Contracts\*`, the container, `ServiceRegistry`, `Application`, `Configuration`, the HTTP kernel, middleware, response builder and emitter, the HTTP exceptions (`Crystoline\Http\Exception\*`), `IpRange`, routing definitions (`RouteCollection`, `RouteDefinition`, `RouteMatch`, `AbstractRouter`), the URL generator, the event dispatcher and listener provider (`Crystoline\Events\*`), the exception handler, the logger, and `Crystoline\Testing\RouterContractTestCase`.
 - **Route files**: a callable receiving `RouteCollection`, and the portable route grammar in [ROUTING.md](ROUTING.md).
-- **Configuration keys and environment variables** documented in the docs, such as `app.registry`, `app.middleware`, `routing.adapter`, `ROUTER_ADAPTER`, `LOG_LEVEL`, and `TRUSTED_PROXIES`.
+- **Configuration keys and environment variables** documented in the docs, such as `app.registry`, `app.middleware`, `events.listeners`, `routing.adapter`, `ROUTER_ADAPTER`, `LOG_LEVEL`, and `TRUSTED_PROXIES`.
 - **Documented HTTP behavior**: status codes for 404, 405, 400, and 413, the `{"message": ...}` error body, HEAD/OPTIONS handling, and body parsing.
 - **Console commands**: names, documented options, and exit codes.
 

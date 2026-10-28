@@ -4,6 +4,12 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+### Added
+
+- PSR-14 events: `Crystoline\Events\EventDispatcher`, `ListenerProvider`, and the optional `StoppableEvent` base class, registered by `Crystoline\Registry\EventServiceRegistry`. Listeners are listed in `config/events.php` or added by providers with a priority. See [docs/EVENTS.md](docs/EVENTS.md).
+- `php xpsr event:list`, `make:event`, and `make:listener`.
+- New projects list `EventServiceRegistry` in `app.registry` and include `config/events.php`. Existing projects can add both to use events.
+
 ## 0.1.1 (2026-10-28)
 
 ### Fixed

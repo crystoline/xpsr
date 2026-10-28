@@ -282,9 +282,24 @@ Verified on 26 October 2026:
 
 CI now runs the production `php.ini` explicitly, plus one job with the development `php.ini`. Locally, 360 tests pass with and without the production `php.ini`, as do the lowest-version suite and the packaging group.
 
+## Fourteenth milestone: completed — PSR-14 events
+
+Implemented:
+
+- **In the framework.** Events need only the `psr/event-dispatcher` interfaces, so they live in `crystoline/xpsr-framework` (`Crystoline\Events\`) rather than a separate package. An application that never dispatches an event pays only for a few container definitions.
+- **Dispatcher.** `EventDispatcher` calls listeners synchronously and returns the event. A stoppable event is checked before every listener, including the first. Listener exceptions reach the caller.
+- **Listener provider.** `ListenerProvider` matches events by class, parent class, or interface, and orders listeners by priority, then registration order. Listeners are service IDs, `[service, method]` pairs, or callables. Service listeners are built from the container only when an event reaches them. Malformed listeners and unknown event classes are rejected when registered.
+- **Configuration.** `EventServiceRegistry` reads `events.listeners` from `config/events.php`; providers can add listeners with priorities in `boot()`. New projects list the registry in `app.registry` and include an empty `config/events.php`.
+- **Console.** `event:list` (with `--event` and `--json`), `make:event`, and `make:listener --event=...`.
+- **Docs.** `EVENTS.md`, plus updates to `CONSOLE.md` and `VERSIONING.md`.
+
+Verified on 28 October 2026: 393 tests pass on PHP 8.4 with and without the production `php.ini`, on PHP 8.5 with `pdo_mysql` and the production `php.ini`, and at the lowest allowed dependency versions. The packaging group passes (5 tests). PHPStan and style checks pass.
+
+Not provided: framework-dispatched lifecycle events, and queued or asynchronous listeners.
+
 ## Boundaries and remaining work
 
-The first thirteen milestones are working slices, not completion of all roadmap phases. Phase 5 is complete except publishing, which needs the repository owner's accounts and decisions.
+The first fourteen milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
 
 - **Publishing.** Live since 28 October 2026. CI publishes `master` to the five mirror repositories under `crystoline`, and Packagist serves all five packages from them. The first release is `0.1.0`. The old prototype's `v1.0.0` is removed from Packagist; its git tag remains in `crystoline/xpsr`, where it no longer affects installs.
 - **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.
@@ -299,11 +314,9 @@ The first thirteen milestones are working slices, not completion of all roadmap 
   - Only Nyholm PSR-7 is tested.
   - The request host comes from the client's `Host` header; build absolute URLs from `APP_URL`.
 - **Dependencies.** The framework's remaining third-party requirements are Symfony Console, Process, and Finder; Illuminate Config; phpdotenv; and Nyholm's PSR-7 server helper. Finder only lists configuration files, and Illuminate Config pulls in parts of Illuminate Support, so both are candidates for small in-house replacements.
-- **Not yet available:** database integration, authentication, queues, scheduling, events, and an outgoing HTTP client (roadmap phase 6). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request.
+- **Not yet available:** database integration, authentication, queues, scheduling, and an outgoing HTTP client (roadmap phase 6). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
 
 ## Next implementation slice
 
-Publishing is ready to run once the GitHub organization, the `SPLIT_TOKEN` secret, and Packagist access exist; follow "First publication" in `PACKAGES.md`.
-
-Without accounts, continue roadmap phase 6. Candidates, in order of how many applications need them: an outgoing PSR-18 HTTP client integration; PSR-14 events; a route cache built on the cache package; then database integration.
+Continue roadmap phase 6. Candidates, in order of how many applications need them: an outgoing PSR-18 HTTP client integration; a route cache; then database integration. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.

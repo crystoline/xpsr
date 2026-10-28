@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "1a9f0124417b7fac372770f9fb39371c61dfd029"
+                "reference": "2ac7da4b491d4bb167dcdce80ae8c431a4a2e29f"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
@@ -20,6 +20,7 @@
                 "nyholm/psr7-server": "^1.1",
                 "php": "^8.4",
                 "psr/container": "^2.0",
+                "psr/event-dispatcher": "^1.0",
                 "psr/http-factory": "^1.1",
                 "psr/http-factory-implementation": "^1.0",
                 "psr/http-message": "^1.1 || ^2.0",
@@ -194,7 +195,7 @@
         },
         {
             "name": "illuminate/collections",
-            "version": "v12.70.1",
+            "version": "v12.70.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/collections.git",
@@ -254,7 +255,7 @@
         },
         {
             "name": "illuminate/conditionable",
-            "version": "v12.70.1",
+            "version": "v12.70.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/conditionable.git",
@@ -300,7 +301,7 @@
         },
         {
             "name": "illuminate/config",
-            "version": "v12.70.1",
+            "version": "v12.70.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/config.git",
@@ -348,7 +349,7 @@
         },
         {
             "name": "illuminate/contracts",
-            "version": "v12.70.1",
+            "version": "v12.70.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
@@ -396,7 +397,7 @@
         },
         {
             "name": "illuminate/macroable",
-            "version": "v12.70.1",
+            "version": "v12.70.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/macroable.git",
@@ -761,6 +762,56 @@
                 "source": "https://github.com/php-fig/container/tree/2.0.2"
             },
             "time": "2021-11-05T16:47:00+00:00"
+        },
+        {
+            "name": "psr/event-dispatcher",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/event-dispatcher.git",
+                "reference": "dbefd12671e8a14ec7f180cab83036ed26714bb0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/event-dispatcher/zipball/dbefd12671e8a14ec7f180cab83036ed26714bb0",
+                "reference": "dbefd12671e8a14ec7f180cab83036ed26714bb0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\EventDispatcher\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Standard interfaces for event handling.",
+            "keywords": [
+                "events",
+                "psr",
+                "psr-14"
+            ],
+            "support": {
+                "issues": "https://github.com/php-fig/event-dispatcher/issues",
+                "source": "https://github.com/php-fig/event-dispatcher/tree/1.0.0"
+            },
+            "time": "2019-01-08T18:20:26+00:00"
         },
         {
             "name": "psr/http-factory",
@@ -3973,56 +4024,6 @@
                 "source": "https://github.com/php-fig/cache/tree/3.0.0"
             },
             "time": "2021-02-03T23:26:27+00:00"
-        },
-        {
-            "name": "psr/event-dispatcher",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-fig/event-dispatcher.git",
-                "reference": "dbefd12671e8a14ec7f180cab83036ed26714bb0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/event-dispatcher/zipball/dbefd12671e8a14ec7f180cab83036ed26714bb0",
-                "reference": "dbefd12671e8a14ec7f180cab83036ed26714bb0",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.2.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Psr\\EventDispatcher\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
-                }
-            ],
-            "description": "Standard interfaces for event handling.",
-            "keywords": [
-                "events",
-                "psr",
-                "psr-14"
-            ],
-            "support": {
-                "issues": "https://github.com/php-fig/event-dispatcher/issues",
-                "source": "https://github.com/php-fig/event-dispatcher/tree/1.0.0"
-            },
-            "time": "2019-01-08T18:20:26+00:00"
         },
         {
             "name": "react/cache",

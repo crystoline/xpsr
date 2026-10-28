@@ -57,7 +57,18 @@ push() {
     fi
 }
 
-for package in framework router-fastroute router-sunrise cache; do
+# Packages under packages/ that have a mirror repository. A package missing from this list is
+# developed and tested here but not published; see "Adding a package" in docs/PACKAGES.md.
+PUBLISHED=(framework router-fastroute router-sunrise cache)
+
+for directory in packages/*/; do
+    package=$(basename "$directory")
+    if [[ ! " ${PUBLISHED[*]} " == *" $package "* ]]; then
+        echo "xpsr-$package: not published yet (not in PUBLISHED)"
+    fi
+done
+
+for package in "${PUBLISHED[@]}"; do
     # -q rather than --quiet: older git-subtree versions (Git 2.25) accept only the short form.
     commit=$(git subtree split -q --prefix="packages/$package" "$head")
     push "$root" "xpsr-$package" "$commit"

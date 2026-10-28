@@ -8,12 +8,14 @@ use Closure;
 use Crystoline\Application;
 use Crystoline\Console\Commands\MakeProviderCommand;
 use Crystoline\Registry\ConsoleServiceRegistry;
+use Crystoline\Registry\EventServiceRegistry;
 use Crystoline\Registry\FactoryRegistry;
 use Crystoline\Registry\RouteServiceRegistry;
 use Crystoline\ServiceContainer\ServiceRegistry;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -64,7 +66,7 @@ final class GeneratorCommandsTest extends TestCase
     /** @param list<class-string> $extraProviders */
     private function writeConfiguration(array $extraProviders): void
     {
-        $registry = [FactoryRegistry::class, RouteServiceRegistry::class, ConsoleServiceRegistry::class, ...$extraProviders];
+        $registry = [FactoryRegistry::class, RouteServiceRegistry::class, EventServiceRegistry::class, ConsoleServiceRegistry::class, ...$extraProviders];
         file_put_contents($this->root . '/config/app.php', '<?php return ' . var_export([
             'name' => 'Generated',
             'namespace' => $this->namespace,
@@ -99,6 +101,9 @@ final class GeneratorCommandsTest extends TestCase
             [['command' => 'make:middleware', 'name' => 'AuditRequests'], 'app/Http/Middleware/AuditRequests.php'],
             [['command' => 'make:command', 'name' => 'Reports/SendReportCommand'], 'app/Console/Commands/Reports/SendReportCommand.php'],
             [['command' => 'make:provider', 'name' => 'ReportServiceRegistry'], 'app/Registry/ReportServiceRegistry.php'],
+            [['command' => 'make:event', 'name' => 'Users/UserRegistered'], 'app/Events/Users/UserRegistered.php'],
+            [['command' => 'make:listener', 'name' => 'SendWelcomeEmail', '--event' => 'Users/UserRegistered'], 'app/Listeners/SendWelcomeEmail.php'],
+            [['command' => 'make:listener', 'name' => 'AuditEverything'], 'app/Listeners/AuditEverything.php'],
         ];
         $application = new Application($this->root);
         foreach ($generate as [$arguments, $path]) {
@@ -143,6 +148,47 @@ PHP);
         $tester = new CommandTester($command);
         self::assertSame(0, $tester->execute([]));
         self::assertSame("SendReportCommand completed.\n", $tester->getDisplay());
+
+        // The generated listeners accept the generated event once listed in config/events.php.
+        $event = "{$ns}\\Events\\Users\\UserRegistered";
+        self::assertStringContainsString("public function __invoke(\\{$event} \$event): void", $this->contents('app/Listeners/SendWelcomeEmail.php'));
+        self::assertStringContainsString('public function __invoke(object $event): void', $this->contents('app/Listeners/AuditEverything.php'));
+        file_put_contents($this->root . '/config/events.php', '<?php return ' . var_export(['listeners' => [
+            $event => ["{$ns}\\Listeners\\SendWelcomeEmail"],
+            'stdClass' => ["{$ns}\\Listeners\\AuditEverything"],
+        ]], true) . ';');
+        $application = new Application($this->root);
+        $application->boot();
+        $instance = new $event();
+        self::assertSame($instance, $application->get(EventDispatcherInterface::class)->dispatch($instance));
+        $application->get(EventDispatcherInterface::class)->dispatch(new \stdClass());
+        [$status, $stdout] = $this->console(['command' => 'event:list', '--json' => true], $application);
+        self::assertSame(0, $status);
+        self::assertSame(
+            [[$event, "{$ns}\\Listeners\\SendWelcomeEmail"], ['stdClass', "{$ns}\\Listeners\\AuditEverything"]],
+            array_map(static fn(array $row): array => [$row['event'], $row['listener']], json_decode($stdout, true, flags: JSON_THROW_ON_ERROR)),
+        );
+    }
+
+    public function testListenerEventOption(): void
+    {
+        [$status, $stdout, $stderr] = $this->console(['command' => 'make:listener', 'name' => 'OnMissing', '--event' => 'Missing']);
+        self::assertSame(0, $status);
+        self::assertStringContainsString("{$this->namespace}\\Events\\Missing does not exist yet.", $stderr);
+        self::assertStringContainsString("\\{$this->namespace}\\Events\\Missing::class => [\\{$this->namespace}\\Listeners\\OnMissing::class],", $stdout);
+
+        [$status, , $stderr] = $this->console(['command' => 'make:listener', 'name' => 'OnRequest', '--event' => '\Psr\Http\Message\ServerRequestInterface']);
+        self::assertSame(0, $status);
+        self::assertSame('', $stderr);
+        self::assertStringContainsString('__invoke(\Psr\Http\Message\ServerRequestInterface $event)', $this->contents('app/Listeners/OnRequest.php'));
+
+        foreach (['../Escape', '\Not Valid', '\\'] as $invalid) {
+            [$status, $stdout, $stderr] = $this->console(['command' => 'make:listener', 'name' => 'Bad', '--event' => $invalid]);
+            self::assertSame(2, $status, $invalid);
+            self::assertSame('', $stdout);
+            self::assertStringContainsString('--event', $stderr);
+        }
+        self::assertFileDoesNotExist($this->root . '/app/Listeners/Bad.php');
     }
 
     public function testExistingFilesAreReportedAndReplacedOnlyWithForce(): void
@@ -166,7 +212,7 @@ PHP);
 
     public static function invalidNames(): iterable
     {
-        foreach (['make:controller', 'make:middleware', 'make:command', 'make:provider'] as $command) {
+        foreach (['make:controller', 'make:middleware', 'make:command', 'make:provider', 'make:event', 'make:listener'] as $command) {
             yield "{$command} parent directory" => [$command, '../Escape'];
             yield "{$command} absolute" => [$command, '/tmp/Escape'];
             yield "{$command} reserved" => [$command, 'Admin/Class'];
@@ -232,7 +278,7 @@ PHP);
     {
         [$status, $stdout] = $this->console(['command' => 'list', 'namespace' => 'make']);
         self::assertSame(0, $status);
-        foreach (['make:command', 'make:controller', 'make:middleware', 'make:provider'] as $name) {
+        foreach (['make:command', 'make:controller', 'make:event', 'make:listener', 'make:middleware', 'make:provider'] as $name) {
             self::assertStringContainsString($name, $stdout);
         }
         // An invalid generator configuration is only reported when a generator runs.
@@ -254,6 +300,8 @@ PHP);
             ['command' => 'make:middleware', 'name' => 'StyleMiddleware'],
             ['command' => 'make:command', 'name' => 'StyleCommand', '--description' => "Quote ' check"],
             ['command' => 'make:provider', 'name' => 'StyleServiceRegistry'],
+            ['command' => 'make:event', 'name' => 'StyleEvent'],
+            ['command' => 'make:listener', 'name' => 'StyleListener', '--event' => 'StyleEvent'],
         ] as $arguments) {
             self::assertSame(0, $this->console($arguments)[0]);
         }
