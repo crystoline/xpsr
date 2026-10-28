@@ -336,7 +336,7 @@ composer test
 # OK (9 tests, 20 assertions)   (these 5 plus the skeleton's 4 examples)
 ```
 
-`request()` sends an array body as JSON. `console()` takes arguments by name, for example `$this->console('app:greet', ['name' => 'Ada'])`.
+`request()` sends an array body as JSON. `console()` takes arguments by name, for example `$this->console('app:greet', ['name' => 'Ada'])`. `swap($id, $replacement)` replaces a service for the rest of a test, for example a fake HTTP client in place of `Psr\Http\Client\ClientInterface`.
 
 ## 6. Switch the router adapter
 

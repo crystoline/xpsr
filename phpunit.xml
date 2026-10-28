@@ -8,13 +8,14 @@
         <testsuite name="router-fastroute"><directory>packages/router-fastroute/tests</directory></testsuite>
         <testsuite name="router-sunrise"><directory>packages/router-sunrise/tests</directory></testsuite>
         <testsuite name="cache"><directory>packages/cache/tests</directory></testsuite>
+        <testsuite name="http-client"><directory>packages/http-client/tests</directory></testsuite>
         <testsuite name="skeleton"><directory>tests</directory></testsuite>
     </testsuites>
     <groups>
         <!-- Builds a project with composer create-project; needs network access. Run: composer test:packaging -->
         <exclude><group>packaging</group></exclude>
     </groups>
-    <source><include><directory>packages</directory></include><exclude><directory>packages/framework/tests</directory><directory>packages/router-fastroute/tests</directory><directory>packages/router-sunrise/tests</directory><directory>packages/cache/tests</directory></exclude></source>
+    <source><include><directory>packages</directory></include><exclude><directory>packages/framework/tests</directory><directory>packages/router-fastroute/tests</directory><directory>packages/router-sunrise/tests</directory><directory>packages/cache/tests</directory><directory>packages/http-client/tests</directory></exclude></source>
     <php>
         <env name="APP_ENV" value="testing" force="true"/>
         <env name="APP_DEBUG" value="false" force="true"/>

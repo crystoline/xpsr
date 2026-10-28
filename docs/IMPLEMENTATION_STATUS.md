@@ -297,9 +297,25 @@ Verified on 28 October 2026: 393 tests pass on PHP 8.4 with and without the prod
 
 Not provided: framework-dispatched lifecycle events, and queued or asynchronous listeners.
 
+## Fifteenth milestone: completed — outgoing HTTP client
+
+Implemented:
+
+- **New package.** `crystoline/xpsr-http-client` (`packages/http-client`, `Crystoline\HttpClient\`), backed by Symfony HttpClient. It is not published yet: its mirror repository does not exist, so `scripts/split.sh` leaves it out of `PUBLISHED`.
+- **Services.** `HttpClientServiceRegistry` registers a shared PSR-18 `ClientInterface` whose responses come from the application's PSR-17 factories, Symfony's `HttpClientInterface` for streaming and concurrent requests, and one PSR-18 client per entry in `http_client.clients`, as `http_client.<name>`. Named clients share the default client's connections.
+- **Options.** `config/http_client.php` sets `timeout`, `max_duration`, `max_redirects`, and default `headers`; named clients add `base_uri`. Unknown options and malformed values, including header values with line breaks, fail with the setting's name.
+- **Testing.** `Testing\FakeClient` answers from a queue of responses or closures and records requests. The skeleton's `TestCase` gained `swap()`, which replaces a service, including one from a deferred provider.
+- **Dependency floor.** Symfony HttpClient's oldest allowed `symfony/polyfill-php83` printed PHP 8.4 deprecations; the package conflicts with versions below 1.30.
+
+Verified on 28 October 2026:
+
+- **Suite:** 426 tests pass on PHP 8.4 with and without the production `php.ini`, on PHP 8.5, and at the lowest allowed versions.
+- **Real requests:** the package's tests send requests to PHP's built-in server. They cover headers, bodies, error statuses, redirects with and without a limit, base URIs, connection failures, timeouts, and request exceptions.
+- **Packaging:** 6 tests pass with current and with lowest dependencies, including this package installed alone.
+
 ## Boundaries and remaining work
 
-The first fourteen milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
+The first fifteen milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
 
 - **Publishing.** Live since 28 October 2026. CI publishes `master` to the five mirror repositories under `crystoline`, and Packagist serves all five packages from them. The first release is `0.1.0`. The old prototype's `v1.0.0` is removed from Packagist; its git tag remains in `crystoline/xpsr`, where it no longer affects installs.
 - **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.
@@ -314,9 +330,9 @@ The first fourteen milestones are working slices, not completion of all roadmap 
   - Only Nyholm PSR-7 is tested.
   - The request host comes from the client's `Host` header; build absolute URLs from `APP_URL`.
 - **Dependencies.** The framework's remaining third-party requirements are Symfony Console, Process, and Finder; Illuminate Config; phpdotenv; and Nyholm's PSR-7 server helper. Finder only lists configuration files, and Illuminate Config pulls in parts of Illuminate Support, so both are candidates for small in-house replacements.
-- **Not yet available:** database integration, authentication, queues, scheduling, and an outgoing HTTP client (roadmap phase 6). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request.
+- **Not yet available:** database integration, authentication, queues, and scheduling (roadmap phase 6). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
 
 ## Next implementation slice
 
-Continue roadmap phase 6. Candidates, in order of how many applications need them: an outgoing PSR-18 HTTP client integration; a route cache; then database integration. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.
+Continue roadmap phase 6. Candidates, in order of how many applications need them: a route cache, then database integration. Publish `crystoline/xpsr-http-client` once its repository exists. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.

@@ -6,11 +6,13 @@ namespace Tests;
 
 use Crystoline\Application;
 use PHPUnit\Framework\TestCase as BaseTestCase;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Throwable;
 
 /**
  * Base class for application tests.
@@ -26,6 +28,29 @@ abstract class TestCase extends BaseTestCase
     protected function application(): Application
     {
         return $this->application ??= require dirname(__DIR__) . '/bootstrap/app.php';
+    }
+
+    /**
+     * Replace a service for the rest of this test, for example a fake HTTP client:
+     * swap(Psr\Http\Client\ClientInterface::class, $fake). Services built before the swap
+     * keep the original.
+     */
+    protected function swap(string $id, mixed $instance): void
+    {
+        $application = $this->application();
+        $application->boot();
+        $container = $application->getContainer();
+        try {
+            $container->instance($id, $instance);
+        } catch (ContainerExceptionInterface) {
+            // A deferred provider's service can be replaced only once its provider has loaded.
+            try {
+                $container->get($id);
+            } catch (Throwable) {
+                // A provider that fails to load no longer blocks the replacement.
+            }
+            $container->instance($id, $instance);
+        }
     }
 
     /**

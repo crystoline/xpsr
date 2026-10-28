@@ -4,7 +4,7 @@ XPSR follows [Semantic Versioning](https://semver.org/). This page defines what 
 
 ## One version for every package
 
-`crystoline/xpsr` (skeleton), `crystoline/xpsr-framework`, `crystoline/xpsr-router-fastroute`, and `crystoline/xpsr-router-sunrise` are released together with the same version number. The adapters require the matching framework range: adapter 0.2.x works with framework 0.2.x. A release that changes only one package still tags all of them, so you never need a compatibility table.
+`crystoline/xpsr` (the skeleton) and every `crystoline/xpsr-*` package (the framework, the router adapters, and the optional packages such as `xpsr-cache`) are released together with the same version number. Each package requires the matching framework range: adapter 0.2.x works with framework 0.2.x. A release that changes only one package still tags all of them, so you never need a compatibility table.
 
 ## Public API
 

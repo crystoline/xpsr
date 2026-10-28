@@ -12,7 +12,8 @@ crystoline/xpsr (skeleton, repository root)
 ├── twig/twig                          views (the web example); API-only apps can remove it
 ├── (dev) filp/whoops                  detailed debug error pages
 ├── (suggested) crystoline/xpsr-router-sunrise   packages/router-sunrise ──► framework, sunrise/http-router
-└── (suggested) crystoline/xpsr-cache            packages/cache ──► framework, symfony/cache
+├── (suggested) crystoline/xpsr-cache            packages/cache ──► framework, symfony/cache
+└── (not published yet) crystoline/xpsr-http-client   packages/http-client ──► framework, symfony/http-client
 ```
 
 | Package | Namespace | Depends on |
@@ -20,6 +21,7 @@ crystoline/xpsr (skeleton, repository root)
 | `crystoline/xpsr-framework` | `Crystoline\` | PSR interfaces, Symfony Console/Process/Finder, Illuminate Config, phpdotenv, Nyholm PSR-7 server, and any PSR-17 implementation (`psr/http-factory-implementation`). Accepts `psr/http-message` 1.1 or 2.0. Suggests Twig (views) and Whoops (debug pages), but does not require them. |
 | `crystoline/xpsr-router-fastroute` | `Crystoline\Router\FastRoute\` | framework, `nikic/fast-route` ^1.3 |
 | `crystoline/xpsr-cache` | `Crystoline\Cache\` | framework, `symfony/cache` ^7.4, `psr/cache` 2 or 3, `psr/simple-cache` 1 to 3 (1.x keeps it installable next to the Sunrise adapter) |
+| `crystoline/xpsr-http-client` | `Crystoline\HttpClient\` | framework, `symfony/http-client` ^7.4, `psr/http-client` ^1.0.3. Not published yet; see [Adding a package](#adding-a-package). |
 | `crystoline/xpsr-router-sunrise` | `Crystoline\Router\Sunrise\` | framework, `sunrise/http-router` ^2.16, `psr/http-message` ^1.1 |
 | `crystoline/xpsr` | `App\` | framework, FastRoute adapter, `nyholm/psr7`, `twig/twig`; development: `filp/whoops`, `phpunit/phpunit` |
 
@@ -90,7 +92,7 @@ The packaging test builds a project from this export with `composer create-proje
 
 ## Lowest dependency versions
 
-The CI job `lowest-dependencies` runs the whole suite after `composer update --prefer-lowest --prefer-stable`, with deprecation notices treated as failures. This guards the minimum versions declared in each `composer.json`. It found that `vlucas/phpdotenv` 5.4, `nyholm/psr7` 1.8.0, `filp/whoops` 2.14, and `symfony/var-dumper` 6.4 print PHP 8.4 deprecation notices that corrupt responses and console output. The minimums are therefore `^5.6.1`, `^1.8.2`, and `^2.16`, plus a `conflict` with `symfony/var-dumper` below 7.4. On PHP 8.5, Whoops before 2.18.4 also uses a deprecated `(integer)` cast, so the Whoops minimum is now `^2.18.4`.
+The CI job `lowest-dependencies` runs the whole suite after `composer update --prefer-lowest --prefer-stable`, with deprecation notices treated as failures. This guards the minimum versions declared in each `composer.json`. It found that `vlucas/phpdotenv` 5.4, `nyholm/psr7` 1.8.0, `filp/whoops` 2.14, and `symfony/var-dumper` 6.4 print PHP 8.4 deprecation notices that corrupt responses and console output. The minimums are therefore `^5.6.1`, `^1.8.2`, and `^2.16`, plus a `conflict` with `symfony/var-dumper` below 7.4. On PHP 8.5, Whoops before 2.18.4 also uses a deprecated `(integer)` cast, so the Whoops minimum is now `^2.18.4`. The HTTP client package conflicts with `symfony/polyfill-php83` below 1.30, which Symfony HttpClient would otherwise allow and which declares implicitly nullable parameters.
 
 ## Publishing
 
@@ -103,6 +105,8 @@ The CI job `lowest-dependencies` runs the whole suite after `composer update --p
 | `crystoline/xpsr-router-sunrise` | `packages/router-sunrise`, with its history | `crystoline/xpsr-router-sunrise` |
 | `crystoline/xpsr-cache` | `packages/cache`, with its history | `crystoline/xpsr-cache` |
 | `crystoline/xpsr-skeleton` | the output of `scripts/export-skeleton.php`, one sync commit per change | `crystoline/xpsr` |
+
+`packages/http-client` has no repository yet, so the split skips it (it is not in `PUBLISHED`).
 
 Each repository is named after its Composer package without the vendor prefix. The skeleton is the exception: its package is `crystoline/xpsr`, so that `composer create-project crystoline/xpsr` works, but its repository is `xpsr-skeleton`, because `crystoline/xpsr` is this monorepo. Development, issues, and pull requests happen in `crystoline/xpsr`. The other five repositories are read-only mirrors.
 

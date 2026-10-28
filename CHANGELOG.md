@@ -9,6 +9,8 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 - PSR-14 events: `Crystoline\Events\EventDispatcher`, `ListenerProvider`, and the optional `StoppableEvent` base class, registered by `Crystoline\Registry\EventServiceRegistry`. Listeners are listed in `config/events.php` or added by providers with a priority. See [docs/EVENTS.md](docs/EVENTS.md).
 - `php xpsr event:list`, `make:event`, and `make:listener`.
 - New projects list `EventServiceRegistry` in `app.registry` and include `config/events.php`. Existing projects can add both to use events.
+- `crystoline/xpsr-http-client`: an optional package providing a configured PSR-18 client, named clients (`http_client.<name>`) with their own base URL and headers, Symfony's `HttpClientInterface`, and `Testing\FakeClient` for tests. Options live in `config/http_client.php`. See [its README](packages/http-client/README.md).
+- `swap($id, $replacement)` in the application `tests/TestCase.php`, to replace a service in a test.
 
 ## 0.1.1 (2026-10-28)
 
