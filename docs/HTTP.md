@@ -64,6 +64,8 @@ Throw these from handlers and middleware to send an error status. They are in `C
 
 The other arguments are `$message`, `$previous`, `$headers`, and `$code`. The message reaches clients only when `APP_DEBUG=true`. Statuses 500 and above are logged; client errors are not. To create your own, implement `Crystoline\Xpsr\Http\Exception\HttpExceptionInterface` or extend `HttpException`.
 
+An exception implementing `Crystoline\Xpsr\Http\Exception\PublicErrorInterface` is written for the client: its message and details are shown in every environment, as a normal response rather than a debug page. `Crystoline\Xpsr\Validation\ValidationException` is one, rendered as `{"message": "The given data is invalid.", "errors": {"title": ["..."]}}` with status 422; see [the validation package](../packages/validation/README.md).
+
 Unmatched routes (404) and unsupported methods (405) are thrown as `NotFoundHttpException` and `MethodNotAllowedHttpException`, so they receive the same JSON or HTML body as other errors.
 
 Symfony's HttpKernel exceptions (`Symfony\Component\HttpKernel\Exception\*`) are also rendered with their status and headers when `symfony/http-kernel` is installed. The framework no longer depends on that package; it was required only for these classes.

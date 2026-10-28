@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Crystoline\Xpsr\Http\Exception\HttpExceptionInterface;
+use Crystoline\Xpsr\Http\Exception\PublicErrorInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface as SymfonyHttpExceptionInterface;
 use Throwable;
@@ -57,12 +58,17 @@ final class ExceptionHandler implements ExceptionHandlerInterface
             $response = $response->withHeader($name, $value);
         }
 
-        // Exception details are never included unless debug is explicitly enabled.
-        $message = $this->debug ? $exception->getMessage() : $response->getReasonPhrase();
+        // Exception details are never included unless debug is explicitly enabled, except for errors
+        // written for the client.
+        $public = $exception instanceof PublicErrorInterface ? $exception : null;
+        $message = $public?->publicMessage() ?? ($this->debug ? $exception->getMessage() : $response->getReasonPhrase());
 
         if ($this->requestIsJson($request)) {
-            $body = json_encode(['message' => $message], JSON_THROW_ON_ERROR | JSON_INVALID_UTF8_SUBSTITUTE);
+            $body = json_encode(['message' => $message, ...($public?->details() ?? [])], JSON_THROW_ON_ERROR | JSON_INVALID_UTF8_SUBSTITUTE);
             $contentType = 'application/json';
+        } elseif ($public !== null) {
+            $body = self::publicPage($message, $public->details());
+            $contentType = 'text/html; charset=utf-8';
         } elseif ($this->debug) {
             $body = $this->whoops ? $this->whoopsPage($exception) : self::debugPage($exception);
             $contentType = 'text/html; charset=utf-8';
@@ -104,6 +110,26 @@ final class ExceptionHandler implements ExceptionHandlerInterface
         $whoops->pushHandler($page);
 
         return $whoops->handleException($exception);
+    }
+
+    /**
+     * An error written for the client: the message, and an "errors" map of field => messages as a list.
+     *
+     * @param array<string, mixed> $details
+     */
+    private static function publicPage(string $message, array $details): string
+    {
+        $escape = static fn(string $text): string => htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $items = [];
+        foreach (is_array($details['errors'] ?? null) ? $details['errors'] : [] as $field => $messages) {
+            foreach (is_array($messages) ? $messages : [$messages] as $text) {
+                if (is_scalar($text)) {
+                    $items[] = '<li>' . ($field === '' ? '' : '<strong>' . $escape((string) $field) . '</strong>: ') . $escape((string) $text) . '</li>';
+                }
+            }
+        }
+
+        return '<h1>' . $escape($message) . '</h1>' . ($items === [] ? '' : "\n<ul>\n" . implode("\n", $items) . "\n</ul>");
     }
 
     /** A dependency-free debug page: each exception in the chain with its location and trace. */

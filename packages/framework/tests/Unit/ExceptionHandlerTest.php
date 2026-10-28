@@ -17,6 +17,24 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 final class ExceptionHandlerTest extends TestCase
 {
+    public function testPublicErrorsShowTheirMessageAndDetailsInEveryEnvironmentWithoutBeingLogged(): void
+    {
+        $factory = new ResponseFactory();
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects(self::never())->method('error');
+        $error = new \Crystoline\Xpsr\Validation\ValidationException(['email' => ['This value is not a valid email address.', 'Second <b>message</b>.']]);
+        foreach ([false, true] as $debug) {
+            $handler = new ExceptionHandler($factory, $factory, $logger, $debug, whoops: false);
+            $json = $handler->render((new ServerRequestFactory())->createServerRequest('POST', '/')->withHeader('Accept', 'application/json'), $error);
+            self::assertSame(422, $json->getStatusCode());
+            self::assertSame(['message' => 'The given data is invalid.', 'errors' => $error->errors()], json_decode((string) $json->getBody(), true));
+
+            $html = $handler->render((new ServerRequestFactory())->createServerRequest('POST', '/'), $error);
+            self::assertStringStartsWith('<h1>The given data is invalid.</h1>', (string) $html->getBody());
+            self::assertStringContainsString('<li><strong>email</strong>: Second &lt;b&gt;message&lt;/b&gt;.</li>', (string) $html->getBody(), 'Escaped.');
+        }
+    }
+
     public static function productionAcceptHeaders(): array
     {
         return [

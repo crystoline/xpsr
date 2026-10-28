@@ -19,6 +19,7 @@ This repository develops several Composer packages together:
 | `packages/cache` | `crystoline/xpsr-cache` | Application cache: PSR-16 and PSR-6, `cache:clear`, rate limiting (optional; see [its README](packages/cache/README.md)) |
 | `packages/database` | `crystoline/xpsr-database` | Database connections (Doctrine DBAL) and migrations (optional; see [its README](packages/database/README.md)) |
 | `packages/orm-doctrine` | `crystoline/xpsr-orm-doctrine` | Doctrine ORM on XPSR's connection, migrations generated from entities (optional; see [its README](packages/orm-doctrine/README.md)) |
+| `packages/validation` | `crystoline/xpsr-validation` | Request validation: input classes, Symfony Validator rules, 422 with field errors (optional, not published yet; see [its README](packages/validation/README.md)) |
 | `packages/log-monolog` | `crystoline/xpsr-log-monolog` | Monolog logging: stderr, file, daily, or syslog; line or JSON; request IDs (optional; see [its README](packages/log-monolog/README.md)) |
 | `packages/http-client` | `crystoline/xpsr-http-client` | Outgoing HTTP: PSR-18 and named clients, a fake for tests (optional; see [its README](packages/http-client/README.md)) |
 

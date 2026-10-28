@@ -11,6 +11,7 @@ use Crystoline\Xpsr\Registry\ConsoleServiceRegistry;
 use Crystoline\Xpsr\Registry\EventServiceRegistry;
 use Crystoline\Xpsr\Registry\FactoryRegistry;
 use Crystoline\Xpsr\Registry\RouteServiceRegistry;
+use Crystoline\Xpsr\Validation\Symfony\ValidationServiceRegistry;
 use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -66,7 +67,7 @@ final class GeneratorCommandsTest extends TestCase
     /** @param list<class-string> $extraProviders */
     private function writeConfiguration(array $extraProviders): void
     {
-        $registry = [FactoryRegistry::class, RouteServiceRegistry::class, EventServiceRegistry::class, ConsoleServiceRegistry::class, ...$extraProviders];
+        $registry = [FactoryRegistry::class, RouteServiceRegistry::class, EventServiceRegistry::class, ValidationServiceRegistry::class, ConsoleServiceRegistry::class, ...$extraProviders];
         file_put_contents($this->root . '/config/app.php', '<?php return ' . var_export([
             'name' => 'Generated',
             'namespace' => $this->namespace,
@@ -167,6 +168,43 @@ PHP);
         self::assertSame(
             [[$event, "{$ns}\\Listeners\\SendWelcomeEmail"], ['stdClass', "{$ns}\\Listeners\\AuditEverything"]],
             array_map(static fn(array $row): array => [$row['event'], $row['listener']], json_decode($stdout, true, flags: JSON_THROW_ON_ERROR)),
+        );
+    }
+
+    public function testGeneratedInputClassesValidateRequestsThroughTheKernel(): void
+    {
+        $ns = $this->namespace;
+        [$status, $stdout] = $this->console(['command' => 'make:input', 'name' => 'Tasks/CreateTask']);
+        self::assertSame(0, $status);
+        self::assertStringStartsWith("Created app/Http/Input/Tasks/CreateTask.php ({$ns}\\Http\\Input\\Tasks\\CreateTask)", $stdout);
+        self::assertStringContainsString("\$validator->validate(\$request, \\{$ns}\\Http\\Input\\Tasks\\CreateTask::class);", $stdout);
+
+        file_put_contents($this->root . '/routes/web.php', <<<PHP
+<?php
+use Crystoline\\Xpsr\\Http\\Response\\ResponseBuilder;
+use Crystoline\\Xpsr\\Validation\\ValidatorInterface;
+use Psr\\Http\\Message\\ServerRequestInterface;
+return static function (\\Crystoline\\Xpsr\\Routing\\RouteCollection \$routes): void {
+    \$routes->post('/tasks', static function (ServerRequestInterface \$request) {
+        \$input = app()->get(ValidatorInterface::class)->validate(\$request, \\{$ns}\\Http\\Input\\Tasks\\CreateTask::class);
+        return app()->get(ResponseBuilder::class)->json(['name' => \$input->name], 201);
+    });
+};
+PHP);
+        $kernel = (new Application($this->root))->getHttpKernel();
+        $requests = new Psr17Factory();
+        $post = static fn(array $body) => $kernel->handle($requests->createServerRequest('POST', 'http://localhost/tasks')
+            ->withHeader('Accept', 'application/json')->withParsedBody($body));
+
+        $created = $post(['name' => '  Ship it  ']);
+        self::assertSame(201, $created->getStatusCode(), (string) $created->getBody());
+        self::assertSame(['name' => 'Ship it'], json_decode((string) $created->getBody(), true), 'The stub trims by default.');
+
+        $invalid = $post(['name' => '   ']);
+        self::assertSame(422, $invalid->getStatusCode());
+        self::assertSame(
+            ['message' => 'The given data is invalid.', 'errors' => ['name' => ['This value should not be blank.']]],
+            json_decode((string) $invalid->getBody(), true),
         );
     }
 
@@ -302,6 +340,7 @@ PHP);
             ['command' => 'make:provider', 'name' => 'StyleServiceRegistry'],
             ['command' => 'make:event', 'name' => 'StyleEvent'],
             ['command' => 'make:listener', 'name' => 'StyleListener', '--event' => 'StyleEvent'],
+            ['command' => 'make:input', 'name' => 'StyleInput'],
         ] as $arguments) {
             self::assertSame(0, $this->console($arguments)[0]);
         }

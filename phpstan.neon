@@ -18,6 +18,8 @@ parameters:
         - packages/orm-doctrine/tests
         - packages/log-monolog/src
         - packages/log-monolog/tests
+        - packages/validation/src
+        - packages/validation/tests
         - app
         - bootstrap
         - config/factory.php

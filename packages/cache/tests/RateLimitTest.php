@@ -56,7 +56,8 @@ final class RateLimitTest extends TestCase
             self::assertSame('3', $headers['X-RateLimit-Limit']);
             self::assertSame('0', $headers['X-RateLimit-Remaining']);
             self::assertGreaterThanOrEqual(1, (int) $headers['Retry-After']);
-            self::assertLessThanOrEqual(60, (int) $headers['Retry-After']);
+            // Rounded up, so a client never retries early: up to one second over the interval.
+            self::assertLessThanOrEqual(61, (int) $headers['Retry-After']);
             self::assertStringContainsString('Rate limit "login" exceeded.', $exception->getMessage());
         }
     }

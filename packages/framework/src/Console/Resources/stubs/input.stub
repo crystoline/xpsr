@@ -1,0 +1,22 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Crystoline\Xpsr\Validation\Attribute\EmptyToNull;
+use Crystoline\Xpsr\Validation\Attribute\Input;
+use Crystoline\Xpsr\Validation\Attribute\Trim;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/** Validate a request with: $input = $validator->validate($request, {{ class }}::class); */
+#[Input(filters: [Trim::class, EmptyToNull::class])]
+final class {{ class }}
+{
+    public function __construct(
+        // One parameter per field, with its rules, for example:
+        #[Assert\NotBlank]
+        #[Assert\Length(max: 200)]
+        public readonly string $name,
+    ) {}
+}

@@ -23,6 +23,7 @@ php xpsr make:provider BillingServiceRegistry
 php xpsr make:event UserRegistered
 php xpsr make:listener SendWelcomeEmail --event=UserRegistered
 php xpsr event:list
+php xpsr make:input CreateTask
 ```
 
 `php xpsr` defaults to `list`. Standard help, verbosity, non-interactive mode (`--no-interaction`), and shell completion are supplied by Symfony Console. `composer serve` delegates to `php xpsr serve`. The executable resolves its bootstrap from its own directory and works when invoked by absolute path from another working directory.
@@ -65,6 +66,7 @@ The `make:*` commands render XPSR stubs into the application source directory:
 | `make:command` | `App\Console\Commands` / `app/Console/Commands/` | Symfony `Command` subclass. `--command` sets the console name; otherwise `SendReportCommand` becomes `app:send-report`. `--description` sets the description. |
 | `make:provider` | `App\Registry` / `app/Registry/` | `ServiceRegistry` subclass with empty `register()` and `boot()` hooks. |
 | `make:event` | `App\Events` / `app/Events/` | Final event class with an empty constructor for its readonly properties. |
+| `make:input` | `App\Http\Input` / `app/Http/Input/` | Input class for request validation, with trimming and empty-to-null filters and an example rule. Registered by `crystoline/xpsr-validation`. |
 | `make:listener` | `App\Listeners` / `app/Listeners/` | Final class with `__invoke()`. `--event=UserRegistered` types the parameter as `App\Events\UserRegistered`; a name starting with `\` is used as written. Without `--event` the parameter is `object`. Warns on stderr if the event class does not exist yet. |
 
 The name argument is relative to the namespace in the table. `Admin/UserController` and `Admin\UserController` both produce `App\Http\Controller\Admin\UserController` in `app/Http/Controller/Admin/UserController.php`; missing subdirectories are created. Each part of the name must be an ASCII PHP identifier and must not be a reserved PHP word or a Windows device name such as `Con`. The generator does not add or remove suffixes.

@@ -16,7 +16,8 @@ crystoline/xpsr (skeleton, repository root)
 ├── (suggested) crystoline/xpsr-http-client     packages/http-client ──► framework, symfony/http-client
 ├── (suggested) crystoline/xpsr-database        packages/database ──► framework, doctrine/dbal
 ├── (suggested) crystoline/xpsr-orm-doctrine    packages/orm-doctrine ──► framework, database, doctrine/orm
-└── (suggested) crystoline/xpsr-log-monolog     packages/log-monolog ──► framework, monolog/monolog
+├── (suggested) crystoline/xpsr-log-monolog     packages/log-monolog ──► framework, monolog/monolog
+└── (not published yet) crystoline/xpsr-validation   packages/validation ──► framework, symfony/validator
 ```
 
 | Package | Namespace | Depends on |
@@ -27,6 +28,7 @@ crystoline/xpsr (skeleton, repository root)
 | `crystoline/xpsr-database` | `Crystoline\Xpsr\Database\` | framework, `doctrine/dbal` ^4.5. |
 | `crystoline/xpsr-orm-doctrine` | `Crystoline\Xpsr\Orm\Doctrine\` | framework, database, `doctrine/orm` ^3.7, `doctrine/persistence` ^4.1, `symfony/cache` ^7.4. |
 | `crystoline/xpsr-log-monolog` | `Crystoline\Xpsr\Log\Monolog\` | framework, `monolog/monolog` ^3.9. |
+| `crystoline/xpsr-validation` | `Crystoline\Xpsr\Validation\Symfony\` | framework, `symfony/validator` ^7.4, `symfony/property-access` ^7.4. The contract, attributes, and mapping it uses are in the framework (`Crystoline\Xpsr\Validation\`). Not published yet; see [Adding a package](#adding-a-package). |
 | `crystoline/xpsr-http-client` | `Crystoline\Xpsr\HttpClient\` | framework, `symfony/http-client` ^7.4, `psr/http-client` ^1.0.3. |
 | `crystoline/xpsr-router-sunrise` | `Crystoline\Xpsr\Router\Sunrise\` | framework, `sunrise/http-router` ^2.16, `psr/http-message` ^1.1 |
 | `crystoline/xpsr` | `App\` | framework, FastRoute adapter, `nyholm/psr7`, `twig/twig`; development: `filp/whoops`, `phpunit/phpunit` |
@@ -100,7 +102,7 @@ The packaging test builds a project from this export with `composer create-proje
 
 ## Lowest dependency versions
 
-The CI job `lowest-dependencies` runs the whole suite after `composer update --prefer-lowest --prefer-stable`, with deprecation notices treated as failures. This guards the minimum versions declared in each `composer.json`. It found that `vlucas/phpdotenv` 5.4, `nyholm/psr7` 1.8.0, `filp/whoops` 2.14, and `symfony/var-dumper` 6.4 print PHP 8.4 deprecation notices that corrupt responses and console output. The minimums are therefore `^5.6.1`, `^1.8.2`, and `^2.16`, plus a `conflict` with `symfony/var-dumper` below 7.4. On PHP 8.5, Whoops before 2.18.4 also uses a deprecated `(integer)` cast, so the Whoops minimum is now `^2.18.4`. The HTTP client package conflicts with `symfony/polyfill-php83` below 1.30, which Symfony HttpClient would otherwise allow and which declares implicitly nullable parameters.
+The CI job `lowest-dependencies` runs the whole suite after `composer update --prefer-lowest --prefer-stable`, with deprecation notices treated as failures. This guards the minimum versions declared in each `composer.json`. It found that `vlucas/phpdotenv` 5.4, `nyholm/psr7` 1.8.0, `filp/whoops` 2.14, and `symfony/var-dumper` 6.4 print PHP 8.4 deprecation notices that corrupt responses and console output. The minimums are therefore `^5.6.1`, `^1.8.2`, and `^2.16`, plus a `conflict` with `symfony/var-dumper` below 7.4. On PHP 8.5, Whoops before 2.18.4 also uses a deprecated `(integer)` cast, so the Whoops minimum is now `^2.18.4`. The HTTP client package conflicts with `symfony/polyfill-php83` below 1.30, which Symfony HttpClient would otherwise allow and which declares implicitly nullable parameters. For the same reason the validation package conflicts with `symfony/translation-contracts` below 3.5 and with `symfony/property-info` below 6.4.8 and in 7.0.
 
 ## Publishing
 
@@ -117,6 +119,8 @@ The CI job `lowest-dependencies` runs the whole suite after `composer update --p
 | `crystoline/xpsr-orm-doctrine` | `packages/orm-doctrine`, with its history | `crystoline/xpsr-orm-doctrine` |
 | `crystoline/xpsr-log-monolog` | `packages/log-monolog`, with its history | `crystoline/xpsr-log-monolog` |
 | `crystoline/xpsr-skeleton` | the output of `scripts/export-skeleton.php`, one sync commit per change | `crystoline/xpsr` |
+
+`packages/validation` has no repository yet, so the split skips it (it is not in `PUBLISHED`).
 
 Each repository is named after its Composer package without the vendor prefix. The skeleton is the exception: its package is `crystoline/xpsr`, so that `composer create-project crystoline/xpsr` works, but its repository is `xpsr-skeleton`, because `crystoline/xpsr` is this monorepo. Development, issues, and pull requests happen in `crystoline/xpsr`. The other nine repositories are read-only mirrors.
 

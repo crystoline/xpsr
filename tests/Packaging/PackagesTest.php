@@ -99,6 +99,7 @@ final class PackagesTest extends TestCase
         yield 'database' => ['database'];
         yield 'Doctrine ORM adapter' => ['orm-doctrine'];
         yield 'Monolog logging' => ['log-monolog'];
+        yield 'validation' => ['validation'];
     }
 
     #[DataProvider('packages')]
