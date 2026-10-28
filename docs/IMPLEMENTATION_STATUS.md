@@ -401,6 +401,15 @@ The first twenty-one milestones are working slices, not completion of all roadma
 - **Not yet available:** an ORM, authentication, queues, scheduling, validation, and fuller sessions/CSRF (roadmap phase 6). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
 
+## Release 0.2.0 (28 October 2026)
+
+Tagged `v0.2.0` in all eight repositories. Packagist serves 0.2.0 for every package, including the new `crystoline/xpsr-http-client`, `crystoline/xpsr-database`, and `crystoline/xpsr-orm-doctrine`. Checked from Packagist with the production `php.ini`:
+
+- `composer create-project crystoline/xpsr` installs framework and FastRoute 0.2.0; `about` reports 0.2.0; the application's tests pass and `/hello` answers.
+- `setup --router=sunrise --install-dependencies` installs the Sunrise adapter `^0.2`.
+- The cache, HTTP client, database, and Doctrine ORM packages install at 0.2.0. With the Doctrine adapter, an entity in `app/Entity`, `make:migration --diff`, `migrate`, and `orm:validate-schema` work end to end on SQLite.
+- `UPGRADE.md` was rehearsed on an installed 0.1.1 application, which then runs 0.2.0 and passes its tests.
+
 ## Next implementation slice
 
-`crystoline/xpsr-http-client`, `crystoline/xpsr-database`, and `crystoline/xpsr-orm-doctrine` are published to their mirror repositories. Submit them to Packagist, then release 0.2.0. After that, follow the ordered component plan in `FRAMEWORK_PLAN.md` section 10, next with Monolog logging and rate limiting; settle each component's open decisions with the user before starting it. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.
+Follow the ordered component plan in `FRAMEWORK_PLAN.md` section 10, next with Monolog logging and rate limiting; settle each component's open decisions with the user before starting it. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.
