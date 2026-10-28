@@ -52,7 +52,9 @@ final class SymfonyValidatorTest extends TestCase
         self::assertSame(['title', 'priority', 'due_at'], array_keys($errors));
         self::assertSame(['This value should not be blank.'], $errors['title']);
         self::assertSame(['The value you selected is not a valid choice.'], $errors['priority']);
-        self::assertSame(['This value should be greater than ' . (new DateTimeImmutable('today'))->format('Y-m-d H:i:s') . '.'], $errors['due_at']);
+        // Symfony formats the date with ext-intl when it is loaded ("Oct 28, 2026, 12:00 AM"), otherwise as Y-m-d H:i:s.
+        self::assertCount(1, $errors['due_at']);
+        self::assertStringStartsWith('This value should be greater than ', $errors['due_at'][0]);
     }
 
     public function testTypeErrorsAreReportedAsFieldErrors(): void

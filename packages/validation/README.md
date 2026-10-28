@@ -74,7 +74,7 @@ When anything is wrong, `validate()` throws `Crystoline\Xpsr\Validation\Validati
 }
 ```
 
-Every problem is reported at once, each under the field name the client sent. Browsers that ask for HTML get the same messages as a list. Validation errors are not logged.
+Every problem is reported at once, each under the field name the client sent. Dates in messages are written by Symfony: as `Oct 28, 2026, 12:00 AM` when PHP's `intl` extension is loaded, otherwise as `2026-10-28 00:00:00`; compare messages in tests by their start, or by field. Browsers that ask for HTML get the same messages as a list. Validation errors are not logged.
 
 ## Fields and types
 
