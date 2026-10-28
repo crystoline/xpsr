@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Crystoline\Xpsr\Http\Middleware\BodyParsingMiddleware;
+use Crystoline\Xpsr\Http\Middleware\CorsMiddleware;
 use Crystoline\Xpsr\Registry\FactoryRegistry;
 use Crystoline\Xpsr\Registry\ConsoleServiceRegistry;
 use Crystoline\Xpsr\Registry\EventServiceRegistry;
@@ -39,6 +40,8 @@ return [
     ],
     // PSR-15 middleware classes or instances, executed in the listed order.
     'middleware' => [
+        // Answers cross-origin browser requests; inactive until config/cors.php allows an origin.
+        CorsMiddleware::class,
         // Parses JSON bodies, and form bodies on methods other than POST, into getParsedBody().
         BodyParsingMiddleware::class,
     ],

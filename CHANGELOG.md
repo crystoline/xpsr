@@ -29,6 +29,8 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 - Database extension points: the migrate commands use `MigratorInterface`, chosen with `database.migrations.runner`, so another runner can replace XPSR's; `Testing\MigratorContractTestCase` checks a runner; `Testing\DatabaseTransactions` rolls back each test's database writes.
 - `crystoline/xpsr-orm-doctrine`: an optional Doctrine ORM 3 adapter. The `EntityManager` runs on XPSR's connection, with attribute-mapped entities in `app/Entity`, snake-case columns, PHP 8.4 native lazy objects instead of proxy classes, and the application cache for metadata in production. Includes Doctrine's read-only and cache commands, an XPSR `orm:validate-schema`, and `ClearEntityManagerMiddleware` for worker servers. See [its README](packages/orm-doctrine/README.md).
 - `php xpsr make:migration <name> --diff` writes a migration from the difference between the database and an expected schema, such as Doctrine's entity mapping. Only tables the schema names are compared. `Schema\SchemaProviderInterface` lets an ORM adapter supply the schema; `Testing\OrmAdapterContractTestCase` checks ORM adapters.
+- CORS: `Crystoline\Xpsr\Http\Middleware\CorsMiddleware`, configured in `config/cors.php` and `CORS_ALLOWED_ORIGINS`. It answers preflight requests, adds the headers to every response from an allowed origin, error responses included, and supports subdomain patterns. New projects list it first in `app.middleware`; it is inactive until an origin is allowed. See [docs/HTTP.md](docs/HTTP.md#cors).
+- PSR-20 clock: `Psr\Clock\ClockInterface` is registered as a `symfony/clock` `NativeClock` in `app.timezone`. The application `TestCase` gains `freezeTime()`.
 
 ### Changed
 

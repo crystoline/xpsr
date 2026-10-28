@@ -328,9 +328,9 @@ crystoline/xpsr-database          foundation: connections, migrations, contracts
 |---|---|---|---|
 | 1 | Doctrine ORM adapter | Done; see section 9 for the accepted choices. | — |
 | 2 | Eloquent adapter | As above. | Whether to offer Eloquent's migrations and schema builder. |
-| 3 | CORS middleware | Small, own PSR-15 middleware in the framework. | Configuration keys; preflight caching. |
+| 3 | CORS middleware | Done (twenty-first milestone): `CorsMiddleware` in the framework, `config/cors.php`. | — |
 | 4 | Monolog logging | Adapter package behind PSR-3, replacing `ErrorLogLogger` when installed. | Default handlers per environment. |
-| 5 | Clock (PSR-20) | `symfony/clock`, registered as `Psr\Clock\ClockInterface`, with a frozen clock for tests. | Framework or package. |
+| 5 | Clock (PSR-20) | Done (twenty-first milestone): in the framework, `symfony/clock`, `freezeTime()` for tests. | — |
 | 6 | Rate limiting | Middleware on `symfony/rate-limiter`, storing state in `crystoline/xpsr-cache`, answering with `TooManyRequestsHttpException`. | Limits per route or group; client identity (IP, token). |
 | 7 | Validation | Request validation that answers 422 with field errors. Adapters for `symfony/validator`, and possibly a small built-in rule set. | Error body format; validating route input and JSON bodies. |
 | 8 | Authentication and authorization | Token or JWT authentication for APIs (`lcobucci/jwt`), sessions for web applications, and policies for authorization. | Needs its own design: guards, user providers, the policy API. |

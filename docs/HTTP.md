@@ -70,6 +70,33 @@ Symfony's HttpKernel exceptions (`Symfony\Component\HttpKernel\Exception\*`) are
 
 If the application cannot even boot, `public/index.php` logs the cause with `error_log()` and returns a plain-text "Internal Server Error" with status 500.
 
+## CORS
+
+Browsers let a page on one origin (`https://app.example.com`) call an API on another (`https://api.example.com`) only when the API answers with CORS headers. `Crystoline\Xpsr\Http\Middleware\CorsMiddleware` provides them. New projects list it first in `app.middleware`, and it does nothing until an origin is allowed:
+
+```sh
+CORS_ALLOWED_ORIGINS=https://app.example.com,https://*.example.com
+```
+
+The other settings are in `config/cors.php`:
+
+| Setting | Default | Meaning |
+|---|---|---|
+| `allowed_origins` | none | Exact origins, subdomain patterns such as `https://*.example.com` (subdomains only, same scheme and port), or `*` for any origin. A list, or a comma-separated string. |
+| `allowed_methods` | `GET`, `HEAD`, `POST`, `PUT`, `PATCH`, `DELETE` | Methods a preflight may ask for. |
+| `allowed_headers` | `Content-Type`, `Authorization`, `X-Requested-With` | Request headers a preflight may ask for; `['*']` allows whatever it asks for. |
+| `exposed_headers` | none | Response headers browser code may read besides the simple ones, such as `X-Total-Count`. |
+| `allow_credentials` | `false` | Let browsers send cookies and HTTP authentication. With `*` origins the request's own origin is echoed, since `*` cannot be combined with credentials. |
+| `max_age` | `600` | Seconds a browser may cache a preflight answer; `0` sends no `Access-Control-Max-Age`. |
+
+What it does:
+
+- **Preflight requests** (`OPTIONS` with `Origin` and `Access-Control-Request-Method`) from an allowed origin are answered with 204 and the allowed methods and headers, before the rest of the application runs.
+- **Other requests** from an allowed origin get `Access-Control-Allow-Origin` and the other headers. Error responses get them too: the middleware renders exceptions from later middleware and routes itself, through the same exception handler, so a browser can read a 404 or 422 instead of reporting a CORS failure.
+- **Requests from other origins, or without `Origin`,** pass through unchanged except for `Vary: Origin`, which keeps shared caches from serving one origin's answer to another.
+
+Invalid settings, such as an origin with a path, fail when the HTTP kernel is built, with the setting's name.
+
 ## Proxies
 
 `Crystoline\Xpsr\Factory\ServerRequestFactory` builds the request from PHP's globals. It keeps `Forwarded` and `X-Forwarded-*` headers, which set the scheme (for example HTTPS behind a TLS-terminating load balancer), only when the client address matches `app.trusted_proxies`. Configure that list with `TRUSTED_PROXIES`, comma-separated IP addresses or CIDR ranges. From any other address, those headers are removed from the request and its server parameters. See [DEPLOYMENT.md](DEPLOYMENT.md#proxies-and-https).

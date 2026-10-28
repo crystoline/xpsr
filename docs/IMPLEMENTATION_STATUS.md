@@ -374,9 +374,16 @@ Built with the choices accepted on 28 October 2026 (`FRAMEWORK_PLAN.md` section 
 
 Verified on 28 October 2026: 487 tests pass with PHPStan and style checks. The database and ORM suites (60 tests) pass against SQLite, MySQL 8.4, MariaDB 11, and PostgreSQL 17, including generating, running, validating, and rolling back a `--diff` migration on each.
 
+## Twenty-first milestone: completed — CORS and the PSR-20 clock
+
+- **CORS.** `CorsMiddleware` with `CorsOptions` (`config/cors.php`, `CORS_ALLOWED_ORIGINS`): exact origins, subdomain patterns, or any origin; preflight answers with 204 before the application runs; the response headers on every answer to an allowed origin, including errors, which the middleware renders through the exception handler because the kernel renders exceptions outside the global middleware; `Vary` handling; credentials echo the origin instead of `*`. New projects list it first in `app.middleware`, inactive until an origin is configured.
+- **Clock.** The framework requires `psr/clock` and `symfony/clock` and registers `Psr\Clock\ClockInterface` (and Symfony's clock interface) as a `NativeClock` in `app.timezone`. The skeleton `TestCase` gains `freezeTime()`, which swaps in a `MockClock`.
+
+Verified on 28 October 2026: 510 tests pass with PHPStan and style checks, including CORS through the skeleton's full HTTP kernel (preflight, success, a 404 with headers, other origins, and the default off state).
+
 ## Boundaries and remaining work
 
-The first twenty milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
+The first twenty-one milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
 
 - **Publishing.** Live since 28 October 2026. CI publishes `master` to the five mirror repositories under `crystoline`, and Packagist serves all five packages from them. The first release is `0.1.0`. The old prototype's `v1.0.0` is removed from Packagist; its git tag remains in `crystoline/xpsr`, where it no longer affects installs.
 - **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.

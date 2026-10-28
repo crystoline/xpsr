@@ -44,6 +44,20 @@ The container registers itself under PSR-11 and both framework container contrac
 
 An alternative container can be passed as the second `Application` constructor argument. It must implement the combined framework registration contract, including deferred groups, or provide an adapter for it. A PSR-11 implementation alone does not standardize registration and is therefore insufficient for that constructor.
 
+## The clock
+
+Code that needs the current time should ask for `Psr\Clock\ClockInterface` (PSR-20) instead of calling `new DateTimeImmutable()` or `time()`, so tests can control time:
+
+```php
+use Psr\Clock\ClockInterface;
+
+public function __construct(private readonly ClockInterface $clock) {}
+
+$expiresAt = $this->clock->now()->modify('+15 minutes');
+```
+
+The application registers a `Symfony\Component\Clock\NativeClock` in the `app.timezone` time zone (UTC in new projects); an invalid time zone fails with the setting's name. `Symfony\Component\Clock\ClockInterface`, which adds `sleep()` and `withTimeZone()`, resolves to the same clock. In tests, `$clock = $this->freezeTime('2026-01-31 09:00:00')` from the skeleton's `TestCase` replaces it with a `MockClock` that stands still until `$clock->modify('+1 hour')` or `$clock->sleep(60)` moves it.
+
 ## Providers
 
 Providers extend `ServiceRegistry` and are listed in `config/app.php` under `registry`. The existing names remain to avoid an unnecessary rename.

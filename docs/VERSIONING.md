@@ -12,7 +12,7 @@ The backward-compatibility promise covers:
 
 - **Classes, interfaces, and their public methods** in `crystoline/*` packages, unless marked `@internal`. This includes `Crystoline\Xpsr\Contracts\*`, the container, `ServiceRegistry`, `Application`, `Configuration`, the HTTP kernel, middleware, response builder and emitter, the HTTP exceptions (`Crystoline\Xpsr\Http\Exception\*`), `IpRange`, routing definitions (`RouteCollection`, `RouteDefinition`, `RouteMatch`, `AbstractRouter`), the URL generator, the event dispatcher and listener provider (`Crystoline\Xpsr\Events\*`), the exception handler, the logger, and `Crystoline\Xpsr\Testing\RouterContractTestCase`.
 - **Route files**: a callable receiving `RouteCollection`, and the portable route grammar in [ROUTING.md](ROUTING.md).
-- **Configuration keys and environment variables** documented in the docs, such as `app.registry`, `app.middleware`, `events.listeners`, `routing.adapter`, `ROUTER_ADAPTER`, `LOG_LEVEL`, and `TRUSTED_PROXIES`.
+- **Configuration keys and environment variables** documented in the docs, such as `app.registry`, `app.middleware`, `app.timezone`, `events.listeners`, `cors.allowed_origins`, `routing.adapter`, `CORS_ALLOWED_ORIGINS`, `ROUTER_ADAPTER`, `LOG_LEVEL`, and `TRUSTED_PROXIES`.
 - **Documented HTTP behavior**: status codes for 404, 405, 400, and 413, the `{"message": ...}` error body, HEAD/OPTIONS handling, and body parsing.
 - **Console commands**: names, documented options, and exit codes.
 

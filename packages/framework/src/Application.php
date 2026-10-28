@@ -11,12 +11,19 @@ use Crystoline\Xpsr\Routing\RouteDispatcher;
 use Crystoline\Xpsr\Exception\ExceptionHandlerInterface;
 use Crystoline\Xpsr\Foundation\ServiceProviderManager;
 use Crystoline\Xpsr\Http\HttpKernel;
+use Crystoline\Xpsr\Http\Middleware\CorsMiddleware;
+use Crystoline\Xpsr\Http\Middleware\CorsOptions;
 use Crystoline\Xpsr\ServiceContainer\ServiceContainer;
+use DateTimeZone;
 use Dotenv\Dotenv;
 use InvalidArgumentException;
 use LogicException;
+use Psr\Clock\ClockInterface;
 use Psr\Container\ContainerInterface as PsrContainerInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
+use Symfony\Component\Clock\ClockInterface as SymfonyClockInterface;
+use Symfony\Component\Clock\NativeClock;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
@@ -127,6 +134,30 @@ final class Application
         $this->container->instance(self::class, $this);
         $this->container->instance(Configuration::class, $this->config);
         $this->container->alias('config', Configuration::class);
+
+        // PSR-20 clock in the app.timezone time zone. Tests replace it with a MockClock.
+        $this->container->factory(ClockInterface::class, static function (PsrContainerInterface $container): ClockInterface {
+            $timezone = $container->get(Configuration::class)->get('app.timezone', 'UTC');
+            try {
+                return new NativeClock(new DateTimeZone(is_string($timezone) ? $timezone : ''));
+            } catch (\Exception $exception) {
+                throw new InvalidArgumentException('app.timezone must be a time zone identifier such as UTC or Europe/Berlin.', 0, $exception);
+            }
+        }, shared: true);
+        $this->container->alias(SymfonyClockInterface::class, ClockInterface::class);
+
+        $this->container->factory(CorsMiddleware::class, static function (PsrContainerInterface $container): CorsMiddleware {
+            $options = $container->get(Configuration::class)->get('cors', []);
+            if (!is_array($options)) {
+                throw new InvalidArgumentException('The cors configuration must be an array.');
+            }
+
+            return new CorsMiddleware(
+                CorsOptions::fromArray($options),
+                $container->get(ResponseFactoryInterface::class),
+                $container->get(ExceptionHandlerInterface::class),
+            );
+        });
 
         $this->container->factory(RequestHandlerInterface::class, static function (PsrContainerInterface $container): HttpKernel {
             $configuration = $container->get(Configuration::class);

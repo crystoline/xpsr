@@ -6,11 +6,13 @@ namespace Tests;
 
 use Crystoline\Xpsr\Application;
 use PHPUnit\Framework\TestCase as BaseTestCase;
+use Psr\Clock\ClockInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Clock\MockClock;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Throwable;
 
@@ -28,6 +30,18 @@ abstract class TestCase extends BaseTestCase
     protected function application(): Application
     {
         return $this->application ??= require dirname(__DIR__) . '/bootstrap/app.php';
+    }
+
+    /**
+     * Stop the application clock (Psr\Clock\ClockInterface) at a moment, for example
+     * freezeTime('2026-01-31 09:00:00'). Move it with $clock->modify('+1 hour') or $clock->sleep(60).
+     */
+    protected function freezeTime(string $at = 'now'): MockClock
+    {
+        $clock = new MockClock($at, (string) $this->application()->getConfig()->get('app.timezone', 'UTC'));
+        $this->swap(ClockInterface::class, $clock);
+
+        return $clock;
     }
 
     /**
