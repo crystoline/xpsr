@@ -1,0 +1,20 @@
+<?php
+
+declare(strict_types=1);
+
+use Crystoline\Xpsr\Database\Migration\Migration;
+use Doctrine\DBAL\Connection;
+
+// Written by make:migration --diff for {{ platform }}. Review it before running: the SQL is
+// specific to that database type.
+return new class extends Migration {
+    public function up(Connection $db): void
+    {
+{{ up }}
+    }
+
+    public function down(Connection $db): void
+    {
+{{ down }}
+    }
+};

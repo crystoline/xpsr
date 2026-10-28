@@ -27,6 +27,8 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 - `swap($id, $replacement)` in the application `tests/TestCase.php`, to replace a service in a test.
 - `crystoline/xpsr-database`: an optional package providing Doctrine DBAL connections configured in `config/database.php`, and migrations with `migrate`, `migrate:rollback`, `migrate:status`, and `make:migration`. In production, migrations need `--force` or a confirmation. See [its README](packages/database/README.md).
 - Database extension points: the migrate commands use `MigratorInterface`, chosen with `database.migrations.runner`, so another runner can replace XPSR's; `Testing\MigratorContractTestCase` checks a runner; `Testing\DatabaseTransactions` rolls back each test's database writes.
+- `crystoline/xpsr-orm-doctrine`: an optional Doctrine ORM 3 adapter. The `EntityManager` runs on XPSR's connection, with attribute-mapped entities in `app/Entity`, snake-case columns, PHP 8.4 native lazy objects instead of proxy classes, and the application cache for metadata in production. Includes Doctrine's read-only and cache commands, an XPSR `orm:validate-schema`, and `ClearEntityManagerMiddleware` for worker servers. See [its README](packages/orm-doctrine/README.md).
+- `php xpsr make:migration <name> --diff` writes a migration from the difference between the database and an expected schema, such as Doctrine's entity mapping. Only tables the schema names are compared. `Schema\SchemaProviderInterface` lets an ORM adapter supply the schema; `Testing\OrmAdapterContractTestCase` checks ORM adapters.
 
 ### Changed
 

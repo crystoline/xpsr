@@ -362,9 +362,21 @@ The first step of the integration plan in `FRAMEWORK_PLAN.md` section 10, so tha
 
 Verified on 28 October 2026: 469 tests pass, with PHPStan and style checks.
 
+## Twentieth milestone: completed — Doctrine ORM adapter
+
+Built with the choices accepted on 28 October 2026 (`FRAMEWORK_PLAN.md` section 9):
+
+- **New package.** `crystoline/xpsr-orm-doctrine` (`packages/orm-doctrine`, `Crystoline\Xpsr\Orm\Doctrine\`), on Doctrine ORM 3.7. Not published yet.
+- **Entity manager.** Built on XPSR's DBAL connection (`orm.connection`), with attribute mapping from `app/Entity` (skipped while it does not exist) and PHP 8.4 native lazy objects, so no proxy classes are generated. Columns use snake case unless `orm.naming` is `default`. The metadata cache is the application's PSR-6 cache when installed and `APP_DEBUG` is off, otherwise memory.
+- **Generated migrations.** `xpsr-database` gained `SchemaProviderInterface`, `SchemaDiff`, and `make:migration --diff`. The diff compares only tables the expected schema names, so it never drops the migrations table or unmanaged tables, and it refuses while migrations are pending. The adapter provides the schema from the entity mapping.
+- **Commands.** Doctrine's `orm:info`, `orm:mapping:describe`, `orm:run-dql`, and cache commands run under `php xpsr`. Doctrine's `orm:validate-schema` counts every unmapped table, including the migrations table, as a difference, so XPSR replaces it with a command that checks the mapping and compares the tables the way `--diff` does. The `orm:schema-tool:*` commands are left out: schema changes go through migrations.
+- **Lifecycle and contract.** `ClearEntityManagerMiddleware` clears the entity manager after each request, for worker servers. `xpsr-database` gained `Testing\OrmAdapterContractTestCase` (shared connection and transaction, reads of plain writes, reset between requests), and the adapter passes it.
+
+Verified on 28 October 2026: 487 tests pass with PHPStan and style checks. The database and ORM suites (60 tests) pass against SQLite, MySQL 8.4, MariaDB 11, and PostgreSQL 17, including generating, running, validating, and rolling back a `--diff` migration on each.
+
 ## Boundaries and remaining work
 
-The first nineteen milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
+The first twenty milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
 
 - **Publishing.** Live since 28 October 2026. CI publishes `master` to the five mirror repositories under `crystoline`, and Packagist serves all five packages from them. The first release is `0.1.0`. The old prototype's `v1.0.0` is removed from Packagist; its git tag remains in `crystoline/xpsr`, where it no longer affects installs.
 - **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.

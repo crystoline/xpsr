@@ -18,6 +18,7 @@ This repository develops several Composer packages together:
 | `packages/router-sunrise` | `crystoline/xpsr-router-sunrise` | Sunrise adapter (optional) |
 | `packages/cache` | `crystoline/xpsr-cache` | Application cache: PSR-16 and PSR-6, `cache:clear` (optional; see [its README](packages/cache/README.md)) |
 | `packages/database` | `crystoline/xpsr-database` | Database connections (Doctrine DBAL) and migrations (optional, not published yet; see [its README](packages/database/README.md)) |
+| `packages/orm-doctrine` | `crystoline/xpsr-orm-doctrine` | Doctrine ORM on XPSR's connection, migrations generated from entities (optional, not published yet; see [its README](packages/orm-doctrine/README.md)) |
 | `packages/http-client` | `crystoline/xpsr-http-client` | Outgoing HTTP: PSR-18 and named clients, a fake for tests (optional, not published yet; see [its README](packages/http-client/README.md)) |
 
 The skeleton installs the packages from `packages/` through a Composer path repository, linked into `vendor/`, so edits take effect immediately. See [docs/PACKAGES.md](docs/PACKAGES.md) for dependencies, testing, and how a release would be published.

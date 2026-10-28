@@ -131,9 +131,11 @@ $this->alterTable($db, 'users', static function (TableEditor $table): void {
 | `php xpsr migrate` | Runs every pending migration, in file-name order, as one batch. |
 | `php xpsr migrate:rollback` | Rolls back the last batch, newest first. `--steps=N` rolls back the last N migrations instead. |
 | `php xpsr migrate:status` | Lists each migration as ran, pending, or "ran, file missing", with its batch. `--json` for scripts. |
-| `php xpsr make:migration <name>` | Writes a timestamped file. `--create=table` starts from a create-table migration and `--table=table` from an alter-table one. `CreateUsersTable` and `create-users-table` both become `create_users_table`. A name already used by another migration is refused. |
+| `php xpsr make:migration <name>` | Writes a timestamped file. `--create=table` starts from a create-table migration and `--table=table` from an alter-table one. `CreateUsersTable` and `create-users-table` both become `create_users_table`. A name already used by another migration is refused. `--diff` writes the SQL that brings the database in line with an expected schema, see below. |
 
-All accept `--connection=<name>`. Each connection keeps its own migrations table.
+`migrate`, `migrate:rollback`, and `migrate:status` accept `--connection=<name>`. Each connection keeps its own migrations table.
+
+**Generated migrations.** An ORM adapter such as `crystoline/xpsr-orm-doctrine` binds `Crystoline\Xpsr\Database\Schema\SchemaProviderInterface`, which describes the tables the application expects. `php xpsr make:migration <name> --diff` then compares the database with it and writes a migration whose `up()` runs the SQL for the difference and whose `down()` reverses it. Only tables the schema names are compared, so the migrations table and other tables are never dropped. Pending migrations must run first, and nothing is written when there is no difference. Without a schema provider, `--diff` exits with 1 and says so.
 
 **Production.** With `APP_ENV=production`, `migrate` and `migrate:rollback` ask for confirmation in a terminal and refuse without `--force` otherwise. Deployment scripts run `php xpsr migrate --force`.
 

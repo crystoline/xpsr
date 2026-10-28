@@ -292,6 +292,7 @@ Later decisions, 28 October 2026:
 | Conventions | XPSR is not modeled on Laravel. Folder layout, file names, and helpers are chosen on their merits, and a Laravel convention is kept only when it is the better option. The skeleton stays flat: `app/`, `config/`, `routes/`, `views/`, `public/`, `migrations/`, and `var/` for runtime files. |
 | Namespace | `Crystoline\Xpsr\` replaces `Crystoline\` (the 26 October choice), from 0.2.0. The framework owns the root of `Crystoline\Xpsr\`; each package takes a sub-namespace such as `Crystoline\Xpsr\Cache\`. This leaves the vendor namespace free for other projects and matches the `crystoline/xpsr-*` package names. |
 | Migrations | Files live in `migrations/` at the project root, named `<YYYYMMDDHHMMSS>_<name>.php` in UTC, and return an anonymous `Migration` subclass so that names never collide. |
+| Doctrine ORM adapter | Entities in `app/Entity/` (`App\Entity\…`) with attribute mapping; no proxy classes, using PHP 8.4 native lazy objects; metadata cache from `crystoline/xpsr-cache` when installed, otherwise memory; schema changes through `make:migration --diff`, which writes ordinary XPSR migrations; package `crystoline/xpsr-orm-doctrine`. Columns default to snake case (`orm.naming`). |
 
 If maintaining a completely independent HTTP-message or console implementation is an explicit project goal, treat it as an additional component with its own specification and tests. It should not block completion of the framework lifecycle and routing design.
 
@@ -315,17 +316,17 @@ crystoline/xpsr-database          foundation: connections, migrations, contracts
 ```
 
 - **Foundation (implemented).** `crystoline/xpsr-database` keeps Doctrine DBAL as the one connection layer: DBAL already hides the differences between database servers, and a second abstraction over the DBAL, Illuminate, and Cycle query builders would be a weaker DBAL. One configuration and one connection per name, shared by every adapter, so the ORM, plain queries, and test rollbacks see the same transaction. The migrate commands talk only to `MigratorInterface`, selected with `database.migrations.runner`; `DatabaseTransactions` wraps tests in transactions; `MigratorContractTestCase` is the runner contract suite.
-- **Doctrine ORM adapter.** Builds the `EntityManager` on XPSR's DBAL connection, with entity directories and attribute mapping in `config/orm.php`. Clears the entity manager after each request (needed for long-running servers). Registers Doctrine's schema validation and proxy commands under XPSR's console. Optionally provides a Doctrine Migrations runner through `MigratorFactoryInterface`, for schema-diff migrations.
+- **Doctrine ORM adapter (implemented, twentieth milestone).** Builds the `EntityManager` on XPSR's DBAL connection, with attribute mapping from `app/Entity` and native lazy objects instead of proxies. `ClearEntityManagerMiddleware` clears it after each request for worker servers. Schema changes go through `make:migration --diff`; a Doctrine Migrations runner through `MigratorFactoryInterface` remains possible later.
 - **Eloquent adapter.** Configures `illuminate/database` on the PDO of XPSR's connection, so transactions stay shared. Optionally provides a runner for Eloquent-style migrations. Check compatibility with the `illuminate/*` versions the framework already uses.
 - **Cycle ORM adapter.** Only if requested: Cycle opens its own connections, so sharing transactions needs more work.
-- **ORM contract suite.** Every ORM adapter must show that it uses XPSR's connection (its writes are visible to DBAL inside the same transaction and undone by a rollback), resets its state between requests, and can be replaced in tests with `swap()`.
+- **ORM contract suite (implemented).** `Testing\OrmAdapterContractTestCase`: every ORM adapter must show that it uses XPSR's connection (its writes are visible to DBAL inside the same transaction and undone by a rollback), reads what plain queries wrote, and resets its state between requests.
 - **Choosing.** `php xpsr setup --orm=doctrine|eloquent|none`, like `--router`: installs the package, adds the provider, and writes the configuration.
 
 ### Planned components, in order
 
 | Order | Component | Approach | Open decisions |
 |---|---|---|---|
-| 1 | Doctrine ORM adapter | As above. | Default entity directory and mapping; proxy directory under `var/`. |
+| 1 | Doctrine ORM adapter | Done; see section 9 for the accepted choices. | — |
 | 2 | Eloquent adapter | As above. | Whether to offer Eloquent's migrations and schema builder. |
 | 3 | CORS middleware | Small, own PSR-15 middleware in the framework. | Configuration keys; preflight caching. |
 | 4 | Monolog logging | Adapter package behind PSR-3, replacing `ErrorLogLogger` when installed. | Default handlers per environment. |

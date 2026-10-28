@@ -13,6 +13,7 @@
     "crystoline/xpsr-cache": "^0.2@dev",
     "crystoline/xpsr-database": "^0.2@dev",
     "crystoline/xpsr-http-client": "^0.2@dev",
+    "crystoline/xpsr-orm-doctrine": "^0.2@dev",
     "crystoline/xpsr-router-sunrise": "^0.2@dev",
     "filp/whoops": "^2.18.4",
     "friendsofphp/php-cs-fixer": "^3.64",
@@ -35,6 +36,7 @@
           "crystoline/xpsr-database": "0.2.x-dev",
           "crystoline/xpsr-framework": "0.2.x-dev",
           "crystoline/xpsr-http-client": "0.2.x-dev",
+          "crystoline/xpsr-orm-doctrine": "0.2.x-dev",
           "crystoline/xpsr-router-fastroute": "0.2.x-dev",
           "crystoline/xpsr-router-sunrise": "0.2.x-dev"
         }
@@ -54,6 +56,7 @@
       "Crystoline\\Xpsr\\Database\\Tests\\": "packages/database/tests/",
       "Crystoline\\Xpsr\\Tests\\": "packages/framework/tests/",
       "Crystoline\\Xpsr\\HttpClient\\Tests\\": "packages/http-client/tests/",
+      "Crystoline\\Xpsr\\Orm\\Doctrine\\Tests\\": "packages/orm-doctrine/tests/",
       "Crystoline\\Xpsr\\Router\\FastRoute\\Tests\\": "packages/router-fastroute/tests/",
       "Crystoline\\Xpsr\\Router\\Sunrise\\Tests\\": "packages/router-sunrise/tests/"
     }

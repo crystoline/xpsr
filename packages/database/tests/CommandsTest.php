@@ -143,7 +143,8 @@ final class CommandsTest extends TestCase
     {
         $make = fn(array $input): CommandTester => $this->runCommand(new MakeMigrationCommand(
             $this->application->get(MigratorFactory::class),
-            fn(): int => 1767225600 + count(glob($this->workspace->migrations . '/*.php') ?: []),
+            $this->application->get(ConnectionManager::class),
+            clock: fn(): int => 1767225600 + count(glob($this->workspace->migrations . '/*.php') ?: []),
         ), $input);
 
         $create = $make(['name' => 'CreateUsersTable', '--create' => 'users']);
