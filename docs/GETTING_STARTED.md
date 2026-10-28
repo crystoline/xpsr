@@ -362,4 +362,5 @@ Run `composer test` again: the same 9 tests pass without changing a route or con
 - [CONTAINER.md](CONTAINER.md): bindings, factories, and service providers (`php xpsr make:provider`).
 - [CONSOLE.md](CONSOLE.md): every command and generator.
 - [EVENTS.md](EVENTS.md): dispatching events and writing listeners.
+- Optional packages: [the cache](../packages/cache/README.md), [the HTTP client](../packages/http-client/README.md), and [database connections and migrations](../packages/database/README.md).
 - [DEPLOYMENT.md](DEPLOYMENT.md): running an XPSR application in production.

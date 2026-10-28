@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+use Crystoline\Database\Migration\Migration;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\TableEditor;
+use Doctrine\DBAL\Types\Types;
+
+return new class extends Migration {
+    public function up(Connection $db): void
+    {
+        $this->alterTable($db, {{ table }}, static function (TableEditor $table): void {
+            // Change the table here, for example:
+            // $table->addColumn(Column::editor()->setUnquotedName('email')->setTypeName(Types::STRING)->setLength(255)->setNotNull(false)->create());
+        });
+    }
+
+    public function down(Connection $db): void
+    {
+        $this->alterTable($db, {{ table }}, static function (TableEditor $table): void {
+            // Undo up(), for example: $table->dropColumnByUnquotedName('email');
+        });
+    }
+};

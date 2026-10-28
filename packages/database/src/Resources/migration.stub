@@ -1,0 +1,18 @@
+<?php
+
+declare(strict_types=1);
+
+use Crystoline\Database\Migration\Migration;
+use Doctrine\DBAL\Connection;
+
+return new class extends Migration {
+    public function up(Connection $db): void
+    {
+        // Change the schema or data, for example: $db->executeStatement('...');
+    }
+
+    public function down(Connection $db): void
+    {
+        // Undo up().
+    }
+};

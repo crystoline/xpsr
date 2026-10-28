@@ -11,6 +11,7 @@
   },
   "require-dev": {
     "crystoline/xpsr-cache": "^0.1@dev",
+    "crystoline/xpsr-database": "^0.1@dev",
     "crystoline/xpsr-http-client": "^0.1@dev",
     "crystoline/xpsr-router-sunrise": "^0.1@dev",
     "filp/whoops": "^2.18.4",
@@ -31,6 +32,7 @@
         "symlink": true,
         "versions": {
           "crystoline/xpsr-cache": "0.1.x-dev",
+          "crystoline/xpsr-database": "0.1.x-dev",
           "crystoline/xpsr-framework": "0.1.x-dev",
           "crystoline/xpsr-http-client": "0.1.x-dev",
           "crystoline/xpsr-router-fastroute": "0.1.x-dev",
@@ -49,6 +51,7 @@
     "psr-4": {
       "Tests\\": "tests/",
       "Crystoline\\Cache\\Tests\\": "packages/cache/tests/",
+      "Crystoline\\Database\\Tests\\": "packages/database/tests/",
       "Crystoline\\Tests\\": "packages/framework/tests/",
       "Crystoline\\HttpClient\\Tests\\": "packages/http-client/tests/",
       "Crystoline\\Router\\FastRoute\\Tests\\": "packages/router-fastroute/tests/",

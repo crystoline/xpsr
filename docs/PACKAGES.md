@@ -13,7 +13,8 @@ crystoline/xpsr (skeleton, repository root)
 ├── (dev) filp/whoops                  detailed debug error pages
 ├── (suggested) crystoline/xpsr-router-sunrise   packages/router-sunrise ──► framework, sunrise/http-router
 ├── (suggested) crystoline/xpsr-cache            packages/cache ──► framework, symfony/cache
-└── (not published yet) crystoline/xpsr-http-client   packages/http-client ──► framework, symfony/http-client
+├── (not published yet) crystoline/xpsr-http-client   packages/http-client ──► framework, symfony/http-client
+└── (not published yet) crystoline/xpsr-database      packages/database ──► framework, doctrine/dbal
 ```
 
 | Package | Namespace | Depends on |
@@ -21,6 +22,7 @@ crystoline/xpsr (skeleton, repository root)
 | `crystoline/xpsr-framework` | `Crystoline\` | PSR interfaces, Symfony Console/Process/Finder, Illuminate Config, phpdotenv, Nyholm PSR-7 server, and any PSR-17 implementation (`psr/http-factory-implementation`). Accepts `psr/http-message` 1.1 or 2.0. Suggests Twig (views) and Whoops (debug pages), but does not require them. |
 | `crystoline/xpsr-router-fastroute` | `Crystoline\Router\FastRoute\` | framework, `nikic/fast-route` ^1.3 |
 | `crystoline/xpsr-cache` | `Crystoline\Cache\` | framework, `symfony/cache` ^7.4, `psr/cache` 2 or 3, `psr/simple-cache` 1 to 3 (1.x keeps it installable next to the Sunrise adapter) |
+| `crystoline/xpsr-database` | `Crystoline\Database\` | framework, `doctrine/dbal` ^4.5. Not published yet; see [Adding a package](#adding-a-package). |
 | `crystoline/xpsr-http-client` | `Crystoline\HttpClient\` | framework, `symfony/http-client` ^7.4, `psr/http-client` ^1.0.3. Not published yet; see [Adding a package](#adding-a-package). |
 | `crystoline/xpsr-router-sunrise` | `Crystoline\Router\Sunrise\` | framework, `sunrise/http-router` ^2.16, `psr/http-message` ^1.1 |
 | `crystoline/xpsr` | `App\` | framework, FastRoute adapter, `nyholm/psr7`, `twig/twig`; development: `filp/whoops`, `phpunit/phpunit` |
@@ -106,7 +108,7 @@ The CI job `lowest-dependencies` runs the whole suite after `composer update --p
 | `crystoline/xpsr-cache` | `packages/cache`, with its history | `crystoline/xpsr-cache` |
 | `crystoline/xpsr-skeleton` | the output of `scripts/export-skeleton.php`, one sync commit per change | `crystoline/xpsr` |
 
-`packages/http-client` has no repository yet, so the split skips it (it is not in `PUBLISHED`).
+`packages/http-client` and `packages/database` have no repositories yet, so the split skips them (they are not in `PUBLISHED`).
 
 Each repository is named after its Composer package without the vendor prefix. The skeleton is the exception: its package is `crystoline/xpsr`, so that `composer create-project crystoline/xpsr` works, but its repository is `xpsr-skeleton`, because `crystoline/xpsr` is this monorepo. Development, issues, and pull requests happen in `crystoline/xpsr`. The other five repositories are read-only mirrors.
 

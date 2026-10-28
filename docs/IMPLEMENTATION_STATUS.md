@@ -324,9 +324,30 @@ The planned route cache was measured first. Building routes turned out to be slo
 
 Verified on 28 October 2026: 428 tests pass, PHPStan and style checks pass, and new tests cover pattern reuse, ordering, the name index, and repeated rejection of an invalid constraint.
 
+## Seventeenth milestone: completed — database connections and migrations
+
+Implemented:
+
+- **New package.** `crystoline/xpsr-database` (`packages/database`, `Crystoline\Database\`), backed by Doctrine DBAL 4.5. It is not an ORM. Like the HTTP client, it is not published yet.
+- **Connections.** `ConnectionManager` builds named connections from `config/database.php`, with DBAL parameters or a URL. A relative SQLite path resolves against the project root and its directory is created. `log_queries` logs through the application's PSR-3 logger. `Doctrine\DBAL\Connection` is the default connection; DBAL connects on the first query.
+- **Migrations.** Timestamped files under `database/migrations` each return a `Migration`. `Migrator` runs pending files as a batch and rolls back by batch or by count. It reports each migration as ran, pending, or "ran, file missing". On PostgreSQL and SQLite each migration runs in a transaction with its bookkeeping; MySQL and MariaDB commit DDL implicitly, which is documented. `Migration::alterTable()` applies a table change through DBAL's comparator.
+- **Commands.** `migrate`, `migrate:rollback --steps=N`, `migrate:status --json`, and `make:migration --create|--table`; all take `--connection`. With `APP_ENV=production`, changing the database needs `--force` or a confirmation.
+- **Skeleton.** `config/database.php` is replaced by a configuration for this package; the old file was an unused leftover from another framework. The skeleton does not install the package.
+- **CI.** A `database` job runs the migration tests against MySQL 8.4, MariaDB 11, and PostgreSQL 17 service containers, and the split waits for it.
+
+Verified on 28 October 2026:
+
+- **Suite:** 458 tests pass on PHP 8.4 with and without the production `php.ini`, on PHP 8.5, and at the lowest allowed versions.
+- **Real servers:** the migration tests (12) pass against MySQL 8.4, MariaDB 11, and PostgreSQL 17 in Docker, as the CI job runs them.
+- **Generated code:** files from `make:migration` pass `php -l`, and the `--create` and `--table` stubs migrate and roll back as written.
+- **Application:** a skeleton test runs `migrate` through the console against an in-memory SQLite connection, as the README describes for tests.
+- **Packaging:** 7 tests pass, including this package installed alone.
+
+Not provided: an ORM or query objects, seeders, `migrate:fresh`, and schema dumps.
+
 ## Boundaries and remaining work
 
-The first sixteen milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
+The first seventeen milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
 
 - **Publishing.** Live since 28 October 2026. CI publishes `master` to the five mirror repositories under `crystoline`, and Packagist serves all five packages from them. The first release is `0.1.0`. The old prototype's `v1.0.0` is removed from Packagist; its git tag remains in `crystoline/xpsr`, where it no longer affects installs.
 - **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.
@@ -341,9 +362,9 @@ The first sixteen milestones are working slices, not completion of all roadmap p
   - Only Nyholm PSR-7 is tested.
   - The request host comes from the client's `Host` header; build absolute URLs from `APP_URL`.
 - **Dependencies.** The framework's remaining third-party requirements are Symfony Console, Process, and Finder; Illuminate Config; phpdotenv; and Nyholm's PSR-7 server helper. Finder only lists configuration files, and Illuminate Config pulls in parts of Illuminate Support, so both are candidates for small in-house replacements.
-- **Not yet available:** database integration, authentication, queues, and scheduling (roadmap phase 6). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
+- **Not yet available:** an ORM, authentication, queues, scheduling, validation, and fuller sessions/CSRF (roadmap phase 6). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
 
 ## Next implementation slice
 
-Continue roadmap phase 6 with database integration. Publish `crystoline/xpsr-http-client` once its repository exists. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.
+Publish `crystoline/xpsr-http-client` and `crystoline/xpsr-database` once their repositories exist, then release 0.2.0. The remaining phase 6 modules (validation, sessions and CSRF, authentication, queues, scheduling) each need design decisions first. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.

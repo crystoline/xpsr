@@ -96,6 +96,7 @@ final class PackagesTest extends TestCase
         yield 'Sunrise adapter' => ['router-sunrise'];
         yield 'cache' => ['cache'];
         yield 'HTTP client' => ['http-client'];
+        yield 'database' => ['database'];
     }
 
     #[DataProvider('packages')]
