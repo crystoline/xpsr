@@ -420,6 +420,16 @@ Built with the choices accepted on 28 October 2026 (`FRAMEWORK_PLAN.md` section 
 
 Verified on 28 October 2026: 549 tests pass with PHPStan and style checks, including both packages in the skeleton's full HTTP kernel (a limit through `app.middleware` reaching 429, and a 500 logged as JSON with its request ID).
 
+## Release 0.3.0 (28 October 2026)
+
+Tagged `v0.3.0` in all ten repositories. Packagist serves 0.3.0 for every package, including the new `crystoline/xpsr-log-monolog` and `crystoline/xpsr-validation`. Checked from Packagist with the production `php.ini`:
+
+- `composer create-project crystoline/xpsr` installs framework and FastRoute 0.3.0; `about` reports 0.3.0; the application's tests pass and `/hello` answers.
+- `setup --router=sunrise --install-dependencies` installs the Sunrise adapter `^0.3`.
+- Every optional package installs at 0.3.0. The Doctrine path (entity, `make:migration --diff`, `migrate`, `orm:validate-schema`) works end to end on SQLite.
+- With the validation and Monolog providers: an input class from `make:input` accepts trimmed input with 201 and rejects a blank field with 422 and its field error; responses carry `X-Request-Id`; `LOG_FORMAT=json` writes JSON lines to stderr.
+- `UPGRADE.md` was rehearsed on an installed 0.2.0 application, which then runs 0.3.0 and passes its tests.
+
 ## Release 0.2.0 (28 October 2026)
 
 Tagged `v0.2.0` in all eight repositories. Packagist serves 0.2.0 for every package, including the new `crystoline/xpsr-http-client`, `crystoline/xpsr-database`, and `crystoline/xpsr-orm-doctrine`. Checked from Packagist with the production `php.ini`:
