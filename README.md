@@ -4,7 +4,7 @@ A PHP framework in development, built around PSR interfaces and interchangeable 
 
 The framework now provides application bootstrapping, a PSR-11 container with explicit bindings, a provider register/boot lifecycle, a PSR-15 HTTP kernel, portable routing with FastRoute and Sunrise adapters, named URLs, global and route middleware, Nyholm PSR-7/17 messages and factories, Twig views, configurable error rendering with PSR-3 logging, PSR-14 events, sessions with CSRF protection, authentication with policies, and an XPSR CLI backed by standalone Symfony Console. The accepted roadmap is in [docs/FRAMEWORK_PLAN.md](docs/FRAMEWORK_PLAN.md); delivered work and remaining limitations are in [docs/IMPLEMENTATION_STATUS.md](docs/IMPLEMENTATION_STATUS.md).
 
-**New to XPSR?** Follow [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) to build a small API with tests. Then read [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) before going to production. Release promises are in [docs/VERSIONING.md](docs/VERSIONING.md), and changes are in [CHANGELOG.md](CHANGELOG.md).
+**New to XPSR?** Follow [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) to build a small API with tests. Then read [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) before going to production. [docs/README.md](docs/README.md) lists every guide; the documentation is also on the web, with search, at [xpsr.crysto.name.ng](https://xpsr.crysto.name.ng/docs/). Release promises are in [docs/VERSIONING.md](docs/VERSIONING.md), and changes are in [CHANGELOG.md](CHANGELOG.md).
 
 ## Repository layout
 
