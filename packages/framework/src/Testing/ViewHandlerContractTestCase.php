@@ -104,6 +104,13 @@ abstract class ViewHandlerContractTestCase extends TestCase
         self::assertSame('5', $this->render($handler, 'arguments'));
     }
 
+    public function testACacheDirectoryThatDoesNotExistYetIsCreated(): void
+    {
+        // New projects name var/cache/views, and var/cache may not exist either.
+        $handler = $this->createHandler($this->directory, $this->cache . '/var/cache/views');
+        self::assertSame('Hello, Ada!', $this->render($handler, 'greeting', ['name' => 'Ada']));
+    }
+
     public function testAMissingViewThrowsViewNotFound(): void
     {
         try {

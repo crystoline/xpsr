@@ -8,6 +8,10 @@ class ViewHandler implements ViewHandlerInterface, ViewFunctionsInterface
     private \Twig\Environment $engine;
 
     /**
+     * Compiled templates go to $cache, or are compiled on each request without one. A template is
+     * compiled again when its file is newer than the compiled one, with or without $debug: the
+     * check costs about 0.01 ms per page, and stops a deploy from serving old templates.
+     *
      * @param string $dir /path/to/templates
      */
     public function __construct(private readonly string $dir, bool $debug = false, string|false $cache = false)
@@ -17,6 +21,7 @@ class ViewHandler implements ViewHandlerInterface, ViewFunctionsInterface
         $this->engine = new \Twig\Environment($loader, [
             'cache' => $cache,
             'debug' => $debug,
+            'auto_reload' => true,
         ]);
 
         $this->registerHelpers();

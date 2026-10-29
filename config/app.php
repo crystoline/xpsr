@@ -33,7 +33,8 @@ return [
     // twig, or plates, latte, or blade with crystoline/xpsr-view-<engine> installed.
     'view_engine' => env('VIEW_ENGINE', 'twig'),
     'view_dir' => dirname(__DIR__) . '/views',
-    'view_cache_dir' => false,
+    // Compiled templates; a changed template is compiled again. false compiles on every request.
+    'view_cache_dir' => dirname(__DIR__) . '/var/cache/views',
     'registry' => [
         FactoryRegistry::class,
         RouteServiceRegistry::class,

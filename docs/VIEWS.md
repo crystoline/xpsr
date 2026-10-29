@@ -34,7 +34,13 @@ composer require crystoline/xpsr-view-latte
 'view_engine' => env('VIEW_ENGINE', 'latte'),
 ```
 
-`app.view_dir` is the template directory and `app.view_cache_dir` is where Twig, Latte, and Blade keep compiled templates (`false`: Twig and Latte compile on each request, Blade uses a directory under the system temporary directory). With `app.debug` off, Twig and Latte do not look for changed templates, so clear the cache directory on deploy.
+`app.view_dir` is the template directory. `app.view_cache_dir` is where Twig, Latte, and Blade keep compiled templates. In new projects it is `var/cache/views`. With `false`, Twig and Latte compile on every request, and Blade uses a directory under the system temporary directory. Give the cache a directory of its own, because `php xpsr view:clear` empties it.
+
+A changed template is compiled again on the next request, whether `app.debug` is on or off:
+
+- **Twig and Blade** compare the template's file time with the compiled copy's. This costs almost nothing (about 0.01 ms per page for Twig). A deploy that keeps the files' original times needs `php xpsr view:clear`, for example unpacking an archive or `rsync -a`. See [DEPLOYMENT.md](DEPLOYMENT.md#writable-directories).
+- **Latte** compares each template's content, so file times never matter. This costs about 0.2 ms for a page of three templates. To skip the check, see [its README](../packages/view-latte/README.md).
+- **Plates** templates are PHP files, which OPcache caches, so Plates uses no cache directory.
 
 ## Template functions
 

@@ -15,6 +15,7 @@ use Crystoline\Xpsr\Console\Commands\MakeProviderCommand;
 use Crystoline\Xpsr\Console\Commands\RouteListCommand;
 use Crystoline\Xpsr\Console\Commands\ServeCommand;
 use Crystoline\Xpsr\Console\Commands\SetupCommand;
+use Crystoline\Xpsr\Console\Commands\ViewClearCommand;
 use Crystoline\Xpsr\Console\ConsoleKernel;
 use Crystoline\Xpsr\Console\Generator\StubGenerator;
 use Crystoline\Xpsr\Console\Setup\ComposerPackageInspector;
@@ -37,6 +38,7 @@ final class ConsoleServiceRegistry extends ServiceRegistry
             $commands->register('route:list', RouteListCommand::class, 'List portable route definitions.');
             $commands->register('serve', ServeCommand::class, 'Run the PHP development server with public/ as its document root.');
             $commands->register('setup', SetupCommand::class, 'Choose the router adapter and preset, then check that the application boots.');
+            $commands->register('view:clear', ViewClearCommand::class, 'Remove compiled view templates.');
             return $commands;
         }, shared: true);
         $this->container->factory(

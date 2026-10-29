@@ -88,7 +88,16 @@ TRUSTED_PROXIES=10.0.0.0/8,192.168.0.10
 
 ## Writable directories
 
-Sessions are kept in `var/sessions` by default, so the web server user must be able to write there; the directory is created with mode 0700 on first use. Nothing else is written at runtime. If you enable Twig's template cache, set `view_cache_dir` (for example in `config/production/app.php`) to a directory the web server user can write, such as `var/cache/views`, and clear it on each deploy.
+The web server user must be able to write:
+
+- `var/sessions`, for sessions in the default file store. It is created with mode 0700 on first use.
+- `var/cache/views`, for compiled templates (`app.view_cache_dir`).
+
+Optional packages write to their own directories, such as `var/cache/app` for the file cache, `var/storage` for local disks, and `var/locks` for scheduled tasks.
+
+Run `php xpsr` commands that render views, such as a queue worker sending email, as the web server user. Otherwise they can create cache directories the web server cannot write into, and pages that need them fail.
+
+Templates need no deploy step in two cases: the deploy gives changed files new times, as `git pull` does, or each release starts with an empty `var/cache/views`. Some deploys keep the files' original times, such as unpacking an archive or `rsync -a`. Those should run `php xpsr view:clear` as the web server user, because Twig and Blade notice a change by its file time. Latte compares content, so it needs no step.
 
 ## Sessions
 

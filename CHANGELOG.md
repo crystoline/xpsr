@@ -4,8 +4,20 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+Nothing breaks. Upgrade steps are in [UPGRADE.md](UPGRADE.md#from-04-to-05).
+
+### Added
+
+- `php xpsr view:clear` empties `app.view_cache_dir`, for deploys that keep the files' original times. See [docs/VIEWS.md](docs/VIEWS.md).
+
+### Changed
+
+- New projects keep compiled templates in `var/cache/views` (`app.view_cache_dir`) instead of compiling them on every request. Through Apache with OPcache, the skeleton's home page went from 7.0 ms to 4.0 ms. Existing projects keep their setting.
+- Twig and Latte compile a changed template again even with `app.debug` off, as Blade already did. A deploy no longer serves old templates until the cache is cleared. Twig compares file times, which costs about 0.01 ms per page. Latte compares content, which costs about 0.2 ms for a page of three templates.
+
 ### Fixed
 
+- Latte failed with "Unable to create directory" when the parent of `app.view_cache_dir` did not exist. The handler now creates the whole path, as the Blade handler does.
 - HTTP/1.0 requests are answered with HTTP/1.0. Every response used to say HTTP/1.1. Under Apache with mod_php, that kept the connection open until the keep-alive timeout, 5 seconds by default. HTTP/1.0 clients that read until the connection closes, such as some health checks and monitoring tools, waited that long for every response. Responses to HTTP/1.1 and HTTP/2 requests are unchanged.
 
 ## 0.4.0 (2026-10-29)

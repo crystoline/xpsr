@@ -32,6 +32,6 @@ The [template functions](../../docs/VIEWS.md#template-functions) are methods of 
 
 Layouts, sections, stacks, `@include`, and the control structures work. Components (`<x-...>`) and directives that call Laravel's own helpers, such as `@method`, need parts of a Laravel application and are not supported.
 
-Compiled templates go to `app.view_cache_dir`, or without one to a directory under the system temporary directory, and are compiled again when their file changes. `BladeViewHandler::compiler()` returns the Blade compiler, for custom directives, and `factory()` the view factory, for shared data.
+Compiled templates go to `app.view_cache_dir`, or without one to a directory under the system temporary directory. A template is compiled again when its file is newer than the compiled copy, so run `php xpsr view:clear` after a deploy that keeps the files' original times. `BladeViewHandler::compiler()` returns the Blade compiler, for custom directives, and `factory()` the view factory, for shared data.
 
 Requires PHP 8.4+.

@@ -2,6 +2,29 @@
 
 Steps for moving an application between minor versions. What changed is in [CHANGELOG.md](CHANGELOG.md); what each kind of release promises is in [docs/VERSIONING.md](docs/VERSIONING.md).
 
+## From 0.4 to 0.5
+
+Nothing breaks, so only step 1 is needed. Run the steps from the project root.
+
+### 1. Require 0.5
+
+In `composer.json`, change every `crystoline/xpsr-*` requirement from `^0.4` to `^0.5`, then run:
+
+```sh
+composer update 'crystoline/*' --with-dependencies
+composer test
+```
+
+### 2. Cache compiled templates (optional)
+
+New projects keep compiled Twig, Latte, and Blade templates instead of compiling them on every request. To do the same, set this in `config/app.php`:
+
+```php
+'view_cache_dir' => dirname(__DIR__) . '/var/cache/views',
+```
+
+The web server user must be able to write to `var/cache/views`. A changed template is compiled again on its own, even with `app.debug` off. If your deploy keeps the files' original times, for example by unpacking an archive or with `rsync -a`, add `php xpsr view:clear` to it. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md#writable-directories).
+
 ## From 0.3 to 0.4
 
 0.4 adds sessions, sign-in, more view engines, and packages for queues, mail, scheduled tasks, file storage, and Eloquent. One change can affect existing code (step 2); everything after it is optional. Run the steps from the project root.

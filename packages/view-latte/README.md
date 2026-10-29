@@ -30,6 +30,6 @@ composer require crystoline/xpsr-view-latte
 
 The [template functions](../../docs/VIEWS.md#template-functions) are called by name; `csrf_field()` prints its HTML as it is.
 
-Compiled templates go to `app.view_cache_dir`; without one, each request compiles them again. With `app.debug` off, changed templates are not compiled again, so clear the directory on deploy. `LatteViewHandler::engine()` returns the Latte `Engine`, for filters, extensions, and other settings.
+Compiled templates go to `app.view_cache_dir`; without one, each request compiles them again. A changed template is compiled again even with `app.debug` off. Latte compares each template's content, which costs about 0.2 ms for a page of three templates. To skip the check, call `engine()->setAutoRefresh(false)` from a service registry's `boot()`, and run `php xpsr view:clear` on every deploy. `LatteViewHandler::engine()` returns the Latte `Engine`, for filters, extensions, and other settings.
 
 Requires PHP 8.4+.

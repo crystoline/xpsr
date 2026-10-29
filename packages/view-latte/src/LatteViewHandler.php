@@ -10,6 +10,7 @@ use Crystoline\Xpsr\View\ViewNotFoundException;
 use Latte\Engine;
 use Latte\Loaders\FileLoader;
 use Latte\Runtime\Html;
+use RuntimeException;
 use Stringable;
 
 /**
@@ -26,16 +27,21 @@ final class LatteViewHandler implements ViewHandlerInterface, ViewFunctionsInter
     private readonly Engine $engine;
 
     /**
-     * Compiled templates go to $cache (or are compiled for each request without one). They are
-     * compiled again when their file changes only with $debug, as with Twig, so clear the cache
-     * on deploy.
+     * Compiled templates go to $cache, or are compiled on each request without one. A template is
+     * compiled again when its content changes, with or without $debug, so a deploy never serves
+     * old templates.
      */
+    // @phpstan-ignore constructor.unusedParameter
     public function __construct(private readonly string $directory, bool $debug = false, string|false $cache = false)
     {
+        // Latte creates only the last level of a missing directory, and var/cache may not exist yet.
+        if ($cache !== false && !is_dir($cache) && !@mkdir($cache, 0775, true) && !is_dir($cache)) {
+            throw new RuntimeException("Latte compiles views into {$cache}, which could not be created.");
+        }
         $this->engine = new Engine();
         $this->engine->setLoader(new FileLoader($directory));
         $this->engine->setCacheDirectory($cache === false ? null : $cache);
-        $this->engine->setAutoRefresh($debug);
+        $this->engine->setAutoRefresh(true);
     }
 
     /** The Latte engine, for filters, extensions, and other settings. */
