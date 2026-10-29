@@ -23,6 +23,7 @@ lead there.
 - [Views](VIEWS.md)
 - [Sessions, cookies, and CSRF](SESSIONS.md)
 - [Authentication](AUTH.md)
+- [Encryption](ENCRYPTION.md)
 - [Console](CONSOLE.md)
 
 ## Architecture

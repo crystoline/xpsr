@@ -15,12 +15,15 @@
     "crystoline/xpsr-database": "^0.4@dev",
     "crystoline/xpsr-framework": "^0.4@dev",
     "doctrine/dbal": "^4.5",
+    "illuminate/contracts": "^12.0",
     "illuminate/database": "^12.0",
     "illuminate/events": "^12.0",
+    "illuminate/support": "^12.0",
     "psr/container": "^2.0",
     "symfony/console": "^7.4"
   },
   "require-dev": {
+    "illuminate/encryption": "^12.0",
     "nyholm/psr7": "^1.8.2",
     "phpunit/phpunit": "^12.5"
   },

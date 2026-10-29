@@ -37,6 +37,20 @@ To take locks across processes and servers, `composer require crystoline/xpsr-lo
 
 The scheduler's `withoutOverlapping()` then uses the same locks, unless `config/scheduler.php` sets `lock`. To share them, remove the `lock` line, or change it to `'lock' => env('SCHEDULER_LOCK'),`. Rate limits use them too.
 
+### 5. Encryption (optional)
+
+To encrypt data, or to use Eloquent's encrypted casts:
+
+1. Add this line after `'key' => env('APP_KEY'),` in `config/app.php`, for key rotation:
+
+   ```php
+   'previous_keys' => array_values(array_filter(array_map('trim', explode(',', (string) env('APP_PREVIOUS_KEYS', ''))))),
+   ```
+
+2. Run `php xpsr key:generate --write`, and add `APP_KEY=` to `.env.example`. Coming from Laravel, copy its `APP_KEY` instead, so its encrypted data still reads.
+
+See [docs/ENCRYPTION.md](docs/ENCRYPTION.md).
+
 ## From 0.3 to 0.4
 
 0.4 adds sessions, sign-in, more view engines, and packages for queues, mail, scheduled tasks, file storage, and Eloquent. One change can affect existing code (step 2); everything after it is optional. Run the steps from the project root.

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ae29c7b4099c2cdd28b05819fd65fd9c",
+    "content-hash": "1b812733115c7dd6bf27678d02bf6318",
     "packages": [
         {
             "name": "crystoline/xpsr-framework",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "84418dde270ab3fa7d72ae33eca36fb94591a321"
+                "reference": "1d98466a90ce056cb4711241692a90189059550e"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
@@ -47,6 +47,7 @@
             "suggest": {
                 "crystoline/xpsr-router-fastroute": "Default router adapter",
                 "crystoline/xpsr-router-sunrise": "Alternative router adapter",
+                "ext-openssl": "Needed to encrypt with app.key (Crystoline\\Xpsr\\Encryption\\Encrypter)",
                 "filp/whoops": "Detailed HTML error pages when APP_DEBUG=true (development only)",
                 "phpunit/phpunit": "Needed to run Crystoline\\Xpsr\\Testing\\RouterContractTestCase in an adapter's own tests",
                 "twig/twig": "Needed to render views with the view() helper and ViewServiceRegistry"
@@ -3590,19 +3591,22 @@
             "dist": {
                 "type": "path",
                 "url": "packages/orm-eloquent",
-                "reference": "cc5dc0039f35159576724f96f97895037d14bc68"
+                "reference": "1bd78851c182df34f6e4072395ecc4ddf9663d21"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.4@dev",
                 "crystoline/xpsr-framework": "^0.4@dev",
                 "doctrine/dbal": "^4.5",
+                "illuminate/contracts": "^12.0",
                 "illuminate/database": "^12.0",
                 "illuminate/events": "^12.0",
+                "illuminate/support": "^12.0",
                 "php": "^8.4",
                 "psr/container": "^2.0",
                 "symfony/console": "^7.4"
             },
             "require-dev": {
+                "illuminate/encryption": "^12.0",
                 "nyholm/psr7": "^1.8.2",
                 "phpunit/phpunit": "^12.5"
             },
@@ -5563,6 +5567,57 @@
                 "source": "https://github.com/laravel/framework"
             },
             "time": "2026-10-02T20:24:46+00:00"
+        },
+        {
+            "name": "illuminate/encryption",
+            "version": "v12.70.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/encryption.git",
+                "reference": "a12474102c6ca2e2c2ec4d612bc9fc0d2f0b9f86"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/encryption/zipball/a12474102c6ca2e2c2ec4d612bc9fc0d2f0b9f86",
+                "reference": "a12474102c6ca2e2c2ec4d612bc9fc0d2f0b9f86",
+                "shasum": ""
+            },
+            "require": {
+                "ext-hash": "*",
+                "ext-mbstring": "*",
+                "ext-openssl": "*",
+                "illuminate/contracts": "^12.0",
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "12.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Encryption\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Encryption package.",
+            "homepage": "https://laravel.com",
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2026-01-05T21:11:57+00:00"
         },
         {
             "name": "illuminate/events",

@@ -108,6 +108,7 @@ Templates need no deploy step in two cases: the deploy gives changed files new t
 
 ## Authentication
 
+- **Encryption key.** Set `APP_KEY` (`php xpsr key:generate` makes one) in the environment, never in version control, and give every server the same key. Losing it loses everything encrypted with it. To change it, keep the old key in `APP_PREVIOUS_KEYS`; see [ENCRYPTION.md](ENCRYPTION.md#changing-the-key).
 - **JWT secret.** Set `AUTH_JWT_SECRET` (`php xpsr auth:jwt-secret` makes one) in the environment, never in version control. Changing it ends every issued token. With RS256 or ES256, deploy the key files with permissions only the web server user can read.
 - **Login throttling.** Put `RateLimit::named('login')` on sign-in routes, and count by account with `RateLimits` too. Several servers need a shared cache and shared locks; see [Locks](#locks).
 - **HTTPS** is required for sign-in: passwords, session cookies, and tokens travel in every request.

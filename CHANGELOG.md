@@ -14,6 +14,12 @@ Nothing breaks if the web server can write `var/locks`, which rate limits now us
   - See [its README](packages/lock/README.md).
 - `ConnectionManager::open()` in `crystoline/xpsr-database`: a new connection with a configured connection's settings, outside the shared connection's transactions.
 - `RateLimits` in `crystoline/xpsr-cache` applies the limits in `config/rate_limit.php` to a key chosen in code, such as an email address or a user ID, where the middleware counts by client address. `attempt()` answers 429 over the limit, `hit()` returns what is left without throwing, `remaining()` checks without counting, and `reset()` forgets a key's attempts. See [its README](packages/cache/README.md#limits-from-code).
+- Encryption with `APP_KEY`, in Laravel's format, so data a Laravel application encrypted with the same key decrypts in XPSR and the other way round. See [docs/ENCRYPTION.md](docs/ENCRYPTION.md).
+  - `Crystoline\Xpsr\Encryption\Encrypter`, a core service with `encryptString()`, `decryptString()`, `encrypt()`, and `decrypt()`. Ciphers: AES-256-CBC (the default), AES-128-CBC, AES-256-GCM, and AES-128-GCM.
+  - Old keys in `APP_PREVIOUS_KEYS` (`app.previous_keys`) still decrypt.
+  - `decrypt()` reads strings, numbers, booleans, null, and arrays, but refuses serialized objects, which Laravel's `decrypt()` restores. A leaked key therefore cannot be used to run code through the application's classes.
+  - `php xpsr key:generate` prints a key; `--write` sets `APP_KEY` in `.env`.
+  - In `crystoline/xpsr-orm-eloquent`, Eloquent's encrypted casts (`encrypted`, `encrypted:array`, `encrypted:collection`, `encrypted:object`, `AsEncryptedArrayObject`, `AsEncryptedCollection`) use it, so Laravel's encrypted columns read as they are.
 - `php xpsr view:clear` empties `app.view_cache_dir`, for deploys that keep the files' original times. See [docs/VIEWS.md](docs/VIEWS.md).
 
 ### Changed

@@ -86,6 +86,19 @@ class User extends Model implements UserInterface
 
 `Authenticatable` reads the key and the `password` attribute; sign-in saves an upgraded hash to the `password` column. See the XPSR repository's `docs/AUTH.md`.
 
+## Encrypted attributes
+
+Eloquent's encrypted casts use XPSR's encrypter with `APP_KEY` (`php xpsr key:generate --write`): `encrypted`, `encrypted:array`, `encrypted:collection`, `encrypted:object`, `AsEncryptedArrayObject`, and `AsEncryptedCollection`.
+
+```php
+protected function casts(): array
+{
+    return ['api_secret' => 'encrypted', 'bank_details' => 'encrypted:array'];
+}
+```
+
+Values are stored in Laravel's format, so columns that a Laravel application encrypted with the same `APP_KEY` read as they are, and Laravel reads what XPSR writes. Keep the columns `TEXT`: a payload is about 1.8 times the value's length plus about 200 characters. With `APP_PREVIOUS_KEYS` set, old values still decrypt, and assigning an attribute re-encrypts it with the current key on save. Without a key, the application starts, and the first encrypted attribute says how to make one. See [docs/ENCRYPTION.md](../../docs/ENCRYPTION.md).
+
 ## Testing
 
 `Crystoline\Xpsr\Database\Testing\DatabaseTransactions` from the database package covers models too: they write through the same connection, so their changes are rolled back after each test.

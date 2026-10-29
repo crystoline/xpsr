@@ -41,6 +41,7 @@
     "symfony/var-dumper": "<7.4"
   },
   "suggest": {
+    "ext-openssl": "Needed to encrypt with app.key (Crystoline\\Xpsr\\Encryption\\Encrypter)",
     "crystoline/xpsr-router-fastroute": "Default router adapter",
     "crystoline/xpsr-router-sunrise": "Alternative router adapter",
     "filp/whoops": "Detailed HTML error pages when APP_DEBUG=true (development only)",

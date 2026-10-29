@@ -1,6 +1,6 @@
 # crystoline/xpsr-framework
 
-The XPSR framework library: application lifecycle and configuration, the PSR-11 container and provider lifecycle, the PSR-15 HTTP kernel and middleware, portable route definitions and the router contract, error rendering and PSR-3 logging, the response emitter, the PSR-14 event dispatcher, sessions with CSRF protection and their file store, authentication (session sign-in, guards, password hashing) and policies, and the `xpsr` console with its generators and setup command.
+The XPSR framework library: application lifecycle and configuration, the PSR-11 container and provider lifecycle, the PSR-15 HTTP kernel and middleware, portable route definitions and the router contract, error rendering and PSR-3 logging, the response emitter, the PSR-14 event dispatcher, sessions with CSRF protection and their file store, authentication (session sign-in, guards, password hashing) and policies, encryption with `APP_KEY` in Laravel's format, and the `xpsr` console with its generators and setup command.
 
 It does not include a router implementation. Install an adapter alongside it:
 

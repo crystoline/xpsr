@@ -8,6 +8,7 @@ use Crystoline\Xpsr\Application;
 use Crystoline\Xpsr\Configuration;
 use Crystoline\Xpsr\Console\CommandRegistry;
 use Crystoline\Xpsr\Console\Commands\AboutCommand;
+use Crystoline\Xpsr\Console\Commands\KeyGenerateCommand;
 use Crystoline\Xpsr\Console\Commands\MakeCommandCommand;
 use Crystoline\Xpsr\Console\Commands\MakeControllerCommand;
 use Crystoline\Xpsr\Console\Commands\MakeMiddlewareCommand;
@@ -31,6 +32,7 @@ final class ConsoleServiceRegistry extends ServiceRegistry
         $this->container->factory(CommandRegistry::class, static function (): CommandRegistry {
             $commands = new CommandRegistry();
             $commands->register('about', AboutCommand::class, 'Show application and runtime information.');
+            $commands->register('key:generate', KeyGenerateCommand::class, 'Make an encryption key (APP_KEY).');
             $commands->register('make:command', MakeCommandCommand::class, 'Create a console command class.');
             $commands->register('make:controller', MakeControllerCommand::class, 'Create a controller class.');
             $commands->register('make:middleware', MakeMiddlewareCommand::class, 'Create a PSR-15 middleware class.');

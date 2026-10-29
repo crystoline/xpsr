@@ -23,10 +23,12 @@ return [
     'locale' => 'en',
     'fallback_locale' => 'en',
     'faker_locale' => 'en_US',
+    // Encryption key (php xpsr key:generate --write). Old keys, comma-separated, still decrypt.
     'key' => env('APP_KEY'),
+    'previous_keys' => array_values(array_filter(array_map('trim', explode(',', (string) env('APP_PREVIOUS_KEYS', ''))))),
+    'cipher' => 'AES-256-CBC',
     // Proxies (IP addresses or CIDR ranges, comma-separated) allowed to set Forwarded/X-Forwarded-* headers.
     'trusted_proxies' => array_values(array_filter(array_map('trim', explode(',', (string) env('TRUSTED_PROXIES', ''))))),
-    'cipher' => 'AES-256-CBC',
     // PSR-4 namespace and directory of application code; make:* generators write here.
     'namespace' => 'App',
     'source_dir' => 'app',

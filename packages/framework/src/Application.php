@@ -7,6 +7,7 @@ namespace Crystoline\Xpsr;
 use Crystoline\Xpsr\Contracts\Container\ContainerBuilderInterface;
 use Crystoline\Xpsr\Contracts\Container\ContainerInterface;
 use Crystoline\Xpsr\Console\ConsoleKernel;
+use Crystoline\Xpsr\Encryption\Encrypter;
 use Crystoline\Xpsr\Routing\RouteDispatcher;
 use Crystoline\Xpsr\Exception\ExceptionHandlerInterface;
 use Crystoline\Xpsr\Foundation\ServiceProviderManager;
@@ -145,6 +146,14 @@ final class Application
             }
         }, shared: true);
         $this->container->alias(SymfonyClockInterface::class, ClockInterface::class);
+
+        // Encryption with app.key (APP_KEY). Built on first use, so an application without a key
+        // starts, and only code that encrypts fails.
+        $this->container->factory(
+            Encrypter::class,
+            static fn(PsrContainerInterface $container): Encrypter => Encrypter::fromConfiguration($container->get(Configuration::class)),
+            shared: true,
+        );
 
         $this->container->factory(CorsMiddleware::class, static function (PsrContainerInterface $container): CorsMiddleware {
             $options = $container->get(Configuration::class)->get('cors', []);

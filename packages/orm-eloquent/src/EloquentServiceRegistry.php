@@ -6,6 +6,7 @@ namespace Crystoline\Xpsr\Orm\Eloquent;
 
 use Crystoline\Xpsr\Console\CommandRegistry;
 use Crystoline\Xpsr\Database\ConnectionManager;
+use Crystoline\Xpsr\Encryption\Encrypter;
 use Crystoline\Xpsr\Orm\Eloquent\Auth\EloquentUserProviderFactory;
 use Crystoline\Xpsr\Orm\Eloquent\Console\MakeModelCommand;
 use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
@@ -14,12 +15,15 @@ use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Events\Dispatcher;
+use Illuminate\Support\Facades\Crypt;
+use LogicException;
 use Psr\Container\ContainerInterface;
 
 /**
  * Makes Eloquent models work on XPSR's database connections (config/database.php): each model
  * uses the XPSR connection of the same name as its $connection, or the default one. Schema
- * changes are XPSR migrations (php xpsr make:migration). Model events and observers work.
+ * changes are XPSR migrations (php xpsr make:migration). Model events and observers work, and
+ * encrypted casts use app.key in Laravel's format.
  *
  *   Crystoline\Xpsr\Orm\Eloquent\ConnectionResolver   Eloquent's connections, by XPSR name
  *   Illuminate\Database\ConnectionInterface           the default connection, for the query builder
@@ -49,6 +53,16 @@ final class EloquentServiceRegistry extends ServiceRegistry
         // until a model runs a query.
         Model::setConnectionResolver($this->container->get(ConnectionResolver::class));
         Model::setEventDispatcher(new Dispatcher(new Container()));
+        // Encrypted casts use app.key. AsEncryptedArrayObject and AsEncryptedCollection ask
+        // Laravel's Crypt facade rather than the model, so it gets the same encrypter.
+        $container = $this->container;
+        $encrypter = new EloquentEncrypter(static function () use ($container): Encrypter {
+            $encrypter = $container->get(Encrypter::class);
+
+            return $encrypter instanceof Encrypter ? $encrypter : throw new LogicException('The ' . Encrypter::class . ' service must be an Encrypter.');
+        });
+        Model::encryptUsing($encrypter);
+        Crypt::swap($encrypter);
         if ($this->container->has(CommandRegistry::class)) {
             $this->container->get(CommandRegistry::class)->register('make:model', MakeModelCommand::class, 'Create an Eloquent model class.');
         }

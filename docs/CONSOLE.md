@@ -16,6 +16,7 @@ php xpsr app:greet Ada
 php xpsr setup
 php xpsr setup --router=sunrise --preset=api --install-dependencies --no-interaction
 php xpsr view:clear
+php xpsr key:generate --write
 php xpsr make:controller Admin/UserController
 php xpsr make:controller PingController --invokable
 php xpsr make:middleware EnsureJsonRequest
@@ -50,6 +51,8 @@ php xpsr schedule:run
 `route:list` reads the shared route collection, so its output is independent of the selected adapter. It lists declared methods, path, name, handler, and inherited/route middleware without instantiating controllers or middleware. `--method` filters declared methods case-insensitively; `--path` and `--name` use case-sensitive substring matches. Filters combine with AND. HEAD fallback and automatic OPTIONS are implicit and do not create extra rows. `--json` returns an array (including an empty array when nothing matches).
 
 `view:clear` empties `app.view_cache_dir`, the compiled templates, and reports how many files it removed. It refuses a directory that holds the application or its views. It fails, naming a file, when files cannot be removed, usually because another user created them. See [VIEWS.md](VIEWS.md).
+
+`key:generate` prints a new encryption key for `app.cipher`, as `base64:` and the key in base64. `--write` sets `APP_KEY` in `.env`, and refuses to replace a key that is already set unless `--force` is given. See [ENCRYPTION.md](ENCRYPTION.md).
 
 `event:list` shows each event listener with its priority, in the order listeners run. `--event` filters event class names by a case-insensitive substring, and `--json` returns an array. It and the `make:event` and `make:listener` generators come from `EventServiceRegistry`; see [EVENTS.md](EVENTS.md).
 
