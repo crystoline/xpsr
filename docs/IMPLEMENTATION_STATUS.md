@@ -397,8 +397,19 @@ The first twenty-one milestones are working slices, not completion of all roadma
   - Only Nyholm PSR-7 is tested.
   - The request host comes from the client's `Host` header; build absolute URLs from `APP_URL`.
 - **Dependencies.** The framework's remaining third-party requirements are Symfony Console, Process, and Finder; Illuminate Config; phpdotenv; and Nyholm's PSR-7 server helper. Finder only lists configuration files, and Illuminate Config pulls in parts of Illuminate Support, so both are candidates for small in-house replacements.
-- **Not yet available:** file storage (roadmap phase 6; `FRAMEWORK_PLAN.md` section 10). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
+- **Not yet available:** configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
+
+## Thirty-first milestone: completed — file storage
+
+Built with the choices accepted on 29 October 2026 (`FRAMEWORK_PLAN.md` section 9):
+
+- **Package.** `crystoline/xpsr-storage` (`Crystoline\Xpsr\Storage\`, not published yet), on Flysystem 3. `StorageOptions` validates `config/storage.php`; `StorageManager` builds each disk once as a Flysystem `Filesystem` with its `public_url` and visibility settings, and `League\Flysystem\FilesystemOperator` resolves to the default disk.
+- **Drivers.** `storage.driver.local` (roots relative to the project, permissions, link handling, locking), `storage.driver.memory`, and `storage.driver.s3` on `league/flysystem-async-aws-s3` with credentials, endpoint, path style, and prefix. Each rejects options it does not know, naming the disk; an unknown driver names the built-in ones and how to add one.
+- **Uploads and downloads.** `store()` gives uploads random names and an extension from their content (a PHP file gets none); `download()` streams a file with its type, length, `Content-Disposition` (with a UTF-8 file name), and `nosniff`, and a missing file is a `NotFoundHttpException`.
+- **Testing.** `fake()` swaps a disk for an in-memory one with the same settings.
+
+Verified on 29 October 2026: the package's 23 tests pass with PHPStan and style checks, including S3 temporary URLs signed without a network call.
 
 ## Thirtieth milestone: completed — scheduled tasks
 

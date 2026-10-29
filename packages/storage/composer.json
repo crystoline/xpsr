@@ -1,0 +1,47 @@
+{
+  "name": "crystoline/xpsr-storage",
+  "description": "File storage for XPSR applications on Flysystem: named disks, local and in-memory drivers, S3 through its adapter, uploads, and downloads",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Adekunle",
+      "email": "crystoline@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.4",
+    "ext-fileinfo": "*",
+    "crystoline/xpsr-framework": "^0.3@dev",
+    "league/flysystem": "^3.29",
+    "league/flysystem-local": "^3.29",
+    "league/flysystem-memory": "^3.29",
+    "league/mime-type-detection": "^1.16",
+    "psr/container": "^2.0",
+    "psr/http-factory": "^1.1",
+    "psr/http-message": "^1.1 || ^2.0"
+  },
+  "require-dev": {
+    "league/flysystem-async-aws-s3": "^3.29",
+    "nyholm/psr7": "^1.8.2",
+    "phpunit/phpunit": "^12.5"
+  },
+  "suggest": {
+    "league/flysystem-async-aws-s3": "The s3 driver: Amazon S3 and compatible services such as Cloudflare R2, MinIO, and DigitalOcean Spaces"
+  },
+  "autoload": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Storage\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Storage\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.3.x-dev"
+    }
+  }
+}

@@ -22,6 +22,8 @@ parameters:
         - packages/validation/tests
         - packages/auth-jwt/src
         - packages/auth-jwt/tests
+        - packages/storage/src
+        - packages/storage/tests
         - packages/scheduler/src
         - packages/scheduler/tests
         - packages/mail/src

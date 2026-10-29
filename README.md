@@ -23,6 +23,7 @@ This repository develops several Composer packages together:
 | `packages/queue` | `crystoline/xpsr-queue` | Queued jobs on Symfony Messenger: sync, database, Redis, AMQP, or SQS; retries and a failed jobs table (optional, not published yet; see [its README](packages/queue/README.md)) |
 | `packages/mail` | `crystoline/xpsr-mail` | Email on Symfony Mailer: SMTP, sendmail, or a provider by DSN; views as bodies; queued sending (optional, not published yet; see [its README](packages/mail/README.md)) |
 | `packages/scheduler` | `crystoline/xpsr-scheduler` | Scheduled tasks from one cron entry: commands, callbacks, and queued jobs, with overlap locks (optional, not published yet; see [its README](packages/scheduler/README.md)) |
+| `packages/storage` | `crystoline/xpsr-storage` | File storage on Flysystem: named disks (local, S3, or your own driver), uploads, and downloads (optional, not published yet; see [its README](packages/storage/README.md)) |
 | `packages/validation` | `crystoline/xpsr-validation` | Request validation: input classes, Symfony Validator rules, 422 with field errors (optional; see [its README](packages/validation/README.md)) |
 | `packages/log-monolog` | `crystoline/xpsr-log-monolog` | Monolog logging: stderr, file, daily, or syslog; line or JSON; request IDs (optional; see [its README](packages/log-monolog/README.md)) |
 | `packages/auth-jwt` | `crystoline/xpsr-auth-jwt` | JWT sign-in for APIs: the default `api` guard, an issuer, `auth:jwt-secret` (optional, not published yet; see [its README](packages/auth-jwt/README.md)) |

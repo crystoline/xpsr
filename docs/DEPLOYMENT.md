@@ -140,6 +140,13 @@ With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user 
 - **Containers** without cron can run `php xpsr schedule:work` as their process instead.
 - **Long tasks** hold up the tasks after them in the same minute; queue them as jobs instead.
 
+## File storage
+
+- **Local disks** (`var/storage` by default) must survive deploys: keep them outside the release directory, or link them in, and back them up.
+- **Several servers** do not share local disks. Use the s3 driver (S3, R2, MinIO, Spaces) for files every server must see.
+- **Public files** on a local disk rooted in `public/` are served by the web server directly. Do not let PHP run there: `store()` never gives uploads a `.php` extension, but files written by other code could have one, so turn off PHP for that directory in the web server.
+- **Private files** stay outside `public/` and are sent with `StorageManager::download()` after an authorization check, or with an S3 `temporaryUrl()`.
+
 ## Performance
 
 - Enable OPcache. With `opcache.validate_timestamps=0`, reload PHP-FPM or Apache on every deploy.
