@@ -22,6 +22,8 @@ return new class extends Migration {
                     Column::editor()->setUnquotedName('id')->setTypeName(Types::INTEGER)->setAutoincrement(true)->create(),
                     // SHA-256 of the token, in hexadecimal; the token itself is never stored.
                     Column::editor()->setUnquotedName('token_hash')->setTypeName(Types::STRING)->setLength(64)->create(),
+                    // The guard the token is for, which also names the provider its user is in.
+                    Column::editor()->setUnquotedName('guard')->setTypeName(Types::STRING)->setLength(64)->create(),
                     Column::editor()->setUnquotedName('user_id')->setTypeName(Types::STRING)->setLength(64)->create(),
                     Column::editor()->setUnquotedName('name')->setTypeName(Types::STRING)->setLength(255)->create(),
                     // A JSON list, such as ["tasks:read"], or ["*"] for everything.
@@ -34,7 +36,7 @@ return new class extends Migration {
                 ->setPrimaryKeyConstraint(PrimaryKeyConstraint::editor()->setUnquotedColumnNames('id')->create())
                 ->setIndexes(
                     Index::editor()->setUnquotedName('{{ prefix }}_token_hash')->setType(IndexType::UNIQUE)->setUnquotedColumnNames('token_hash')->create(),
-                    Index::editor()->setUnquotedName('{{ prefix }}_user_id')->setUnquotedColumnNames('user_id')->create(),
+                    Index::editor()->setUnquotedName('{{ prefix }}_guard_user')->setUnquotedColumnNames('guard', 'user_id')->create(),
                 )
                 ->create(),
         );

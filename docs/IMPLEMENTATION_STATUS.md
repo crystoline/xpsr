@@ -400,6 +400,17 @@ The first twenty-one milestones are working slices, not completion of all roadma
 - **Not yet available:** queues, mail, scheduling, and file storage (roadmap phase 6; `FRAMEWORK_PLAN.md` section 10). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
 
+## Twenty-seventh milestone: completed — several kinds of user
+
+Accepted on 29 October 2026, for admins (or others) in their own table:
+
+- **Providers per guard.** `auth.providers` names providers; each guard has a `provider` and optionally its own `login_path` and `home_path`. `auth.users` stays the short form for one provider.
+- **Sessions.** Each session guard signs in under its own key; `attempt()`, `login()`, `logout()`, and `intended()` take a guard. Signing out of one guard keeps the others and moves the session to a new ID; signing out of the last ends it. `Guest::guard()` joins `Authenticate::guard()`.
+- **Tokens.** JWTs carry a `guard` claim and database tokens a `guard` column; a guard accepts only its own, so equal IDs in two tables never mix. `auth:jwt` and `auth:token` take `--guard`.
+- **Policies.** The gate refuses a user whose class a check's user parameter does not accept, instead of a `TypeError`.
+
+Verified on 29 October 2026: 760 tests pass with PHPStan and style checks.
+
 ## Twenty-sixth milestone: completed — Eloquent adapter
 
 Built with the choice accepted on 29 October 2026: XPSR's migrations, not Eloquent's.

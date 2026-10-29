@@ -21,9 +21,9 @@ use Psr\Http\Server\RequestHandlerInterface;
  *     ->middleware(Authenticate::guard('api'))       // another guard
  *     ->middleware(Authenticate::optional())         // guests pass through without an identity
  *
- * A refused guest gets 401, with the guard's WWW-Authenticate challenge. On the session guard, a
- * browser asking for a page (GET or HEAD, not JSON) is sent to auth.login_path instead, and the
- * page is remembered for AuthManager::intended().
+ * A refused guest gets 401, with the guard's WWW-Authenticate challenge. On a session guard, a
+ * browser asking for a page (GET or HEAD, not JSON) is sent to the guard's login_path instead, and
+ * the page is remembered for AuthManager::intended().
  */
 final class Authenticate implements MiddlewareInterface
 {
@@ -69,9 +69,9 @@ final class Authenticate implements MiddlewareInterface
     {
         $challenge = $this->auth->guard($this->guard)->challenge($request);
         if ($challenge === null && in_array($request->getMethod(), ['GET', 'HEAD'], true) && !self::wantsJson($request)) {
-            $this->auth->rememberIntended($request);
+            $this->auth->rememberIntended($request, $this->guard);
 
-            return $this->responses->createResponse(302)->withHeader('Location', $this->auth->options()->loginPath);
+            return $this->responses->createResponse(302)->withHeader('Location', $this->auth->options()->loginPath($this->guard));
         }
         throw new UnauthenticatedException($challenge);
     }

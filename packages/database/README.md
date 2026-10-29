@@ -210,7 +210,7 @@ php xpsr auth:token ada@example.com --scope=tasks:read --expires="90 days"
 php xpsr auth:token-revoke 12
 ```
 
-`Crystoline\Xpsr\Database\Auth\TokenRepository` creates, lists, and revokes tokens from code. See the XPSR repository's `docs/AUTH.md`.
+Each token belongs to one guard (its `guard` column), and only that guard accepts it; `--guard` and the `guard` argument of `TokenRepository::create()`, `forUser()`, and `revokeAll()` choose it, defaulting to the first guard with the token driver. `Crystoline\Xpsr\Database\Auth\TokenRepository` creates, lists, and revokes tokens from code. See the XPSR repository's `docs/AUTH.md`.
 
 ## Using another migration runner
 

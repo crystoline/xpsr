@@ -26,7 +26,8 @@ final class TokenGuard implements GuardInterface
     {
         $text = BearerToken::from($request);
         $token = $text === null ? null : $this->tokens->find($text);
-        if ($token === null) {
+        // A token for another guard, such as an admin's on the users' API, does not count here.
+        if ($token === null || $token->guard !== $this->name) {
             return null;
         }
         $user = $this->users->findById(ctype_digit($token->userId) && $token->userId[0] !== '0' ? (int) $token->userId : $token->userId);

@@ -8,6 +8,9 @@ use Closure;
 use Crystoline\Xpsr\Auth\UserInterface;
 use Psr\Container\ContainerInterface;
 use ReflectionFunction;
+use ReflectionNamedType;
+use ReflectionType;
+use ReflectionUnionType;
 
 /**
  * Decides what users may do, with policies: one class per kind of record, one method per action.
@@ -25,7 +28,9 @@ use ReflectionFunction;
  * Policies are listed in auth.policies (model class => policy class) and built by the container.
  * An ability such as "view-any" calls viewAny(). A policy's before($user, $ability) runs first;
  * returning true or false decides, null continues. Guests are refused unless the method's user
- * parameter accepts null. Anything without a policy method or defined ability is refused.
+ * parameter accepts null, and a user whose class the parameter does not accept (a User where the
+ * method takes an Admin) is refused too. Anything without a policy method or defined ability is
+ * refused.
  */
 final class Gate
 {
@@ -115,15 +120,39 @@ final class Gate
      */
     private static function call(Closure $check, ?UserInterface $user, array $arguments, bool $allowNull = false): ?bool
     {
-        if ($user === null) {
-            $reflection = new ReflectionFunction($check);
-            $first = $reflection->getParameters()[0] ?? null;
-            if ($first === null || !$first->allowsNull()) {
-                return $allowNull ? null : false;
-            }
+        $first = (new ReflectionFunction($check))->getParameters()[0] ?? null;
+        if (!self::accepts($first?->getType(), $user)) {
+            return $allowNull ? null : false;
         }
         $result = $check($user, ...$arguments);
 
         return $allowNull && $result === null ? null : $result === true;
+    }
+
+    /**
+     * Whether a check's user parameter takes this user: a guest only where null is allowed, and an
+     * admin's check (typed with Admin) never runs for a User, so users of several tables can share
+     * the gate.
+     */
+    private static function accepts(?ReflectionType $type, ?UserInterface $user): bool
+    {
+        if ($type === null) {
+            return true;
+        }
+        if ($user === null) {
+            return $type->allowsNull();
+        }
+        $types = $type instanceof ReflectionUnionType ? $type->getTypes() : [$type];
+        foreach ($types as $candidate) {
+            if (!$candidate instanceof ReflectionNamedType) {
+                return true;
+            }
+            $name = $candidate->getName();
+            if (in_array($name, ['mixed', 'object'], true) || (!$candidate->isBuiltin() && $user instanceof $name)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

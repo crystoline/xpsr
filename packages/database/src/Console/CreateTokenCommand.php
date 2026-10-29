@@ -38,13 +38,21 @@ final class CreateTokenCommand extends Command
             ->addArgument('login', InputArgument::REQUIRED, 'The user\'s login, such as an email address.')
             ->addOption('name', null, InputOption::VALUE_REQUIRED, 'What the token is for.', 'console')
             ->addOption('scope', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'A scope the token allows; repeat for several. Default: * (everything).')
-            ->addOption('expires', null, InputOption::VALUE_REQUIRED, 'How long the token lasts, such as "90 days". Default: until revoked.');
+            ->addOption('expires', null, InputOption::VALUE_REQUIRED, 'How long the token lasts, such as "90 days". Default: until revoked.')
+            ->addOption('guard', null, InputOption::VALUE_REQUIRED, 'The token guard it is for; its provider has the user. Default: the first token guard.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $errors = (new SymfonyStyle($input, $output))->getErrorStyle();
-        $user = $this->auth->users()->findByLogin((string) $input->getArgument('login'));
+        $guard = $input->getOption('guard');
+        $guard = is_string($guard) ? $guard : ($this->auth->options()->guardsWithDriver('token')[0] ?? null);
+        if ($guard === null || ($this->auth->options()->guards[$guard]['driver'] ?? null) !== 'token') {
+            $errors->error($guard === null ? 'No guard in auth.guards uses the token driver.' : "The guard \"{$guard}\" does not use the token driver.");
+
+            return self::INVALID;
+        }
+        $user = $this->auth->users($this->auth->options()->provider($guard))->findByLogin((string) $input->getArgument('login'));
         if ($user === null) {
             $errors->error('There is no user with that login.');
 
@@ -68,16 +76,17 @@ final class CreateTokenCommand extends Command
         }
         $scopes = $input->getOption('scope');
         try {
-            $new = $this->tokens->create($user, (string) $input->getOption('name'), is_array($scopes) && $scopes !== [] ? array_values($scopes) : ['*'], $expiresAt);
+            $new = $this->tokens->create($user, (string) $input->getOption('name'), is_array($scopes) && $scopes !== [] ? array_values($scopes) : ['*'], $expiresAt, $guard);
         } catch (InvalidArgumentException $exception) {
             $errors->error($exception->getMessage());
 
             return self::INVALID;
         }
         $output->writeln(OutputFormatter::escape(sprintf(
-            'Token %d for user %s, scopes %s, %s:',
+            'Token %d for user %s on %s, scopes %s, %s:',
             $new->token->id,
             $new->token->userId,
+            $new->token->guard,
             implode(' ', $new->token->scopes),
             $expiresAt === null ? 'until revoked' : 'expires ' . $expiresAt->format('Y-m-d H:i T'),
         )));

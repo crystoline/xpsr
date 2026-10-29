@@ -11,11 +11,15 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Signs users in and out and gives access to the configured guards and user provider:
+ * Signs users in and out and gives access to the configured guards and user providers:
  *
- *     $user = $auth->attempt($request, $email, $password);   // browser sign-in, on the session
- *     $user = $auth->verify($email, $password);              // check credentials only, for issuing API tokens
+ *     $user = $auth->attempt($request, $email, $password);                  // browser sign-in, default guard
+ *     $admin = $auth->attempt($request, $email, $password, guard: 'admin'); // another session guard
+ *     $user = $auth->verify($email, $password, guard: 'api');               // credentials only, before issuing a token
  *     $auth->logout($request);
+ *
+ * Each guard looks its users up in its own provider (auth.guards.<name>.provider), so users and
+ * admins can live in separate tables.
  */
 final class AuthManager
 {
@@ -32,12 +36,13 @@ final class AuthManager
         'eloquent' => ['crystoline/xpsr-orm-eloquent', 'Crystoline\Xpsr\Orm\Eloquent\EloquentServiceRegistry'],
     ];
 
-    private const INTENDED = '_auth.intended';
+    private const INTENDED = '_intended.';
 
     /** @var array<string, GuardInterface> */
     private array $guards = [];
 
-    private ?UserProviderInterface $users = null;
+    /** @var array<string, UserProviderInterface> */
+    private array $providers = [];
 
     /** @var array{Identity, string|null}|null a test's identity and the guard it applies to (null: all) */
     private ?array $actingAs = null;
@@ -59,13 +64,18 @@ final class AuthManager
         return $this->hasher;
     }
 
-    /** The user provider configured in auth.users. */
-    public function users(): UserProviderInterface
+    /** A user provider from auth.providers; the default guard's provider without a name. */
+    public function users(?string $provider = null): UserProviderInterface
     {
-        if ($this->users !== null) {
-            return $this->users;
+        $provider ??= $this->options->provider($this->options->default);
+        if (isset($this->providers[$provider])) {
+            return $this->providers[$provider];
         }
-        $config = $this->options->users;
+        $config = $this->options->providers[$provider] ?? throw new InvalidArgumentException(sprintf(
+            'There is no provider "%s" in auth.providers. Configured providers: %s.',
+            $provider,
+            implode(', ', array_keys($this->options->providers)),
+        ));
         $driver = (string) $config['driver'];
         $id = "auth.users.{$driver}";
         if ($this->container->has($id)) {
@@ -74,18 +84,19 @@ final class AuthManager
                 throw new LogicException("The service {$id} must implement " . UserProviderFactoryInterface::class . '.');
             }
 
-            return $this->users = $factory->create($config);
+            return $this->providers[$provider] = $factory->create($config);
         }
+        $label = $provider === 'users' && count($this->options->providers) === 1 ? 'auth.users' : "auth.providers.{$provider}";
         if (isset(self::USER_DRIVERS[$driver])) {
             [$package, $registry] = self::USER_DRIVERS[$driver];
-            throw new InvalidArgumentException("auth.users driver {$driver} needs {$package}: run composer require {$package}, and add {$registry} to app.registry.");
+            throw new InvalidArgumentException("{$label} driver {$driver} needs {$package}: run composer require {$package}, and add {$registry} to app.registry.");
         }
-        $provider = $this->container->has($driver) ? $this->container->get($driver) : null;
-        if (!$provider instanceof UserProviderInterface) {
-            throw new InvalidArgumentException("auth.users driver \"{$driver}\" must be database, doctrine, eloquent, or a service implementing " . UserProviderInterface::class . '.');
+        $instance = $this->container->has($driver) ? $this->container->get($driver) : null;
+        if (!$instance instanceof UserProviderInterface) {
+            throw new InvalidArgumentException("{$label} driver \"{$driver}\" must be database, doctrine, eloquent, or a service implementing " . UserProviderInterface::class . '.');
         }
 
-        return $this->users = $provider;
+        return $this->providers[$provider] = $instance;
     }
 
     /** A guard from auth.guards; the default guard without a name. */
@@ -95,14 +106,11 @@ final class AuthManager
         if (isset($this->guards[$name])) {
             return $this->guards[$name];
         }
-        $config = $this->options->guards[$name] ?? throw new InvalidArgumentException(sprintf(
-            'There is no guard "%s" in auth.guards. Configured guards: %s.',
-            $name,
-            implode(', ', array_keys($this->options->guards)),
-        ));
+        $config = $this->options->guards[$name] ?? throw AuthOptions::unknownGuard($name, array_keys($this->options->guards));
         $driver = (string) $config['driver'];
         // Resolved when a guard first looks a user up: guests cost nothing.
-        $users = new LazyUserProvider($this->users(...));
+        $provider = $this->options->provider($name);
+        $users = new LazyUserProvider(fn(): UserProviderInterface => $this->users($provider));
         if ($driver === 'session') {
             return $this->guards[$name] = new SessionGuard($name, $users);
         }
@@ -131,67 +139,77 @@ final class AuthManager
     }
 
     /**
-     * The user with this login and password, or null. Upgrades an outdated password hash. Does not
-     * sign anybody in; use it before issuing an API token.
+     * The user with this login and password in a guard's provider (the default guard's without
+     * a name), or null. Upgrades an outdated password hash. Does not sign anybody in; use it before
+     * issuing an API token.
      */
-    public function verify(string $login, #[\SensitiveParameter] string $password): ?UserInterface
+    public function verify(string $login, #[\SensitiveParameter] string $password, ?string $guard = null): ?UserInterface
     {
-        $user = $this->users()->findByLogin($login);
+        $users = $this->users($this->options->provider($guard ?? $this->options->default));
+        $user = $users->findByLogin($login);
         $hash = $user?->authPasswordHash();
         if (!$this->hasher->verify($password, $hash) || $user === null || $hash === null) {
             return null;
         }
         if ($this->hasher->needsRehash($hash)) {
-            $this->users()->updatePasswordHash($user, $this->hasher->hash($password));
+            $users->updatePasswordHash($user, $this->hasher->hash($password));
         }
 
         return $user;
     }
 
-    /** Check a login and password and sign the user in to the request's session; null when they do not match. */
-    public function attempt(ServerRequestInterface $request, string $login, #[\SensitiveParameter] string $password): ?UserInterface
+    /**
+     * Check a login and password and sign the user in to the request's session on a session
+     * guard (the default one without a name); null when they do not match.
+     */
+    public function attempt(ServerRequestInterface $request, string $login, #[\SensitiveParameter] string $password, ?string $guard = null): ?UserInterface
     {
-        $user = $this->verify($login, $password);
+        $guard = $this->sessionGuard($guard)->name();
+        $user = $this->verify($login, $password, $guard);
         if ($user !== null) {
-            $this->login($request, $user);
+            $this->login($request, $user, $guard);
         }
 
         return $user;
     }
 
-    /** Sign a user in to the request's session, under a new session ID. */
-    public function login(ServerRequestInterface $request, UserInterface $user): void
+    /** Sign a user in to the request's session on a session guard, under a new session ID. */
+    public function login(ServerRequestInterface $request, UserInterface $user, ?string $guard = null): void
     {
-        $this->current->set($this->sessionGuard()->login($request, $user));
+        $this->current->set($this->sessionGuard($guard)->login($request, $user));
     }
 
-    /** Sign the request's session out and end it. */
-    public function logout(ServerRequestInterface $request): void
+    /**
+     * Sign a session guard out. When no other session guard is still signed in, the whole session
+     * ends; otherwise it only moves to a new ID.
+     */
+    public function logout(ServerRequestInterface $request, ?string $guard = null): void
     {
-        $this->sessionGuard()->logout($request);
+        $this->sessionGuard($guard)->logout($request);
         $this->current->set(null);
     }
 
     /**
-     * Where to go after signing in: the page Authenticate sent the browser away from, or $default
-     * (auth.home_path). Only paths on this site are returned.
+     * Where to go after signing in on a guard: the page Authenticate sent the browser away from,
+     * or $default (the guard's home_path). Only paths on this site are returned.
      */
-    public function intended(ServerRequestInterface $request, ?string $default = null): string
+    public function intended(ServerRequestInterface $request, ?string $default = null, ?string $guard = null): string
     {
+        $guard ??= $this->options->default;
         $session = Session::of($request);
-        $path = $session->get(self::INTENDED);
-        $session->remove(self::INTENDED);
+        $path = $session->get(self::INTENDED . $guard);
+        $session->remove(self::INTENDED . $guard);
 
-        return is_string($path) && self::isLocalPath($path) ? $path : ($default ?? $this->options->homePath);
+        return is_string($path) && self::isLocalPath($path) ? $path : ($default ?? $this->options->homePath($guard));
     }
 
-    /** @internal Remember the page a browser asked for before being sent to sign in. */
-    public function rememberIntended(ServerRequestInterface $request): void
+    /** @internal Remember the page a browser asked for before being sent to sign in on a guard. */
+    public function rememberIntended(ServerRequestInterface $request, ?string $guard = null): void
     {
         $uri = $request->getUri();
         $path = $uri->getPath() . ($uri->getQuery() === '' ? '' : '?' . $uri->getQuery());
         if (self::isLocalPath($path)) {
-            Session::of($request)->set(self::INTENDED, $path);
+            Session::of($request)->set(self::INTENDED . ($guard ?? $this->options->default), $path);
         }
     }
 
@@ -206,19 +224,20 @@ final class AuthManager
         $this->actingAs = $user === null ? null : [new Identity($user, $guard ?? $this->options->default, $scopes), $guard];
     }
 
-    private function sessionGuard(): SessionGuard
+    private function sessionGuard(?string $name): SessionGuard
     {
-        $names = array_keys($this->options->guards);
-        usort($names, fn(string $a, string $b): int => ($b === $this->options->default) <=> ($a === $this->options->default));
-        foreach ($names as $name) {
-            if (($this->options->guards[$name]['driver'] ?? null) === 'session') {
-                $guard = $this->guard($name);
-                if ($guard instanceof SessionGuard) {
-                    return $guard;
-                }
-            }
+        if ($name !== null && isset($this->options->guards[$name]) && $this->options->guards[$name]['driver'] !== 'session') {
+            throw new LogicException("The guard \"{$name}\" does not use the session driver, so it cannot sign browsers in.");
         }
-        throw new LogicException('Signing in to a session needs a guard with the session driver in auth.guards.');
+        $names = $name === null ? $this->options->guardsWithDriver('session') : [$name];
+        $guard = $names === [] ? null : $this->guard($names[0]);
+        if (!$guard instanceof SessionGuard) {
+            throw new LogicException($name === null
+                ? 'Signing in to a session needs a guard with the session driver in auth.guards.'
+                : "The guard \"{$name}\" does not use the session driver, so it cannot sign browsers in.");
+        }
+
+        return $guard;
     }
 
     private static function isLocalPath(string $path): bool

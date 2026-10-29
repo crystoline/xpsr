@@ -20,6 +20,9 @@ use Psr\Clock\ClockInterface;
  *     $new = $tokens->create($user, 'deploy script', ['tasks:read'], expiresAt: new DateTimeImmutable('+90 days'));
  *     $new->plainText;                    // show once
  *     $tokens->revoke($new->token->id);
+ *
+ * Each token belongs to one guard, and only that guard accepts it: with users and admins in
+ * separate tables, an admin's token never counts on the users' API, even when IDs repeat.
  */
 final class TokenRepository
 {
@@ -27,10 +30,12 @@ final class TokenRepository
     private const TABLE = '/\A[A-Za-z_][A-Za-z0-9_]{0,62}\z/';
     private const SCOPE = '/\A[\x21\x23-\x5B\x5D-\x7E]+\z/';
 
+    /** @param list<string> $guards the guards with the token driver, the default one first */
     public function __construct(
         private readonly Connection $connection,
         private readonly ClockInterface $clock,
         private readonly string $table = 'api_tokens',
+        private readonly array $guards = ['api'],
     ) {
         if (!preg_match(self::TABLE, $table)) {
             throw new InvalidArgumentException('auth.tokens.table must be a plain table name: letters, digits, and underscores.');
@@ -39,9 +44,11 @@ final class TokenRepository
 
     /**
      * @param list<string> $scopes what the token allows; ["*"] for everything
+     * @param string|null $guard the token guard it is for; the first one without a name
      */
-    public function create(UserInterface $user, string $name, array $scopes = ['*'], ?DateTimeImmutable $expiresAt = null): NewAccessToken
+    public function create(UserInterface $user, string $name, array $scopes = ['*'], ?DateTimeImmutable $expiresAt = null, ?string $guard = null): NewAccessToken
     {
+        $guard = $this->guard($guard);
         if ($name === '' || mb_strlen($name) > 255) {
             throw new InvalidArgumentException('A token name must be 1 to 255 characters, such as "deploy script".');
         }
@@ -54,6 +61,7 @@ final class TokenRepository
         $now = $this->now();
         $this->connection->insert($this->table, [
             'token_hash' => hash('sha256', $plainText),
+            'guard' => $guard,
             'user_id' => (string) $user->authIdentifier(),
             'name' => $name,
             'scopes' => json_encode($scopes, JSON_THROW_ON_ERROR),
@@ -63,7 +71,7 @@ final class TokenRepository
         ]);
         $id = (int) $this->connection->lastInsertId();
 
-        return new NewAccessToken($plainText, new AccessToken($id, (string) $user->authIdentifier(), $name, $scopes, self::time($now), null, $expiresAt));
+        return new NewAccessToken($plainText, new AccessToken($id, (string) $user->authIdentifier(), $name, $scopes, self::time($now), null, $expiresAt, $guard));
     }
 
     /** The token with this text, unless it is unknown or expired; records when it was last used. */
@@ -85,10 +93,13 @@ final class TokenRepository
         return $token;
     }
 
-    /** @return list<AccessToken> the user's tokens, newest first, including expired ones */
-    public function forUser(UserInterface $user): array
+    /** @return list<AccessToken> the user's tokens on a guard, newest first, including expired ones */
+    public function forUser(UserInterface $user, ?string $guard = null): array
     {
-        $rows = $this->connection->fetchAllAssociative("SELECT * FROM {$this->table} WHERE user_id = ? ORDER BY id DESC", [(string) $user->authIdentifier()]);
+        $rows = $this->connection->fetchAllAssociative(
+            "SELECT * FROM {$this->table} WHERE guard = ? AND user_id = ? ORDER BY id DESC",
+            [$this->guard($guard), (string) $user->authIdentifier()],
+        );
 
         return array_values(array_filter(array_map(self::token(...), $rows)));
     }
@@ -99,10 +110,20 @@ final class TokenRepository
         return $this->connection->delete($this->table, ['id' => $id]) > 0;
     }
 
-    /** Delete every token of a user, and return how many there were. */
-    public function revokeAll(UserInterface $user): int
+    /** Delete every token of a user on a guard, and return how many there were. */
+    public function revokeAll(UserInterface $user, ?string $guard = null): int
     {
-        return (int) $this->connection->delete($this->table, ['user_id' => (string) $user->authIdentifier()]);
+        return (int) $this->connection->delete($this->table, ['guard' => $this->guard($guard), 'user_id' => (string) $user->authIdentifier()]);
+    }
+
+    private function guard(?string $guard): string
+    {
+        $guard ??= $this->guards[0] ?? throw new InvalidArgumentException('No guard in auth.guards uses the token driver.');
+        if (!in_array($guard, $this->guards, true)) {
+            throw new InvalidArgumentException("The guard \"{$guard}\" does not use the token driver. Token guards: " . implode(', ', $this->guards) . '.');
+        }
+
+        return $guard;
     }
 
     /** @param array<string, mixed> $row */
@@ -126,6 +147,7 @@ final class TokenRepository
             self::time((int) $row['created_at']),
             $row['last_used_at'] === null ? null : self::time((int) $row['last_used_at']),
             $row['expires_at'] === null ? null : self::time((int) $row['expires_at']),
+            (string) $row['guard'],
         );
     }
 

@@ -29,7 +29,7 @@ $token->expiresAt;   // DateTimeImmutable, UTC
 $token->id;          // the jti claim
 ```
 
-Clients send it as `Authorization: Bearer <token>` to routes behind `Authenticate::guard('api')`. The token carries `iss`, `aud`, `sub` (the user's ID), `jti`, `iat`, `nbf`, `exp`, and `scope` (space-separated, as in OAuth).
+Clients send it as `Authorization: Bearer <token>` to routes behind `Authenticate::guard('api')`. The token carries `iss`, `aud`, `sub` (the user's ID), `jti`, `iat`, `nbf`, `exp`, `scope` (space-separated, as in OAuth), and `guard`: the guard it is for. Only that guard accepts it, so with users and admins in separate tables, `$jwt->issue($admin, guard: 'admin-api')` gives a token that never counts on the users' `api` guard. Without `guard`, the first guard with the jwt driver is used.
 
 A request's token counts only with a valid signature from the configured algorithm and key, the configured issuer and audience, and the current time between `nbf` and `exp`, give or take the leeway. Tokens signed with another algorithm, including unsigned `alg: none` tokens, are refused. The user is looked up by ID on every request, so a deleted user's tokens stop working.
 
@@ -68,6 +68,7 @@ Keep the private key and the secret out of version control.
 php xpsr auth:jwt-secret                  # print a new secret (64 random bytes, base64)
 php xpsr auth:jwt-secret --write          # set AUTH_JWT_SECRET in .env; --force replaces one
 php xpsr auth:jwt ada@example.com --scope=tasks:read --ttl="15 minutes"
+php xpsr auth:jwt root@example.com --guard=admin-api   # a user from that guard's provider
 ```
 
 ## Services

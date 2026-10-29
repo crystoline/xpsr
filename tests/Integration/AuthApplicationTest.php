@@ -25,7 +25,7 @@ final class AuthApplicationTest extends TestCase
         $config = $application->getConfig();
         $config->set('routing.files', ['routes/api.php', 'routes/web.php', 'tests/Fixtures/routes/auth.php']);
         $config->set('app.view_dir', dirname(__DIR__) . '/Fixtures/views');
-        $config->set('auth.users', ['driver' => 'test.users']);
+        $config->set('auth.providers', ['users' => ['driver' => 'test.users']]);
         $config->set('auth.jwt.secret', 'base64:' . base64_encode(str_repeat('k', 32)));
         $this->users = new InMemoryUserProvider();
         $this->users->add(new GenericUser(7, (new PasswordHasher())->hash('correct horse'), ['name' => 'Ada']), login: 'ada@example.com');

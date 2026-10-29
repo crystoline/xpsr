@@ -24,8 +24,9 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * Recognizes JWTs from JwtIssuer sent as "Authorization: Bearer <token>" (auth.guards driver
  * "jwt"). A token counts only with a valid signature, the configured issuer and audience, and a
- * current time between nbf and exp (with the configured leeway). Its user is looked up on every
- * request, so a deleted user's tokens stop working. A token cannot be revoked before it expires;
+ * current time between nbf and exp (with the configured leeway), and only when it was issued for
+ * this guard. Its user is looked up on every request in the guard's provider, so a deleted user's
+ * tokens stop working. A token cannot be revoked before it expires;
  * changing the secret ends every token.
  */
 final class JwtGuard implements GuardInterface
@@ -61,7 +62,8 @@ final class JwtGuard implements GuardInterface
         $claims = $token->claims();
         $subject = $claims->get('sub');
         $scope = $claims->get('scope', '');
-        if (!is_string($subject) || $subject === '' || !is_string($scope)) {
+        // A token for another guard, such as an admin's on the users' API, does not count here.
+        if (!is_string($subject) || $subject === '' || !is_string($scope) || $claims->get('guard') !== $this->name) {
             return null;
         }
         $user = $this->users->findById(ctype_digit($subject) && $subject[0] !== '0' ? (int) $subject : $subject);

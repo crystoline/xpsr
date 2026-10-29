@@ -13,7 +13,7 @@ New projects list `Crystoline\Xpsr\Registry\AuthServiceRegistry` in `app.registr
 
 ## Users
 
-Users come from a provider, configured in `auth.users`:
+Users come from a provider, configured in `auth.providers` (or `auth.users`, the short form for one provider named `users`):
 
 ```php
 // A table: crystoline/xpsr-database and DatabaseServiceRegistry.
@@ -168,6 +168,48 @@ php xpsr auth:token-revoke 12
 
 The table stores only a SHA-256 hash of each token, so a copy of it cannot be used to sign in.
 
+## Several kinds of user
+
+When admins (or staff, or partners) live in their own table, give them their own provider and guard:
+
+```php
+'guards' => [
+    'web'   => ['driver' => 'session', 'provider' => 'users'],
+    'admin' => ['driver' => 'session', 'provider' => 'admins', 'login_path' => '/admin/login', 'home_path' => '/admin'],
+    'api'   => ['driver' => 'jwt', 'provider' => 'users'],
+],
+'providers' => [
+    'users'  => ['driver' => 'database', 'table' => 'users'],
+    'admins' => ['driver' => 'database', 'table' => 'admins'],
+],
+```
+
+Each guard looks its users up in its own provider, and each session guard signs in under its own key, so one browser can be signed in as a user and as an admin independently:
+
+```php
+$auth->attempt($request, $email, $password, guard: 'admin');
+$auth->intended($request, guard: 'admin');
+$auth->logout($request, 'admin');            // the web sign-in stays; the session moves to a new ID
+```
+
+```php
+$routes->group('/admin', static function (RouteCollection $routes): void {
+    $routes->get('/login', [AdminLoginController::class, 'create'])->middleware(Guest::guard('admin'));
+    $routes->post('/login', [AdminLoginController::class, 'store'])->middleware(Guest::guard('admin'));
+    $routes->group('', static function (RouteCollection $routes): void {
+        $routes->get('', [AdminController::class, 'index']);
+    }, [Authenticate::guard('admin')]);
+});
+```
+
+Signing out of the last signed-in guard ends the whole session. A guard without `provider` uses `users`, or the only provider there is; `login_path` and `home_path` default to the top-level ones.
+
+API tokens belong to the guard they were issued for: a JWT carries a `guard` claim, and a database token a `guard` column. A guard accepts only its own tokens, so an admin's token never counts on the users' API, even when both tables have a row with ID 7. Issue them for a guard with `$jwt->issue($admin, guard: 'admin-api')`, `$tokens->create($admin, 'cli', guard: 'admin-api')`, or `--guard=admin-api` on the console.
+
+Policy methods take whichever user the request has. A method whose user parameter is typed `Admin` refuses a `User` (and the reverse), so one policy can serve both: `public function delete(Admin|User $actor, Task $task): bool`.
+
+If admins are users with more rights, a role column on `users` and a policy `before()` that checks it is simpler than a second table.
+
 ## In handlers
 
 ```php
@@ -256,9 +298,10 @@ They see the user on routes behind `Authenticate` or `Authenticate::optional()`,
 | Option | Default | Meaning |
 |---|---|---|
 | `default` | `web` | The guard `Authenticate` and `Guest` use when none is named. |
-| `guards` | `web`: session; `api`: `AUTH_API_DRIVER` (`jwt`) | Each guard's driver: `session`, `jwt`, `token`, or a service implementing `GuardFactoryInterface`. |
-| `users` | `database` on `users` (`email`, `password`) | The user provider; see [Users](#users). |
-| `login_path`, `home_path` | `/login`, `/` | Where `Authenticate` sends guests and `Guest` sends users. |
+| `guards` | `web`: session; `api`: `AUTH_API_DRIVER` (`jwt`) | Each guard's `driver` (`session`, `jwt`, `token`, or a service implementing `GuardFactoryInterface`), `provider`, and optionally its own `login_path` and `home_path`. |
+| `providers` | `users`: `database` on `users` (`email`, `password`) | Where each kind of user is looked up; see [Users](#users) and [Several kinds of user](#several-kinds-of-user). |
+| `users` | | The short form for a single provider named `users`, instead of `providers`. |
+| `login_path`, `home_path` | `/login`, `/` | Where `Authenticate` sends guests and `Guest` sends users, unless a guard sets its own. |
 | `policies` | none | Model class to policy class. |
 | `jwt` | | Options for the jwt driver: `secret`, `algorithm`, `ttl`, and more in [its README](../packages/auth-jwt/README.md). |
 | `tokens` | `table` `api_tokens`, the default connection | Options for the token driver. |

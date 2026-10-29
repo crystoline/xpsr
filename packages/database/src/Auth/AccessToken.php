@@ -18,5 +18,6 @@ final class AccessToken
         public readonly DateTimeImmutable $createdAt,
         public readonly ?DateTimeImmutable $lastUsedAt,
         public readonly ?DateTimeImmutable $expiresAt,
+        public readonly string $guard = 'api',
     ) {}
 }

@@ -35,6 +35,7 @@ final class JwtServiceRegistry extends ServiceRegistry
         $this->container->factory(JwtIssuer::class, static fn(ContainerInterface $container): JwtIssuer => new JwtIssuer(
             $container->get(JwtOptions::class),
             $container->get(ClockInterface::class),
+            $container->get(AuthOptions::class)->guardsWithDriver('jwt'),
         ), shared: true);
         $this->container->factory('auth.driver.jwt', static fn(ContainerInterface $container): JwtGuardFactory => new JwtGuardFactory(
             $container->get(JwtOptions::class),

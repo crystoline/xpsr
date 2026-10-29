@@ -25,7 +25,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
  *   Crystoline\Xpsr\Auth\PasswordHasher    password hashes
  *   Crystoline\Xpsr\Auth\Http\Authenticate the default guard's middleware, and for each guard
  *                                          Authenticate::guard($name) and Authenticate::optional($name)
- *   Crystoline\Xpsr\Auth\Http\Guest        for pages only guests need
+ *   Crystoline\Xpsr\Auth\Http\Guest        for pages only guests need, and Guest::guard($name)
  *
  * The jwt and token guard drivers, and the database and doctrine user providers, come from their
  * packages, which register them as "auth.driver.<driver>" and "auth.users.<driver>".
@@ -57,12 +57,20 @@ final class AuthServiceRegistry extends ServiceRegistry
             if (is_string($name)) {
                 $this->container->factory(Authenticate::guard($name), self::middleware($name, true), shared: true);
                 $this->container->factory(Authenticate::optional($name), self::middleware($name, false), shared: true);
+                $this->container->factory(Guest::guard($name), self::guest($name), shared: true);
             }
         }
-        $this->container->factory(Guest::class, static fn(ContainerInterface $container): Guest => new Guest(
+        $this->container->factory(Guest::class, self::guest(null), shared: true);
+    }
+
+    /** @return \Closure(ContainerInterface): Guest */
+    private static function guest(?string $guard): \Closure
+    {
+        return static fn(ContainerInterface $container): Guest => new Guest(
             $container->get(AuthManager::class),
             $container->get(ResponseFactoryInterface::class),
-        ), shared: true);
+            $guard,
+        );
     }
 
     /** @return \Closure(ContainerInterface): Authenticate */

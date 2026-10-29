@@ -221,6 +221,24 @@ final class JwtTest extends TestCase
         self::assertSame(Command::INVALID, $tester->execute(['login' => 'ada@example.com', '--ttl' => 'soon']));
     }
 
+    public function testATokenCountsOnlyOnTheGuardItWasIssuedFor(): void
+    {
+        $app = $this->app();
+        $auth = $app->get(AuthManager::class);
+        $admin = $auth->users('admins')->findById(7) ?? self::fail();
+        $issued = $app->get(JwtIssuer::class)->issue($admin, guard: 'admin-api');
+        self::assertSame('admin-api', $issued->guard);
+
+        self::assertNull($auth->guard('api')->authenticate($this->bearer($issued->token)), 'User 7 and admin 7 are different people.');
+        $identity = $auth->guard('admin-api')->authenticate($this->bearer($issued->token));
+        self::assertSame(['admin-api', 'admin'], [$identity?->guard, $identity?->user instanceof GenericUser ? $identity->user->get('role') : null]);
+        self::assertSame('api', $app->get(JwtIssuer::class)->issue($this->users->findById(7) ?? self::fail())->guard, 'The first jwt guard is the default.');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The guard "web" does not use the jwt driver. JWT guards: api, admin-api.');
+        $app->get(JwtIssuer::class)->issue($admin, guard: 'web');
+    }
+
     /** @param array<string, mixed> $jwt */
     private function app(array $jwt = []): Application
     {
@@ -229,11 +247,14 @@ final class JwtTest extends TestCase
         $config->set('app.url', 'https://app.example.com/');
         $config->set('app.registry', [ConsoleServiceRegistry::class, AuthServiceRegistry::class, JwtServiceRegistry::class]);
         $config->set('auth', [
-            'guards' => ['web' => ['driver' => 'session'], 'api' => ['driver' => 'jwt']],
-            'users' => ['driver' => 'test.users'],
+            'guards' => ['web' => ['driver' => 'session'], 'api' => ['driver' => 'jwt'], 'admin-api' => ['driver' => 'jwt', 'provider' => 'admins']],
+            'providers' => ['users' => ['driver' => 'test.users'], 'admins' => ['driver' => 'test.admins']],
             'jwt' => array_filter($jwt + ['secret' => self::SECRET], static fn($value) => $value !== null),
         ]);
         $app->getContainer()->instance('test.users', $this->users);
+        $admins = new InMemoryUserProvider();
+        $admins->add(new GenericUser(7, null, ['role' => 'admin']), login: 'root@example.com');
+        $app->getContainer()->instance('test.admins', $admins);
         $app->getContainer()->instance(ClockInterface::class, $this->clock);
         $app->boot();
 

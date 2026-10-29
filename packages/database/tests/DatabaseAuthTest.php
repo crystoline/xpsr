@@ -62,7 +62,7 @@ final class DatabaseAuthTest extends TestCase
             'migrations' => ['path' => 'migrations', 'table' => "migrations_{$this->suffix}"],
         ]);
         $config->set('auth', [
-            'guards' => ['web' => ['driver' => 'session'], 'api' => ['driver' => 'token']],
+            'guards' => ['web' => ['driver' => 'session'], 'api' => ['driver' => 'token'], 'partner' => ['driver' => 'token']],
             'users' => ['driver' => 'database', 'table' => "people_{$this->suffix}", 'login' => 'email_address', 'password' => 'password_hash'],
             'tokens' => ['table' => "tokens_{$this->suffix}"],
         ]);
@@ -169,7 +169,7 @@ final class DatabaseAuthTest extends TestCase
         $create = new CommandTester($this->application->get(CreateTokenCommand::class));
         self::assertSame(Command::SUCCESS, $create->execute(['login' => 'ada@example.com', '--name' => 'deploy', '--scope' => ['tasks:read', 'tasks:write'], '--expires' => '90 days']));
         $lines = explode("\n", trim($create->getDisplay()));
-        self::assertMatchesRegularExpression('/\AToken (\d+) for user 1, scopes tasks:read tasks:write, expires 2027-01-27 12:00 UTC:\z/', $lines[0]);
+        self::assertMatchesRegularExpression('/\AToken (\d+) for user 1 on api, scopes tasks:read tasks:write, expires 2027-01-27 12:00 UTC:\z/', $lines[0]);
         self::assertMatchesRegularExpression('/\Axpsr_[0-9a-f]{64}\z/', $lines[1]);
         preg_match('/Token (\d+)/', $lines[0], $id);
 
@@ -182,6 +182,24 @@ final class DatabaseAuthTest extends TestCase
         self::assertSame("Revoked token {$id[1]}.\n", $revoke->getDisplay());
         self::assertSame(Command::FAILURE, $revoke->execute(['id' => $id[1]]));
         self::assertSame(Command::INVALID, $revoke->execute(['id' => 'abc']));
+    }
+
+    public function testATokenCountsOnlyOnItsGuard(): void
+    {
+        $tokens = $this->application->get(TokenRepository::class);
+        $auth = $this->application->get(AuthManager::class);
+        $ada = $auth->users()->findById(1) ?? self::fail();
+        $partner = $tokens->create($ada, 'integration', guard: 'partner');
+        self::assertSame('partner', $partner->token->guard);
+
+        self::assertNull($auth->guard('api')->authenticate($this->bearer($partner->plainText)), 'Another guard\'s token is refused.');
+        self::assertSame('partner', $auth->guard('partner')->authenticate($this->bearer($partner->plainText))?->guard);
+        self::assertSame([], $tokens->forUser($ada), 'The api guard\'s list does not show it.');
+        self::assertCount(1, $tokens->forUser($ada, 'partner'));
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The guard "web" does not use the token driver. Token guards: api, partner.');
+        $tokens->create($ada, 'browser', guard: 'web');
     }
 
     private function bearer(string $token): ServerRequest

@@ -14,5 +14,6 @@ final class IssuedToken
         public readonly string $token,
         public readonly string $id,
         public readonly DateTimeImmutable $expiresAt,
+        public readonly string $guard = 'api',
     ) {}
 }

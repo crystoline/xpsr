@@ -125,15 +125,15 @@ final class AuthTest extends TestCase
 
         $this->users->updatePasswordHash($this->users->findById(7) ?? self::fail(), $this->hasher->hash('new password'));
         self::assertNull($auth->authenticate($request));
-        self::assertFalse($session->has(SessionGuard::KEY));
+        self::assertFalse($session->has(SessionGuard::key('web')));
     }
 
     public function testADeletedUserIsSignedOut(): void
     {
         $session = new Session();
-        $session->set(SessionGuard::KEY, ['id' => 99, 'password' => 'x']);
+        $session->set(SessionGuard::key('web'), ['id' => 99, 'password' => 'x']);
         self::assertNull($this->auth()->authenticate($this->request($session)));
-        self::assertFalse($session->has(SessionGuard::KEY));
+        self::assertFalse($session->has(SessionGuard::key('web')));
     }
 
     public function testBrowsersAreSentToSignInAndBackToThePageTheyAskedFor(): void
@@ -148,7 +148,7 @@ final class AuthTest extends TestCase
         self::assertSame('/dashboard', $auth->intended($this->request($session), '/dashboard'), 'The page is used once.');
         self::assertSame('/', $auth->intended($this->request($session)));
 
-        $session->set('_auth.intended', '//evil.example/steal');
+        $session->set('_intended.web', '//evil.example/steal');
         self::assertSame('/', $auth->intended($this->request($session)), 'Only paths on this site.');
     }
 
@@ -284,7 +284,7 @@ final class AuthTest extends TestCase
     /** @return iterable<string, array{array<string, mixed>, string}> */
     public static function invalidOptions(): iterable
     {
-        yield 'unknown option' => [['guard' => 'web'], 'Unknown option auth.guard. Known options: default, guards, users, login_path, home_path, policies, jwt, tokens.'];
+        yield 'unknown option' => [['guard' => 'web'], 'Unknown option auth.guard. Known options: default, guards, providers, users, login_path, home_path, policies, jwt, tokens.'];
         yield 'no guards' => [['guards' => []], 'auth.guards must name at least one guard'];
         yield 'guard without driver' => [['guards' => ['web' => []]], 'auth.guards.web must be an array with a "driver"'];
         yield 'unknown default' => [['default' => 'admin'], 'auth.default must name a guard in auth.guards: web, api.'];

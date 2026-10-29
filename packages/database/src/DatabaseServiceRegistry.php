@@ -90,7 +90,8 @@ final class DatabaseServiceRegistry extends ServiceRegistry
             $container->get(ConnectionManager::class),
         ), shared: true);
         $this->container->factory(TokenRepository::class, static function (ContainerInterface $container): TokenRepository {
-            $tokens = $container->get(AuthOptions::class)->tokens;
+            $auth = $container->get(AuthOptions::class);
+            $tokens = $auth->tokens;
             foreach (array_keys($tokens) as $key) {
                 if (!in_array($key, ['table', 'connection'], true)) {
                     throw new InvalidArgumentException("Unknown option auth.tokens.{$key}. Known options: table, connection.");
@@ -102,7 +103,7 @@ final class DatabaseServiceRegistry extends ServiceRegistry
                 throw new InvalidArgumentException('auth.tokens.table must be a table name, and auth.tokens.connection a connection name or null.');
             }
 
-            return new TokenRepository($container->get(ConnectionManager::class)->connection($connection), $container->get(ClockInterface::class), $table);
+            return new TokenRepository($container->get(ConnectionManager::class)->connection($connection), $container->get(ClockInterface::class), $table, $auth->guardsWithDriver('token'));
         }, shared: true);
         $this->container->factory('auth.driver.token', static fn(ContainerInterface $container): TokenGuardFactory => new TokenGuardFactory(
             $container->get(TokenRepository::class),
