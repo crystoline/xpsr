@@ -19,6 +19,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Clock\ClockInterface as SymfonyClockInterface;
 use Symfony\Component\Lock\LockFactory;
+use Symfony\Component\Lock\PersistingStoreInterface;
 use Symfony\Component\Lock\Store\FlockStore;
 use Symfony\Component\Lock\Store\StoreFactory;
 
@@ -59,6 +60,14 @@ final class SchedulerServiceRegistry extends ServiceRegistry
         }, shared: true);
         $this->container->factory(LockFactory::class . '.scheduler', static function (ContainerInterface $container): LockFactory {
             $lock = $container->get(SchedulerOptions::class)->lock;
+            // Without scheduler.lock, the application's locks (crystoline/xpsr-lock), when its registry
+            // binds the store. The store is checked because has() is true for any class, LockFactory too.
+            if ($lock === null && $container->has(PersistingStoreInterface::class)) {
+                $shared = $container->get(LockFactory::class);
+
+                return $shared instanceof LockFactory ? $shared : throw new LogicException('The ' . LockFactory::class . ' service must be a LockFactory.');
+            }
+            $lock ??= 'flock';
             if ($lock === 'flock') {
                 $directory = $container->get(Application::class)->getRootDir() . '/var/locks';
                 if (!is_dir($directory) && !@mkdir($directory, 0775, true) && !is_dir($directory)) {

@@ -58,6 +58,16 @@ final class ConnectionManager
         return $this->connections[$name] ??= $this->create($name);
     }
 
+    /**
+     * A new connection with the settings of this one (or the default), not shared: for work that
+     * must stay out of the application's transactions, such as locks, which other processes
+     * must see at once and which a rollback must not undo.
+     */
+    public function open(?string $name = null): Connection
+    {
+        return $this->create($name ?? $this->defaultName());
+    }
+
     public function defaultName(): string
     {
         $default = $this->config['default'] ?? null;

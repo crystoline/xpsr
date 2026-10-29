@@ -44,6 +44,27 @@ final class ConnectionManagerTest extends TestCase
         self::assertSame('main', $manager->defaultName());
     }
 
+    public function testOpenGivesANewConnectionWithTheSameSettings(): void
+    {
+        $manager = $this->manager([
+            'default' => 'main',
+            'connections' => ['main' => ['driver' => 'pdo_sqlite', 'path' => 'var/app.sqlite'], 'other' => ['driver' => 'pdo_sqlite', 'path' => 'var/other.sqlite']],
+        ]);
+        $shared = $manager->connection();
+        $own = $manager->open();
+        self::assertNotSame($shared, $own, 'Not shared, so not in the shared connection\'s transactions.');
+        self::assertNotSame($own, $manager->open());
+        self::assertSame($shared->getParams(), $own->getParams());
+        self::assertSame($manager->parameters('other'), $manager->open('other')->getParams());
+
+        $shared->executeStatement('CREATE TABLE notes (body TEXT)');
+        $shared->beginTransaction();
+        $shared->insert('notes', ['body' => 'rolled back']);
+        $shared->rollBack();
+        $own->insert('notes', ['body' => 'kept']);
+        self::assertSame(['kept'], $shared->fetchFirstColumn('SELECT body FROM notes'), 'Both reach the same database.');
+    }
+
     public function testRelativeSqlitePathsAreResolvedAgainstTheRootAndTheirDirectoryIsCreated(): void
     {
         $manager = $this->manager([

@@ -1,0 +1,48 @@
+{
+  "name": "crystoline/xpsr-lock",
+  "description": "Locks for XPSR applications on Symfony Lock: files, Redis, Redlock across several Redis servers, and the application's database",
+  "type": "library",
+  "license": "MIT",
+  "homepage": "https://xpsr.crysto.name.ng",
+  "authors": [
+    {
+      "name": "Adekunle",
+      "email": "crystoline@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.4",
+    "crystoline/xpsr-framework": "^0.4@dev",
+    "psr/container": "^2.0",
+    "psr/log": "^3.0",
+    "symfony/clock": "^7.4 || ^8.0",
+    "symfony/lock": "^7.4 || ^8.0"
+  },
+  "require-dev": {
+    "crystoline/xpsr-database": "^0.4@dev",
+    "nyholm/psr7": "^1.8.2",
+    "phpunit/phpunit": "^12.5",
+    "predis/predis": "^3.0",
+    "symfony/cache": "^7.4"
+  },
+  "suggest": {
+    "crystoline/xpsr-database": "The database store (lock.store database) and php xpsr make:lock-table",
+    "symfony/cache": "The Redis and Redlock stores, with the phpredis extension or predis/predis",
+    "predis/predis": "A Redis client written in PHP, for Redis and Redlock without the phpredis extension"
+  },
+  "autoload": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Lock\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Lock\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.4.x-dev"
+    }
+  }
+}

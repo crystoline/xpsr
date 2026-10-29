@@ -99,11 +99,11 @@ php xpsr schedule:work --time-limit=3600
 return [
     'files' => ['routes/schedule.php'],    // the files that define tasks
     'timezone' => 'UTC',                   // the default: app.timezone
-    'lock' => env('SCHEDULER_LOCK', 'flock'),
+    'lock' => env('SCHEDULER_LOCK'),
 ];
 ```
 
-`lock` is where `withoutOverlapping()` keeps its locks. The default, `flock`, uses files in `var/locks`, which works on one server. With several servers running `schedule:run`, use a store they share: a [Symfony Lock](https://symfony.com/doc/current/components/lock.html#available-stores) DSN such as `redis://localhost:6379` (which needs `symfony/cache`), `postgresql+advisory://...`, or a PDO DSN.
+`lock` is where `withoutOverlapping()` keeps its locks. Unset, the scheduler uses the application's locks from [`crystoline/xpsr-lock`](../lock/README.md) when `LockServiceRegistry` is in `app.registry`, and `flock` otherwise. `flock` uses files in `var/locks`, which works on one server. With several servers running `schedule:run`, use a store they share. Either configure the application's locks (Redis, Redlock, or the database), or set `lock` to a [Symfony Lock](https://symfony.com/doc/current/components/lock.html#available-stores) DSN for the scheduler alone, such as `redis://localhost:6379` (which needs `symfony/cache`), `postgresql+advisory://...`, or a PDO DSN.
 
 ## Services
 

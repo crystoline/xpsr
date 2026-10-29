@@ -35,6 +35,7 @@ use Symfony\Component\Clock\MockClock;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
+use Crystoline\Xpsr\Lock\LockServiceRegistry;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\Store\FlockStore;
 
@@ -181,6 +182,29 @@ final class SchedulerTest extends TestCase
         $this->runSchedule($application);
         $this->runSchedule($application);
         self::assertSame(['command locked', 'command locked'], $this->recorder->done, 'The task releases its lock when it ends.');
+    }
+
+    public function testWithoutOverlappingUsesTheApplicationsLocksUnlessSchedulerLockIsSet(): void
+    {
+        $schedule = <<<'PHP'
+            <?php
+            return static function (Crystoline\Xpsr\Scheduler\Schedule $schedule): void {
+                $schedule->command('test:echo shared')->withoutOverlapping();
+            };
+            PHP;
+        // The in-memory store exists only in this process, so only a scheduler that uses it sees the lock.
+        $application = $this->application($schedule, locks: true);
+        $task = $application->get(Schedule::class)->tasks()[0];
+        $held = $application->get(LockFactory::class)->createLock($task->lockKey());
+        self::assertTrue($held->acquire());
+        self::assertSame("Skipped test:echo shared: the previous run is still going\n", $this->runSchedule($application)->getDisplay());
+        self::assertSame([], $this->recorder->done);
+
+        $own = $this->application($schedule, ['lock' => 'flock'], locks: true);
+        $alsoHeld = $own->get(LockFactory::class)->createLock($task->lockKey());
+        self::assertTrue($alsoHeld->acquire());
+        $this->runSchedule($own);
+        self::assertSame(['command shared'], $this->recorder->done, 'scheduler.lock keeps the scheduler on a store of its own.');
     }
 
     public function testTasksAreDueInTheirOwnTimeZone(): void
@@ -391,7 +415,7 @@ final class SchedulerTest extends TestCase
         $options = SchedulerOptions::fromArray([], $this->root, 'Europe/Berlin');
         self::assertSame([], $options->files, 'routes/schedule.php does not exist yet.');
         self::assertSame('Europe/Berlin', $options->timezone, 'app.timezone');
-        self::assertSame('flock', $options->lock);
+        self::assertNull($options->lock, 'Unset: the application\'s locks, or flock without crystoline/xpsr-lock.');
 
         touch($this->root . '/routes/schedule.php');
         self::assertSame([$this->root . '/routes/schedule.php'], SchedulerOptions::fromArray([], $this->root)->files);
@@ -400,7 +424,7 @@ final class SchedulerTest extends TestCase
     /**
      * @param array<string, mixed> $config
      */
-    private function application(?string $schedule, array $config = [], bool $queue = false): Application
+    private function application(?string $schedule, array $config = [], bool $queue = false, bool $locks = false): Application
     {
         if ($schedule !== null) {
             file_put_contents($this->root . '/routes/schedule.php', $schedule);
@@ -411,9 +435,13 @@ final class SchedulerTest extends TestCase
             ConsoleServiceRegistry::class,
             SchedulerServiceRegistry::class,
             ...($queue ? [QueueServiceRegistry::class] : []),
+            ...($locks ? [LockServiceRegistry::class] : []),
         ]);
         if ($config !== []) {
             $settings->set('scheduler', $config);
+        }
+        if ($locks) {
+            $settings->set('lock', ['store' => 'in-memory']);
         }
         if ($queue) {
             $settings->set('queue', ['transports' => ['default' => ['dsn' => 'sync://']], 'failed' => false]);

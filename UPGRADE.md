@@ -25,6 +25,12 @@ New projects keep compiled Twig, Latte, and Blade templates instead of compiling
 
 The web server user must be able to write to `var/cache/views`. A changed template is compiled again on its own, even with `app.debug` off. If your deploy keeps the files' original times, for example by unpacking an archive or with `rsync -a`, add `php xpsr view:clear` to it. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md#writable-directories).
 
+### 3. Locks (optional)
+
+To take locks across processes and servers, `composer require crystoline/xpsr-lock` and add `Crystoline\Xpsr\Lock\LockServiceRegistry::class` to `app.registry`. Its README shows `config/lock.php`, with Redis, Redlock, or the database for several servers.
+
+The scheduler's `withoutOverlapping()` then uses the same locks, unless `config/scheduler.php` sets `lock`. To share them, remove the `lock` line, or change it to `'lock' => env('SCHEDULER_LOCK'),`.
+
 ## From 0.3 to 0.4
 
 0.4 adds sessions, sign-in, more view engines, and packages for queues, mail, scheduled tasks, file storage, and Eloquent. One change can affect existing code (step 2); everything after it is optional. Run the steps from the project root.

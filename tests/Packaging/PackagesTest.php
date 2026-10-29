@@ -101,6 +101,7 @@ final class PackagesTest extends TestCase
         yield 'Monolog logging' => ['log-monolog'];
         yield 'validation' => ['validation'];
         yield 'JWT authentication' => ['auth-jwt'];
+        yield 'locks' => ['lock'];
         yield 'view-blade' => ['view-blade'];
         yield 'view-latte' => ['view-latte'];
         yield 'view-plates' => ['view-plates'];

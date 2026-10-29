@@ -24,11 +24,13 @@
   },
   "require-dev": {
     "crystoline/xpsr-database": "^0.4@dev",
+    "crystoline/xpsr-lock": "^0.4@dev",
     "crystoline/xpsr-queue": "^0.4@dev",
     "nyholm/psr7": "^1.8.2",
     "phpunit/phpunit": "^12.5"
   },
   "suggest": {
+    "crystoline/xpsr-lock": "withoutOverlapping() then uses the application's locks: Redis, Redlock, or the database",
     "crystoline/xpsr-queue": "Needed for Schedule::job(), which queues a job on its schedule"
   },
   "autoload": {

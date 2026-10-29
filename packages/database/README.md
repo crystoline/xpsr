@@ -80,6 +80,8 @@ Other connections come from `Crystoline\Xpsr\Database\ConnectionManager`:
 $reports = $connections->connection('reporting');
 ```
 
+`connection()` returns the same connection each time, so code that shares it also shares its transactions. `open()` returns a new connection with the same settings. Use it for work that must stay out of the application's transactions, where other processes must see each write at once and a rollback must not undo it, such as the lock package's database store.
+
 ## Migrations
 
 ```sh
@@ -227,7 +229,7 @@ A runner implements `MigratorInterface` and a factory implementing `MigratorFact
 | Service | Provides |
 |---|---|
 | `Doctrine\DBAL\Connection` | The default connection. Shared. |
-| `Crystoline\Xpsr\Database\ConnectionManager` | Every configured connection, by name: `connection('reporting')`. Shared. |
+| `Crystoline\Xpsr\Database\ConnectionManager` | Every configured connection, by name: `connection('reporting')`, or a new one with `open()`. Shared. |
 | `Crystoline\Xpsr\Database\Migration\MigratorFactoryInterface` | The runner the migrate commands use: `create(?string $connection)` returns a `MigratorInterface`. |
 | `Crystoline\Xpsr\Database\MigratorFactory` | XPSR's own runner, for timestamped files in `migrations/`. |
 

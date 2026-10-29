@@ -1,0 +1,37 @@
+<?php
+
+declare(strict_types=1);
+
+use Crystoline\Xpsr\Database\Migration\Migration;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\PrimaryKeyConstraint;
+use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\Types;
+
+/**
+ * The table of crystoline/xpsr-lock's database store, laid out as Symfony Lock's
+ * DoctrineDbalStore expects: a hash of the key, the holder's token, and when the lock expires.
+ */
+return new class extends Migration {
+    public function up(Connection $db): void
+    {
+        $db->createSchemaManager()->createTable(
+            Table::editor()
+                ->setUnquotedName({{ table }})
+                ->setColumns(
+                    Column::editor()->setUnquotedName('key_id')->setTypeName(Types::STRING)->setLength(64)->create(),
+                    Column::editor()->setUnquotedName('key_token')->setTypeName(Types::STRING)->setLength(44)->create(),
+                    // Unix time.
+                    Column::editor()->setUnquotedName('key_expiration')->setTypeName(Types::INTEGER)->setUnsigned(true)->create(),
+                )
+                ->setPrimaryKeyConstraint(PrimaryKeyConstraint::editor()->setUnquotedColumnNames('key_id')->create())
+                ->create(),
+        );
+    }
+
+    public function down(Connection $db): void
+    {
+        $db->createSchemaManager()->dropTable({{ table }});
+    }
+};

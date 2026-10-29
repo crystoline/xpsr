@@ -8,10 +8,16 @@ Nothing breaks. Upgrade steps are in [UPGRADE.md](UPGRADE.md#from-04-to-05).
 
 ### Added
 
+- `crystoline/xpsr-lock`: locks across processes and servers, on Symfony Lock.
+  - `Locks::run()` takes a lock, runs a callback, and releases the lock, also when the callback throws. It can wait a given time for another holder to finish. `lock()` returns the Symfony lock.
+  - Stores: `flock` (the default, files in `var/locks`), one Redis server, Redlock across three or more independent Redis servers (a lock needs more than half), the application's database (`php xpsr make:lock-table`), or any Symfony Lock DSN.
+  - See [its README](packages/lock/README.md).
+- `ConnectionManager::open()` in `crystoline/xpsr-database`: a new connection with a configured connection's settings, outside the shared connection's transactions.
 - `php xpsr view:clear` empties `app.view_cache_dir`, for deploys that keep the files' original times. See [docs/VIEWS.md](docs/VIEWS.md).
 
 ### Changed
 
+- The scheduler's `withoutOverlapping()` uses the application's locks when `crystoline/xpsr-lock`'s registry is listed and `scheduler.lock` is not set. A project that sets `scheduler.lock` keeps its own store; the old README's `config/scheduler.php` set it to `flock`.
 - New projects keep compiled templates in `var/cache/views` (`app.view_cache_dir`) instead of compiling them on every request. Through Apache with OPcache, the skeleton's home page went from 7.0 ms to 4.0 ms. Existing projects keep their setting.
 - Twig and Latte compile a changed template again even with `app.debug` off, as Blade already did. A deploy no longer serves old templates until the cache is cleared. Twig compares file times, which costs about 0.01 ms per page. Latte compares content, which costs about 0.2 ms for a page of three templates.
 

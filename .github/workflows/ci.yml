@@ -123,7 +123,44 @@ jobs:
         env:
           XPSR_TEST_MYSQL_URL: ${{ matrix.database != 'pgsql' && matrix.url || '' }}
           XPSR_TEST_PGSQL_URL: ${{ matrix.database == 'pgsql' && matrix.url || '' }}
-        run: mkdir -p var && vendor/bin/phpunit --testsuite database,orm-doctrine,orm-eloquent,queue --log-junit var/junit.xml 2>&1 | tee var/phpunit.log
+        run: mkdir -p var && vendor/bin/phpunit --testsuite database,orm-doctrine,orm-eloquent,queue,lock --log-junit var/junit.xml 2>&1 | tee var/phpunit.log
+      - name: Annotate failed tests
+        if: failure()
+        run: php scripts/ci-annotate.php var/junit.xml var/phpunit.log
+
+  # The lock package against real Redis servers: one server, and Redlock across three with
+  # some of them down. Once through predis/predis and once through the phpredis extension.
+  redis:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        client: ['predis', 'phpredis']
+    name: redis (${{ matrix.client }})
+    services:
+      redis-1:
+        image: 'redis:7'
+        ports: ['6379:6379']
+      redis-2:
+        image: 'redis:7'
+        ports: ['6380:6379']
+      redis-3:
+        image: 'redis:7'
+        ports: ['6381:6379']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, dom, xml, xmlwriter, pdo_sqlite${{ matrix.client == 'phpredis' && ', redis' || '' }}
+          coverage: none
+          tools: composer:v2
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Tests
+        shell: bash
+        env:
+          XPSR_TEST_REDIS_URLS: redis://127.0.0.1:6379,redis://127.0.0.1:6380,redis://127.0.0.1:6381
+        run: mkdir -p var && vendor/bin/phpunit --testsuite lock,scheduler --log-junit var/junit.xml 2>&1 | tee var/phpunit.log
       - name: Annotate failed tests
         if: failure()
         run: php scripts/ci-annotate.php var/junit.xml var/phpunit.log
@@ -135,7 +172,7 @@ jobs:
   # xpsr-database, xpsr-orm-doctrine, xpsr-log-monolog, xpsr-validation, and xpsr-skeleton.
   # See docs/PACKAGES.md.
   split:
-    needs: [check, lowest-dependencies, packaging, database]
+    needs: [check, lowest-dependencies, packaging, database, redis]
     if: >-
       github.event_name == 'push' && github.repository == 'crystoline/xpsr' &&
       (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v'))

@@ -46,6 +46,7 @@ lead there.
 - [JWT sign-in](../packages/auth-jwt/README.md)
 - [Queues](../packages/queue/README.md)
 - [Mail](../packages/mail/README.md)
+- [Locks](../packages/lock/README.md)
 - [Scheduler](../packages/scheduler/README.md)
 - [File storage](../packages/storage/README.md)
 - [Plates views](../packages/view-plates/README.md)

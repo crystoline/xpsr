@@ -93,7 +93,7 @@ The web server user must be able to write:
 - `var/sessions`, for sessions in the default file store. It is created with mode 0700 on first use.
 - `var/cache/views`, for compiled templates (`app.view_cache_dir`).
 
-Optional packages write to their own directories, such as `var/cache/app` for the file cache, `var/storage` for local disks, and `var/locks` for scheduled tasks.
+Optional packages write to their own directories, such as `var/cache/app` for the file cache, `var/storage` for local disks, and `var/locks` for locks and scheduled tasks.
 
 Run `php xpsr` commands that render views, such as a queue worker sending email, as the web server user. Otherwise they can create cache directories the web server cannot write into, and pages that need them fail.
 
@@ -145,9 +145,14 @@ With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user 
 ```
 
 - **Failures** are written to stderr, which cron mails to the crontab's owner (set `MAILTO`), and to the application log.
-- **Several servers.** Run `schedule:run` on one server only, or give `withoutOverlapping()` tasks a shared lock store (`scheduler.lock`, such as Redis) so the same task never runs on two servers at once. Tasks without it run on every server.
+- **Several servers.** Run `schedule:run` on one server only, or give `withoutOverlapping()` tasks a shared lock store, so the same task never runs on two servers at once. The store is the application's locks ([`crystoline/xpsr-lock`](../packages/lock/README.md) with Redis, Redlock, or the database), or `scheduler.lock`. Tasks without `withoutOverlapping()` run on every server.
 - **Containers** without cron can run `php xpsr schedule:work` as their process instead.
 - **Long tasks** hold up the tasks after them in the same minute; queue them as jobs instead.
+
+## Locks
+
+- **Several servers** need a lock store they share: `LOCK_STORE=redis://…`, `redlock` with three or more independent Redis servers in `LOCK_REDLOCK`, or `database` (after `php xpsr make:lock-table` and `migrate`). The default `flock` store only sees its own server's locks. See [the lock package](../packages/lock/README.md).
+- **Locks are not exactly-once.** A lock that expires while its holder is stalled can be taken by another process. Keep payments and other once-only work safe in the database as well, with a unique idempotency key or `SELECT … FOR UPDATE`.
 
 ## File storage
 

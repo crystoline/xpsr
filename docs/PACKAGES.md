@@ -19,6 +19,7 @@ crystoline/xpsr (skeleton, repository root)
 ├── (suggested) crystoline/xpsr-orm-eloquent    packages/orm-eloquent ──► framework, database, illuminate/database
 ├── (suggested) crystoline/xpsr-queue           packages/queue ──► framework, database, symfony/messenger
 ├── (suggested) crystoline/xpsr-mail            packages/mail ──► framework, symfony/mailer
+├── (suggested) crystoline/xpsr-lock            packages/lock ──► framework, symfony/lock
 ├── (suggested) crystoline/xpsr-scheduler       packages/scheduler ──► framework, dragonmantank/cron-expression, symfony/lock
 ├── (suggested) crystoline/xpsr-storage         packages/storage ──► framework, league/flysystem
 ├── (suggested) crystoline/xpsr-view-plates     packages/view-plates ──► framework, league/plates
@@ -39,6 +40,7 @@ crystoline/xpsr (skeleton, repository root)
 | `crystoline/xpsr-orm-eloquent` | `Crystoline\Xpsr\Orm\Eloquent\` | framework, database, `illuminate/database` ^12.0, `illuminate/events` ^12.0. |
 | `crystoline/xpsr-queue` | `Crystoline\Xpsr\Queue\` | framework, database, `symfony/messenger`, `symfony/doctrine-messenger`, and `symfony/event-dispatcher` 7.4 or 8; Redis, AMQP, and SQS through their Messenger bridges. |
 | `crystoline/xpsr-mail` | `Crystoline\Xpsr\Mail\` | framework, `symfony/mailer` and `symfony/mime` 7.4 or 8; `crystoline/xpsr-queue` for queued email; providers through Symfony's mailer bridges. |
+| `crystoline/xpsr-lock` | `Crystoline\Xpsr\Lock\` | framework, `symfony/lock` and `symfony/clock` 7.4 or 8; `symfony/cache` with phpredis or `predis/predis` for Redis and Redlock; `crystoline/xpsr-database` for the database store. |
 | `crystoline/xpsr-scheduler` | `Crystoline\Xpsr\Scheduler\` | framework, `dragonmantank/cron-expression` ^3.4, `symfony/lock` 7.4 or 8; `crystoline/xpsr-queue` for scheduled jobs. |
 | `crystoline/xpsr-storage` | `Crystoline\Xpsr\Storage\` | framework, `league/flysystem`, `league/flysystem-local`, and `league/flysystem-memory` ^3.29; `league/flysystem-async-aws-s3` for the s3 driver. |
 | `crystoline/xpsr-view-plates` | `Crystoline\Xpsr\View\Plates\` | framework, `league/plates` ^3.6. |

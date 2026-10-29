@@ -13,9 +13,10 @@ use InvalidArgumentException;
  *             which may be missing)
  *   timezone  the time zone schedules are read in, unless a task sets its own (default:
  *             app.timezone)
- *   lock      where withoutOverlapping() keeps its locks: "flock" (the default, files in
- *             var/locks, for one server) or a Symfony Lock store DSN shared by several servers,
- *             such as redis://localhost:6379 or a PDO DSN
+ *   lock      where withoutOverlapping() keeps its locks: "flock" (files in var/locks, for one
+ *             server) or a Symfony Lock store DSN shared by several servers, such as
+ *             redis://localhost:6379 or a PDO DSN. Unset (null), the application's locks from
+ *             crystoline/xpsr-lock when its registry is listed, otherwise flock.
  *
  * @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md.
  */
@@ -27,7 +28,7 @@ final class SchedulerOptions
     private function __construct(
         public readonly array $files,
         public readonly string $timezone,
-        public readonly string $lock,
+        public readonly ?string $lock,
     ) {}
 
     /** @param array<array-key, mixed> $config */
@@ -61,8 +62,8 @@ final class SchedulerOptions
         if (!is_string($timezone)) {
             throw new InvalidArgumentException('scheduler.timezone must be a time zone identifier such as UTC or Africa/Lagos.');
         }
-        $lock = $config['lock'] ?? 'flock';
-        if (!is_string($lock) || $lock === '') {
+        $lock = $config['lock'] ?? null;
+        if ($lock !== null && (!is_string($lock) || $lock === '')) {
             throw new InvalidArgumentException('scheduler.lock must be "flock" or a Symfony Lock store DSN such as redis://localhost:6379.');
         }
 
