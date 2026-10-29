@@ -12,6 +12,8 @@ use Crystoline\Xpsr\Database\Console\MigrateCommand;
 use Crystoline\Xpsr\Database\Console\MigrateRollbackCommand;
 use Crystoline\Xpsr\Auth\AuthOptions;
 use Crystoline\Xpsr\Database\Auth\DatabaseUserProviderFactory;
+use Crystoline\Xpsr\Database\Auth\SanctumGuardFactory;
+use Crystoline\Xpsr\Database\Auth\SanctumTokenRepository;
 use Crystoline\Xpsr\Database\Auth\TokenGuardFactory;
 use Crystoline\Xpsr\Database\Auth\TokenRepository;
 use Crystoline\Xpsr\Database\Console\CreateTokenCommand;
@@ -38,8 +40,8 @@ use Psr\Log\LoggerInterface;
  *   Crystoline\Xpsr\Database\Migration\MigratorFactoryInterface     the runner the commands use: the
  *                                                                   service in database.migrations.runner
  *
- * the session store for session.store "database", the "database" user provider and "token" guard
- * for config/auth.php, and migrate, migrate:rollback, migrate:status, make:migration,
+ * the session store for session.store "database", the "database" user provider and the "token"
+ * and "sanctum" guards for config/auth.php, and migrate, migrate:rollback, migrate:status, make:migration,
  * make:session-table, make:token-table, auth:token, and auth:token-revoke when the console is
  * part of the application. Configuration lives in config/database.php.
  */
@@ -108,6 +110,11 @@ final class DatabaseServiceRegistry extends ServiceRegistry
         $this->container->factory('auth.driver.token', static fn(ContainerInterface $container): TokenGuardFactory => new TokenGuardFactory(
             $container->get(TokenRepository::class),
         ), shared: true);
+        // auth.guards driver "sanctum": Laravel Sanctum's personal_access_tokens table, as it is.
+        $this->container->factory(SanctumTokenRepository::class, static fn(ContainerInterface $container): SanctumTokenRepository => self::sanctum($container), shared: true);
+        $this->container->factory('auth.driver.sanctum', static fn(ContainerInterface $container): SanctumGuardFactory => new SanctumGuardFactory(
+            $container->get(SanctumTokenRepository::class),
+        ), shared: true);
         // session.store "database", resolved by the framework's SessionServiceRegistry.
         $this->container->factory('session.store.database', static function (ContainerInterface $container): DatabaseSessionStore {
             $options = $container->get(SessionOptions::class);
@@ -146,5 +153,65 @@ final class DatabaseServiceRegistry extends ServiceRegistry
         }
 
         return $config;
+    }
+
+    /**
+     * The store for guards with the sanctum driver. auth.sanctum (all optional): table
+     * (personal_access_tokens), connection, expiration (minutes, as sanctum.expiration, or a
+     * period such as "1 year"; null for no limit), and prefix (as sanctum.token_prefix). Each
+     * guard's tokens are those whose tokenable_type is the guard's tokenable_type option, or else
+     * its provider's model class, as Sanctum checks.
+     */
+    private static function sanctum(ContainerInterface $container): SanctumTokenRepository
+    {
+        $auth = $container->get(AuthOptions::class);
+        $options = $auth->sanctum;
+        foreach (array_keys($options) as $key) {
+            if (!in_array($key, ['table', 'connection', 'expiration', 'prefix'], true)) {
+                throw new InvalidArgumentException("Unknown option auth.sanctum.{$key}. Known options: table, connection, expiration, prefix.");
+            }
+        }
+        $types = [];
+        foreach ($auth->guardsWithDriver('sanctum') as $guard) {
+            $type = $auth->guards[$guard]['tokenable_type'] ?? $auth->providers[$auth->provider($guard)]['model'] ?? null;
+            if (!is_string($type) || $type === '') {
+                throw new InvalidArgumentException("auth.guards.{$guard}.tokenable_type must name what Laravel stored in personal_access_tokens.tokenable_type, such as App\\Models\\User. The guard's provider has no model to take it from.");
+            }
+            $types[$guard] = $type;
+        }
+        $connection = $options['connection'] ?? null;
+        $table = $options['table'] ?? 'personal_access_tokens';
+        $prefix = $options['prefix'] ?? '';
+        if (($connection !== null && !is_string($connection)) || !is_string($table) || !is_string($prefix)) {
+            throw new InvalidArgumentException('auth.sanctum.table and auth.sanctum.prefix must be strings, and auth.sanctum.connection a connection name or null.');
+        }
+        $expiration = $options['expiration'] ?? null;
+        // From env(): "" when unset, and digits for minutes, such as SANCTUM_EXPIRATION=525600.
+        if ($expiration === '') {
+            $expiration = null;
+        } elseif (is_string($expiration) && ctype_digit($expiration)) {
+            $expiration = (int) $expiration;
+        }
+        if (is_int($expiration) && $expiration > 0) {
+            $expiration *= 60;
+        } elseif (is_string($expiration)) {
+            try {
+                $expiration = (new \DateTimeImmutable('@0'))->add(\DateInterval::createFromDateString($expiration))->getTimestamp();
+            } catch (\Exception) {
+                $expiration = 0;
+            }
+        }
+        if ($expiration !== null && (!is_int($expiration) || $expiration < 1)) {
+            throw new InvalidArgumentException('auth.sanctum.expiration must be minutes, as in Sanctum\'s config, or a period such as "1 year"; null for no limit.');
+        }
+
+        return new SanctumTokenRepository(
+            $container->get(ConnectionManager::class)->connection($connection),
+            $container->get(ClockInterface::class),
+            $types,
+            $table,
+            $expiration,
+            $prefix,
+        );
     }
 }

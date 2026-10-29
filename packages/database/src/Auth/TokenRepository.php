@@ -24,7 +24,7 @@ use Psr\Clock\ClockInterface;
  * Each token belongs to one guard, and only that guard accepts it: with users and admins in
  * separate tables, an admin's token never counts on the users' API, even when IDs repeat.
  */
-final class TokenRepository
+final class TokenRepository implements TokenStoreInterface
 {
     public const PREFIX = 'xpsr_';
     private const TABLE = '/\A[A-Za-z_][A-Za-z0-9_]{0,62}\z/';

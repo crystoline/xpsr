@@ -20,6 +20,12 @@ Nothing breaks if the web server can write `var/locks`, which rate limits now us
   - `decrypt()` reads strings, numbers, booleans, null, and arrays, but refuses serialized objects, which Laravel's `decrypt()` restores. A leaked key therefore cannot be used to run code through the application's classes.
   - `php xpsr key:generate` prints a key; `--write` sets `APP_KEY` in `.env`.
   - In `crystoline/xpsr-orm-eloquent`, Eloquent's encrypted casts (`encrypted`, `encrypted:array`, `encrypted:collection`, `encrypted:object`, `AsEncryptedArrayObject`, `AsEncryptedCollection`) use it, so Laravel's encrypted columns read as they are.
+- The `sanctum` guard driver in `crystoline/xpsr-database` reads and writes Laravel Sanctum's `personal_access_tokens` table as it is. An application moving from Laravel keeps its clients' tokens, and while both run on the table, Laravel and XPSR accept each other's tokens. See [docs/AUTH.md](docs/AUTH.md#laravel-sanctum-tokens).
+  - Sanctum's `<id>|<secret>` tokens are accepted, and new ones have Sanctum's format, with `auth.sanctum.prefix` as `sanctum.token_prefix`.
+  - Abilities are the token's scopes. Each guard accepts only its own `tokenable_type`, by default its provider's model class, so an admin's token never counts on the customers' API.
+  - `expires_at` and `auth.sanctum.expiration` end tokens as in Sanctum. Times are in `app.timezone`, as Laravel stores them.
+  - `SanctumTokenRepository` creates, lists, and revokes tokens from code, and `auth:token` and `auth:token-revoke` work on sanctum guards. `auth:token-revoke` gains `--guard`.
+  - Checked against Laravel Sanctum 4 itself: each accepts tokens the other created.
 - `php xpsr view:clear` empties `app.view_cache_dir`, for deploys that keep the files' original times. See [docs/VIEWS.md](docs/VIEWS.md).
 
 ### Changed

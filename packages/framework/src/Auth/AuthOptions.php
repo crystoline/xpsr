@@ -10,7 +10,7 @@ use InvalidArgumentException;
  * The "auth" configuration (config/auth.php), validated:
  *
  *   default      the guard Authenticate and Guest use when none is named (default web)
- *   guards       name => ['driver' => session|jwt|token|<service>, 'provider' => <name>,
+ *   guards       name => ['driver' => session|jwt|token|sanctum|<service>, 'provider' => <name>,
  *                'login_path' => ..., 'home_path' => ...] (default: web on the session, api on jwt)
  *   providers    name => ['driver' => database|doctrine|eloquent|<service>, ...]: where each
  *                kind of user is looked up, such as users and admins
@@ -18,7 +18,7 @@ use InvalidArgumentException;
  *   login_path   where Authenticate sends browsers that are not signed in (default /login)
  *   home_path    where Guest sends browsers that are signed in (default /)
  *   policies     model class => policy class
- *   jwt, tokens  options for the jwt and token drivers, read by their packages
+ *   jwt, tokens, sanctum  options for the jwt, token, and sanctum drivers, read by their packages
  *
  * A guard without a provider uses "users", or the only provider there is.
  *
@@ -26,7 +26,7 @@ use InvalidArgumentException;
  */
 final class AuthOptions
 {
-    private const KNOWN = ['default', 'guards', 'providers', 'users', 'login_path', 'home_path', 'policies', 'jwt', 'tokens'];
+    private const KNOWN = ['default', 'guards', 'providers', 'users', 'login_path', 'home_path', 'policies', 'jwt', 'tokens', 'sanctum'];
     private const NAME = '/\A[A-Za-z0-9_.-]+\z/';
 
     /**
@@ -37,6 +37,7 @@ final class AuthOptions
      * @param array<class-string, class-string> $policies
      * @param array<array-key, mixed> $jwt
      * @param array<array-key, mixed> $tokens
+     * @param array<array-key, mixed> $sanctum
      */
     private function __construct(
         public readonly string $default,
@@ -47,6 +48,7 @@ final class AuthOptions
         public readonly array $policies,
         public readonly array $jwt,
         public readonly array $tokens,
+        public readonly array $sanctum,
     ) {}
 
     /** @param array<array-key, mixed> $config */
@@ -69,7 +71,7 @@ final class AuthOptions
                 throw new InvalidArgumentException('auth.guards names must be letters, digits, dots, underscores, or hyphens.');
             }
             if (!is_array($guard) || !is_string($guard['driver'] ?? null) || $guard['driver'] === '') {
-                throw new InvalidArgumentException("auth.guards.{$name} must be an array with a \"driver\": session, jwt, token, or a service.");
+                throw new InvalidArgumentException("auth.guards.{$name} must be an array with a \"driver\": session, jwt, token, sanctum, or a service.");
             }
             $provider = $guard['provider'] ?? (isset($providers['users']) || count($providers) !== 1 ? 'users' : array_key_first($providers));
             if (!is_string($provider) || !isset($providers[$provider])) {
@@ -99,14 +101,14 @@ final class AuthOptions
                 throw new InvalidArgumentException('auth.policies must map model classes to existing policy classes; ' . (is_string($policy) ? "{$policy} was not found" : 'a policy is not a class name') . '.');
             }
         }
-        foreach (['jwt', 'tokens'] as $section) {
+        foreach (['jwt', 'tokens', 'sanctum'] as $section) {
             if (isset($config[$section]) && !is_array($config[$section])) {
                 throw new InvalidArgumentException("auth.{$section} must be an array of options.");
             }
         }
 
         /** @var array<class-string, class-string> $policies */
-        return new self($default, $guards, $providers, $guardProviders, $paths, $policies, $config['jwt'] ?? [], $config['tokens'] ?? []);
+        return new self($default, $guards, $providers, $guardProviders, $paths, $policies, $config['jwt'] ?? [], $config['tokens'] ?? [], $config['sanctum'] ?? []);
     }
 
     /** The provider a guard looks its users up in. */

@@ -199,7 +199,7 @@ The table has `id`, `payload`, and an indexed `last_activity` (Unix time). `sess
 
 ## Users and API tokens
 
-For `config/auth.php`, the package provides the `database` user provider, which reads users from a table, and the `token` guard driver: revocable API tokens stored as SHA-256 hashes.
+For `config/auth.php`, the package provides the `database` user provider, which reads users from a table, the `token` guard driver: revocable API tokens stored as SHA-256 hashes, and the `sanctum` guard driver, which reads and writes Laravel Sanctum's `personal_access_tokens` table as it is (`Crystoline\Xpsr\Database\Auth\SanctumTokenRepository`), for applications moving from Laravel.
 
 ```php
 'users' => ['driver' => 'database', 'table' => 'users', 'login' => 'email', 'password' => 'password'],

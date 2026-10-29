@@ -51,6 +51,10 @@ To encrypt data, or to use Eloquent's encrypted casts:
 
 See [docs/ENCRYPTION.md](docs/ENCRYPTION.md).
 
+### 6. Laravel Sanctum tokens (optional)
+
+For an application that moves from Laravel, a guard with `'driver' => 'sanctum'` accepts the tokens in Laravel's `personal_access_tokens` table. See [docs/AUTH.md](docs/AUTH.md#laravel-sanctum-tokens).
+
 ## From 0.3 to 0.4
 
 0.4 adds sessions, sign-in, more view engines, and packages for queues, mail, scheduled tasks, file storage, and Eloquent. One change can affect existing code (step 2); everything after it is optional. Run the steps from the project root.

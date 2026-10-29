@@ -10,7 +10,8 @@ return [
         // Browsers: the user is kept in the session (routes/web.php).
         'web' => ['driver' => 'session', 'provider' => 'users'],
         // API clients: "Authorization: Bearer <token>". jwt needs crystoline/xpsr-auth-jwt; token
-        // (revocable tokens in a table, after php xpsr make:token-table) needs crystoline/xpsr-database.
+        // (revocable tokens in a table, after php xpsr make:token-table) needs crystoline/xpsr-database,
+        // as does sanctum (Laravel Sanctum's personal_access_tokens table; see docs/AUTH.md).
         'api' => ['driver' => env('AUTH_API_DRIVER', 'jwt'), 'provider' => 'users'],
         // Admins in their own table, signed in separately:
         // 'admin' => ['driver' => 'session', 'provider' => 'admins', 'login_path' => '/admin/login', 'home_path' => '/admin'],

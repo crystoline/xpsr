@@ -24,6 +24,7 @@
   },
   "require-dev": {
     "illuminate/encryption": "^12.0",
+    "laravel/sanctum": "^4.0",
     "nyholm/psr7": "^1.8.2",
     "phpunit/phpunit": "^12.5"
   },

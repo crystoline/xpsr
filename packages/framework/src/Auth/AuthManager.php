@@ -27,6 +27,7 @@ final class AuthManager
     public const DRIVERS = [
         'jwt' => ['crystoline/xpsr-auth-jwt', 'Crystoline\Xpsr\Auth\Jwt\JwtServiceRegistry'],
         'token' => ['crystoline/xpsr-database', 'Crystoline\Xpsr\Database\DatabaseServiceRegistry'],
+        'sanctum' => ['crystoline/xpsr-database', 'Crystoline\Xpsr\Database\DatabaseServiceRegistry'],
     ];
 
     /** User provider drivers in other packages: driver => [package, registry]. */
@@ -121,7 +122,7 @@ final class AuthManager
         }
         $factory = $this->container->has($id ?? $driver) ? $this->container->get($id ?? $driver) : null;
         if (!$factory instanceof GuardFactoryInterface) {
-            throw new InvalidArgumentException("auth.guards.{$name} driver \"{$driver}\" must be session, jwt, token, or a service implementing " . GuardFactoryInterface::class . '.');
+            throw new InvalidArgumentException("auth.guards.{$name} driver \"{$driver}\" must be session, jwt, token, sanctum, or a service implementing " . GuardFactoryInterface::class . '.');
         }
 
         return $this->guards[$name] = $factory->create($name, $config, $users);

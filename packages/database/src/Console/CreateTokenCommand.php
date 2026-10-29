@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Crystoline\Xpsr\Database\Console;
 
 use Crystoline\Xpsr\Auth\AuthManager;
-use Crystoline\Xpsr\Database\Auth\TokenRepository;
 use DateInterval;
 use InvalidArgumentException;
 use Psr\Clock\ClockInterface;
@@ -26,7 +25,7 @@ final class CreateTokenCommand extends Command
 {
     public function __construct(
         private readonly AuthManager $auth,
-        private readonly TokenRepository $tokens,
+        private readonly TokenGuards $guards,
         private readonly ClockInterface $clock,
     ) {
         parent::__construct('auth:token');
@@ -39,16 +38,17 @@ final class CreateTokenCommand extends Command
             ->addOption('name', null, InputOption::VALUE_REQUIRED, 'What the token is for.', 'console')
             ->addOption('scope', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'A scope the token allows; repeat for several. Default: * (everything).')
             ->addOption('expires', null, InputOption::VALUE_REQUIRED, 'How long the token lasts, such as "90 days". Default: until revoked.')
-            ->addOption('guard', null, InputOption::VALUE_REQUIRED, 'The token guard it is for; its provider has the user. Default: the first token guard.');
+            ->addOption('guard', null, InputOption::VALUE_REQUIRED, 'The token or sanctum guard it is for; its provider has the user. Default: the first such guard.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $errors = (new SymfonyStyle($input, $output))->getErrorStyle();
         $guard = $input->getOption('guard');
-        $guard = is_string($guard) ? $guard : ($this->auth->options()->guardsWithDriver('token')[0] ?? null);
-        if ($guard === null || ($this->auth->options()->guards[$guard]['driver'] ?? null) !== 'token') {
-            $errors->error($guard === null ? 'No guard in auth.guards uses the token driver.' : "The guard \"{$guard}\" does not use the token driver.");
+        try {
+            $guard = $this->guards->guard(is_string($guard) ? $guard : null);
+        } catch (InvalidArgumentException $exception) {
+            $errors->error($exception->getMessage());
 
             return self::INVALID;
         }
@@ -76,7 +76,7 @@ final class CreateTokenCommand extends Command
         }
         $scopes = $input->getOption('scope');
         try {
-            $new = $this->tokens->create($user, (string) $input->getOption('name'), is_array($scopes) && $scopes !== [] ? array_values($scopes) : ['*'], $expiresAt, $guard);
+            $new = $this->guards->store($guard)->create($user, (string) $input->getOption('name'), is_array($scopes) && $scopes !== [] ? array_values($scopes) : ['*'], $expiresAt, $guard);
         } catch (InvalidArgumentException $exception) {
             $errors->error($exception->getMessage());
 

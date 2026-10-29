@@ -106,7 +106,7 @@ $routes->group('/api', static function (RouteCollection $routes): void {
 
 A request without a valid token gets 401 with `WWW-Authenticate: Bearer`, or `Bearer error="invalid_token"` when it sent a bad token. A token without a listed scope gets 403 with `error="insufficient_scope"`. Sessions allow every scope.
 
-The `api` guard's driver is `AUTH_API_DRIVER`: `jwt` by default, or `token`.
+The `api` guard's driver is `AUTH_API_DRIVER`: `jwt` by default, or `token`. An application moving from Laravel can keep its Sanctum tokens with the `sanctum` driver; see [Laravel Sanctum tokens](#laravel-sanctum-tokens).
 
 | | `jwt` | `token` |
 |---|---|---|
@@ -167,6 +167,41 @@ php xpsr auth:token-revoke 12
 ```
 
 The table stores only a SHA-256 hash of each token, so a copy of it cannot be used to sign in.
+
+### Laravel Sanctum tokens
+
+The `sanctum` driver, also in `crystoline/xpsr-database`, reads Laravel Sanctum's `personal_access_tokens` table as it is. An application that moves from Laravel keeps its clients' tokens, and no one has to sign in again. While Laravel and XPSR both run on the same table, each accepts the other's tokens.
+
+```php
+'guards' => [
+    'api' => ['driver' => 'sanctum', 'provider' => 'users'],
+    'admin_api' => ['driver' => 'sanctum', 'provider' => 'admins', 'tokenable_type' => 'App\Models\Admin'],
+],
+'sanctum' => [
+    'expiration' => env('SANCTUM_EXPIRATION'),     // minutes, as in Sanctum; or a period such as '1 year'
+    'prefix' => env('SANCTUM_TOKEN_PREFIX', ''),
+],
+```
+
+- **Tokens** are Sanctum's `<id>|<secret>`; the table keeps the SHA-256 of the secret. A secret sent without its ID is looked up by its hash, as Sanctum does.
+- **Abilities** are the token's scopes, so `RequireScopes` checks them, and `*` allows everything.
+- **Each guard** accepts only rows whose `tokenable_type` is its `tokenable_type` option, or else its provider's `model` class, as Sanctum checks. An admin's token never counts on the customers' API. Set `tokenable_type` when the provider has no model, or when Laravel used a morph map alias such as `user`.
+- **Expiry:** a token's own `expires_at`, and `auth.sanctum.expiration` from `created_at`, as `sanctum.expiration` does in Laravel.
+- **Times** are stored as Laravel stores them, in `app.timezone`. Keep it the same as Laravel's.
+- **`last_used_at`** is written at most once a minute. Sanctum writes it on every request.
+
+New tokens have Sanctum's format: the ID, `|`, the prefix, 40 random characters, and their CRC32.
+
+```php
+use Crystoline\Xpsr\Database\Auth\SanctumTokenRepository;
+
+$new = $tokens->create($user, 'mobile app', ['payments:create']);
+$new->plainText;   // "42|…", shown once
+```
+
+`forUser()`, `revoke()`, and `revokeAll()` work as for database tokens, and so do `auth:token` and `auth:token-revoke` on a sanctum guard; `auth:token-revoke` takes `--guard` when there are several token tables.
+
+Sanctum's cookie sign-in for single-page apps is not supported: browsers use XPSR's session guard instead, and sign in once after the move.
 
 ## Several kinds of user
 

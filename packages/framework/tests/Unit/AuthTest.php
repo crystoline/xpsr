@@ -268,7 +268,7 @@ final class AuthTest extends TestCase
     {
         yield 'jwt without its package' => [['guards' => ['api' => ['driver' => 'jwt']]], 'auth.guards.api uses the jwt driver, which needs crystoline/xpsr-auth-jwt: run composer require crystoline/xpsr-auth-jwt, and add Crystoline\Xpsr\Auth\Jwt\JwtServiceRegistry to app.registry.'];
         yield 'token without its package' => [['guards' => ['api' => ['driver' => 'token']]], 'which needs crystoline/xpsr-database'];
-        yield 'an unknown driver' => [['guards' => ['api' => ['driver' => 'magic']]], 'auth.guards.api driver "magic" must be session, jwt, token, or a service implementing'];
+        yield 'an unknown driver' => [['guards' => ['api' => ['driver' => 'magic']]], 'auth.guards.api driver "magic" must be session, jwt, token, sanctum, or a service implementing'];
     }
 
     /** @param array<string, mixed> $config */
@@ -284,7 +284,7 @@ final class AuthTest extends TestCase
     /** @return iterable<string, array{array<string, mixed>, string}> */
     public static function invalidOptions(): iterable
     {
-        yield 'unknown option' => [['guard' => 'web'], 'Unknown option auth.guard. Known options: default, guards, providers, users, login_path, home_path, policies, jwt, tokens.'];
+        yield 'unknown option' => [['guard' => 'web'], 'Unknown option auth.guard. Known options: default, guards, providers, users, login_path, home_path, policies, jwt, tokens, sanctum.'];
         yield 'no guards' => [['guards' => []], 'auth.guards must name at least one guard'];
         yield 'guard without driver' => [['guards' => ['web' => []]], 'auth.guards.web must be an array with a "driver"'];
         yield 'unknown default' => [['default' => 'admin'], 'auth.default must name a guard in auth.guards: web, api.'];
