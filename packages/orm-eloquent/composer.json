@@ -3,6 +3,7 @@
   "description": "Eloquent models for XPSR applications, on the XPSR database connection and its transactions, with XPSR's migrations",
   "type": "library",
   "license": "MIT",
+  "homepage": "https://xpsr.crysto.name.ng",
   "authors": [
     {
       "name": "Adekunle",
@@ -11,8 +12,8 @@
   ],
   "require": {
     "php": "^8.4",
-    "crystoline/xpsr-database": "^0.3@dev",
-    "crystoline/xpsr-framework": "^0.3@dev",
+    "crystoline/xpsr-database": "^0.4@dev",
+    "crystoline/xpsr-framework": "^0.4@dev",
     "doctrine/dbal": "^4.5",
     "illuminate/database": "^12.0",
     "illuminate/events": "^12.0",
@@ -35,7 +36,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.3.x-dev"
+      "dev-master": "0.4.x-dev"
     }
   }
 }

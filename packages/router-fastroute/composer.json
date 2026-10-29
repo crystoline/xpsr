@@ -3,6 +3,7 @@
   "description": "FastRoute adapter for XPSR's portable route definitions",
   "type": "library",
   "license": "MIT",
+  "homepage": "https://xpsr.crysto.name.ng",
   "authors": [
     {
       "name": "Adekunle",
@@ -11,7 +12,7 @@
   ],
   "require": {
     "php": "^8.4",
-    "crystoline/xpsr-framework": "^0.3@dev",
+    "crystoline/xpsr-framework": "^0.4@dev",
     "nikic/fast-route": "^1.3"
   },
   "require-dev": {
@@ -30,7 +31,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.3.x-dev"
+      "dev-master": "0.4.x-dev"
     }
   }
 }

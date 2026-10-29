@@ -3,6 +3,7 @@
   "description": "Scheduled tasks for XPSR applications: commands, closures, and queued jobs on cron schedules, run from one cron entry",
   "type": "library",
   "license": "MIT",
+  "homepage": "https://xpsr.crysto.name.ng",
   "authors": [
     {
       "name": "Adekunle",
@@ -11,7 +12,7 @@
   ],
   "require": {
     "php": "^8.4",
-    "crystoline/xpsr-framework": "^0.3@dev",
+    "crystoline/xpsr-framework": "^0.4@dev",
     "dragonmantank/cron-expression": "^3.4",
     "psr/clock": "^1.0",
     "psr/container": "^2.0",
@@ -22,8 +23,8 @@
     "symfony/process": "^7.4"
   },
   "require-dev": {
-    "crystoline/xpsr-database": "^0.3@dev",
-    "crystoline/xpsr-queue": "^0.3@dev",
+    "crystoline/xpsr-database": "^0.4@dev",
+    "crystoline/xpsr-queue": "^0.4@dev",
     "nyholm/psr7": "^1.8.2",
     "phpunit/phpunit": "^12.5"
   },
@@ -42,7 +43,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.3.x-dev"
+      "dev-master": "0.4.x-dev"
     }
   }
 }

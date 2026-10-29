@@ -4,15 +4,15 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7e1f0ac3528485b3a9f42b6582822462",
+    "content-hash": "0ad82eb7347d6e1b8c613ed03ae09625",
     "packages": [
         {
             "name": "crystoline/xpsr-framework",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "e35c27b529139fc258d57a7c498e2e4ec2074671"
+                "reference": "641cb052605e13b4dd9fd74069b0d85b3f2662cd"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
@@ -54,7 +54,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -80,6 +80,7 @@
                 }
             ],
             "description": "XPSR framework library: application lifecycle, PSR-11 container, PSR-15 HTTP kernel, routing contracts, providers, and console",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -87,14 +88,14 @@
         },
         {
             "name": "crystoline/xpsr-router-fastroute",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/router-fastroute",
-                "reference": "13b6e79c1ec191021a2f93802b63560fabfae540"
+                "reference": "26fc1e71a3048dd7a6c4920fb4a300cd434a800c"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.3@dev",
+                "crystoline/xpsr-framework": "^0.4@dev",
                 "nikic/fast-route": "^1.3",
                 "php": "^8.4"
             },
@@ -105,7 +106,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -128,6 +129,7 @@
                 }
             ],
             "description": "FastRoute adapter for XPSR's portable route definitions",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -3123,14 +3125,14 @@
         },
         {
             "name": "crystoline/xpsr-auth-jwt",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/auth-jwt",
-                "reference": "bcbc6d223c003c06026de01d9ccff37dcb3ea31b"
+                "reference": "3f4aa626ec0c774dbf459a87fa352ba779744932"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.3@dev",
+                "crystoline/xpsr-framework": "^0.4@dev",
                 "lcobucci/jwt": "^5.6",
                 "php": "^8.4",
                 "psr/clock": "^1.0",
@@ -3145,7 +3147,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -3168,6 +3170,7 @@
                 }
             ],
             "description": "JWT sign-in for XPSR APIs: the jwt guard driver on lcobucci/jwt, a token issuer, and a secret generator",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -3175,14 +3178,14 @@
         },
         {
             "name": "crystoline/xpsr-cache",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/cache",
-                "reference": "2bc48218485815c42b54ffe60f710101b4c7d5b1"
+                "reference": "080da6b26107c0ae181ae01a4f3de6b948710e31"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.3@dev",
+                "crystoline/xpsr-framework": "^0.4@dev",
                 "php": "^8.4",
                 "psr/cache": "^2.0 || ^3.0",
                 "psr/clock": "^1.0",
@@ -3200,7 +3203,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -3223,6 +3226,7 @@
                 }
             ],
             "description": "PSR-16 and PSR-6 caching for XPSR applications, backed by Symfony Cache, with a cache:clear command",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -3230,14 +3234,14 @@
         },
         {
             "name": "crystoline/xpsr-database",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/database",
-                "reference": "ba8a5b00535cf5f6b40124749f4acce38b14b92f"
+                "reference": "9a70479de85b78c31b6969f2514e8456b1163135"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.3@dev",
+                "crystoline/xpsr-framework": "^0.4@dev",
                 "doctrine/dbal": "^4.5",
                 "php": "^8.4",
                 "psr/clock": "^1.0",
@@ -3258,7 +3262,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -3281,6 +3285,7 @@
                 }
             ],
             "description": "Database connections and migrations for XPSR applications, backed by Doctrine DBAL",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -3288,14 +3293,14 @@
         },
         {
             "name": "crystoline/xpsr-http-client",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/http-client",
-                "reference": "0dd9368529d2d514269f939af84a134fcabac44b"
+                "reference": "0514e6b1c96894b19f73a21eb47a171a23359c2f"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.3@dev",
+                "crystoline/xpsr-framework": "^0.4@dev",
                 "php": "^8.4",
                 "psr/http-client": "^1.0.3",
                 "psr/http-factory": "^1.1",
@@ -3313,7 +3318,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -3336,6 +3341,7 @@
                 }
             ],
             "description": "Outgoing HTTP for XPSR applications: a configured PSR-18 client and named clients, backed by Symfony HttpClient, with a fake client for tests",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -3343,14 +3349,14 @@
         },
         {
             "name": "crystoline/xpsr-log-monolog",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/log-monolog",
-                "reference": "9fb416871d0812da0650310628203b5f2322ff47"
+                "reference": "aff843e01995a033ec7c37f94e65b13000ffce35"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.3@dev",
+                "crystoline/xpsr-framework": "^0.4@dev",
                 "monolog/monolog": "^3.9",
                 "php": "^8.4",
                 "psr/container": "^2.0",
@@ -3366,7 +3372,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -3389,6 +3395,7 @@
                 }
             ],
             "description": "Monolog logging for XPSR applications: stderr, file, daily, or syslog output, line or JSON format, and a request ID on every log line",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -3396,14 +3403,14 @@
         },
         {
             "name": "crystoline/xpsr-mail",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/mail",
-                "reference": "a897fccb86745615832c92814c79f7adb0b52af1"
+                "reference": "eb1dfc76442f7809a824707b6216100fb85ada6c"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.3@dev",
+                "crystoline/xpsr-framework": "^0.4@dev",
                 "php": "^8.4",
                 "psr/container": "^2.0",
                 "psr/log": "^3.0",
@@ -3412,8 +3419,8 @@
                 "symfony/mime": "^7.4 || ^8.0"
             },
             "require-dev": {
-                "crystoline/xpsr-database": "^0.3@dev",
-                "crystoline/xpsr-queue": "^0.3@dev",
+                "crystoline/xpsr-database": "^0.4@dev",
+                "crystoline/xpsr-queue": "^0.4@dev",
                 "nyholm/psr7": "^1.8.2",
                 "phpunit/phpunit": "^12.5",
                 "twig/twig": "^3.4"
@@ -3425,7 +3432,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -3448,6 +3455,7 @@
                 }
             ],
             "description": "Email for XPSR applications on Symfony Mailer: a DSN-configured transport, templates through the view layer, queued sending, and test transports",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -3455,15 +3463,15 @@
         },
         {
             "name": "crystoline/xpsr-orm-doctrine",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/orm-doctrine",
-                "reference": "706dd3a34725a35fee1deaa5567efb4d4c15bbf3"
+                "reference": "7c6b8b8751633ea22be13633e36505caa2f7e314"
             },
             "require": {
-                "crystoline/xpsr-database": "^0.3@dev",
-                "crystoline/xpsr-framework": "^0.3@dev",
+                "crystoline/xpsr-database": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.4@dev",
                 "doctrine/dbal": "^4.5",
                 "doctrine/orm": "^3.7",
                 "doctrine/persistence": "^4.1",
@@ -3482,7 +3490,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -3505,6 +3513,7 @@
                 }
             ],
             "description": "Doctrine ORM for XPSR applications: an EntityManager on XPSR's database connection, attribute-mapped entities, and migrations generated from the mapping",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -3512,15 +3521,15 @@
         },
         {
             "name": "crystoline/xpsr-orm-eloquent",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/orm-eloquent",
-                "reference": "fe5cea3695f7fc248635863f096894b11da7c6e4"
+                "reference": "9e3f9664f3331a420df35562d5c99493b51e8869"
             },
             "require": {
-                "crystoline/xpsr-database": "^0.3@dev",
-                "crystoline/xpsr-framework": "^0.3@dev",
+                "crystoline/xpsr-database": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.4@dev",
                 "doctrine/dbal": "^4.5",
                 "illuminate/database": "^12.0",
                 "illuminate/events": "^12.0",
@@ -3535,7 +3544,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -3558,6 +3567,7 @@
                 }
             ],
             "description": "Eloquent models for XPSR applications, on the XPSR database connection and its transactions, with XPSR's migrations",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -3565,15 +3575,15 @@
         },
         {
             "name": "crystoline/xpsr-queue",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/queue",
-                "reference": "a636d31ab98ea58a52e5cbabb475a05b32c9106c"
+                "reference": "783c576da0d06d2e20d62cfa9edd12f279506d21"
             },
             "require": {
-                "crystoline/xpsr-database": "^0.3@dev",
-                "crystoline/xpsr-framework": "^0.3@dev",
+                "crystoline/xpsr-database": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.4@dev",
                 "doctrine/dbal": "^4.5",
                 "php": "^8.4",
                 "psr/cache": "^2.0 || ^3.0",
@@ -3602,7 +3612,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -3625,6 +3635,7 @@
                 }
             ],
             "description": "Queued jobs for XPSR applications on Symfony Messenger: self-handling jobs, sync, database, Redis, AMQP, or SQS transports, retries, and a failed jobs table",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -3632,14 +3643,14 @@
         },
         {
             "name": "crystoline/xpsr-router-sunrise",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/router-sunrise",
-                "reference": "63d0b61ffe2d8d2373007e93698dfbbdc1046817"
+                "reference": "30ed71fb2d5813e39e3920c80981b268172f8447"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.3@dev",
+                "crystoline/xpsr-framework": "^0.4@dev",
                 "php": "^8.4",
                 "psr/http-message": "^1.1",
                 "sunrise/http-router": "^2.16"
@@ -3651,7 +3662,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -3674,6 +3685,7 @@
                 }
             ],
             "description": "Sunrise router adapter for XPSR's portable route definitions",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -3681,14 +3693,14 @@
         },
         {
             "name": "crystoline/xpsr-scheduler",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/scheduler",
-                "reference": "dae915677249ac7865c0ee2e8d4bd6db85906c1b"
+                "reference": "bef837b08d0ef44618eec7973270568c5fbc66af"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.3@dev",
+                "crystoline/xpsr-framework": "^0.4@dev",
                 "dragonmantank/cron-expression": "^3.4",
                 "php": "^8.4",
                 "psr/clock": "^1.0",
@@ -3700,8 +3712,8 @@
                 "symfony/process": "^7.4"
             },
             "require-dev": {
-                "crystoline/xpsr-database": "^0.3@dev",
-                "crystoline/xpsr-queue": "^0.3@dev",
+                "crystoline/xpsr-database": "^0.4@dev",
+                "crystoline/xpsr-queue": "^0.4@dev",
                 "nyholm/psr7": "^1.8.2",
                 "phpunit/phpunit": "^12.5"
             },
@@ -3711,7 +3723,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -3734,6 +3746,7 @@
                 }
             ],
             "description": "Scheduled tasks for XPSR applications: commands, closures, and queued jobs on cron schedules, run from one cron entry",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -3741,14 +3754,14 @@
         },
         {
             "name": "crystoline/xpsr-storage",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/storage",
-                "reference": "1b6458a6050d2358a9697df3729c63ee27891ee4"
+                "reference": "1d62a51c7354ef1a7fa877dafdd45733bef78fbb"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.3@dev",
+                "crystoline/xpsr-framework": "^0.4@dev",
                 "ext-fileinfo": "*",
                 "league/flysystem": "^3.29",
                 "league/flysystem-local": "^3.29",
@@ -3770,7 +3783,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -3793,6 +3806,7 @@
                 }
             ],
             "description": "File storage for XPSR applications on Flysystem: named disks, local and in-memory drivers, S3 through its adapter, uploads, and downloads",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -3800,14 +3814,14 @@
         },
         {
             "name": "crystoline/xpsr-validation",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/validation",
-                "reference": "90bb4dcdc2bebb5ea1c49ec4521e4f1d2b1d1796"
+                "reference": "3a8fcd186e6f775eacd40c2d642ab3502530d3f6"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.3@dev",
+                "crystoline/xpsr-framework": "^0.4@dev",
                 "php": "^8.4",
                 "psr/cache": "^2.0 || ^3.0",
                 "psr/container": "^2.0",
@@ -3826,7 +3840,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -3849,6 +3863,7 @@
                 }
             ],
             "description": "Request validation for XPSR applications: input classes checked with Symfony Validator rules, answered with 422 and field errors",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -3856,14 +3871,14 @@
         },
         {
             "name": "crystoline/xpsr-view-blade",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/view-blade",
-                "reference": "43a6b71439bd345351161c9f3f875d5d954e9c64"
+                "reference": "4b5272a8f470d16c0fdb780c6a02b2ed945ee565"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.3@dev",
+                "crystoline/xpsr-framework": "^0.4@dev",
                 "illuminate/container": "^12.0",
                 "illuminate/events": "^12.0",
                 "illuminate/filesystem": "^12.0",
@@ -3878,7 +3893,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -3901,6 +3916,7 @@
                 }
             ],
             "description": "Blade views for XPSR applications, standalone through illuminate/view, in place of Twig",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -3908,14 +3924,14 @@
         },
         {
             "name": "crystoline/xpsr-view-latte",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/view-latte",
-                "reference": "ee78b67a50c013c73987c03a4c31058cff7f831f"
+                "reference": "c19a3a215ad7fa0643cde5a3bdcda8712937a9d2"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.3@dev",
+                "crystoline/xpsr-framework": "^0.4@dev",
                 "latte/latte": "^3.1.2",
                 "php": "^8.4"
             },
@@ -3926,7 +3942,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -3949,6 +3965,7 @@
                 }
             ],
             "description": "Latte views for XPSR applications: context-aware escaping templates in place of Twig",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -3956,14 +3973,14 @@
         },
         {
             "name": "crystoline/xpsr-view-plates",
-            "version": "0.3.x-dev",
+            "version": "0.4.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/view-plates",
-                "reference": "fca35259f8f75f89ec0daad4f70cff6e0a9c7e1c"
+                "reference": "e41d80e6f65e09e16123bdad624318ea82bde134"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.3@dev",
+                "crystoline/xpsr-framework": "^0.4@dev",
                 "league/plates": "^3.6",
                 "php": "^8.4"
             },
@@ -3974,7 +3991,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3.x-dev"
+                    "dev-master": "0.4.x-dev"
                 }
             },
             "autoload": {
@@ -3997,6 +4014,7 @@
                 }
             ],
             "description": "Plates views for XPSR applications: native PHP templates in place of Twig",
+            "homepage": "https://xpsr.crysto.name.ng",
             "transport-options": {
                 "symlink": true,
                 "relative": true

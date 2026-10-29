@@ -3,6 +3,7 @@
   "description": "PSR-16 and PSR-6 caching for XPSR applications, backed by Symfony Cache, with a cache:clear command",
   "type": "library",
   "license": "MIT",
+  "homepage": "https://xpsr.crysto.name.ng",
   "authors": [
     {
       "name": "Adekunle",
@@ -11,7 +12,7 @@
   ],
   "require": {
     "php": "^8.4",
-    "crystoline/xpsr-framework": "^0.3@dev",
+    "crystoline/xpsr-framework": "^0.4@dev",
     "psr/cache": "^2.0 || ^3.0",
     "psr/clock": "^1.0",
     "psr/http-message": "^1.1 || ^2.0",
@@ -37,7 +38,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.3.x-dev"
+      "dev-master": "0.4.x-dev"
     }
   }
 }

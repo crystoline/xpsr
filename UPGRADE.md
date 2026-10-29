@@ -2,11 +2,27 @@
 
 Steps for moving an application between minor versions. What changed is in [CHANGELOG.md](CHANGELOG.md); what each kind of release promises is in [docs/VERSIONING.md](docs/VERSIONING.md).
 
-## Unreleased changes since 0.3
+## From 0.3 to 0.4
 
-These steps apply to the next release. One change can affect existing code (see Views); the other steps add sessions, authentication, and other view engines.
+0.4 adds sessions, sign-in, more view engines, and packages for queues, mail, scheduled tasks, file storage, and Eloquent. One change can affect existing code (step 2); everything after it is optional. Run the steps from the project root.
 
-### Sessions and CSRF (optional)
+### 1. Require 0.4
+
+In `composer.json`, change every `crystoline/xpsr-*` requirement from `^0.3` to `^0.4`, then run:
+
+```sh
+composer update 'crystoline/*' --with-dependencies
+composer test
+```
+
+### 2. Views
+
+1. A missing view now throws `Crystoline\Xpsr\View\ViewNotFoundException`. Code that caught `Twig\Error\LoaderError` for one catches that instead.
+2. Optional: to use Plates, Latte, or Blade, `composer require crystoline/xpsr-view-<engine>` and add `'view_engine' => env('VIEW_ENGINE', 'twig')` to `config/app.php`, then set it. Without the key, Twig is used.
+
+See [docs/VIEWS.md](docs/VIEWS.md).
+
+### 3. Sessions and CSRF (optional)
 
 1. Add `Crystoline\Xpsr\Registry\SessionServiceRegistry::class` to `app.registry` in `config/app.php`.
 2. Replace `config/session.php` with the new skeleton's version. The old file's `lifetime` was a number of minutes; it is now a period such as `'2 hours'`, and `SESSION_LIFETIME=120` must become `SESSION_LIFETIME="2 hours"`.
@@ -27,7 +43,7 @@ These steps apply to the next release. One change can affect existing code (see 
 
 See [docs/SESSIONS.md](docs/SESSIONS.md).
 
-### Authentication (optional)
+### 4. Authentication (optional)
 
 1. Add `Crystoline\Xpsr\Registry\AuthServiceRegistry::class` to `app.registry`, after `SessionServiceRegistry`, and copy `config/auth.php` from the new skeleton.
 2. For browsers, add `Authenticate::optional()` to the group in `routes/web.php`, after `CsrfMiddleware`, and `Authenticate::class` to pages for signed-in users.
@@ -36,12 +52,15 @@ See [docs/SESSIONS.md](docs/SESSIONS.md).
 
 See [docs/AUTH.md](docs/AUTH.md).
 
-### Views
+### 5. Other new packages (optional)
 
-1. A missing view now throws `Crystoline\Xpsr\View\ViewNotFoundException`. Code that caught `Twig\Error\LoaderError` for one catches that instead.
-2. Optional: to use Plates, Latte, or Blade, `composer require crystoline/xpsr-view-<engine>` and add `'view_engine' => env('VIEW_ENGINE', 'twig')` to `config/app.php`, then set it. Without the key, Twig is used.
+Each is installed with `composer require` and adds a provider to `app.registry` in `config/app.php`. Its README has the configuration.
 
-See [docs/VIEWS.md](docs/VIEWS.md).
+- **Queued jobs:** `crystoline/xpsr-queue`, with `Crystoline\Xpsr\Queue\QueueServiceRegistry` after the database provider. See [its README](packages/queue/README.md).
+- **Email:** `crystoline/xpsr-mail`, with `Crystoline\Xpsr\Mail\MailServiceRegistry`. See [its README](packages/mail/README.md).
+- **Scheduled tasks:** `crystoline/xpsr-scheduler`, with `Crystoline\Xpsr\Scheduler\SchedulerServiceRegistry`, and one cron entry that runs `php xpsr schedule:run` every minute. See [its README](packages/scheduler/README.md).
+- **File storage:** `crystoline/xpsr-storage`, with `Crystoline\Xpsr\Storage\StorageServiceRegistry`. See [its README](packages/storage/README.md).
+- **Eloquent:** `crystoline/xpsr-orm-eloquent`, with `Crystoline\Xpsr\Database\DatabaseServiceRegistry` and then `Crystoline\Xpsr\Orm\Eloquent\EloquentServiceRegistry`. See [its README](packages/orm-eloquent/README.md).
 
 ## From 0.2 to 0.3
 

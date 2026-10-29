@@ -3,6 +3,7 @@
   "description": "XPSR framework library: application lifecycle, PSR-11 container, PSR-15 HTTP kernel, routing contracts, providers, and console",
   "type": "library",
   "license": "MIT",
+  "homepage": "https://xpsr.crysto.name.ng",
   "authors": [
     {
       "name": "Adekunle",
@@ -61,7 +62,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.3.x-dev"
+      "dev-master": "0.4.x-dev"
     }
   },
   "minimum-stability": "stable"

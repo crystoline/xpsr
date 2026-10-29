@@ -4,7 +4,13 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
-Upgrade steps are in [UPGRADE.md](UPGRADE.md#unreleased-changes-since-03).
+## 0.4.0 (2026-10-29)
+
+One change can affect existing code (see **Breaking**). Upgrade steps are in [UPGRADE.md](UPGRADE.md#from-03-to-04).
+
+### Breaking
+
+- **A missing view throws `Crystoline\Xpsr\View\ViewNotFoundException`** instead of Twig's `LoaderError`. Code that catches `Twig\Error\LoaderError` for a missing template must catch the new exception instead.
 
 ### Added
 
@@ -33,10 +39,11 @@ Upgrade steps are in [UPGRADE.md](UPGRADE.md#unreleased-changes-since-03).
 
 ### Changed
 
-- A missing view throws `Crystoline\Xpsr\View\ViewNotFoundException` instead of Twig's `LoaderError`. New projects have `view_engine` in `config/app.php`.
+- New projects have `view_engine` in `config/app.php`.
 - New projects list `AuthServiceRegistry` in `app.registry`, have `config/auth.php`, and run `Authenticate::optional()` in the `routes/web.php` group. `.env.example` has `AUTH_API_DRIVER` and `AUTH_JWT_SECRET`.
 - New projects list `SessionServiceRegistry` in `app.registry`, and `routes/web.php` puts its routes in a group with `SessionMiddleware` and `CsrfMiddleware`. The skeleton's example `App\Http\Middleware\SessionMiddleware` and `App\Registry\SessionServiceRegistry`, which did not work, are removed, and `config/session.php` takes new options.
 - `crystoline/xpsr-cache` and `crystoline/xpsr-database` require `psr/clock`.
+- Every package's `composer.json` links to the documentation website, [xpsr.crysto.name.ng](https://xpsr.crysto.name.ng).
 
 ## 0.3.0 (2026-10-28)
 

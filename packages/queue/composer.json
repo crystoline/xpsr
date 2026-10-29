@@ -3,6 +3,7 @@
   "description": "Queued jobs for XPSR applications on Symfony Messenger: self-handling jobs, sync, database, Redis, AMQP, or SQS transports, retries, and a failed jobs table",
   "type": "library",
   "license": "MIT",
+  "homepage": "https://xpsr.crysto.name.ng",
   "authors": [
     {
       "name": "Adekunle",
@@ -11,8 +12,8 @@
   ],
   "require": {
     "php": "^8.4",
-    "crystoline/xpsr-database": "^0.3@dev",
-    "crystoline/xpsr-framework": "^0.3@dev",
+    "crystoline/xpsr-database": "^0.4@dev",
+    "crystoline/xpsr-framework": "^0.4@dev",
     "doctrine/dbal": "^4.5",
     "psr/cache": "^2.0 || ^3.0",
     "psr/clock": "^1.0",
@@ -49,7 +50,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.3.x-dev"
+      "dev-master": "0.4.x-dev"
     }
   }
 }

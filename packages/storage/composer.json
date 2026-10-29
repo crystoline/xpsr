@@ -3,6 +3,7 @@
   "description": "File storage for XPSR applications on Flysystem: named disks, local and in-memory drivers, S3 through its adapter, uploads, and downloads",
   "type": "library",
   "license": "MIT",
+  "homepage": "https://xpsr.crysto.name.ng",
   "authors": [
     {
       "name": "Adekunle",
@@ -12,7 +13,7 @@
   "require": {
     "php": "^8.4",
     "ext-fileinfo": "*",
-    "crystoline/xpsr-framework": "^0.3@dev",
+    "crystoline/xpsr-framework": "^0.4@dev",
     "league/flysystem": "^3.29",
     "league/flysystem-local": "^3.29",
     "league/flysystem-memory": "^3.29",
@@ -41,7 +42,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.3.x-dev"
+      "dev-master": "0.4.x-dev"
     }
   }
 }
