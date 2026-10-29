@@ -31,17 +31,12 @@ final class RateLimitMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $limit = $this->limiters->create($this->keys->key($request))->consume();
-        $headers = [
-            'X-RateLimit-Limit' => (string) $limit->getLimit(),
-            'X-RateLimit-Remaining' => (string) $limit->getRemainingTokens(),
-        ];
-        if (!$limit->isAccepted()) {
-            $retryAfter = (int) ceil($limit->getRetryAfter()->format('U.u') - microtime(true));
-            throw new TooManyRequestsHttpException(max(1, $retryAfter), "Rate limit \"{$this->name}\" exceeded.", null, $headers);
+        $allowance = Allowance::of($this->limiters->create($this->keys->key($request))->consume());
+        if (!$allowance->accepted) {
+            throw new TooManyRequestsHttpException($allowance->retryAfter, "Rate limit \"{$this->name}\" exceeded.", null, $allowance->headers());
         }
         $response = $handler->handle($request);
-        foreach ($headers as $name => $value) {
+        foreach ($allowance->headers() as $name => $value) {
             $response = $response->withHeader($name, $value);
         }
 

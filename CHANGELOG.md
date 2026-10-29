@@ -4,7 +4,7 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
-Nothing breaks. Upgrade steps are in [UPGRADE.md](UPGRADE.md#from-04-to-05).
+Nothing breaks if the web server can write `var/locks`, which rate limits now use. Upgrade steps are in [UPGRADE.md](UPGRADE.md#from-04-to-05).
 
 ### Added
 
@@ -13,6 +13,7 @@ Nothing breaks. Upgrade steps are in [UPGRADE.md](UPGRADE.md#from-04-to-05).
   - Stores: `flock` (the default, files in `var/locks`), one Redis server, Redlock across three or more independent Redis servers (a lock needs more than half), the application's database (`php xpsr make:lock-table`), or any Symfony Lock DSN.
   - See [its README](packages/lock/README.md).
 - `ConnectionManager::open()` in `crystoline/xpsr-database`: a new connection with a configured connection's settings, outside the shared connection's transactions.
+- `RateLimits` in `crystoline/xpsr-cache` applies the limits in `config/rate_limit.php` to a key chosen in code, such as an email address or a user ID, where the middleware counts by client address. `attempt()` answers 429 over the limit, `hit()` returns what is left without throwing, `remaining()` checks without counting, and `reset()` forgets a key's attempts. See [its README](packages/cache/README.md#limits-from-code).
 - `php xpsr view:clear` empties `app.view_cache_dir`, for deploys that keep the files' original times. See [docs/VIEWS.md](docs/VIEWS.md).
 
 ### Changed
@@ -23,6 +24,7 @@ Nothing breaks. Upgrade steps are in [UPGRADE.md](UPGRADE.md#from-04-to-05).
 
 ### Fixed
 
+- Parallel requests could get far past a rate limit, because counts were read and written back without a lock. In a test, four processes making 20 attempts each against a limit of 20 had 70 to 78 accepted; now exactly 20 are. Each count is now updated under a lock: the application's locks when `crystoline/xpsr-lock`'s registry is listed, otherwise files in `var/locks`. With several servers, use the lock package on a shared store. A Redis lock adds about 0.65 ms to each limited request.
 - Latte failed with "Unable to create directory" when the parent of `app.view_cache_dir` did not exist. The handler now creates the whole path, as the Blade handler does.
 - HTTP/1.0 requests are answered with HTTP/1.0. Every response used to say HTTP/1.1. Under Apache with mod_php, that kept the connection open until the keep-alive timeout, 5 seconds by default. HTTP/1.0 clients that read until the connection closes, such as some health checks and monitoring tools, waited that long for every response. Responses to HTTP/1.1 and HTTP/2 requests are unchanged.
 

@@ -4,7 +4,7 @@ Steps for moving an application between minor versions. What changed is in [CHAN
 
 ## From 0.4 to 0.5
 
-Nothing breaks, so only step 1 is needed. Run the steps from the project root.
+Nothing breaks. Projects with rate limits have one thing to check, in step 2; the other steps are optional. Run the steps from the project root.
 
 ### 1. Require 0.5
 
@@ -15,7 +15,13 @@ composer update 'crystoline/*' --with-dependencies
 composer test
 ```
 
-### 2. Cache compiled templates (optional)
+### 2. Rate limits
+
+Rate limits now lock each count, so parallel requests can no longer pass a limit together. Unless the lock package (step 4) keeps its locks in Redis or the database, the locks are files in `var/locks`. The web server must be able to write there. The directory is created on first use; if the web server cannot create directories in `var/`, create `var/locks` for it. Otherwise limited requests fail with "Rate limits keep their locks in …, which could not be created."
+
+With several servers and a shared cache, install the lock package with a store they share, such as Redis. File locks only stop parallel requests on the same server.
+
+### 3. Cache compiled templates (optional)
 
 New projects keep compiled Twig, Latte, and Blade templates instead of compiling them on every request. To do the same, set this in `config/app.php`:
 
@@ -25,11 +31,11 @@ New projects keep compiled Twig, Latte, and Blade templates instead of compiling
 
 The web server user must be able to write to `var/cache/views`. A changed template is compiled again on its own, even with `app.debug` off. If your deploy keeps the files' original times, for example by unpacking an archive or with `rsync -a`, add `php xpsr view:clear` to it. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md#writable-directories).
 
-### 3. Locks (optional)
+### 4. Locks (optional)
 
 To take locks across processes and servers, `composer require crystoline/xpsr-lock` and add `Crystoline\Xpsr\Lock\LockServiceRegistry::class` to `app.registry`. Its README shows `config/lock.php`, with Redis, Redlock, or the database for several servers.
 
-The scheduler's `withoutOverlapping()` then uses the same locks, unless `config/scheduler.php` sets `lock`. To share them, remove the `lock` line, or change it to `'lock' => env('SCHEDULER_LOCK'),`.
+The scheduler's `withoutOverlapping()` then uses the same locks, unless `config/scheduler.php` sets `lock`. To share them, remove the `lock` line, or change it to `'lock' => env('SCHEDULER_LOCK'),`. Rate limits use them too.
 
 ## From 0.3 to 0.4
 

@@ -1,6 +1,6 @@
 # crystoline/xpsr-cache
 
-Caching for XPSR applications: one application cache, available as PSR-16 (`Psr\SimpleCache\CacheInterface`) and PSR-6 (`Psr\Cache\CacheItemPoolInterface`) over the same storage, backed by [Symfony Cache](https://symfony.com/doc/current/components/cache.html), plus a `php xpsr cache:clear` command and rate limiting for routes (see [Rate limiting](#rate-limiting)).
+Caching for XPSR applications: one application cache, available as PSR-16 (`Psr\SimpleCache\CacheInterface`) and PSR-6 (`Psr\Cache\CacheItemPoolInterface`) over the same storage, backed by [Symfony Cache](https://symfony.com/doc/current/components/cache.html), plus a `php xpsr cache:clear` command and rate limiting for routes and code (see [Rate limiting](#rate-limiting)).
 
 ```sh
 composer require crystoline/xpsr-cache
@@ -97,4 +97,47 @@ or apply one to every request by listing `RateLimit::named('api')` in `app.middl
 
 Each request uses one unit of the client's allowance in that limit. Responses carry `X-RateLimit-Limit` and `X-RateLimit-Remaining`. Over the limit, the request stops with `Crystoline\Xpsr\Http\Exception\TooManyRequestsHttpException`, which the exception handler renders as 429 with `Retry-After` in seconds and the same headers. Invalid options fail when the limit is first used, with the setting's name.
 
-Counts live in the application cache, so `cache:clear` resets them. The `file` driver works for one server; for several servers, use the `service` driver with a shared store such as Redis, so every server sees the same counts. Under heavy concurrency a client may get a request or two above the limit, because counts are not locked.
+### Limits from code
+
+The middleware counts by client address. To count by an email address, a user ID, or a phone number, inject `Crystoline\Xpsr\Cache\RateLimit\RateLimits` and apply a limit from `config/rate_limit.php` to your own key:
+
+```php
+public function store(ServerRequestInterface $request): ResponseInterface
+{
+    $input = $this->validator->validate($request, SignIn::class);
+    $key = 'email:' . strtolower($input->email);
+    $this->rateLimits->attempt('login', $key);   // over the limit: 429 with Retry-After
+
+    if ($this->auth->attempt($request, $input->email, $input->password) === null) {
+        // A wrong password stays counted.
+        return $this->responses->redirect('/login');
+    }
+    $this->rateLimits->reset('login', $key);     // signed in: forget the failed attempts
+
+    return $this->responses->redirect($this->auth->intended($request));
+}
+```
+
+| Method | What it does |
+|---|---|
+| `attempt($name, $key)` | Counts one attempt. Over the limit, it throws `TooManyRequestsHttpException`, rendered as 429 with `Retry-After` and the same headers as the middleware's. |
+| `hit($name, $key)` | Counts one attempt without throwing. It returns an `Allowance` with `accepted`, `limit`, `remaining`, and `retryAfter`: seconds until another attempt is accepted, 0 while some remain. |
+| `remaining($name, $key)` | The attempts left, without counting one. |
+| `reset($name, $key)` | Forgets the key's attempts. |
+| `limiter($name)` | The Symfony limiter factory, for `reserve()` and waiting for the allowance to return. |
+
+A refused attempt is not counted, so a key gets attempts back as the interval passes, however often it tries.
+
+Start each key with what it counts, such as `email:` or `user:`. The middleware's keys start with `ip:`, so your keys never share its counts, even in the same limit. Lowercase email addresses, or `Ada@example.com` and `ada@example.com` are counted separately. An unknown name or invalid options throw `InvalidArgumentException`.
+
+### Parallel requests and several servers
+
+Counts live in the application cache, so `cache:clear` resets them. Each count is updated under a short lock, so parallel requests cannot both take a key's last unit. Without locks, four processes making 20 attempts each against a limit of 20 had 70 to 78 accepted in this package's tests.
+
+- **One server** needs no setup. The locks are files in `var/locks`, which the web server and CLI users must be able to write. Keys share 256 lock files, so the directory does not grow with the number of clients.
+- **Several servers** need the counts and the locks on stores they all share. Use the `service` driver with Redis, for example, and install [`crystoline/xpsr-lock`](../lock/README.md) with a shared store: Redis, Redlock, or the database. With `LockServiceRegistry` in `app.registry`, rate limits use those locks. File locks only stop parallel requests on the same server.
+- **The `array` and `null` drivers** take no locks, because each process has its own counts or none.
+
+What a lock adds to each limited request, measured in Docker on one machine: nothing measurable with file locks, about 0.65 ms with a Redis lock store (four round trips), and about 2 ms with Redlock across three servers.
+
+A lock lasts 5 seconds if the process holding it dies, so that key's requests wait at most that long. If the lock store cannot be reached, limited requests fail with an error instead of going through uncounted. Redlock keeps working while more than half of its servers are up.

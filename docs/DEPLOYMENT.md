@@ -93,7 +93,7 @@ The web server user must be able to write:
 - `var/sessions`, for sessions in the default file store. It is created with mode 0700 on first use.
 - `var/cache/views`, for compiled templates (`app.view_cache_dir`).
 
-Optional packages write to their own directories, such as `var/cache/app` for the file cache, `var/storage` for local disks, and `var/locks` for locks and scheduled tasks.
+Optional packages write to their own directories, such as `var/cache/app` for the file cache, `var/storage` for local disks, and `var/locks` for locks, scheduled tasks, and rate limits.
 
 Run `php xpsr` commands that render views, such as a queue worker sending email, as the web server user. Otherwise they can create cache directories the web server cannot write into, and pages that need them fail.
 
@@ -109,7 +109,7 @@ Templates need no deploy step in two cases: the deploy gives changed files new t
 ## Authentication
 
 - **JWT secret.** Set `AUTH_JWT_SECRET` (`php xpsr auth:jwt-secret` makes one) in the environment, never in version control. Changing it ends every issued token. With RS256 or ES256, deploy the key files with permissions only the web server user can read.
-- **Login throttling.** Put `RateLimit::named('login')` on sign-in routes, with a shared cache when there are several servers.
+- **Login throttling.** Put `RateLimit::named('login')` on sign-in routes, and count by account with `RateLimits` too. Several servers need a shared cache and shared locks; see [Locks](#locks).
 - **HTTPS** is required for sign-in: passwords, session cookies, and tokens travel in every request.
 
 ## Queue workers
@@ -152,6 +152,7 @@ With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user 
 ## Locks
 
 - **Several servers** need a lock store they share: `LOCK_STORE=redis://…`, `redlock` with three or more independent Redis servers in `LOCK_REDLOCK`, or `database` (after `php xpsr make:lock-table` and `migrate`). The default `flock` store only sees its own server's locks. See [the lock package](../packages/lock/README.md).
+- **Rate limits** lock each count. With several servers and a shared cache, they also need the lock package on a shared store, or parallel requests on different servers can pass a limit together. See [the cache package](../packages/cache/README.md#parallel-requests-and-several-servers).
 - **Locks are not exactly-once.** A lock that expires while its holder is stalled can be taken by another process. Keep payments and other once-only work safe in the database as well, with a unique idempotency key or `SELECT … FOR UPDATE`.
 
 ## File storage

@@ -89,7 +89,7 @@ $routes->get('/account', [AccountController::class, 'show'])->middleware(Authent
 
 - **`Authenticate`** refuses guests. A browser asking for a page is sent to `auth.login_path`, and `intended()` later returns it there. A script (JSON `Accept`, or `X-Requested-With`) or a form post gets 401 instead.
 - **`Guest`** sends signed-in browsers to `auth.home_path`.
-- **`RateLimit::named('login')`** (`crystoline/xpsr-cache`) limits password guessing; see the cache package's README.
+- **`RateLimit::named('login')`** (`crystoline/xpsr-cache`) limits password guessing from one address. To limit guesses at one account from many addresses as well, count by email with `RateLimits`; see [the cache package's README](../packages/cache/README.md#limits-from-code).
 
 Every form needs `{{ csrf_field() }}`, the login form included; see [SESSIONS.md](SESSIONS.md).
 

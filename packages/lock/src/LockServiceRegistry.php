@@ -24,7 +24,8 @@ use Symfony\Component\Lock\PersistingStoreInterface;
  *   Crystoline\Xpsr\Lock\Locks                     run() and lock(), with lock.prefix. Shared.
  *   Symfony\Component\Lock\LockFactory             the same store, without the prefix. Shared.
  *   Symfony\Component\Lock\PersistingStoreInterface  the store. Shared. Other packages, such as
- *                                                  the scheduler, use these locks when it is bound.
+ *                                                  the scheduler and rate limits, use these locks
+ *                                                  when it is bound.
  *
  * and, with crystoline/xpsr-database, the make:lock-table command.
  */

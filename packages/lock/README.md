@@ -125,6 +125,8 @@ $locks->run("payment:{$id}", function () use ($db, $gateway, $id): void {
 
 `withoutOverlapping()` in [`crystoline/xpsr-scheduler`](../scheduler/README.md) uses these locks when `LockServiceRegistry` is in `app.registry` and `scheduler.lock` is not set.
 
+Rate limits in [`crystoline/xpsr-cache`](../cache/README.md#parallel-requests-and-several-servers) use them whenever `LockServiceRegistry` is in `app.registry`, to update each count under a lock that lasts 5 seconds at most. Without this package, they lock with files in `var/locks`.
+
 ## Services
 
 | Service | Provides |

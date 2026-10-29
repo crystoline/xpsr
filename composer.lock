@@ -3182,7 +3182,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/cache",
-                "reference": "2ec18ec8e6d6e76661d951cb2e53937ac20854ab"
+                "reference": "5979ed98689cee03554b599905f3f2be00faf6ba"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.4@dev",
@@ -3194,11 +3194,16 @@
                 "psr/http-server-middleware": "^1.0",
                 "psr/simple-cache": "^1.0 || ^2.0 || ^3.0",
                 "symfony/cache": "^7.4",
+                "symfony/lock": "^7.4 || ^8.0",
                 "symfony/rate-limiter": "^7.4"
             },
             "require-dev": {
+                "crystoline/xpsr-lock": "^0.4@dev",
                 "nyholm/psr7": "^1.8.2",
                 "phpunit/phpunit": "^12.5"
+            },
+            "suggest": {
+                "crystoline/xpsr-lock": "Locks shared by several servers, for rate limits counted in a shared cache such as Redis"
             },
             "type": "library",
             "extra": {
