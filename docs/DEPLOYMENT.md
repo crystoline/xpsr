@@ -127,6 +127,19 @@ WantedBy=multi-user.target
 - **Several servers** can run workers on the same database, Redis, AMQP, or SQS transport; each job is delivered to one worker.
 - **Failed jobs** are kept in `failed_jobs`; check `php xpsr queue:failed` after incidents.
 
+## Scheduled tasks
+
+With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user (`crontab -u www-data -e`):
+
+```cron
+* * * * * cd /var/www/app && php xpsr schedule:run > /dev/null
+```
+
+- **Failures** are written to stderr, which cron mails to the crontab's owner (set `MAILTO`), and to the application log.
+- **Several servers.** Run `schedule:run` on one server only, or give `withoutOverlapping()` tasks a shared lock store (`scheduler.lock`, such as Redis) so the same task never runs on two servers at once. Tasks without it run on every server.
+- **Containers** without cron can run `php xpsr schedule:work` as their process instead.
+- **Long tasks** hold up the tasks after them in the same minute; queue them as jobs instead.
+
 ## Performance
 
 - Enable OPcache. With `opcache.validate_timestamps=0`, reload PHP-FPM or Apache on every deploy.

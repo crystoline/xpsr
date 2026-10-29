@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2746e692bff48eaca35eeb3bd5622d20",
+    "content-hash": "bfce7b1680b70eebbcdbe305891e795c",
     "packages": [
         {
             "name": "crystoline/xpsr-framework",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "0caae97b11279a8558e3550ca6d6342fcad78e6e"
+                "reference": "d751bdebf5f952d88e1acc2ddbd9e6d930d04faf"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
@@ -91,7 +91,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-fastroute",
-                "reference": "b9dd457ef988388527a1d29a49a82d232df234e9"
+                "reference": "72ba5461d0ae501966fb096b9296c8e1c9a9d43c"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -2990,7 +2990,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/auth-jwt",
-                "reference": "679f59bc4d156719f05467b9049d6d5129b0d84d"
+                "reference": "5e7ea981276ac29f076175214636f4c520e74525"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3042,7 +3042,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/cache",
-                "reference": "fbb432953ab46f5a683a64bc7a1ae601785fac6a"
+                "reference": "de3e9b677682d8dfffa50279a0640be8fa901d7b"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3097,7 +3097,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/database",
-                "reference": "d13b96b053a4f1e7096db61bbdd4386088a42010"
+                "reference": "2a8329bf2bad81c3f075be32e231f3fc4c57f265"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3155,7 +3155,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/http-client",
-                "reference": "9986cb53a413752f88e23de1df8eaa4d30ecfc79"
+                "reference": "14a9df81b4dd33bb28ac73960ce1a25c60c50b08"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3210,7 +3210,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/log-monolog",
-                "reference": "765120821f4f71cb2a8e517df66c7945549799d7"
+                "reference": "972999ea2a66c5e456f7bcfd116e570c5c6422f9"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3263,7 +3263,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/mail",
-                "reference": "a9c0580019778ac7d874ccb90c9d7a76406d0b2b"
+                "reference": "04ab03e03ba4f1df41d72a89793dae6aea6ff470"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3322,7 +3322,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/orm-doctrine",
-                "reference": "e1ac2af6a78bbed21be2a37289a111763d967a17"
+                "reference": "c0ac59b48da7efcfb7942b54e058e9d6503d38c8"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.3@dev",
@@ -3379,7 +3379,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/orm-eloquent",
-                "reference": "8a24d7197ee25cfb2ccea0f99f3f61c642dbd74c"
+                "reference": "80d050b79e2f739a5f0ee9b1301a89b5e920efe7"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.3@dev",
@@ -3432,7 +3432,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/queue",
-                "reference": "e1528dd9a8705e2014f881b22294074fb249c7a0"
+                "reference": "96e33ab29750168d013f1bdfc21ffe2976dfa8de"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.3@dev",
@@ -3499,7 +3499,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-sunrise",
-                "reference": "ed4abea05d9f120ee96d3e267d331195b60499bc"
+                "reference": "68ec013899bf9e2a167afcd1cad15cb44ff0c6d4"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3543,12 +3543,72 @@
             }
         },
         {
+            "name": "crystoline/xpsr-scheduler",
+            "version": "0.3.x-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/scheduler",
+                "reference": "63da8ad7c0283802468271069ede04c3fedf5a77"
+            },
+            "require": {
+                "crystoline/xpsr-framework": "^0.3@dev",
+                "dragonmantank/cron-expression": "^3.4",
+                "php": "^8.4",
+                "psr/clock": "^1.0",
+                "psr/container": "^2.0",
+                "psr/log": "^3.0",
+                "symfony/clock": "^7.4",
+                "symfony/console": "^7.4",
+                "symfony/lock": "^7.4 || ^8.0",
+                "symfony/process": "^7.4"
+            },
+            "require-dev": {
+                "crystoline/xpsr-database": "^0.3@dev",
+                "crystoline/xpsr-queue": "^0.3@dev",
+                "nyholm/psr7": "^1.8.2",
+                "phpunit/phpunit": "^12.5"
+            },
+            "suggest": {
+                "crystoline/xpsr-queue": "Needed for Schedule::job(), which queues a job on its schedule"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\Scheduler\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\Scheduler\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adekunle",
+                    "email": "crystoline@gmail.com"
+                }
+            ],
+            "description": "Scheduled tasks for XPSR applications: commands, closures, and queued jobs on cron schedules, run from one cron entry",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "crystoline/xpsr-validation",
             "version": "0.3.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/validation",
-                "reference": "48b5af87e8f7021272ce38a638b6988cf716ba46"
+                "reference": "dce9018d5970ffb27478cff8e8a97922a75b9f5b"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -4346,6 +4406,70 @@
                 }
             ],
             "time": "2026-10-03T14:15:35+00:00"
+        },
+        {
+            "name": "dragonmantank/cron-expression",
+            "version": "v3.6.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dragonmantank/cron-expression.git",
+                "reference": "4189372ffeff09bf14f731f67a9de90c7b413ebe"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dragonmantank/cron-expression/zipball/4189372ffeff09bf14f731f67a9de90c7b413ebe",
+                "reference": "4189372ffeff09bf14f731f67a9de90c7b413ebe",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.2|^8.3|^8.4|^8.5"
+            },
+            "replace": {
+                "mtdowling/cron-expression": "^1.0"
+            },
+            "require-dev": {
+                "phpstan/extension-installer": "^1.4.3",
+                "phpstan/phpstan": "^2.1.31",
+                "phpunit/phpunit": "^11.5.43 || ^12.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Cron\\": "src/Cron/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Tankersley",
+                    "email": "chris@ctankersley.com",
+                    "homepage": "https://github.com/dragonmantank"
+                }
+            ],
+            "description": "CRON for PHP: Calculate the next or previous run date and determine if a CRON expression is due",
+            "keywords": [
+                "cron",
+                "schedule"
+            ],
+            "support": {
+                "issues": "https://github.com/dragonmantank/cron-expression/issues",
+                "source": "https://github.com/dragonmantank/cron-expression/tree/v3.6.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/dragonmantank",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-10-19T17:53:57+00:00"
         },
         {
             "name": "egulias/email-validator",
@@ -9005,6 +9129,88 @@
             "time": "2026-10-14T06:44:08+00:00"
         },
         {
+            "name": "symfony/lock",
+            "version": "v8.1.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/lock.git",
+                "reference": "86767bf6c112741d39118cc4c946f1a7ee98fa6d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/lock/zipball/86767bf6c112741d39118cc4c946f1a7ee98fa6d",
+                "reference": "86767bf6c112741d39118cc4c946f1a7ee98fa6d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.4.1",
+                "psr/log": "^1|^2|^3"
+            },
+            "conflict": {
+                "doctrine/dbal": "<4.3"
+            },
+            "require-dev": {
+                "doctrine/dbal": "^4.3",
+                "predis/predis": "^1.1|^2.0",
+                "symfony/serializer": "^6.4|^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Lock\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jérémy Derussé",
+                    "email": "jeremy@derusse.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Creates and manages locks, a mechanism to provide exclusive access to a shared resource",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "cas",
+                "flock",
+                "locking",
+                "mutex",
+                "redlock",
+                "semaphore"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/lock/tree/v8.1.10"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-10-25T14:40:25+00:00"
+        },
+        {
             "name": "symfony/mailer",
             "version": "v8.1.10",
             "source": {
@@ -10728,6 +10934,7 @@
         "crystoline/xpsr-queue": 20,
         "crystoline/xpsr-router-fastroute": 20,
         "crystoline/xpsr-router-sunrise": 20,
+        "crystoline/xpsr-scheduler": 20,
         "crystoline/xpsr-validation": 20
     },
     "prefer-stable": false,

@@ -38,6 +38,8 @@ php xpsr queue:failed
 php xpsr queue:retry --all
 php xpsr queue:restart
 php xpsr mail:test ada@example.com
+php xpsr schedule:list
+php xpsr schedule:run
 ```
 
 `php xpsr` defaults to `list`. Standard help, verbosity, non-interactive mode (`--no-interaction`), and shell completion are supplied by Symfony Console. `composer serve` delegates to `php xpsr serve`. The executable resolves its bootstrap from its own directory and works when invoked by absolute path from another working directory.
@@ -55,6 +57,8 @@ php xpsr mail:test ada@example.com
 `queue:work`, `queue:failed`, `queue:retry`, `queue:forget`, `queue:restart`, `make:job`, and `make:queue-table` come from `crystoline/xpsr-queue`; see [its README](../packages/queue/README.md). `queue:work` runs until it is stopped; SIGTERM and SIGINT stop it after the current job.
 
 `mail:test` comes from `crystoline/xpsr-mail` and sends a short email now, through the transport `mail.dsn` names; see [its README](../packages/mail/README.md).
+
+`schedule:run`, `schedule:list`, and `schedule:work` come from `crystoline/xpsr-scheduler`; see [its README](../packages/scheduler/README.md). `schedule:run` runs the tasks due this minute and is meant for cron; `schedule:work` runs it each minute in the foreground.
 
 ## Set up a project
 
@@ -207,6 +211,6 @@ The live server tests cover Linux, including application paths with spaces and s
 
 ## Remaining developer tooling
 
-A standalone `xpsr new` installer, application stub overrides, and configuration/route caches are subsequent work. Database, queue, and scheduling commands belong to their future integrations.
+A standalone `xpsr new` installer, application stub overrides, and configuration/route caches are subsequent work.
 
 Upstream reference: [Symfony Console documentation](https://symfony.com/doc/7.4/console.html). XPSR provides its own registration and lifecycle; Symfony FrameworkBundle configuration and automatic service discovery do not apply here.

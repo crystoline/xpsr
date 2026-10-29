@@ -397,8 +397,19 @@ The first twenty-one milestones are working slices, not completion of all roadma
   - Only Nyholm PSR-7 is tested.
   - The request host comes from the client's `Host` header; build absolute URLs from `APP_URL`.
 - **Dependencies.** The framework's remaining third-party requirements are Symfony Console, Process, and Finder; Illuminate Config; phpdotenv; and Nyholm's PSR-7 server helper. Finder only lists configuration files, and Illuminate Config pulls in parts of Illuminate Support, so both are candidates for small in-house replacements.
-- **Not yet available:** scheduling and file storage (roadmap phase 6; `FRAMEWORK_PLAN.md` section 10). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
+- **Not yet available:** file storage (roadmap phase 6; `FRAMEWORK_PLAN.md` section 10). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
+
+## Thirtieth milestone: completed — scheduled tasks
+
+Built with the choices accepted on 29 October 2026 (`FRAMEWORK_PLAN.md` section 9):
+
+- **Package.** `crystoline/xpsr-scheduler` (`Crystoline\Xpsr\Scheduler\`, not published yet), on `dragonmantank/cron-expression` and `symfony/lock`. `SchedulerServiceRegistry` loads `routes/schedule.php` (a missing default file means no tasks; a missing configured one is an error) into the shared `Schedule`.
+- **Tasks.** `Schedule::command()`, `call()`, and `job()` return a `Task` with frequency helpers, day-of-week limits (refused next to a day of the month), `timezone()`, `name()`, `when()`, `skip()`, and `withoutOverlapping()`. `TaskRunner` runs commands through `ConsoleKernel` with their output captured, calls callbacks with injected services, and queues jobs, returning a `TaskResult` instead of throwing.
+- **Commands.** `schedule:run` (failures to stderr and the log, exit code 1 when any failed), `schedule:list`, and `schedule:work` (a new `schedule:run` process each minute, `--time-limit`, stopping on SIGTERM and SIGINT).
+- **Daylight saving.** As cron-expression decides: a skipped local time runs an hour later, a repeated one runs twice; the README says so.
+
+Verified on 29 October 2026: the package's 52 tests pass with PHPStan and style checks, including schedule:work starting real processes on a mock clock.
 
 ## Twenty-ninth milestone: completed — mail
 
