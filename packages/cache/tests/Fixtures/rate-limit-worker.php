@@ -12,7 +12,7 @@ use Crystoline\Xpsr\Cache\RateLimit\RateLimits;
 use Crystoline\Xpsr\ServiceContainer\ServiceContainer;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
 
-[, $autoload, $root, $json, $start] = $argv;
+[, $autoload, $root, $json, $start] = $_SERVER['argv'];
 require $autoload;
 
 /** @var array{config: array<string, mixed>, redis: ?string, key: string, attempts: int} $settings */
