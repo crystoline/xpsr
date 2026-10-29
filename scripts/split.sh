@@ -23,8 +23,17 @@
 #   packages/http-client       -> xpsr-http-client.git       crystoline/xpsr-http-client
 #   packages/database          -> xpsr-database.git          crystoline/xpsr-database
 #   packages/orm-doctrine      -> xpsr-orm-doctrine.git      crystoline/xpsr-orm-doctrine
+#   packages/orm-eloquent      -> xpsr-orm-eloquent.git      crystoline/xpsr-orm-eloquent
 #   packages/log-monolog       -> xpsr-log-monolog.git       crystoline/xpsr-log-monolog
 #   packages/validation        -> xpsr-validation.git        crystoline/xpsr-validation
+#   packages/auth-jwt          -> xpsr-auth-jwt.git          crystoline/xpsr-auth-jwt
+#   packages/queue             -> xpsr-queue.git             crystoline/xpsr-queue
+#   packages/mail              -> xpsr-mail.git              crystoline/xpsr-mail
+#   packages/scheduler         -> xpsr-scheduler.git         crystoline/xpsr-scheduler
+#   packages/storage           -> xpsr-storage.git           crystoline/xpsr-storage
+#   packages/view-plates       -> xpsr-view-plates.git       crystoline/xpsr-view-plates
+#   packages/view-latte        -> xpsr-view-latte.git        crystoline/xpsr-view-latte
+#   packages/view-blade        -> xpsr-view-blade.git        crystoline/xpsr-view-blade
 #   export-skeleton.php output -> xpsr-skeleton.git          crystoline/xpsr
 #
 # Packages keep their history (git subtree split). The skeleton gets one sync commit per
@@ -64,7 +73,10 @@ push() {
 
 # Packages under packages/ that have a mirror repository. A package missing from this list is
 # developed and tested here but not published; see "Adding a package" in docs/PACKAGES.md.
-PUBLISHED=(framework router-fastroute router-sunrise cache http-client database orm-doctrine log-monolog validation)
+PUBLISHED=(
+    framework router-fastroute router-sunrise cache http-client database orm-doctrine log-monolog validation
+    orm-eloquent auth-jwt queue mail scheduler storage view-plates view-latte view-blade
+)
 
 for directory in packages/*/; do
     package=$(basename "$directory")
