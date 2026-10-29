@@ -1,0 +1,18 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * @property int $id
+ */
+class {{ class }} extends Model
+{
+    protected $table = '{{ table }}';
+
+    /** @var list<string> attributes that create() and fill() may set */
+    protected $fillable = [];
+}

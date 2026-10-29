@@ -53,6 +53,12 @@ final class StubGenerator
         $this->stubDir = $stubDir ?? dirname(__DIR__) . '/Resources/stubs';
     }
 
+    /** The same generator reading stubs from another directory, for generators in other packages. */
+    public function withStubDirectory(string $stubDir): self
+    {
+        return new self($this->rootDir, $this->namespace, $this->sourceDir, $stubDir);
+    }
+
     public function getNamespace(): string
     {
         return $this->namespace;

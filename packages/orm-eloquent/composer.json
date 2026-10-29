@@ -1,0 +1,41 @@
+{
+  "name": "crystoline/xpsr-orm-eloquent",
+  "description": "Eloquent models for XPSR applications, on the XPSR database connection and its transactions, with XPSR's migrations",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Adekunle",
+      "email": "crystoline@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.4",
+    "crystoline/xpsr-database": "^0.3@dev",
+    "crystoline/xpsr-framework": "^0.3@dev",
+    "doctrine/dbal": "^4.5",
+    "illuminate/database": "^12.0",
+    "illuminate/events": "^12.0",
+    "psr/container": "^2.0",
+    "symfony/console": "^7.4"
+  },
+  "require-dev": {
+    "nyholm/psr7": "^1.8.2",
+    "phpunit/phpunit": "^12.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Orm\\Eloquent\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Orm\\Eloquent\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.3.x-dev"
+    }
+  }
+}

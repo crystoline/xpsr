@@ -400,6 +400,16 @@ The first twenty-one milestones are working slices, not completion of all roadma
 - **Not yet available:** queues, mail, scheduling, and file storage (roadmap phase 6; `FRAMEWORK_PLAN.md` section 10). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
 
+## Twenty-sixth milestone: completed — Eloquent adapter
+
+Built with the choice accepted on 29 October 2026: XPSR's migrations, not Eloquent's.
+
+- **Package.** `crystoline/xpsr-orm-eloquent` (`Crystoline\Xpsr\Orm\Eloquent\`, not published yet). `ConnectionResolver` builds an Eloquent connection per XPSR connection on the PDO DBAL opened, choosing MySQL, MariaDB, PostgreSQL, SQLite, or SQL Server from DBAL's platform. The connection classes route `beginTransaction()`, `commit()`, `rollBack()`, and `transaction()` through DBAL. `EloquentServiceRegistry` sets the models' resolver and an event dispatcher, and registers `make:model`.
+- **Auth.** `EloquentUserProvider` (`auth.users` driver `eloquent`) and the `Authenticatable` trait.
+- **Framework.** `StubGenerator::withStubDirectory()`, for generators whose stubs live in another package.
+
+Verified on 29 October 2026: 747 tests pass with PHPStan and style checks, including the ORM adapter contract, transactions nested both ways, models on a second connection, model events, and users, on all four databases.
+
 ## Twenty-fifth milestone: completed — authentication and authorization
 
 Built with the choices accepted on 29 October 2026 (`FRAMEWORK_PLAN.md` section 9):

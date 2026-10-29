@@ -16,6 +16,7 @@ crystoline/xpsr (skeleton, repository root)
 ├── (suggested) crystoline/xpsr-http-client     packages/http-client ──► framework, symfony/http-client
 ├── (suggested) crystoline/xpsr-database        packages/database ──► framework, doctrine/dbal
 ├── (suggested) crystoline/xpsr-orm-doctrine    packages/orm-doctrine ──► framework, database, doctrine/orm
+├── (not published yet) crystoline/xpsr-orm-eloquent   packages/orm-eloquent ──► framework, database, illuminate/database
 ├── (suggested) crystoline/xpsr-log-monolog     packages/log-monolog ──► framework, monolog/monolog
 ├── (suggested) crystoline/xpsr-validation      packages/validation ──► framework, symfony/validator
 └── (not published yet) crystoline/xpsr-auth-jwt   packages/auth-jwt ──► framework, lcobucci/jwt
@@ -28,6 +29,7 @@ crystoline/xpsr (skeleton, repository root)
 | `crystoline/xpsr-cache` | `Crystoline\Xpsr\Cache\` | framework, `symfony/cache` ^7.4, `symfony/rate-limiter` ^7.4, `psr/cache` 2 or 3, `psr/simple-cache` 1 to 3 (1.x keeps it installable next to the Sunrise adapter) |
 | `crystoline/xpsr-database` | `Crystoline\Xpsr\Database\` | framework, `doctrine/dbal` ^4.5. |
 | `crystoline/xpsr-orm-doctrine` | `Crystoline\Xpsr\Orm\Doctrine\` | framework, database, `doctrine/orm` ^3.7, `doctrine/persistence` ^4.1, `symfony/cache` ^7.4. |
+| `crystoline/xpsr-orm-eloquent` | `Crystoline\Xpsr\Orm\Eloquent\` | framework, database, `illuminate/database` ^12.0, `illuminate/events` ^12.0. Not published yet. |
 | `crystoline/xpsr-log-monolog` | `Crystoline\Xpsr\Log\Monolog\` | framework, `monolog/monolog` ^3.9. |
 | `crystoline/xpsr-validation` | `Crystoline\Xpsr\Validation\Symfony\` | framework, `symfony/validator` ^7.4, `symfony/property-access` ^7.4. The contract, attributes, and mapping it uses are in the framework (`Crystoline\Xpsr\Validation\`). |
 | `crystoline/xpsr-auth-jwt` | `Crystoline\Xpsr\Auth\Jwt\` | framework, `lcobucci/jwt` ^5.6 (`ext-openssl`, `ext-sodium`). The contracts, session sign-in, and policies are in the framework (`Crystoline\Xpsr\Auth\`); the token driver and database users are in `crystoline/xpsr-database`. Not published yet; see [Adding a package](#adding-a-package). |
@@ -171,7 +173,7 @@ A new package can be developed and tested in `packages/` before it has a mirror.
 - `phpunit.xml` (a test suite and a `source` exclusion), `phpstan.neon` (its `src` and `tests`), and the packages list in `tests/Packaging/PackagesTest.php`;
 - `MONOREPO_DEV_PACKAGES` in `scripts/export-skeleton.php`, so the skeleton does not require it.
 
-`packages/auth-jwt` has no repository yet, so the split skips it (it is not in `PUBLISHED`).
+`packages/auth-jwt` and `packages/orm-eloquent` have no repository yet, so the split skips them (they are not in `PUBLISHED`).
 
 `scripts/split.sh` publishes only the packages in its `PUBLISHED` list, so an unpublished package does not break the `split` job. To publish one:
 

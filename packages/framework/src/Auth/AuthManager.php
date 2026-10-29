@@ -29,6 +29,7 @@ final class AuthManager
     public const USER_DRIVERS = [
         'database' => ['crystoline/xpsr-database', 'Crystoline\Xpsr\Database\DatabaseServiceRegistry'],
         'doctrine' => ['crystoline/xpsr-orm-doctrine', 'Crystoline\Xpsr\Orm\Doctrine\DoctrineOrmServiceRegistry'],
+        'eloquent' => ['crystoline/xpsr-orm-eloquent', 'Crystoline\Xpsr\Orm\Eloquent\EloquentServiceRegistry'],
     ];
 
     private const INTENDED = '_auth.intended';
@@ -81,7 +82,7 @@ final class AuthManager
         }
         $provider = $this->container->has($driver) ? $this->container->get($driver) : null;
         if (!$provider instanceof UserProviderInterface) {
-            throw new InvalidArgumentException("auth.users driver \"{$driver}\" must be database, doctrine, or a service implementing " . UserProviderInterface::class . '.');
+            throw new InvalidArgumentException("auth.users driver \"{$driver}\" must be database, doctrine, eloquent, or a service implementing " . UserProviderInterface::class . '.');
         }
 
         return $this->users = $provider;
