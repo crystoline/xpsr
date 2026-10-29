@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "40792eaa72c840c41a996aab281fd7b7",
+    "content-hash": "a5a25499dc5c7ea8f3006476ee05a4d1",
     "packages": [
         {
             "name": "crystoline/xpsr-framework",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "d26bf3fd9b94854400f3169f053f6c0a9d478f12"
+                "reference": "6f6220b591c897af6c1c28b144c2ea3f1ca55f9f"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
@@ -91,7 +91,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-fastroute",
-                "reference": "e646ee6224269664100fe47ad4e75531e40e0e3e"
+                "reference": "56b3a74bad5e0cda2d22ea769aa192bc93547b6d"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -2851,12 +2851,64 @@
             "time": "2024-05-06T16:37:16+00:00"
         },
         {
+            "name": "crystoline/xpsr-auth-jwt",
+            "version": "0.3.x-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/auth-jwt",
+                "reference": "c798afc28a112b25293e82a3b969365112c198db"
+            },
+            "require": {
+                "crystoline/xpsr-framework": "^0.3@dev",
+                "lcobucci/jwt": "^5.6",
+                "php": "^8.4",
+                "psr/clock": "^1.0",
+                "psr/container": "^2.0",
+                "psr/http-message": "^1.1 || ^2.0",
+                "symfony/console": "^7.4"
+            },
+            "require-dev": {
+                "nyholm/psr7": "^1.8.2",
+                "phpunit/phpunit": "^12.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\Auth\\Jwt\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\Auth\\Jwt\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adekunle",
+                    "email": "crystoline@gmail.com"
+                }
+            ],
+            "description": "JWT sign-in for XPSR APIs: the jwt guard driver on lcobucci/jwt, a token issuer, and a secret generator",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "crystoline/xpsr-cache",
             "version": "0.3.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/cache",
-                "reference": "a16f9e60f531ff1870e853ff4a3dc3dee985278e"
+                "reference": "684b23748d07c98e8f7470308da35b96467d902f"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -2911,7 +2963,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/database",
-                "reference": "39f72b119a08529eca21cc72deaf125d269315df"
+                "reference": "fc270e7a0ce2e7d14ab8f43429bee799345cb3ca"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -2969,7 +3021,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/http-client",
-                "reference": "d1ed1c9efd6476b8f16705740a313d3a30e26671"
+                "reference": "2bee06060cb16735c840d04ebe93586a054e4e2b"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3024,7 +3076,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/log-monolog",
-                "reference": "d6ee12578ac34cab2d96cd0d9e2cee5dfc425c5b"
+                "reference": "e83cd780507d0e7ebd8b41264315cd4a3e953025"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3077,7 +3129,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/orm-doctrine",
-                "reference": "90bfd8f68c3053d5b744c3ae2a2fa11a0dd633f8"
+                "reference": "dd28e1d424e1f6cde70baea5084b040f5aae8008"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.3@dev",
@@ -3134,7 +3186,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-sunrise",
-                "reference": "212cbed1f827d23ff5a229114545ee2a4fafaee4"
+                "reference": "b326de9fbd3fe6bbba1da4eeec49364ca7764436"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3183,7 +3235,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/validation",
-                "reference": "9f92685de06ba2645583ef4bb9e846e9c814605f"
+                "reference": "253dd34fea1c8d58081232671a306b9ab1533415"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -4390,6 +4442,79 @@
                 }
             ],
             "time": "2026-09-22T09:54:55+00:00"
+        },
+        {
+            "name": "lcobucci/jwt",
+            "version": "5.6.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lcobucci/jwt.git",
+                "reference": "482760068e5a55a9045feddb3e2fc3f878cbd577"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lcobucci/jwt/zipball/482760068e5a55a9045feddb3e2fc3f878cbd577",
+                "reference": "482760068e5a55a9045feddb3e2fc3f878cbd577",
+                "shasum": ""
+            },
+            "require": {
+                "ext-openssl": "*",
+                "ext-sodium": "*",
+                "php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
+                "psr/clock": "^1.0"
+            },
+            "require-dev": {
+                "infection/infection": "^0.29",
+                "lcobucci/clock": "^3.2",
+                "lcobucci/coding-standard": "^11.0",
+                "phpbench/phpbench": "^1.2",
+                "phpstan/extension-installer": "^1.2",
+                "phpstan/phpstan": "^1.10.7",
+                "phpstan/phpstan-deprecation-rules": "^1.1.3",
+                "phpstan/phpstan-phpunit": "^1.3.10",
+                "phpstan/phpstan-strict-rules": "^1.5.0",
+                "phpunit/phpunit": "^11.1"
+            },
+            "suggest": {
+                "lcobucci/clock": ">= 3.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Lcobucci\\JWT\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Luís Cobucci",
+                    "email": "lcobucci@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple library to work with JSON Web Token and JSON Web Signature",
+            "keywords": [
+                "JWS",
+                "jwt"
+            ],
+            "support": {
+                "issues": "https://github.com/lcobucci/jwt/issues",
+                "source": "https://github.com/lcobucci/jwt/tree/5.6.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/lcobucci",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/lcobucci",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2026-10-10T09:42:14+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -8945,6 +9070,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "crystoline/xpsr-auth-jwt": 20,
         "crystoline/xpsr-cache": 20,
         "crystoline/xpsr-database": 20,
         "crystoline/xpsr-framework": 20,

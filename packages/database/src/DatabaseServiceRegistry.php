@@ -10,7 +10,14 @@ use Crystoline\Xpsr\Console\CommandRegistry;
 use Crystoline\Xpsr\Database\Console\MakeMigrationCommand;
 use Crystoline\Xpsr\Database\Console\MigrateCommand;
 use Crystoline\Xpsr\Database\Console\MigrateRollbackCommand;
+use Crystoline\Xpsr\Auth\AuthOptions;
+use Crystoline\Xpsr\Database\Auth\DatabaseUserProviderFactory;
+use Crystoline\Xpsr\Database\Auth\TokenGuardFactory;
+use Crystoline\Xpsr\Database\Auth\TokenRepository;
+use Crystoline\Xpsr\Database\Console\CreateTokenCommand;
 use Crystoline\Xpsr\Database\Console\MakeSessionTableCommand;
+use Crystoline\Xpsr\Database\Console\MakeTokenTableCommand;
+use Crystoline\Xpsr\Database\Console\RevokeTokenCommand;
 use Crystoline\Xpsr\Database\Console\MigrateStatusCommand;
 use Crystoline\Xpsr\Database\Migration\MigratorFactoryInterface;
 use Crystoline\Xpsr\Database\Session\DatabaseSessionStore;
@@ -31,9 +38,10 @@ use Psr\Log\LoggerInterface;
  *   Crystoline\Xpsr\Database\Migration\MigratorFactoryInterface     the runner the commands use: the
  *                                                                   service in database.migrations.runner
  *
- * the session store for session.store "database", and migrate, migrate:rollback,
- * migrate:status, make:migration, and make:session-table when the console is part of the
- * application. Configuration lives in config/database.php.
+ * the session store for session.store "database", the "database" user provider and "token" guard
+ * for config/auth.php, and migrate, migrate:rollback, migrate:status, make:migration,
+ * make:session-table, make:token-table, auth:token, and auth:token-revoke when the console is
+ * part of the application. Configuration lives in config/database.php.
  */
 final class DatabaseServiceRegistry extends ServiceRegistry
 {
@@ -74,9 +82,31 @@ final class DatabaseServiceRegistry extends ServiceRegistry
 
             return $factory;
         }, shared: true);
-        foreach ([MigrateCommand::class, MigrateRollbackCommand::class, MigrateStatusCommand::class, MakeMigrationCommand::class, MakeSessionTableCommand::class] as $command) {
+        foreach ([MigrateCommand::class, MigrateRollbackCommand::class, MigrateStatusCommand::class, MakeMigrationCommand::class, MakeSessionTableCommand::class, MakeTokenTableCommand::class, CreateTokenCommand::class, RevokeTokenCommand::class] as $command) {
             $this->container->bind($command);
         }
+        // auth.users driver "database" and auth.guards driver "token", resolved by the framework's AuthManager.
+        $this->container->factory('auth.users.database', static fn(ContainerInterface $container): DatabaseUserProviderFactory => new DatabaseUserProviderFactory(
+            $container->get(ConnectionManager::class),
+        ), shared: true);
+        $this->container->factory(TokenRepository::class, static function (ContainerInterface $container): TokenRepository {
+            $tokens = $container->get(AuthOptions::class)->tokens;
+            foreach (array_keys($tokens) as $key) {
+                if (!in_array($key, ['table', 'connection'], true)) {
+                    throw new InvalidArgumentException("Unknown option auth.tokens.{$key}. Known options: table, connection.");
+                }
+            }
+            $connection = $tokens['connection'] ?? null;
+            $table = $tokens['table'] ?? 'api_tokens';
+            if (($connection !== null && !is_string($connection)) || !is_string($table)) {
+                throw new InvalidArgumentException('auth.tokens.table must be a table name, and auth.tokens.connection a connection name or null.');
+            }
+
+            return new TokenRepository($container->get(ConnectionManager::class)->connection($connection), $container->get(ClockInterface::class), $table);
+        }, shared: true);
+        $this->container->factory('auth.driver.token', static fn(ContainerInterface $container): TokenGuardFactory => new TokenGuardFactory(
+            $container->get(TokenRepository::class),
+        ), shared: true);
         // session.store "database", resolved by the framework's SessionServiceRegistry.
         $this->container->factory('session.store.database', static function (ContainerInterface $container): DatabaseSessionStore {
             $options = $container->get(SessionOptions::class);
@@ -101,6 +131,9 @@ final class DatabaseServiceRegistry extends ServiceRegistry
         $commands->register('migrate:status', MigrateStatusCommand::class, 'Show which migrations have run.');
         $commands->register('make:migration', MakeMigrationCommand::class, 'Create a migration file.');
         $commands->register('make:session-table', MakeSessionTableCommand::class, 'Create the migration for the database session table.');
+        $commands->register('make:token-table', MakeTokenTableCommand::class, 'Create the migration for the API token table.');
+        $commands->register('auth:token', CreateTokenCommand::class, 'Create an API token for a user.');
+        $commands->register('auth:token-revoke', RevokeTokenCommand::class, 'Revoke an API token.');
     }
 
     /** @return array<array-key, mixed> */

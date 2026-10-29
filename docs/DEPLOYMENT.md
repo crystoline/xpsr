@@ -97,6 +97,12 @@ Sessions are kept in `var/sessions` by default, so the web server user must be a
 - **Expired sessions** are removed by about one request in 100 (`session.prune_every`). With `prune_every` set to `0`, run `php xpsr session:prune` from cron instead.
 - Deploying does not sign anybody out, unless the store is the cache and the deploy runs `cache:clear`.
 
+## Authentication
+
+- **JWT secret.** Set `AUTH_JWT_SECRET` (`php xpsr auth:jwt-secret` makes one) in the environment, never in version control. Changing it ends every issued token. With RS256 or ES256, deploy the key files with permissions only the web server user can read.
+- **Login throttling.** Put `RateLimit::named('login')` on sign-in routes, with a shared cache when there are several servers.
+- **HTTPS** is required for sign-in: passwords, session cookies, and tokens travel in every request.
+
 ## Performance
 
 - Enable OPcache. With `opcache.validate_timestamps=0`, reload PHP-FPM or Apache on every deploy.

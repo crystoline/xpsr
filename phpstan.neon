@@ -20,6 +20,8 @@ parameters:
         - packages/log-monolog/tests
         - packages/validation/src
         - packages/validation/tests
+        - packages/auth-jwt/src
+        - packages/auth-jwt/tests
         - app
         - bootstrap
         - config/factory.php

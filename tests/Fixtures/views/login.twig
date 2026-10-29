@@ -1,0 +1,2 @@
+{% if session('error') %}<p>{{ session('error') }}</p>{% endif %}
+<form method="post" action="/login">{{ csrf_field() }}<input name="email"><input name="password" type="password"></form>

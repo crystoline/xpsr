@@ -9,6 +9,7 @@ use Crystoline\Xpsr\Configuration;
 use Crystoline\Xpsr\Console\CommandRegistry;
 use Crystoline\Xpsr\Database\ConnectionManager;
 use Crystoline\Xpsr\Database\Schema\SchemaProviderInterface;
+use Crystoline\Xpsr\Orm\Doctrine\Auth\DoctrineUserProviderFactory;
 use Crystoline\Xpsr\Orm\Doctrine\Console\ValidateSchemaCommand;
 use Crystoline\Xpsr\Orm\Doctrine\Http\ClearEntityManagerMiddleware;
 use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
@@ -67,6 +68,10 @@ final class DoctrineOrmServiceRegistry extends ServiceRegistry
         ), shared: true);
         $this->container->alias(SchemaProviderInterface::class, EntitySchemaProvider::class);
         $this->container->bind(ClearEntityManagerMiddleware::class);
+        // auth.users driver "doctrine", resolved by the framework's AuthManager.
+        $this->container->factory('auth.users.doctrine', static fn(ContainerInterface $container): DoctrineUserProviderFactory => new DoctrineUserProviderFactory(
+            $container->get(EntityManagerInterface::class),
+        ), shared: true);
         foreach (self::COMMANDS as [$class]) {
             $this->container->bind($class);
         }

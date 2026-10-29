@@ -23,7 +23,7 @@ return new class extends Migration {
                     Column::editor()->setUnquotedName('last_activity')->setTypeName(Types::INTEGER)->create(),
                 )
                 ->setPrimaryKeyConstraint(PrimaryKeyConstraint::editor()->setUnquotedColumnNames('id')->create())
-                ->setIndexes(Index::editor()->setUnquotedName({{ index }})->setUnquotedColumnNames('last_activity')->create())
+                ->setIndexes(Index::editor()->setUnquotedName('{{ prefix }}_last_activity')->setUnquotedColumnNames('last_activity')->create())
                 ->create(),
         );
     }

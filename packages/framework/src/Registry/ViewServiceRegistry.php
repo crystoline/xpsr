@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Crystoline\Xpsr\Registry;
 
+use Crystoline\Xpsr\Auth\Access\Gate;
+use Crystoline\Xpsr\Auth\AuthOptions;
+use Crystoline\Xpsr\Auth\CurrentIdentity;
+use Crystoline\Xpsr\Auth\UserInterface;
 use Crystoline\Xpsr\Configuration;
 use Crystoline\Xpsr\ServiceContainer\ContainerException;
 use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
@@ -43,6 +47,7 @@ class ViewServiceRegistry extends ServiceRegistry
                 $config->get('app.view_cache_dir', false),
             );
             self::addSessionFunctions($handler, $container);
+            self::addAuthFunctions($handler, $container);
 
             return $handler;
         }, shared: true);
@@ -69,6 +74,18 @@ class ViewServiceRegistry extends ServiceRegistry
 
             return $current !== null && $current->has($key) ? $current->get($key) : $default;
         });
+    }
+
+    /**
+     * auth_user() for the signed-in user (or null), and can('update', task) for policy checks, on
+     * routes behind Authenticate. Without AuthServiceRegistry, nobody is signed in.
+     */
+    private static function addAuthFunctions(ViewHandler $handler, ContainerInterface $container): void
+    {
+        $user = static fn(): ?UserInterface => $container->has(AuthOptions::class) ? $container->get(CurrentIdentity::class)->get()?->user : null;
+        $handler->addFunction('auth_user', $user);
+        $handler->addFunction('can', static fn(string $ability, mixed ...$arguments): bool => $container->has(AuthOptions::class)
+            && $container->get(Gate::class)->allows($user(), $ability, ...$arguments));
     }
 
     public function providedServices(): array

@@ -4,7 +4,7 @@ Steps for moving an application between minor versions. What changed is in [CHAN
 
 ## Unreleased changes since 0.3
 
-These steps apply to the next release. Nothing breaks for applications that do not use sessions; the steps below add them.
+These steps apply to the next release. Nothing breaks; the steps below add sessions and authentication.
 
 ### Sessions and CSRF (optional)
 
@@ -26,6 +26,15 @@ These steps apply to the next release. Nothing breaks for applications that do n
 5. Add `<env name="SESSION_STORE" value="array" force="true"/>` to the `<php>` section of `phpunit.xml`, and copy the new `tests/TestCase.php` for its cookie and session helpers.
 
 See [docs/SESSIONS.md](docs/SESSIONS.md).
+
+### Authentication (optional)
+
+1. Add `Crystoline\Xpsr\Registry\AuthServiceRegistry::class` to `app.registry`, after `SessionServiceRegistry`, and copy `config/auth.php` from the new skeleton.
+2. For browsers, add `Authenticate::optional()` to the group in `routes/web.php`, after `CsrfMiddleware`, and `Authenticate::class` to pages for signed-in users.
+3. For APIs, `composer require crystoline/xpsr-auth-jwt`, add `Crystoline\Xpsr\Auth\Jwt\JwtServiceRegistry::class` to `app.registry`, and run `php xpsr auth:jwt-secret --write`. Or set `AUTH_API_DRIVER=token` and run `php xpsr make:token-table`.
+4. Copy `tests/TestCase.php` for `actingAs()`.
+
+See [docs/AUTH.md](docs/AUTH.md).
 
 ## From 0.2 to 0.3
 

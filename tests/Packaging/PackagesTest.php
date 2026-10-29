@@ -100,6 +100,7 @@ final class PackagesTest extends TestCase
         yield 'Doctrine ORM adapter' => ['orm-doctrine'];
         yield 'Monolog logging' => ['log-monolog'];
         yield 'validation' => ['validation'];
+        yield 'JWT authentication' => ['auth-jwt'];
     }
 
     #[DataProvider('packages')]

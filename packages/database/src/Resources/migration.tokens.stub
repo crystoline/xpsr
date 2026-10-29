@@ -1,0 +1,47 @@
+<?php
+
+declare(strict_types=1);
+
+use Crystoline\Xpsr\Database\Migration\Migration;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\Index;
+use Doctrine\DBAL\Schema\Index\IndexType;
+use Doctrine\DBAL\Schema\PrimaryKeyConstraint;
+use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\Types;
+
+/** The table for API tokens: auth.guards driver "token" (Crystoline\Xpsr\Database\Auth\TokenRepository). */
+return new class extends Migration {
+    public function up(Connection $db): void
+    {
+        $db->createSchemaManager()->createTable(
+            Table::editor()
+                ->setUnquotedName({{ table }})
+                ->setColumns(
+                    Column::editor()->setUnquotedName('id')->setTypeName(Types::INTEGER)->setAutoincrement(true)->create(),
+                    // SHA-256 of the token, in hexadecimal; the token itself is never stored.
+                    Column::editor()->setUnquotedName('token_hash')->setTypeName(Types::STRING)->setLength(64)->create(),
+                    Column::editor()->setUnquotedName('user_id')->setTypeName(Types::STRING)->setLength(64)->create(),
+                    Column::editor()->setUnquotedName('name')->setTypeName(Types::STRING)->setLength(255)->create(),
+                    // A JSON list, such as ["tasks:read"], or ["*"] for everything.
+                    Column::editor()->setUnquotedName('scopes')->setTypeName(Types::TEXT)->create(),
+                    // Unix times.
+                    Column::editor()->setUnquotedName('created_at')->setTypeName(Types::INTEGER)->create(),
+                    Column::editor()->setUnquotedName('last_used_at')->setTypeName(Types::INTEGER)->setNotNull(false)->create(),
+                    Column::editor()->setUnquotedName('expires_at')->setTypeName(Types::INTEGER)->setNotNull(false)->create(),
+                )
+                ->setPrimaryKeyConstraint(PrimaryKeyConstraint::editor()->setUnquotedColumnNames('id')->create())
+                ->setIndexes(
+                    Index::editor()->setUnquotedName('{{ prefix }}_token_hash')->setType(IndexType::UNIQUE)->setUnquotedColumnNames('token_hash')->create(),
+                    Index::editor()->setUnquotedName('{{ prefix }}_user_id')->setUnquotedColumnNames('user_id')->create(),
+                )
+                ->create(),
+        );
+    }
+
+    public function down(Connection $db): void
+    {
+        $db->createSchemaManager()->dropTable({{ table }});
+    }
+};

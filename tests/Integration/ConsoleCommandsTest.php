@@ -34,7 +34,7 @@ final class ConsoleCommandsTest extends TestCase
         self::assertSame(['hello', 'home'], array_column($routes, 'name'));
         self::assertSame('Closure', $routes[0]['handler']);
         self::assertSame(['GET'], $routes[1]['methods']);
-        self::assertSame(['Crystoline\Xpsr\Session\SessionMiddleware', 'Crystoline\Xpsr\Session\CsrfMiddleware'], $routes[1]['middleware']);
+        self::assertSame(['Crystoline\Xpsr\Session\SessionMiddleware', 'Crystoline\Xpsr\Session\CsrfMiddleware', 'auth.authenticate.optional'], $routes[1]['middleware']);
     }
 
     public function testSkeletonProvidesTheEventDispatcherAndEventList(): void

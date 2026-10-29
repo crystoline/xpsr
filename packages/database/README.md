@@ -195,6 +195,23 @@ php xpsr migrate
 
 The table has `id`, `payload`, and an indexed `last_activity` (Unix time). `session.database.connection` picks a connection other than the default. Expired rows are deleted by `session:prune` and by about one request in `session.prune_every`. See the XPSR repository's `docs/SESSIONS.md`.
 
+## Users and API tokens
+
+For `config/auth.php`, the package provides the `database` user provider, which reads users from a table, and the `token` guard driver: revocable API tokens stored as SHA-256 hashes.
+
+```php
+'users' => ['driver' => 'database', 'table' => 'users', 'login' => 'email', 'password' => 'password'],
+'guards' => ['api' => ['driver' => 'token']],
+```
+
+```sh
+php xpsr make:token-table && php xpsr migrate
+php xpsr auth:token ada@example.com --scope=tasks:read --expires="90 days"
+php xpsr auth:token-revoke 12
+```
+
+`Crystoline\Xpsr\Database\Auth\TokenRepository` creates, lists, and revokes tokens from code. See the XPSR repository's `docs/AUTH.md`.
+
 ## Using another migration runner
 
 The `migrate`, `migrate:rollback`, and `migrate:status` commands talk only to `Crystoline\Xpsr\Database\Migration\MigratorInterface`. They get it from the factory named in `database.migrations.runner`, which is XPSR's own runner, `Crystoline\Xpsr\Database\MigratorFactory`, by default. A package can provide another runner, for example one backed by Doctrine Migrations, and the commands and their output stay the same:

@@ -26,6 +26,11 @@ php xpsr event:list
 php xpsr make:input CreateTask
 php xpsr session:prune
 php xpsr make:session-table
+php xpsr make:token-table
+php xpsr auth:token ada@example.com --scope=tasks:read --expires="90 days"
+php xpsr auth:token-revoke 12
+php xpsr auth:jwt-secret --write
+php xpsr auth:jwt ada@example.com --scope=tasks:read
 ```
 
 `php xpsr` defaults to `list`. Standard help, verbosity, non-interactive mode (`--no-interaction`), and shell completion are supplied by Symfony Console. `composer serve` delegates to `php xpsr serve`. The executable resolves its bootstrap from its own directory and works when invoked by absolute path from another working directory.
@@ -37,6 +42,8 @@ php xpsr make:session-table
 `event:list` shows each event listener with its priority, in the order listeners run. `--event` filters event class names by a case-insensitive substring, and `--json` returns an array. It and the `make:event` and `make:listener` generators come from `EventServiceRegistry`; see [EVENTS.md](EVENTS.md).
 
 `session:prune` removes expired sessions from the configured store and reports how many; it comes from `SessionServiceRegistry`. `make:session-table` comes from `crystoline/xpsr-database` and writes the migration for the database session store's table. See [SESSIONS.md](SESSIONS.md).
+
+`make:token-table`, `auth:token`, and `auth:token-revoke` come from `crystoline/xpsr-database` and manage revocable API tokens; `auth:jwt-secret` and `auth:jwt` come from `crystoline/xpsr-auth-jwt`. `auth:token` and `auth:jwt` print the token once. See [AUTH.md](AUTH.md).
 
 ## Set up a project
 

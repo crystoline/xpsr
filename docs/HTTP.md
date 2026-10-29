@@ -103,6 +103,10 @@ Invalid settings, such as an origin with a path, fail when the HTTP kernel is bu
 
 The skeleton's `routes/web.php` puts its routes in a group with `Crystoline\Xpsr\Session\SessionMiddleware`, which gives each request its browser's session (`Session::of($request)`), and `CsrfMiddleware`, which rejects form posts and other unsafe requests without the session's CSRF token (403). `routes/api.php` has neither. `Crystoline\Xpsr\Http\Cookie` writes other cookies with safe defaults, and `ResponseBuilder::redirect()` answers 303 after a form post. See [SESSIONS.md](SESSIONS.md).
 
+## Authentication
+
+`Crystoline\Xpsr\Auth\Http\Authenticate` recognizes the user by a guard and puts `Crystoline\Xpsr\Auth\Identity` on the request; guests get 401 with a `WWW-Authenticate` challenge, or browsers are sent to the login page. `Guest` keeps signed-in users off pages such as the login form, and `RequireScopes::of(...)` answers 403 for API tokens without a scope. Policies answer 403 through `Gate::authorize()`. See [AUTH.md](AUTH.md).
+
 ## Proxies
 
 `Crystoline\Xpsr\Factory\ServerRequestFactory` builds the request from PHP's globals. It keeps `Forwarded` and `X-Forwarded-*` headers, which set the scheme (for example HTTPS behind a TLS-terminating load balancer), only when the client address matches `app.trusted_proxies`. Configure that list with `TRUSTED_PROXIES`, comma-separated IP addresses or CIDR ranges. From any other address, those headers are removed from the request and its server parameters. See [DEPLOYMENT.md](DEPLOYMENT.md#proxies-and-https).

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests;
 
 use Crystoline\Xpsr\Application;
+use Crystoline\Xpsr\Auth\AuthManager;
+use Crystoline\Xpsr\Auth\UserInterface;
 use Crystoline\Xpsr\Session\CsrfMiddleware;
 use Crystoline\Xpsr\Session\Session;
 use Crystoline\Xpsr\Session\SessionManager;
@@ -169,6 +171,18 @@ abstract class TestCase extends BaseTestCase
         $sessions = $this->sessions();
 
         return $sessions->load($this->cookies[$sessions->options()->cookieName] ?? null);
+    }
+
+    /**
+     * Authenticate every later request in this test as this user, without signing in: on every
+     * guard, or only on one such as 'api'. API scopes default to everything.
+     *
+     * @param list<string>|null $scopes
+     */
+    protected function actingAs(UserInterface $user, ?string $guard = null, ?array $scopes = null): void
+    {
+        $this->application()->boot();
+        $this->application()->get(AuthManager::class)->actingAs($user, $guard, $scopes);
     }
 
     private function saveSession(Session $session): void

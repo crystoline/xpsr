@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Crystoline\Xpsr\Http\Middleware\BodyParsingMiddleware;
 use Crystoline\Xpsr\Http\Middleware\CorsMiddleware;
+use Crystoline\Xpsr\Registry\AuthServiceRegistry;
 use Crystoline\Xpsr\Registry\FactoryRegistry;
 use Crystoline\Xpsr\Registry\ConsoleServiceRegistry;
 use Crystoline\Xpsr\Registry\EventServiceRegistry;
@@ -36,6 +37,7 @@ return [
         RouteServiceRegistry::class,
         ViewServiceRegistry::class,
         SessionServiceRegistry::class,
+        AuthServiceRegistry::class,
         EventServiceRegistry::class,
         ConsoleServiceRegistry::class,
         CommandServiceRegistry::class,

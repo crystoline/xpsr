@@ -151,6 +151,7 @@ final class SessionServiceRegistryTest extends TestCase
     public function testViewsGetTheCsrfTokenAndSessionValues(): void
     {
         file_put_contents($this->root . '/views/form.twig', '<form>{{ csrf_field() }}</form> {{ csrf_token() }} {{ session("status", "none") }} {{ session("missing", "none") }}');
+        file_put_contents($this->root . '/views/auth.twig', '{{ auth_user() is null ? "" : "user" }}{{ can("update", "x") ? "can" : "" }}');
         $this->boot(['store' => 'array'], [ViewServiceRegistry::class]);
         $this->application->getConfig()->set('app.view_dir', $this->root . '/views');
         $session = new Session();
@@ -164,6 +165,8 @@ final class SessionServiceRegistryTest extends TestCase
             "<form><input type=\"hidden\" name=\"_token\" value=\"{$token}\"></form> {$token} Saved &lt;b&gt; none",
             $views->render('form'),
         );
+
+        self::assertSame('', $views->render('auth'), 'Without AuthServiceRegistry nobody is signed in.');
 
         $current->set(null);
         $this->expectException(RuntimeError::class);

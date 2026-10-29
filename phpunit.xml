@@ -13,13 +13,14 @@
         <testsuite name="orm-doctrine"><directory>packages/orm-doctrine/tests</directory></testsuite>
         <testsuite name="log-monolog"><directory>packages/log-monolog/tests</directory></testsuite>
         <testsuite name="validation"><directory>packages/validation/tests</directory></testsuite>
+        <testsuite name="auth-jwt"><directory>packages/auth-jwt/tests</directory></testsuite>
         <testsuite name="skeleton"><directory>tests</directory></testsuite>
     </testsuites>
     <groups>
         <!-- Builds a project with composer create-project; needs network access. Run: composer test:packaging -->
         <exclude><group>packaging</group></exclude>
     </groups>
-    <source><include><directory>packages</directory></include><exclude><directory>packages/framework/tests</directory><directory>packages/router-fastroute/tests</directory><directory>packages/router-sunrise/tests</directory><directory>packages/cache/tests</directory><directory>packages/http-client/tests</directory><directory>packages/database/tests</directory><directory>packages/orm-doctrine/tests</directory><directory>packages/log-monolog/tests</directory><directory>packages/validation/tests</directory></exclude></source>
+    <source><include><directory>packages</directory></include><exclude><directory>packages/framework/tests</directory><directory>packages/router-fastroute/tests</directory><directory>packages/router-sunrise/tests</directory><directory>packages/cache/tests</directory><directory>packages/http-client/tests</directory><directory>packages/database/tests</directory><directory>packages/orm-doctrine/tests</directory><directory>packages/log-monolog/tests</directory><directory>packages/validation/tests</directory><directory>packages/auth-jwt/tests</directory></exclude></source>
     <php>
         <env name="APP_ENV" value="testing" force="true"/>
         <!-- Sessions in memory, so tests leave no files in var/sessions. -->

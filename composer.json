@@ -10,6 +10,7 @@
     "twig/twig": "^3.4"
   },
   "require-dev": {
+    "crystoline/xpsr-auth-jwt": "^0.3@dev",
     "crystoline/xpsr-cache": "^0.3@dev",
     "crystoline/xpsr-database": "^0.3@dev",
     "crystoline/xpsr-http-client": "^0.3@dev",
@@ -24,6 +25,7 @@
     "symfony/http-kernel": "^7.4"
   },
   "suggest": {
+    "crystoline/xpsr-auth-jwt": "JWT sign-in for APIs: the jwt guard driver, JwtIssuer, and auth:jwt-secret",
     "crystoline/xpsr-cache": "Application cache (PSR-16 and PSR-6) and the cache:clear command",
     "crystoline/xpsr-database": "Database connections (Doctrine DBAL) and migrations",
     "crystoline/xpsr-http-client": "Outgoing HTTP: a configured PSR-18 client and named clients",
@@ -39,6 +41,7 @@
       "options": {
         "symlink": true,
         "versions": {
+          "crystoline/xpsr-auth-jwt": "0.3.x-dev",
           "crystoline/xpsr-cache": "0.3.x-dev",
           "crystoline/xpsr-database": "0.3.x-dev",
           "crystoline/xpsr-framework": "0.3.x-dev",
@@ -65,6 +68,7 @@
       "Crystoline\\Xpsr\\Database\\Tests\\": "packages/database/tests/",
       "Crystoline\\Xpsr\\Tests\\": "packages/framework/tests/",
       "Crystoline\\Xpsr\\HttpClient\\Tests\\": "packages/http-client/tests/",
+      "Crystoline\\Xpsr\\Auth\\Jwt\\Tests\\": "packages/auth-jwt/tests/",
       "Crystoline\\Xpsr\\Validation\\Symfony\\Tests\\": "packages/validation/tests/",
       "Crystoline\\Xpsr\\Log\\Monolog\\Tests\\": "packages/log-monolog/tests/",
       "Crystoline\\Xpsr\\Orm\\Doctrine\\Tests\\": "packages/orm-doctrine/tests/",

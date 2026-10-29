@@ -397,8 +397,20 @@ The first twenty-one milestones are working slices, not completion of all roadma
   - Only Nyholm PSR-7 is tested.
   - The request host comes from the client's `Host` header; build absolute URLs from `APP_URL`.
 - **Dependencies.** The framework's remaining third-party requirements are Symfony Console, Process, and Finder; Illuminate Config; phpdotenv; and Nyholm's PSR-7 server helper. Finder only lists configuration files, and Illuminate Config pulls in parts of Illuminate Support, so both are candidates for small in-house replacements.
-- **Not yet available:** authentication, queues, mail, scheduling, and file storage (roadmap phase 6; `FRAMEWORK_PLAN.md` section 10). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
+- **Not yet available:** queues, mail, scheduling, and file storage (roadmap phase 6; `FRAMEWORK_PLAN.md` section 10). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
+
+## Twenty-fifth milestone: completed — authentication and authorization
+
+Built with the choices accepted on 29 October 2026 (`FRAMEWORK_PLAN.md` section 9):
+
+- **Framework.** `Crystoline\Xpsr\Auth\`: `UserInterface` and `UserProviderInterface`; `PasswordHasher` (Argon2id or bcrypt, `needsRehash()`, a constant-time miss for unknown logins); `AuthManager` (`verify()`, `attempt()`, `login()`, `logout()`, `intended()`, guards by driver, providers by driver, lazily resolved for guests); `SessionGuard`, which keeps the user's ID and a password-hash fingerprint in the session; `Identity` with scopes; `Http\Authenticate` (required or optional, per guard), `Http\Guest`, and `Http\RequireScopes`; `UnauthenticatedException` (401) and `InsufficientScopeException` (403, RFC 6750 challenges); `Access\Gate` with policies, `before()`, guest rules, and defined abilities, and `AccessDeniedException` (403); `InMemoryUserProvider` and `GenericUser`. Twig gets `auth_user()` and `can()`.
+- **JWT.** New package `crystoline/xpsr-auth-jwt` (`Crystoline\Xpsr\Auth\Jwt\`, not published yet) on `lcobucci/jwt` 5.6: `JwtGuard` checks the signature, issuer, audience, and time window with leeway, and looks the user up on each request; `JwtIssuer`; HS256 to HS512, RS256, and ES256; `auth:jwt-secret` and `auth:jwt`.
+- **Database.** `DatabaseUserProvider` (`auth.users` driver `database`); `TokenRepository` and `TokenGuard` (driver `token`) with SHA-256-hashed tokens, scopes, expiry, and last use; `make:token-table`, `auth:token`, and `auth:token-revoke`. `make:session-table` and `make:token-table` share `TableMigrationCommand`.
+- **Doctrine.** `DoctrineUserProvider` (driver `doctrine`) and `PasswordUpgradableInterface`.
+- **Skeleton.** `config/auth.php` with the API driver `jwt` by default; `AuthServiceRegistry` in `app.registry`; `Authenticate::optional()` in the web group; `TestCase::actingAs()`.
+
+Verified on 29 October 2026: 738 tests pass with PHPStan and style checks, including browser sign-in, the page to return to, sign-out, a JWT API with scopes, and policies in a view through the skeleton's full HTTP kernel, and the token and user tables on all four databases.
 
 ## Twenty-fourth milestone: completed — sessions, cookies, and CSRF
 

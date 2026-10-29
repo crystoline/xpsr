@@ -122,6 +122,16 @@ With PHP-FPM or Apache each request starts with a fresh entity manager. A proces
 Crystoline\Xpsr\Orm\Doctrine\Http\ClearEntityManagerMiddleware::class,
 ```
 
+## Users
+
+Entities can be the users of `config/auth.php`:
+
+```php
+'users' => ['driver' => 'doctrine', 'entity' => App\Entity\User::class, 'login' => 'email'],
+```
+
+The entity implements `Crystoline\Xpsr\Auth\UserInterface`, and `Crystoline\Xpsr\Orm\Doctrine\Auth\PasswordUpgradableInterface` to let sign-in replace outdated password hashes (the provider flushes). See the XPSR repository's `docs/AUTH.md`.
+
 ## Testing
 
 `Crystoline\Xpsr\Database\Testing\DatabaseTransactions` from the database package covers the ORM too: the entity manager writes through the same connection, so its changes are rolled back after each test. Each test also gets a new application, and with it a new entity manager.

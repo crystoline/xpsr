@@ -8,6 +8,12 @@ Upgrade steps are in [UPGRADE.md](UPGRADE.md#unreleased-changes-since-03).
 
 ### Added
 
+- Authentication in the framework (`Crystoline\Xpsr\Auth\`): `AuthManager` with `attempt()`, `verify()`, `login()`, `logout()`, and `intended()`; guards configured in `config/auth.php`; the session guard for browsers; `PasswordHasher` (Argon2id or bcrypt, upgraded at sign-in); `Identity::of($request)`; the middleware `Authenticate` (required, optional, or per guard), `Guest`, and `RequireScopes`; 401 and 403 errors with `WWW-Authenticate` challenges. See [docs/AUTH.md](docs/AUTH.md).
+- Authorization: `Gate` with policies per model class, `before()`, defined abilities, and `authorize()` (403); the Twig functions `auth_user()` and `can()`.
+- `crystoline/xpsr-auth-jwt`: JWTs for APIs on `lcobucci/jwt`, the default driver of the `api` guard, with `JwtIssuer`, HS256 to HS512, RS256, and ES256, and `php xpsr auth:jwt-secret` and `auth:jwt`. See [its README](packages/auth-jwt/README.md).
+- In `crystoline/xpsr-database`: users from a table (`auth.users` driver `database`), and revocable API tokens (guard driver `token`) with `TokenRepository`, `php xpsr make:token-table`, `auth:token`, and `auth:token-revoke`.
+- In `crystoline/xpsr-orm-doctrine`: users as entities (`auth.users` driver `doctrine`).
+- `TestCase::actingAs()` in application tests.
 - Sessions in the framework (`Crystoline\Xpsr\Session\`): `SessionMiddleware` and `Session::of($request)` with values, flash values, `regenerate()`, and `invalidate()`; file and array stores; `config/session.php`; `SessionServiceRegistry`; and `php xpsr session:prune`. Sessions do not use PHP's `session_start()`, store only JSON data, and set a cookie only once they hold something. See [docs/SESSIONS.md](docs/SESSIONS.md).
 - CSRF protection: `CsrfMiddleware` (403 without the session's token in `_token` or `X-CSRF-Token`), and the Twig functions `csrf_field()`, `csrf_token()`, and `session()`.
 - Session stores in packages: `CacheSessionStore` in `crystoline/xpsr-cache` (`SESSION_STORE=cache`), and `DatabaseSessionStore` with `php xpsr make:session-table` in `crystoline/xpsr-database` (`SESSION_STORE=database`). `Crystoline\Xpsr\Testing\SessionStoreContractTestCase` checks custom stores.
@@ -17,6 +23,7 @@ Upgrade steps are in [UPGRADE.md](UPGRADE.md#unreleased-changes-since-03).
 
 ### Changed
 
+- New projects list `AuthServiceRegistry` in `app.registry`, have `config/auth.php`, and run `Authenticate::optional()` in the `routes/web.php` group. `.env.example` has `AUTH_API_DRIVER` and `AUTH_JWT_SECRET`.
 - New projects list `SessionServiceRegistry` in `app.registry`, and `routes/web.php` puts its routes in a group with `SessionMiddleware` and `CsrfMiddleware`. The skeleton's example `App\Http\Middleware\SessionMiddleware` and `App\Registry\SessionServiceRegistry`, which did not work, are removed, and `config/session.php` takes new options.
 - `crystoline/xpsr-cache` and `crystoline/xpsr-database` require `psr/clock`.
 
