@@ -385,7 +385,7 @@ Verified on 28 October 2026: 510 tests pass with PHPStan and style checks, inclu
 
 The first twenty-one milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
 
-- **Publishing.** Live since 28 October 2026. CI publishes `master` to the five mirror repositories under `crystoline`, and Packagist serves all five packages from them. The first release is `0.1.0`. The old prototype's `v1.0.0` is removed from Packagist; its git tag remains in `crystoline/xpsr`, where it no longer affects installs.
+- **Publishing.** Live since 28 October 2026. CI publishes `master` to the 19 mirror repositories under `crystoline` (18 packages and the skeleton), and Packagist serves every package from them. The first release is `0.1.0`. The old prototype's `v1.0.0` is removed from Packagist; its git tag remains in `crystoline/xpsr`, where it no longer affects installs.
 - **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.
 - **Containers.** Alternative containers need an adapter for XPSR's registration/deferred-group contract; PSR-11 alone only standardizes consumption.
 - **Deferred services.** Deferred service claims cannot overlap. Rebinding does not rebuild existing consumers automatically.
@@ -518,6 +518,17 @@ Built with the choices accepted on 28 October 2026 (`FRAMEWORK_PLAN.md` section 
 
 Verified on 28 October 2026: 549 tests pass with PHPStan and style checks, including both packages in the skeleton's full HTTP kernel (a limit through `app.middleware` reaching 429, and a 500 logged as JSON with its request ID).
 
+## Release 0.4.0 (29 October 2026)
+
+Tagged `v0.4.0` in all 19 repositories. Packagist serves 0.4.0 for every package, including the nine first published with it: `crystoline/xpsr-auth-jwt`, `-orm-eloquent`, `-queue`, `-mail`, `-scheduler`, `-storage`, `-view-plates`, `-view-latte`, and `-view-blade`. Checked from Packagist with the production `php.ini`:
+
+- `composer create-project crystoline/xpsr` installs framework and FastRoute 0.4.0; `about` reports 0.4.0; the application's tests pass; `/` and `/hello` answer.
+- `setup --router=sunrise --install-dependencies` installs the Sunrise adapter `^0.4`.
+- All 18 packages install together at 0.4.0. Before the release they could not: their `^0.3@dev` requirements accepted framework 0.3.0, which lacks the contracts they use.
+- In a new project, a page with `{{ csrf_field() }}` starts the session, and a form post is refused with 403 without the token and accepted with it.
+- `UPGRADE.md` was rehearsed on an installed 0.3.0 application: after step 1 it runs 0.4.0 and passes its tests; after the sessions and authentication steps it still passes them, and sessions and CSRF behave as in a new project.
+- The website, [xpsr.crysto.name.ng](https://xpsr.crysto.name.ng), runs on 0.4.0 and serves `/docs/0.4/` as the latest documentation.
+
 ## Release 0.3.0 (28 October 2026)
 
 Tagged `v0.3.0` in all ten repositories. Packagist serves 0.3.0 for every package, including the new `crystoline/xpsr-log-monolog` and `crystoline/xpsr-validation`. Checked from Packagist with the production `php.ini`:
@@ -539,4 +550,4 @@ Tagged `v0.2.0` in all eight repositories. Packagist serves 0.2.0 for every pack
 
 ## Next implementation slice
 
-Follow the ordered component plan in `FRAMEWORK_PLAN.md` section 10, next with Monolog logging and rate limiting; settle each component's open decisions with the user before starting it. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.
+Every component in `FRAMEWORK_PLAN.md` section 10 is done and released in 0.4.0. The largest gap left is configuration and route caches (see "Not yet available" above); an installer package for `xpsr new` would remove the `setup` presets' knowledge of the skeleton. Settle a component's open decisions with the user before starting it. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.
