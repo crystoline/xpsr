@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8b2744007430707ed05faf8d2c887678",
+    "content-hash": "7e1f0ac3528485b3a9f42b6582822462",
     "packages": [
         {
             "name": "crystoline/xpsr-framework",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "4bdf7406218f0430afd8cbf4311f04be40be8c69"
+                "reference": "e35c27b529139fc258d57a7c498e2e4ec2074671"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
@@ -91,7 +91,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-fastroute",
-                "reference": "c348c0e5d561f47979aa846f75cb268066c67715"
+                "reference": "13b6e79c1ec191021a2f93802b63560fabfae540"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3127,7 +3127,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/auth-jwt",
-                "reference": "4bb0e43fafe73bde7aebecfea74b848afedcbdb0"
+                "reference": "bcbc6d223c003c06026de01d9ccff37dcb3ea31b"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3179,7 +3179,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/cache",
-                "reference": "b73bf6b8ed4f486cfbe53da674be597ba17bb829"
+                "reference": "2bc48218485815c42b54ffe60f710101b4c7d5b1"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3234,7 +3234,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/database",
-                "reference": "47e909759103be6a8d225b745e5298e9dec5f258"
+                "reference": "ba8a5b00535cf5f6b40124749f4acce38b14b92f"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3292,7 +3292,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/http-client",
-                "reference": "5ebdbabeb5332830d28eaad9bc5284813d444ae1"
+                "reference": "0dd9368529d2d514269f939af84a134fcabac44b"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3347,7 +3347,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/log-monolog",
-                "reference": "764c7a64a98aff3d8678799ac0402e5e51d327d2"
+                "reference": "9fb416871d0812da0650310628203b5f2322ff47"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3400,7 +3400,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/mail",
-                "reference": "c7550b19d566bd713b93e14ae0cff59c33c2dd80"
+                "reference": "a897fccb86745615832c92814c79f7adb0b52af1"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3459,7 +3459,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/orm-doctrine",
-                "reference": "123e37a43d8933f65b21d84811825acfb15f9aac"
+                "reference": "706dd3a34725a35fee1deaa5567efb4d4c15bbf3"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.3@dev",
@@ -3516,7 +3516,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/orm-eloquent",
-                "reference": "3bd0132eab8cd5013e326223a7f8d14888ad451d"
+                "reference": "fe5cea3695f7fc248635863f096894b11da7c6e4"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.3@dev",
@@ -3569,7 +3569,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/queue",
-                "reference": "e89600d69626275bec89802cfd85cede7ceee8e8"
+                "reference": "a636d31ab98ea58a52e5cbabb475a05b32c9106c"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.3@dev",
@@ -3636,7 +3636,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-sunrise",
-                "reference": "c2a6449db0e5026d38ec56428f3491717f6906a7"
+                "reference": "63d0b61ffe2d8d2373007e93698dfbbdc1046817"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3685,7 +3685,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/scheduler",
-                "reference": "81c943cabb79d69171ac70fc7b8536643bb391d9"
+                "reference": "dae915677249ac7865c0ee2e8d4bd6db85906c1b"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3745,7 +3745,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/storage",
-                "reference": "bf12f925be05975199ec41e7084a05fc72ec7a59"
+                "reference": "1b6458a6050d2358a9697df3729c63ee27891ee4"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3804,7 +3804,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/validation",
-                "reference": "9e0fe5e4da2d46a3eaa7baabfae14bb26722b942"
+                "reference": "90bb4dcdc2bebb5ea1c49ec4521e4f1d2b1d1796"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3849,6 +3849,154 @@
                 }
             ],
             "description": "Request validation for XPSR applications: input classes checked with Symfony Validator rules, answered with 422 and field errors",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "crystoline/xpsr-view-blade",
+            "version": "0.3.x-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/view-blade",
+                "reference": "43a6b71439bd345351161c9f3f875d5d954e9c64"
+            },
+            "require": {
+                "crystoline/xpsr-framework": "^0.3@dev",
+                "illuminate/container": "^12.0",
+                "illuminate/events": "^12.0",
+                "illuminate/filesystem": "^12.0",
+                "illuminate/support": "^12.0",
+                "illuminate/view": "^12.0",
+                "php": "^8.4"
+            },
+            "require-dev": {
+                "nyholm/psr7": "^1.8.2",
+                "phpunit/phpunit": "^12.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\View\\Blade\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\View\\Blade\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adekunle",
+                    "email": "crystoline@gmail.com"
+                }
+            ],
+            "description": "Blade views for XPSR applications, standalone through illuminate/view, in place of Twig",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "crystoline/xpsr-view-latte",
+            "version": "0.3.x-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/view-latte",
+                "reference": "ee78b67a50c013c73987c03a4c31058cff7f831f"
+            },
+            "require": {
+                "crystoline/xpsr-framework": "^0.3@dev",
+                "latte/latte": "^3.1.2",
+                "php": "^8.4"
+            },
+            "require-dev": {
+                "nyholm/psr7": "^1.8.2",
+                "phpunit/phpunit": "^12.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\View\\Latte\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\View\\Latte\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adekunle",
+                    "email": "crystoline@gmail.com"
+                }
+            ],
+            "description": "Latte views for XPSR applications: context-aware escaping templates in place of Twig",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
+            "name": "crystoline/xpsr-view-plates",
+            "version": "0.3.x-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/view-plates",
+                "reference": "fca35259f8f75f89ec0daad4f70cff6e0a9c7e1c"
+            },
+            "require": {
+                "crystoline/xpsr-framework": "^0.3@dev",
+                "league/plates": "^3.6",
+                "php": "^8.4"
+            },
+            "require-dev": {
+                "nyholm/psr7": "^1.8.2",
+                "phpunit/phpunit": "^12.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\View\\Plates\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\View\\Plates\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adekunle",
+                    "email": "crystoline@gmail.com"
+                }
+            ],
+            "description": "Plates views for XPSR applications: native PHP templates in place of Twig",
             "transport-options": {
                 "symlink": true,
                 "relative": true
@@ -5387,6 +5535,73 @@
             "time": "2026-03-05T16:20:14+00:00"
         },
         {
+            "name": "illuminate/filesystem",
+            "version": "v12.70.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/filesystem.git",
+                "reference": "4e2bff4d2ac439db7a2903b8a99bc8dc5c8d5de4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/filesystem/zipball/4e2bff4d2ac439db7a2903b8a99bc8dc5c8d5de4",
+                "reference": "4e2bff4d2ac439db7a2903b8a99bc8dc5c8d5de4",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/collections": "^12.0",
+                "illuminate/contracts": "^12.0",
+                "illuminate/macroable": "^12.0",
+                "illuminate/support": "^12.0",
+                "php": "^8.2",
+                "symfony/finder": "^7.2.0"
+            },
+            "suggest": {
+                "ext-fileinfo": "Required to use the Filesystem class.",
+                "ext-ftp": "Required to use the Flysystem FTP driver.",
+                "ext-hash": "Required to use the Filesystem class.",
+                "illuminate/http": "Required for handling uploaded files (^12.0).",
+                "league/flysystem": "Required to use the Flysystem local driver (^3.25.1).",
+                "league/flysystem-aws-s3-v3": "Required to use the Flysystem S3 driver (^3.25.1).",
+                "league/flysystem-ftp": "Required to use the Flysystem FTP driver (^3.25.1).",
+                "league/flysystem-sftp-v3": "Required to use the Flysystem SFTP driver (^3.25.1).",
+                "psr/http-message": "Required to allow Storage::put to accept a StreamInterface (^1.0).",
+                "symfony/filesystem": "Required to enable support for relative symbolic links (^7.2).",
+                "symfony/mime": "Required to enable support for guessing extensions (^7.2)."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "12.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "functions.php"
+                ],
+                "psr-4": {
+                    "Illuminate\\Filesystem\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Filesystem package.",
+            "homepage": "https://laravel.com",
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2026-09-28T13:55:57+00:00"
+        },
+        {
             "name": "illuminate/pipeline",
             "version": "v12.70.2",
             "source": {
@@ -5570,6 +5785,60 @@
             "time": "2026-10-24T14:38:23+00:00"
         },
         {
+            "name": "illuminate/view",
+            "version": "v12.70.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/view.git",
+                "reference": "ea300ac93680690580927fda447fdd883034f263"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/view/zipball/ea300ac93680690580927fda447fdd883034f263",
+                "reference": "ea300ac93680690580927fda447fdd883034f263",
+                "shasum": ""
+            },
+            "require": {
+                "ext-tokenizer": "*",
+                "illuminate/collections": "^12.0",
+                "illuminate/container": "^12.0",
+                "illuminate/contracts": "^12.0",
+                "illuminate/events": "^12.0",
+                "illuminate/filesystem": "^12.0",
+                "illuminate/macroable": "^12.0",
+                "illuminate/support": "^12.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "12.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\View\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate View package.",
+            "homepage": "https://laravel.com",
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2026-10-06T13:17:04+00:00"
+        },
+        {
             "name": "laravel/serializable-closure",
             "version": "v2.1.0",
             "source": {
@@ -5629,6 +5898,94 @@
                 "source": "https://github.com/laravel/serializable-closure"
             },
             "time": "2026-09-22T14:32:34+00:00"
+        },
+        {
+            "name": "latte/latte",
+            "version": "v3.1.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nette/latte.git",
+                "reference": "c169e1346947deceb699c5976d6307829c68c4c8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nette/latte/zipball/c169e1346947deceb699c5976d6307829c68c4c8",
+                "reference": "c169e1346947deceb699c5976d6307829c68c4c8",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-tokenizer": "*",
+                "php": "8.2 - 8.6"
+            },
+            "conflict": {
+                "nette/application": "<3.1.7",
+                "nette/caching": "<3.1.4"
+            },
+            "require-dev": {
+                "nette/php-generator": "^4.0",
+                "nette/phpstan-rules": "^1.0",
+                "nette/tester": "^2.6",
+                "nette/utils": "^4.0",
+                "phpstan/extension-installer": "^1.4@stable",
+                "phpstan/phpstan": "^2.1@stable",
+                "tracy/tracy": "^2.10"
+            },
+            "suggest": {
+                "ext-fileinfo": "to use filter |datastream",
+                "ext-iconv": "to use filters |reverse, |substring",
+                "ext-intl": "to use Latte\\Engine::setLocale()",
+                "ext-mbstring": "to use filters like lower, upper, capitalize, ...",
+                "nette/php-generator": "to use tag {templatePrint}",
+                "nette/utils": "to use filter |webalize"
+            },
+            "bin": [
+                "bin/latte-lint"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Latte\\": "src/Latte"
+                },
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause",
+                "GPL-2.0-only",
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "David Grudl",
+                    "homepage": "https://davidgrudl.com"
+                }
+            ],
+            "description": "☕ Latte: the safest template engine for PHP. Context-sensitive escaping stops XSS, tags speak PHP, and n:attributes keep the HTML clean.",
+            "homepage": "https://latte.nette.org",
+            "keywords": [
+                "blade",
+                "context-sensitive",
+                "escaping",
+                "latte",
+                "nette",
+                "template engine",
+                "templating",
+                "twig",
+                "xss"
+            ],
+            "support": {
+                "issues": "https://github.com/nette/latte/issues",
+                "source": "https://github.com/nette/latte/tree/v3.1.7"
+            },
+            "time": "2026-10-22T00:09:27+00:00"
         },
         {
             "name": "lcobucci/jwt",
@@ -5996,6 +6353,70 @@
                 }
             ],
             "time": "2026-07-09T11:49:27+00:00"
+        },
+        {
+            "name": "league/plates",
+            "version": "v3.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/plates.git",
+                "reference": "12ee65166adbc6fb5916fb80b0c0758e49a2d996"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/plates/zipball/12ee65166adbc6fb5916fb80b0c0758e49a2d996",
+                "reference": "12ee65166adbc6fb5916fb80b0c0758e49a2d996",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "^1.6",
+                "phpunit/phpunit": "^11.4",
+                "squizlabs/php_codesniffer": "^3.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Plates\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan Reinink",
+                    "email": "jonathan@reinink.ca",
+                    "role": "Developer"
+                },
+                {
+                    "name": "RJ Garcia",
+                    "email": "ragboyjr@icloud.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Plates, the native PHP template system that's fast, easy to use and easy to extend.",
+            "homepage": "https://platesphp.com",
+            "keywords": [
+                "league",
+                "package",
+                "templates",
+                "templating",
+                "views"
+            ],
+            "support": {
+                "issues": "https://github.com/thephpleague/plates/issues",
+                "source": "https://github.com/thephpleague/plates/tree/v3.6.0"
+            },
+            "time": "2024-11-02T15:03:35+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -11426,7 +11847,10 @@
         "crystoline/xpsr-router-sunrise": 20,
         "crystoline/xpsr-scheduler": 20,
         "crystoline/xpsr-storage": 20,
-        "crystoline/xpsr-validation": 20
+        "crystoline/xpsr-validation": 20,
+        "crystoline/xpsr-view-blade": 20,
+        "crystoline/xpsr-view-latte": 20,
+        "crystoline/xpsr-view-plates": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

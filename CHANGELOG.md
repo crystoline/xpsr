@@ -8,6 +8,8 @@ Upgrade steps are in [UPGRADE.md](UPGRADE.md#unreleased-changes-since-03).
 
 ### Added
 
+- View engines next to Twig, chosen with `app.view_engine` (`VIEW_ENGINE`): `crystoline/xpsr-view-plates` (native PHP templates), `crystoline/xpsr-view-latte` (context-aware escaping), and `crystoline/xpsr-view-blade` (Blade through `illuminate/view`, with `@csrf` and the template functions on `$xpsr`), or a `ViewHandlerInterface` class of your own. See [docs/VIEWS.md](docs/VIEWS.md).
+- `Crystoline\Xpsr\View\ViewFunctionsInterface`, through which the view provider gives every engine `csrf_token()`, `csrf_field()`, `session()`, `auth_user()`, and `can()`; `ViewNotFoundException`; and `Crystoline\Xpsr\Testing\ViewHandlerContractTestCase`, the behavior every engine must have.
 - `crystoline/xpsr-storage`: file storage on Flysystem 3. Named disks in `config/storage.php`, each a `FilesystemOperator` from `StorageManager::disk()`; drivers `local`, `memory`, and `s3` (with `league/flysystem-async-aws-s3`, for S3 and compatible services), and an application's own as `storage.driver.<name>`. `store()` saves an upload under a random name with an extension from its content; `download()` streams a file as a response; `fake()` swaps a disk for memory in tests. See [its README](packages/storage/README.md).
 - `crystoline/xpsr-scheduler`: scheduled tasks from one cron entry. `routes/schedule.php` lists console commands, callbacks (services injected by type), and queued jobs with frequencies such as `daily('03:00')`, `weekly('monday', '08:00')`, `everyMinutes(15)`, or `cron()`, limited with `weekdays()`, `weekends()`, `on()`, `when()`, and `skip()`, in `app.timezone` or a task's own `timezone()`. `withoutOverlapping()` locks through Symfony Lock (files in `var/locks` by default, or a shared store). `php xpsr schedule:run`, `schedule:list`, and `schedule:work`. See [its README](packages/scheduler/README.md).
 - `crystoline/xpsr-mail`: email on Symfony Mailer, configured by `mail.dsn` (`MAIL_DSN`): SMTP, sendmail, provider bridges, `log://` (the default, written to the application log), and `array://` for tests. `Mailer::compose()` renders a view as the HTML body with a text version; `send()` fills in `mail.from`; `queue()` sends from a `crystoline/xpsr-queue` worker. `php xpsr mail:test`. See [its README](packages/mail/README.md).
@@ -31,6 +33,7 @@ Upgrade steps are in [UPGRADE.md](UPGRADE.md#unreleased-changes-since-03).
 
 ### Changed
 
+- A missing view throws `Crystoline\Xpsr\View\ViewNotFoundException` instead of Twig's `LoaderError`. New projects have `view_engine` in `config/app.php`.
 - New projects list `AuthServiceRegistry` in `app.registry`, have `config/auth.php`, and run `Authenticate::optional()` in the `routes/web.php` group. `.env.example` has `AUTH_API_DRIVER` and `AUTH_JWT_SECRET`.
 - New projects list `SessionServiceRegistry` in `app.registry`, and `routes/web.php` puts its routes in a group with `SessionMiddleware` and `CsrfMiddleware`. The skeleton's example `App\Http\Middleware\SessionMiddleware` and `App\Registry\SessionServiceRegistry`, which did not work, are removed, and `config/session.php` takes new options.
 - `crystoline/xpsr-cache` and `crystoline/xpsr-database` require `psr/clock`.

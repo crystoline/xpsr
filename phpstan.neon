@@ -22,6 +22,12 @@ parameters:
         - packages/validation/tests
         - packages/auth-jwt/src
         - packages/auth-jwt/tests
+        - packages/view-blade/src
+        - packages/view-blade/tests
+        - packages/view-latte/src
+        - packages/view-latte/tests
+        - packages/view-plates/src
+        - packages/view-plates/tests
         - packages/storage/src
         - packages/storage/tests
         - packages/scheduler/src

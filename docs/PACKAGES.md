@@ -21,6 +21,9 @@ crystoline/xpsr (skeleton, repository root)
 ├── (not published yet) crystoline/xpsr-mail           packages/mail ──► framework, symfony/mailer
 ├── (not published yet) crystoline/xpsr-scheduler      packages/scheduler ──► framework, dragonmantank/cron-expression, symfony/lock
 ├── (not published yet) crystoline/xpsr-storage        packages/storage ──► framework, league/flysystem
+├── (not published yet) crystoline/xpsr-view-plates    packages/view-plates ──► framework, league/plates
+├── (not published yet) crystoline/xpsr-view-latte     packages/view-latte ──► framework, latte/latte
+├── (not published yet) crystoline/xpsr-view-blade     packages/view-blade ──► framework, illuminate/view
 ├── (suggested) crystoline/xpsr-log-monolog     packages/log-monolog ──► framework, monolog/monolog
 ├── (suggested) crystoline/xpsr-validation      packages/validation ──► framework, symfony/validator
 └── (not published yet) crystoline/xpsr-auth-jwt   packages/auth-jwt ──► framework, lcobucci/jwt
@@ -38,6 +41,9 @@ crystoline/xpsr (skeleton, repository root)
 | `crystoline/xpsr-mail` | `Crystoline\Xpsr\Mail\` | framework, `symfony/mailer` and `symfony/mime` 7.4 or 8; `crystoline/xpsr-queue` for queued email; providers through Symfony's mailer bridges. Not published yet. |
 | `crystoline/xpsr-scheduler` | `Crystoline\Xpsr\Scheduler\` | framework, `dragonmantank/cron-expression` ^3.4, `symfony/lock` 7.4 or 8; `crystoline/xpsr-queue` for scheduled jobs. Not published yet. |
 | `crystoline/xpsr-storage` | `Crystoline\Xpsr\Storage\` | framework, `league/flysystem`, `league/flysystem-local`, and `league/flysystem-memory` ^3.29; `league/flysystem-async-aws-s3` for the s3 driver. Not published yet. |
+| `crystoline/xpsr-view-plates` | `Crystoline\Xpsr\View\Plates\` | framework, `league/plates` ^3.6. Not published yet. |
+| `crystoline/xpsr-view-latte` | `Crystoline\Xpsr\View\Latte\` | framework, `latte/latte` ^3.1.2. Not published yet. |
+| `crystoline/xpsr-view-blade` | `Crystoline\Xpsr\View\Blade\` | framework, `illuminate/view`, `illuminate/container`, `illuminate/events`, `illuminate/filesystem`, and `illuminate/support` ^12.0. Not published yet. |
 | `crystoline/xpsr-log-monolog` | `Crystoline\Xpsr\Log\Monolog\` | framework, `monolog/monolog` ^3.9. |
 | `crystoline/xpsr-validation` | `Crystoline\Xpsr\Validation\Symfony\` | framework, `symfony/validator` ^7.4, `symfony/property-access` ^7.4. The contract, attributes, and mapping it uses are in the framework (`Crystoline\Xpsr\Validation\`). |
 | `crystoline/xpsr-auth-jwt` | `Crystoline\Xpsr\Auth\Jwt\` | framework, `lcobucci/jwt` ^5.6 (`ext-openssl`, `ext-sodium`). The contracts, session sign-in, and policies are in the framework (`Crystoline\Xpsr\Auth\`); the token driver and database users are in `crystoline/xpsr-database`. Not published yet; see [Adding a package](#adding-a-package). |
@@ -181,7 +187,7 @@ A new package can be developed and tested in `packages/` before it has a mirror.
 - `phpunit.xml` (a test suite and a `source` exclusion), `phpstan.neon` (its `src` and `tests`), and the packages list in `tests/Packaging/PackagesTest.php`;
 - `MONOREPO_DEV_PACKAGES` in `scripts/export-skeleton.php`, so the skeleton does not require it.
 
-`packages/auth-jwt`, `packages/orm-eloquent`, `packages/queue`, `packages/mail`, `packages/scheduler`, and `packages/storage` have no repository yet, so the split skips them (they are not in `PUBLISHED`).
+`packages/auth-jwt`, `packages/orm-eloquent`, `packages/queue`, `packages/mail`, `packages/scheduler`, `packages/storage`, `packages/view-plates`, `packages/view-latte`, and `packages/view-blade` have no repository yet, so the split skips them (they are not in `PUBLISHED`).
 
 `scripts/split.sh` publishes only the packages in its `PUBLISHED` list, so an unpublished package does not break the `split` job. To publish one:
 

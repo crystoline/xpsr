@@ -400,6 +400,16 @@ The first twenty-one milestones are working slices, not completion of all roadma
 - **Not yet available:** configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
 
+## Thirty-second milestone: completed — view engines
+
+Built with the choices accepted on 29 October 2026 (`FRAMEWORK_PLAN.md` section 9):
+
+- **Framework.** `app.view_engine` selects the engine in `ViewServiceRegistry` (`ENGINES` names the official classes and packages, as `RouteServiceRegistry::ADAPTERS` does), and a missing package or unknown name is explained. `ViewFunctionsInterface` carries the template functions to any engine; the Twig `ViewHandler` implements it and throws `ViewNotFoundException` for missing templates.
+- **Packages.** `crystoline/xpsr-view-plates`, `crystoline/xpsr-view-latte`, and `crystoline/xpsr-view-blade` (not published yet), each a handler class with the official constructor. Latte compiles into `app.view_cache_dir` and recompiles changed templates with `app.debug`; Blade compiles there or under the system temporary directory, shares `$xpsr` (a functions object with no methods of its own, so any function name works), and maps `@csrf` to `csrf_field()`.
+- **Contract.** `Testing\ViewHandlerContractTestCase`, run against all four engines.
+
+Verified on 29 October 2026: the framework's tests and the three packages' 26 tests pass with PHPStan and style checks.
+
 ## Thirty-first milestone: completed — file storage
 
 Built with the choices accepted on 29 October 2026 (`FRAMEWORK_PLAN.md` section 9):

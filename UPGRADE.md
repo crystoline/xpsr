@@ -4,7 +4,7 @@ Steps for moving an application between minor versions. What changed is in [CHAN
 
 ## Unreleased changes since 0.3
 
-These steps apply to the next release. Nothing breaks; the steps below add sessions and authentication.
+These steps apply to the next release. One change can affect existing code (see Views); the other steps add sessions, authentication, and other view engines.
 
 ### Sessions and CSRF (optional)
 
@@ -35,6 +35,13 @@ See [docs/SESSIONS.md](docs/SESSIONS.md).
 4. Copy `tests/TestCase.php` for `actingAs()`.
 
 See [docs/AUTH.md](docs/AUTH.md).
+
+### Views
+
+1. A missing view now throws `Crystoline\Xpsr\View\ViewNotFoundException`. Code that caught `Twig\Error\LoaderError` for one catches that instead.
+2. Optional: to use Plates, Latte, or Blade, `composer require crystoline/xpsr-view-<engine>` and add `'view_engine' => env('VIEW_ENGINE', 'twig')` to `config/app.php`, then set it. Without the key, Twig is used.
+
+See [docs/VIEWS.md](docs/VIEWS.md).
 
 ## From 0.2 to 0.3
 

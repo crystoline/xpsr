@@ -2,14 +2,15 @@
 
 namespace Crystoline\Xpsr\View;
 
-class ViewHandler implements ViewHandlerInterface
+/** The Twig engine: views/emails/welcome.twig is the view "emails.welcome". */
+class ViewHandler implements ViewHandlerInterface, ViewFunctionsInterface
 {
     private \Twig\Environment $engine;
 
     /**
      * @param string $dir /path/to/templates
      */
-    public function __construct(string $dir, bool $debug = false, string|false $cache = false)
+    public function __construct(private readonly string $dir, bool $debug = false, string|false $cache = false)
     {
         $loader = new \Twig\Loader\FilesystemLoader(['views' => $dir]);
 
@@ -57,8 +58,12 @@ class ViewHandler implements ViewHandlerInterface
 
     public function render(string $view, array $data = []): string
     {
-        $view = str_replace('.', '/', $view);
-        $template = $this->engine->load($view . '.twig');
+        $file = str_replace('.', '/', $view) . '.twig';
+        try {
+            $template = $this->engine->load($file);
+        } catch (\Twig\Error\LoaderError $exception) {
+            throw new ViewNotFoundException($view, $this->dir . '/' . $file, $exception);
+        }
         return $template->render($data);
     }
 }

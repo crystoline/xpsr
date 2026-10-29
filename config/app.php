@@ -30,6 +30,8 @@ return [
     // PSR-4 namespace and directory of application code; make:* generators write here.
     'namespace' => 'App',
     'source_dir' => 'app',
+    // twig, or plates, latte, or blade with crystoline/xpsr-view-<engine> installed.
+    'view_engine' => env('VIEW_ENGINE', 'twig'),
     'view_dir' => dirname(__DIR__) . '/views',
     'view_cache_dir' => false,
     'registry' => [

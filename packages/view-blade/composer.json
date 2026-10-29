@@ -1,0 +1,40 @@
+{
+  "name": "crystoline/xpsr-view-blade",
+  "description": "Blade views for XPSR applications, standalone through illuminate/view, in place of Twig",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Adekunle",
+      "email": "crystoline@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.4",
+    "crystoline/xpsr-framework": "^0.3@dev",
+    "illuminate/container": "^12.0",
+    "illuminate/events": "^12.0",
+    "illuminate/filesystem": "^12.0",
+    "illuminate/support": "^12.0",
+    "illuminate/view": "^12.0"
+  },
+  "require-dev": {
+    "nyholm/psr7": "^1.8.2",
+    "phpunit/phpunit": "^12.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\View\\Blade\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\View\\Blade\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.3.x-dev"
+    }
+  }
+}
