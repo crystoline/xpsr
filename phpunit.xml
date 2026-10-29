@@ -16,13 +16,14 @@
         <testsuite name="auth-jwt"><directory>packages/auth-jwt/tests</directory></testsuite>
         <testsuite name="orm-eloquent"><directory>packages/orm-eloquent/tests</directory></testsuite>
         <testsuite name="queue"><directory>packages/queue/tests</directory></testsuite>
+        <testsuite name="mail"><directory>packages/mail/tests</directory></testsuite>
         <testsuite name="skeleton"><directory>tests</directory></testsuite>
     </testsuites>
     <groups>
         <!-- Builds a project with composer create-project; needs network access. Run: composer test:packaging -->
         <exclude><group>packaging</group></exclude>
     </groups>
-    <source><include><directory>packages</directory></include><exclude><directory>packages/framework/tests</directory><directory>packages/router-fastroute/tests</directory><directory>packages/router-sunrise/tests</directory><directory>packages/cache/tests</directory><directory>packages/http-client/tests</directory><directory>packages/database/tests</directory><directory>packages/orm-doctrine/tests</directory><directory>packages/log-monolog/tests</directory><directory>packages/validation/tests</directory><directory>packages/auth-jwt/tests</directory><directory>packages/orm-eloquent/tests</directory><directory>packages/queue/tests</directory></exclude></source>
+    <source><include><directory>packages</directory></include><exclude><directory>packages/framework/tests</directory><directory>packages/router-fastroute/tests</directory><directory>packages/router-sunrise/tests</directory><directory>packages/cache/tests</directory><directory>packages/http-client/tests</directory><directory>packages/database/tests</directory><directory>packages/orm-doctrine/tests</directory><directory>packages/log-monolog/tests</directory><directory>packages/validation/tests</directory><directory>packages/auth-jwt/tests</directory><directory>packages/orm-eloquent/tests</directory><directory>packages/queue/tests</directory><directory>packages/mail/tests</directory></exclude></source>
     <php>
         <env name="APP_ENV" value="testing" force="true"/>
         <!-- Sessions in memory, so tests leave no files in var/sessions. -->

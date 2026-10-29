@@ -397,8 +397,18 @@ The first twenty-one milestones are working slices, not completion of all roadma
   - Only Nyholm PSR-7 is tested.
   - The request host comes from the client's `Host` header; build absolute URLs from `APP_URL`.
 - **Dependencies.** The framework's remaining third-party requirements are Symfony Console, Process, and Finder; Illuminate Config; phpdotenv; and Nyholm's PSR-7 server helper. Finder only lists configuration files, and Illuminate Config pulls in parts of Illuminate Support, so both are candidates for small in-house replacements.
-- **Not yet available:** mail, scheduling, and file storage (roadmap phase 6; `FRAMEWORK_PLAN.md` section 10). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
+- **Not yet available:** scheduling and file storage (roadmap phase 6; `FRAMEWORK_PLAN.md` section 10). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
+
+## Twenty-ninth milestone: completed — mail
+
+Built with the choices accepted on 29 October 2026 (`FRAMEWORK_PLAN.md` section 9):
+
+- **Package.** `crystoline/xpsr-mail` (`Crystoline\Xpsr\Mail\`, not published yet), on Symfony Mailer and Mime 7.4 or 8. `MailServiceRegistry` builds the transport from `mail.dsn` with Symfony's factories and XPSR's `log://` and `array://`; an unknown scheme names `mail.dsn` and the bridge to install.
+- **Mailer.** `send()` fills in `mail.from`; `compose()` renders the HTML body through the view layer, with a text version (styles and scripts dropped, links as `text (url)`) or a text view; `queue()` dispatches the finished email as a `SendMail` job when `crystoline/xpsr-queue` is registered, and otherwise says what to add.
+- **Tooling.** `mail:test <to>`; `Transport\ArrayTransport` with `emails()`, `messages()`, and `clear()` for tests; `Transport\LogTransport` logs recipients, sender, subject, and text.
+
+Verified on 29 October 2026: the package's 13 tests pass with PHPStan and style checks, including an email queued on a serializing transport and sent by `queue:work`.
 
 ## Twenty-eighth milestone: completed — queues
 

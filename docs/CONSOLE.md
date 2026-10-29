@@ -37,6 +37,7 @@ php xpsr queue:work --stop-when-empty
 php xpsr queue:failed
 php xpsr queue:retry --all
 php xpsr queue:restart
+php xpsr mail:test ada@example.com
 ```
 
 `php xpsr` defaults to `list`. Standard help, verbosity, non-interactive mode (`--no-interaction`), and shell completion are supplied by Symfony Console. `composer serve` delegates to `php xpsr serve`. The executable resolves its bootstrap from its own directory and works when invoked by absolute path from another working directory.
@@ -52,6 +53,8 @@ php xpsr queue:restart
 `make:token-table`, `auth:token`, and `auth:token-revoke` come from `crystoline/xpsr-database` and manage revocable API tokens; `auth:jwt-secret` and `auth:jwt` come from `crystoline/xpsr-auth-jwt`. `auth:token` and `auth:jwt` print the token once. See [AUTH.md](AUTH.md).
 
 `queue:work`, `queue:failed`, `queue:retry`, `queue:forget`, `queue:restart`, `make:job`, and `make:queue-table` come from `crystoline/xpsr-queue`; see [its README](../packages/queue/README.md). `queue:work` runs until it is stopped; SIGTERM and SIGINT stop it after the current job.
+
+`mail:test` comes from `crystoline/xpsr-mail` and sends a short email now, through the transport `mail.dsn` names; see [its README](../packages/mail/README.md).
 
 ## Set up a project
 

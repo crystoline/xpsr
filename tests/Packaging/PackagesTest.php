@@ -101,6 +101,7 @@ final class PackagesTest extends TestCase
         yield 'Monolog logging' => ['log-monolog'];
         yield 'validation' => ['validation'];
         yield 'JWT authentication' => ['auth-jwt'];
+        yield 'mail' => ['mail'];
         yield 'queues' => ['queue'];
         yield 'Eloquent ORM adapter' => ['orm-eloquent'];
     }
