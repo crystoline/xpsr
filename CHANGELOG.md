@@ -4,6 +4,10 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+### Fixed
+
+- HTTP/1.0 requests are answered with HTTP/1.0. Every response used to say HTTP/1.1. Under Apache with mod_php, that kept the connection open until the keep-alive timeout, 5 seconds by default. HTTP/1.0 clients that read until the connection closes, such as some health checks and monitoring tools, waited that long for every response. Responses to HTTP/1.1 and HTTP/2 requests are unchanged.
+
 ## 0.4.0 (2026-10-29)
 
 One change can affect existing code (see **Breaking**). Upgrade steps are in [UPGRADE.md](UPGRADE.md#from-03-to-04).

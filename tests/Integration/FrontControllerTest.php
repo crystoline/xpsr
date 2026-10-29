@@ -92,13 +92,13 @@ PHP);
      * @param array<string, string> $headers
      * @return array{status: string, headers: list<string>, body: string}
      */
-    private function request(string $method, string $path, array $headers = [], ?string $body = null): array
+    private function request(string $method, string $path, array $headers = [], ?string $body = null, string $protocol = '1.1'): array
     {
         $socket = stream_socket_client('tcp://127.0.0.1:' . $this->port, $errno, $error, 5);
         if ($socket === false) {
             throw new RuntimeException("Could not connect: {$error}");
         }
-        $lines = ["{$method} {$path} HTTP/1.1", 'Host: 127.0.0.1', 'Connection: close'];
+        $lines = ["{$method} {$path} HTTP/{$protocol}", 'Host: 127.0.0.1', 'Connection: close'];
         foreach ($headers as $name => $value) {
             $lines[] = "{$name}: {$value}";
         }
@@ -170,6 +170,10 @@ PHP);
         self::assertSame(['a', 'b'], self::headerValues($response['headers'], 'X-Multi'));
         self::assertSame(['first=1; HttpOnly', 'second=2'], self::headerValues($response['headers'], 'Set-Cookie'));
         self::assertSame('made', $response['body']);
+
+        $legacy = $this->request('GET', '/headers', protocol: '1.0');
+        self::assertSame('HTTP/1.0 201 Made', $legacy['status'], 'An HTTP/1.0 request gets an HTTP/1.0 answer.');
+        self::assertSame('made', $legacy['body']);
 
         $redirect = $this->request('GET', '/redirect');
         self::assertSame('HTTP/1.1 301 Moved Permanently', $redirect['status'], 'PHP must not turn Location into 302.');

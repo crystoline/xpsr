@@ -6,6 +6,7 @@ namespace Crystoline\Xpsr\Tests\Unit;
 
 use Crystoline\Xpsr\Exception\ExceptionHandlerInterface;
 use Crystoline\Xpsr\Http\HttpKernel;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -63,6 +64,40 @@ final class HttpKernelTest extends TestCase
         $errors->expects(self::never())->method('render');
         $kernel = new HttpKernel($router, $errors, new ResponseFactory(), [$middleware]);
         self::assertSame($response, $kernel->handle((new ServerRequestFactory())->createServerRequest('GET', 'http://localhost/')));
+    }
+
+    /** @return iterable<string, array{string, string, string}> request version, response version, expected */
+    public static function protocolVersions(): iterable
+    {
+        yield 'HTTP/1.0 request' => ['1.0', '1.1', '1.0'];
+        yield 'HTTP/1.1 request' => ['1.1', '1.1', '1.1'];
+        yield 'HTTP/2 request keeps the response version' => ['2.0', '1.1', '1.1'];
+        yield 'response already older' => ['1.1', '1.0', '1.0'];
+        yield 'not a version' => ['INCLUDED', '1.1', '1.1'];
+    }
+
+    #[DataProvider('protocolVersions')]
+    public function testResponseNeverUsesANewerHttpVersionThanTheRequest(string $requested, string $responseVersion, string $expected): void
+    {
+        $router = $this->createStub(RequestHandlerInterface::class);
+        $router->method('handle')->willReturn((new ResponseFactory())->createResponse()->withProtocolVersion($responseVersion));
+        $kernel = new HttpKernel($router, $this->createStub(ExceptionHandlerInterface::class), new ResponseFactory());
+        $request = (new ServerRequestFactory())->createServerRequest('GET', 'http://localhost/')->withProtocolVersion($requested);
+
+        self::assertSame($expected, $kernel->handle($request)->getProtocolVersion());
+    }
+
+    public function testErrorResponsesAndHeadRequestsAlsoMatchTheRequestVersion(): void
+    {
+        $router = $this->createStub(RequestHandlerInterface::class);
+        $router->method('handle')->willThrowException(new RuntimeException('Example failure'));
+        $errors = $this->createStub(ExceptionHandlerInterface::class);
+        $errors->method('render')->willReturn((new ResponseFactory())->createResponse(500)->withBody((new ResponseFactory())->createStream('error')));
+        $request = (new ServerRequestFactory())->createServerRequest('HEAD', 'http://localhost/')->withProtocolVersion('1.0');
+
+        $response = (new HttpKernel($router, $errors, new ResponseFactory()))->handle($request);
+        self::assertSame('1.0', $response->getProtocolVersion());
+        self::assertSame('', (string) $response->getBody());
     }
 
     public function testErrorBoundaryWrapsMiddleware(): void

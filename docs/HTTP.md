@@ -8,6 +8,7 @@ public/index.php ─ creates the request from PHP globals (Nyholm PSR-7)
       └ global middleware (app.middleware), first listed runs first
           └ RouteDispatcher ─ 404 / 405 / automatic OPTIONS, then route middleware and the handler
   └ HEAD requests: body removed after middleware and error rendering
+  └ HTTP version: never newer than the request's (HTTP/1.0 gets HTTP/1.0)
 ResponseEmitter ─ headers, status line, body
 ```
 
@@ -121,6 +122,8 @@ The default `Psr\Log\LoggerInterface` is `Crystoline\Xpsr\Log\ErrorLogLogger`. I
 
 1. Every header value in order. Repeated values become separate header lines, and `Set-Cookie` never replaces earlier cookies, including ones set by PHP's session functions.
 2. The status line, last, with the response's status passed on every header call. This prevents PHP from changing the status, for example turning a `Location` header into a 302.
+
+   The status line carries the response's HTTP version. The kernel never lets that be newer than the request's, so an HTTP/1.0 request is answered with HTTP/1.0. Apache with mod_php takes the version from the status line. An HTTP/1.1 answer to an HTTP/1.0 request would keep the connection open until the keep-alive timeout, and clients that read until the connection closes would wait that long.
 3. The body, in 8 KiB chunks. Seekable bodies are rewound first. A valid `Content-Length` caps the bytes sent. Non-seekable (streamed) bodies are flushed after each chunk so clients receive them as they are produced. Emission stops if the client disconnects. Statuses 1xx, 204, 205, and 304 never send a body.
 
 If output has already started, for example from an `echo` or a PHP warning, the emitter throws instead of sending a corrupted response. `public/index.php` then logs `Cannot send the response: output already started (…)`. What clients receive depends on the setting:

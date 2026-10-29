@@ -34,6 +34,26 @@ final class HttpKernel implements RequestHandlerInterface
             $response = $this->exceptions->render($request, $exception);
         }
         // Apply after global middleware and error rendering, including short-circuit responses.
-        return $request->getMethod() === 'HEAD' ? $response->withBody($this->streams->createStream()) : $response;
+        if ($request->getMethod() === 'HEAD') {
+            $response = $response->withBody($this->streams->createStream());
+        }
+
+        return $this->matchProtocolVersion($request, $response);
+    }
+
+    /**
+     * Never answer with a newer HTTP version than the request. Apache with mod_php takes the
+     * version from the status line: an HTTP/1.1 answer to an HTTP/1.0 request keeps the connection
+     * open until the keep-alive timeout, and clients that read until it closes wait that long.
+     */
+    private function matchProtocolVersion(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        $requested = $request->getProtocolVersion();
+        // Apache reports subrequests as "INCLUDED", which is not a version.
+        if (preg_match('/^\d+(\.\d+)?$/D', $requested) !== 1 || !version_compare($requested, $response->getProtocolVersion(), '<')) {
+            return $response;
+        }
+
+        return $response->withProtocolVersion($requested);
     }
 }
