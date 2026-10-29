@@ -8,6 +8,8 @@ Upgrade steps are in [UPGRADE.md](UPGRADE.md#unreleased-changes-since-03).
 
 ### Added
 
+- `crystoline/xpsr-queue`: queued jobs on Symfony Messenger. Jobs implement `JobInterface` and handle themselves (`handle()` gets services by type); `QueueInterface::dispatch()` with a delay or transport; transports `sync://`, `in-memory://`, `database://`, and Redis, AMQP, or SQS; retries with growing delays, then a `failed_jobs` table; `php xpsr queue:work`, `queue:failed`, `queue:retry`, `queue:forget`, `queue:restart`, `make:job`, and `make:queue-table`; `FakeQueue` for tests. See [its README](packages/queue/README.md).
+- `TableMigrationCommand` gains `stubPath()` and `replacements()`, for table migrations in other packages.
 - `crystoline/xpsr-orm-eloquent`: Eloquent models on XPSR's database connections, sharing their transactions, with `php xpsr make:model` and the `eloquent` user provider for `config/auth.php`. Schema changes stay XPSR migrations. See [its README](packages/orm-eloquent/README.md).
 - `StubGenerator::withStubDirectory()`, for `make:*` commands in other packages.
 - Authentication in the framework (`Crystoline\Xpsr\Auth\`): `AuthManager` with `attempt()`, `verify()`, `login()`, `logout()`, and `intended()`; guards configured in `config/auth.php`; the session guard for browsers; `PasswordHasher` (Argon2id or bcrypt, upgraded at sign-in); `Identity::of($request)`; the middleware `Authenticate` (required, optional, or per guard), `Guest`, and `RequireScopes`; 401 and 403 errors with `WWW-Authenticate` challenges. See [docs/AUTH.md](docs/AUTH.md).

@@ -1,0 +1,55 @@
+{
+  "name": "crystoline/xpsr-queue",
+  "description": "Queued jobs for XPSR applications on Symfony Messenger: self-handling jobs, sync, database, Redis, AMQP, or SQS transports, retries, and a failed jobs table",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Adekunle",
+      "email": "crystoline@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.4",
+    "crystoline/xpsr-database": "^0.3@dev",
+    "crystoline/xpsr-framework": "^0.3@dev",
+    "doctrine/dbal": "^4.5",
+    "psr/cache": "^2.0 || ^3.0",
+    "psr/clock": "^1.0",
+    "psr/container": "^2.0",
+    "psr/log": "^3.0",
+    "symfony/console": "^7.4",
+    "symfony/doctrine-messenger": "^7.4 || ^8.0",
+    "symfony/event-dispatcher": "^7.4 || ^8.0",
+    "symfony/messenger": "^7.4 || ^8.0"
+  },
+  "require-dev": {
+    "nyholm/psr7": "^1.8.2",
+    "phpunit/phpunit": "^12.5",
+    "symfony/cache": "^7.4"
+  },
+  "conflict": {
+    "symfony/event-dispatcher-contracts": "<3.5"
+  },
+  "suggest": {
+    "crystoline/xpsr-cache": "Needed for php xpsr queue:restart, which tells workers to stop after their current job",
+    "symfony/redis-messenger": "The redis:// transport",
+    "symfony/amqp-messenger": "The amqp:// transport (RabbitMQ)",
+    "symfony/amazon-sqs-messenger": "The sqs:// transport (Amazon SQS)"
+  },
+  "autoload": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Queue\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Queue\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.3.x-dev"
+    }
+  }
+}

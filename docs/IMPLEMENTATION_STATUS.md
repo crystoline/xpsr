@@ -397,8 +397,20 @@ The first twenty-one milestones are working slices, not completion of all roadma
   - Only Nyholm PSR-7 is tested.
   - The request host comes from the client's `Host` header; build absolute URLs from `APP_URL`.
 - **Dependencies.** The framework's remaining third-party requirements are Symfony Console, Process, and Finder; Illuminate Config; phpdotenv; and Nyholm's PSR-7 server helper. Finder only lists configuration files, and Illuminate Config pulls in parts of Illuminate Support, so both are candidates for small in-house replacements.
-- **Not yet available:** queues, mail, scheduling, and file storage (roadmap phase 6; `FRAMEWORK_PLAN.md` section 10). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
+- **Not yet available:** mail, scheduling, and file storage (roadmap phase 6; `FRAMEWORK_PLAN.md` section 10). Configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
+
+## Twenty-eighth milestone: completed — queues
+
+Built with the choices accepted on 29 October 2026 (`FRAMEWORK_PLAN.md` section 9):
+
+- **Package.** `crystoline/xpsr-queue` (`Crystoline\Xpsr\Queue\`, not published yet), on Symfony Messenger 7.4 or 8. `QueueInterface` and `Queue` send `JobInterface` jobs through a Messenger bus with one handler, `JobRunner`, which calls `handle()` with services from the container. On `sync://`, a job's own exception reaches the caller.
+- **Transports.** `Messenger\Transports` builds them from DSNs: sync, in-memory, `database://` (Messenger's Doctrine transport on an XPSR connection, with `auto_setup` off), and the Redis, AMQP, and SQS bridges when installed.
+- **Failures.** Messenger's retry listener with a multiplier strategy per transport, then `FailedJobListener` and `FailedJobStore` (the `failed_jobs` table); `queue:failed`, `queue:retry`, `queue:forget`.
+- **Workers.** `queue:work` with `--limit`, `--time-limit`, `--memory-limit`, `--sleep`, and `--stop-when-empty`, stopping on SIGTERM and SIGINT after the current job; `queue:restart` through the cache.
+- **Tooling.** `make:job`, `make:queue-table` (on the database package's `TableMigrationCommand`, which gained `stubPath()` and `replacements()` hooks), and `Testing\FakeQueue`.
+
+Verified on 29 October 2026: the package's 18 tests pass with PHPStan and style checks, on SQLite, MySQL, MariaDB, and PostgreSQL.
 
 ## Twenty-seventh milestone: completed — several kinds of user
 

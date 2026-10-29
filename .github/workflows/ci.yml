@@ -123,7 +123,7 @@ jobs:
         env:
           XPSR_TEST_MYSQL_URL: ${{ matrix.database != 'pgsql' && matrix.url || '' }}
           XPSR_TEST_PGSQL_URL: ${{ matrix.database == 'pgsql' && matrix.url || '' }}
-        run: mkdir -p var && vendor/bin/phpunit --testsuite database,orm-doctrine,orm-eloquent --log-junit var/junit.xml 2>&1 | tee var/phpunit.log
+        run: mkdir -p var && vendor/bin/phpunit --testsuite database,orm-doctrine,orm-eloquent,queue --log-junit var/junit.xml 2>&1 | tee var/phpunit.log
       - name: Annotate failed tests
         if: failure()
         run: php scripts/ci-annotate.php var/junit.xml var/phpunit.log

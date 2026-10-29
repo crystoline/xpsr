@@ -20,6 +20,7 @@ This repository develops several Composer packages together:
 | `packages/database` | `crystoline/xpsr-database` | Database connections (Doctrine DBAL) and migrations (optional; see [its README](packages/database/README.md)) |
 | `packages/orm-doctrine` | `crystoline/xpsr-orm-doctrine` | Doctrine ORM on XPSR's connection, migrations generated from entities (optional; see [its README](packages/orm-doctrine/README.md)) |
 | `packages/orm-eloquent` | `crystoline/xpsr-orm-eloquent` | Eloquent models on XPSR's connection and transactions, with XPSR's migrations (optional, not published yet; see [its README](packages/orm-eloquent/README.md)) |
+| `packages/queue` | `crystoline/xpsr-queue` | Queued jobs on Symfony Messenger: sync, database, Redis, AMQP, or SQS; retries and a failed jobs table (optional, not published yet; see [its README](packages/queue/README.md)) |
 | `packages/validation` | `crystoline/xpsr-validation` | Request validation: input classes, Symfony Validator rules, 422 with field errors (optional; see [its README](packages/validation/README.md)) |
 | `packages/log-monolog` | `crystoline/xpsr-log-monolog` | Monolog logging: stderr, file, daily, or syslog; line or JSON; request IDs (optional; see [its README](packages/log-monolog/README.md)) |
 | `packages/auth-jwt` | `crystoline/xpsr-auth-jwt` | JWT sign-in for APIs: the default `api` guard, an issuer, `auth:jwt-secret` (optional, not published yet; see [its README](packages/auth-jwt/README.md)) |

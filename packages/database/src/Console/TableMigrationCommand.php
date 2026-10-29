@@ -51,6 +51,23 @@ abstract class TableMigrationCommand extends Command
 
     abstract protected function nextStep(): string;
 
+    /** The stub file; override for stubs in another package. */
+    protected function stubPath(): string
+    {
+        return dirname(__DIR__) . "/Resources/{$this->stub()}.stub";
+    }
+
+    /**
+     * More stub values, such as a second table's name. Throw InvalidArgumentException for invalid
+     * configuration.
+     *
+     * @return array<string, string>
+     */
+    protected function replacements(): array
+    {
+        return [];
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $errors = (new SymfonyStyle($input, $output))->getErrorStyle();
@@ -75,11 +92,19 @@ abstract class TableMigrationCommand extends Command
 
             return self::FAILURE;
         }
+        try {
+            $extra = $this->replacements();
+        } catch (\InvalidArgumentException $exception) {
+            $errors->error($exception->getMessage());
+
+            return self::INVALID;
+        }
         $file = gmdate('YmdHis', ($this->clock)()) . "_{$name}.php";
-        $contents = strtr((string) file_get_contents(dirname(__DIR__) . "/Resources/{$this->stub()}.stub"), [
+        $contents = strtr((string) file_get_contents($this->stubPath()), [
             '{{ table }}' => var_export($table, true),
             // For index names, inside quotes in the stub; table names are letters, digits, and underscores.
             '{{ prefix }}' => substr($table, 0, 40),
+            ...$extra,
         ]);
         $handle = @fopen($directory . '/' . $file, 'x');
         if ($handle === false || fwrite($handle, $contents) !== strlen($contents) || !fclose($handle)) {

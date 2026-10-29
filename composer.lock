@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e79d8834d33bb365a389aa36c8e033d2",
+    "content-hash": "9a45b66777dbf21467734b8eed3feb5d",
     "packages": [
         {
             "name": "crystoline/xpsr-framework",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "fd93311d623cdf0d54b9f3e01996e94c8f1c9fc8"
+                "reference": "5f19ecd7f9078594baaade08cd5838b2d0b361d2"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
@@ -91,7 +91,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-fastroute",
-                "reference": "438f415c5febd7f7d87658c14c3ea3bef1cf204e"
+                "reference": "ecffa38756f88b1daf29b798451c7bb73c5c45eb"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -2990,7 +2990,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/auth-jwt",
-                "reference": "4950a877370480b74aa78971a626ee6c60e4a412"
+                "reference": "992a9a4ee446725b08dc3b6bb8ce1908dfc86e2b"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3042,7 +3042,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/cache",
-                "reference": "39a06d9fa1e487413656b6e587fcbe0039dc4649"
+                "reference": "d4cffb4ac720479a85d70eac11f31f4d13f8c3d5"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3097,7 +3097,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/database",
-                "reference": "8192ba679ac443622eb2adc39c2b5e4d6d186513"
+                "reference": "3169bd03c463808611717fca8baf61e6adde171a"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3155,7 +3155,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/http-client",
-                "reference": "70aff851716e34db9e73ff38f6e3f7dc64b22898"
+                "reference": "937f345c9bc4dbf606a2ffeb0229e76bd6298f58"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3210,7 +3210,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/log-monolog",
-                "reference": "08e028148f834b93e6b10a227f843568ee857b3f"
+                "reference": "e60f54d9a7e6cb81a39bc5dda82329cf625c82d4"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3263,7 +3263,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/orm-doctrine",
-                "reference": "7f99a7fdf2075e133ff37e4fb55c13aa5376f5fe"
+                "reference": "21e24ce51b2bb75f56fd48e752e6db14a8b1764d"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.3@dev",
@@ -3320,7 +3320,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/orm-eloquent",
-                "reference": "bf01e1ce45bd7832285cd92c4cf26da6669d0bec"
+                "reference": "649f5caa57d6446238ce3cb885cc196fd37a0267"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.3@dev",
@@ -3368,12 +3368,79 @@
             }
         },
         {
+            "name": "crystoline/xpsr-queue",
+            "version": "0.3.x-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/queue",
+                "reference": "a70f9f1cc20cefefa3e1ced30a5eb001cc8cd60b"
+            },
+            "require": {
+                "crystoline/xpsr-database": "^0.3@dev",
+                "crystoline/xpsr-framework": "^0.3@dev",
+                "doctrine/dbal": "^4.5",
+                "php": "^8.4",
+                "psr/cache": "^2.0 || ^3.0",
+                "psr/clock": "^1.0",
+                "psr/container": "^2.0",
+                "psr/log": "^3.0",
+                "symfony/console": "^7.4",
+                "symfony/doctrine-messenger": "^7.4 || ^8.0",
+                "symfony/event-dispatcher": "^7.4 || ^8.0",
+                "symfony/messenger": "^7.4 || ^8.0"
+            },
+            "conflict": {
+                "symfony/event-dispatcher-contracts": "<3.5"
+            },
+            "require-dev": {
+                "nyholm/psr7": "^1.8.2",
+                "phpunit/phpunit": "^12.5",
+                "symfony/cache": "^7.4"
+            },
+            "suggest": {
+                "crystoline/xpsr-cache": "Needed for php xpsr queue:restart, which tells workers to stop after their current job",
+                "symfony/amazon-sqs-messenger": "The sqs:// transport (Amazon SQS)",
+                "symfony/amqp-messenger": "The amqp:// transport (RabbitMQ)",
+                "symfony/redis-messenger": "The redis:// transport"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\Queue\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\Queue\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adekunle",
+                    "email": "crystoline@gmail.com"
+                }
+            ],
+            "description": "Queued jobs for XPSR applications on Symfony Messenger: self-handling jobs, sync, database, Redis, AMQP, or SQS transports, retries, and a failed jobs table",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "crystoline/xpsr-router-sunrise",
             "version": "0.3.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/router-sunrise",
-                "reference": "145ef4c6a686fe84395a8358bfb0f3571baab4d3"
+                "reference": "7d9a3b0006de9dd65abb929e9d581d4401ac38e2"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -3422,7 +3489,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/validation",
-                "reference": "baf96c21bd4879311bac05106b943c2daa76634b"
+                "reference": "c2710879b70276a08502e01127232d67b4d213e5"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.3@dev",
@@ -8033,6 +8100,84 @@
             "time": "2026-06-05T06:23:12+00:00"
         },
         {
+            "name": "symfony/doctrine-messenger",
+            "version": "v8.1.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/doctrine-messenger.git",
+                "reference": "93f7a99905564a478076bdef84a082c6c3f4135e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/doctrine-messenger/zipball/93f7a99905564a478076bdef84a082c6c3f4135e",
+                "reference": "93f7a99905564a478076bdef84a082c6c3f4135e",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/dbal": "^4.3",
+                "php": ">=8.4.1",
+                "symfony/deprecation-contracts": "^2.5|^3",
+                "symfony/event-dispatcher": "^7.4|^8.0",
+                "symfony/messenger": "^8.1",
+                "symfony/service-contracts": "^2.5|^3"
+            },
+            "conflict": {
+                "doctrine/persistence": "<1.3"
+            },
+            "require-dev": {
+                "doctrine/persistence": "^1.3|^2|^3|^4",
+                "symfony/property-access": "^7.4|^8.0",
+                "symfony/serializer": "^7.4|^8.0"
+            },
+            "type": "symfony-messenger-bridge",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Messenger\\Bridge\\Doctrine\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Doctrine Messenger Bridge",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/doctrine-messenger/tree/v8.1.10"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-10-18T14:56:39+00:00"
+        },
+        {
             "name": "symfony/error-handler",
             "version": "v8.1.8",
             "source": {
@@ -8732,6 +8877,98 @@
                 }
             ],
             "time": "2026-10-14T06:44:08+00:00"
+        },
+        {
+            "name": "symfony/messenger",
+            "version": "v8.1.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/messenger.git",
+                "reference": "3d2eab059d05806c773ee145969d62c5ba1b84b0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/messenger/zipball/3d2eab059d05806c773ee145969d62c5ba1b84b0",
+                "reference": "3d2eab059d05806c773ee145969d62c5ba1b84b0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.4.1",
+                "psr/log": "^1|^2|^3",
+                "symfony/clock": "^7.4|^8.0",
+                "symfony/deprecation-contracts": "^2.5|^3"
+            },
+            "conflict": {
+                "symfony/console": "<7.4",
+                "symfony/dependency-injection": "<8.1",
+                "symfony/event-dispatcher-contracts": "<2.5",
+                "symfony/lock": "<7.4",
+                "symfony/serializer": "<7.4.4|>=8.0,<8.0.4"
+            },
+            "require-dev": {
+                "psr/cache": "^1.0|^2.0|^3.0",
+                "symfony/console": "^7.4|^8.0",
+                "symfony/dependency-injection": "^8.1",
+                "symfony/event-dispatcher": "^7.4|^8.0",
+                "symfony/http-kernel": "^7.4|^8.0",
+                "symfony/lock": "^7.4|^8.0",
+                "symfony/process": "^7.4|^8.0",
+                "symfony/property-access": "^7.4|^8.0",
+                "symfony/rate-limiter": "^7.4|^8.0",
+                "symfony/routing": "^7.4|^8.0",
+                "symfony/serializer": "^7.4.4|^8.0.4",
+                "symfony/service-contracts": "^2.5|^3",
+                "symfony/stopwatch": "^7.4|^8.0",
+                "symfony/validator": "^7.4|^8.0",
+                "symfony/var-dumper": "^7.4|^8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Messenger\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Samuel Roze",
+                    "email": "samuel.roze@gmail.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Helps applications send and receive messages to/from other applications or via message queues",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/messenger/tree/v8.1.10"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-10-27T15:51:13+00:00"
         },
         {
             "name": "symfony/options-resolver",
@@ -10108,6 +10345,7 @@
         "crystoline/xpsr-log-monolog": 20,
         "crystoline/xpsr-orm-doctrine": 20,
         "crystoline/xpsr-orm-eloquent": 20,
+        "crystoline/xpsr-queue": 20,
         "crystoline/xpsr-router-fastroute": 20,
         "crystoline/xpsr-router-sunrise": 20,
         "crystoline/xpsr-validation": 20

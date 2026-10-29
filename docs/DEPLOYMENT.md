@@ -103,6 +103,30 @@ Sessions are kept in `var/sessions` by default, so the web server user must be a
 - **Login throttling.** Put `RateLimit::named('login')` on sign-in routes, with a shared cache when there are several servers.
 - **HTTPS** is required for sign-in: passwords, session cookies, and tokens travel in every request.
 
+## Queue workers
+
+With `crystoline/xpsr-queue` on a transport other than `sync://`, run `php xpsr queue:work` under a process supervisor that restarts it when it exits. For systemd:
+
+```ini
+[Unit]
+Description=XPSR queue worker
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/var/www/app
+ExecStart=/usr/bin/php xpsr queue:work --time-limit=3600 --memory-limit=256M
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+- **Deploys.** Run `php xpsr queue:restart` after deploying: workers finish their current job and exit, and the supervisor starts them on the new code. It needs a shared cache (`crystoline/xpsr-cache`).
+- **Limits.** `--time-limit` and `--memory-limit` make workers exit regularly, which keeps long-running PHP processes from slowly growing.
+- **Several servers** can run workers on the same database, Redis, AMQP, or SQS transport; each job is delivered to one worker.
+- **Failed jobs** are kept in `failed_jobs`; check `php xpsr queue:failed` after incidents.
+
 ## Performance
 
 - Enable OPcache. With `opcache.validate_timestamps=0`, reload PHP-FPM or Apache on every deploy.
@@ -111,7 +135,6 @@ Sessions are kept in `var/sessions` by default, so the web server user must be a
 
 ## Not provided yet
 
-- **Process supervision for workers or queues.** XPSR has no queue or worker runtime.
 - **Long-running servers** (RoadRunner, FrankenPHP worker mode, Swoole). Isolation between requests in a single long-running process has not been verified.
 
 ## After deploying

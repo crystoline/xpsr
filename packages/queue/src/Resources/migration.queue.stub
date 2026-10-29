@@ -1,0 +1,61 @@
+<?php
+
+declare(strict_types=1);
+
+use Crystoline\Xpsr\Database\Migration\Migration;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\Index;
+use Doctrine\DBAL\Schema\PrimaryKeyConstraint;
+use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\Types;
+
+/**
+ * The tables of crystoline/xpsr-queue: queued messages for database:// transports, laid out as
+ * Symfony Messenger's Doctrine transport expects, and jobs that ran out of retries.
+ */
+return new class extends Migration {
+    public function up(Connection $db): void
+    {
+        $schema = $db->createSchemaManager();
+        $schema->createTable(
+            Table::editor()
+                ->setUnquotedName({{ table }})
+                ->setColumns(
+                    Column::editor()->setUnquotedName('id')->setTypeName(Types::BIGINT)->setAutoincrement(true)->create(),
+                    Column::editor()->setUnquotedName('body')->setTypeName(Types::TEXT)->create(),
+                    Column::editor()->setUnquotedName('headers')->setTypeName(Types::TEXT)->create(),
+                    Column::editor()->setUnquotedName('queue_name')->setTypeName(Types::STRING)->setLength(190)->create(),
+                    Column::editor()->setUnquotedName('created_at')->setTypeName(Types::DATETIME_IMMUTABLE)->create(),
+                    Column::editor()->setUnquotedName('available_at')->setTypeName(Types::DATETIME_IMMUTABLE)->create(),
+                    Column::editor()->setUnquotedName('delivered_at')->setTypeName(Types::DATETIME_IMMUTABLE)->setNotNull(false)->create(),
+                )
+                ->setPrimaryKeyConstraint(PrimaryKeyConstraint::editor()->setUnquotedColumnNames('id')->create())
+                ->setIndexes(Index::editor()->setUnquotedName('{{ prefix }}_next')->setUnquotedColumnNames('queue_name', 'available_at', 'delivered_at', 'id')->create())
+                ->create(),
+        );
+        $schema->createTable(
+            Table::editor()
+                ->setUnquotedName({{ failed }})
+                ->setColumns(
+                    Column::editor()->setUnquotedName('id')->setTypeName(Types::INTEGER)->setAutoincrement(true)->create(),
+                    Column::editor()->setUnquotedName('transport')->setTypeName(Types::STRING)->setLength(190)->create(),
+                    Column::editor()->setUnquotedName('job')->setTypeName(Types::STRING)->setLength(255)->create(),
+                    // The job, serialized and base64-encoded, for queue:retry.
+                    Column::editor()->setUnquotedName('payload')->setTypeName(Types::TEXT)->create(),
+                    Column::editor()->setUnquotedName('error')->setTypeName(Types::TEXT)->create(),
+                    // Unix time.
+                    Column::editor()->setUnquotedName('failed_at')->setTypeName(Types::INTEGER)->create(),
+                )
+                ->setPrimaryKeyConstraint(PrimaryKeyConstraint::editor()->setUnquotedColumnNames('id')->create())
+                ->create(),
+        );
+    }
+
+    public function down(Connection $db): void
+    {
+        $schema = $db->createSchemaManager();
+        $schema->dropTable({{ failed }});
+        $schema->dropTable({{ table }});
+    }
+};
