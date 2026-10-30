@@ -134,8 +134,9 @@ $this->alterTable($db, 'users', static function (TableEditor $table): void {
 | `php xpsr migrate:rollback` | Rolls back the last batch, newest first. `--steps=N` rolls back the last N migrations instead. |
 | `php xpsr migrate:status` | Lists each migration as ran, pending, or "ran, file missing", with its batch. `--json` for scripts. |
 | `php xpsr make:migration <name>` | Writes a timestamped file. `--create=table` starts from a create-table migration and `--table=table` from an alter-table one. `CreateUsersTable` and `create-users-table` both become `create_users_table`. A name already used by another migration is refused. `--diff` writes the SQL that brings the database in line with an expected schema, see below. |
+| `php xpsr migrate:baseline` | Writes a migration that creates every table an existing database has, and records it as run there. See [Starting from an existing database](#starting-from-an-existing-database). |
 
-`migrate`, `migrate:rollback`, and `migrate:status` accept `--connection=<name>`. Each connection keeps its own migrations table.
+`migrate`, `migrate:rollback`, `migrate:status`, and `migrate:baseline` accept `--connection=<name>`. Each connection keeps its own migrations table.
 
 **Generated migrations.** An ORM adapter such as `crystoline/xpsr-orm-doctrine` binds `Crystoline\Xpsr\Database\Schema\SchemaProviderInterface`, which describes the tables the application expects. `php xpsr make:migration <name> --diff` then compares the database with it and writes a migration whose `up()` runs the SQL for the difference and whose `down()` reverses it. Only tables the schema names are compared, so the migrations table and other tables are never dropped. Pending migrations must run first, and nothing is written when there is no difference. Without a schema provider, `--diff` exits with 1 and says so.
 
@@ -144,6 +145,27 @@ $this->alterTable($db, 'users', static function (TableEditor $table): void {
 **Failures.** A migration that throws stops the run; later migrations do not run, and the command exits with 1 naming the migration. Migrations that completed before it stay applied and recorded. On PostgreSQL and SQLite, a migration runs in a transaction with its bookkeeping, so a failed migration leaves nothing behind. MySQL and MariaDB commit each schema change immediately: a migration that fails part-way stays partly applied and needs repairing by hand, so keep each migration small there. Set `protected bool $transactional = false;` in a migration whose statements cannot run in a transaction, such as PostgreSQL's `CREATE INDEX CONCURRENTLY`.
 
 **Rolling back.** `down()` is optional. Without it, rolling back that migration fails with a message, and nothing after it in the rollback runs. A migration whose file was deleted after it ran shows as "ran, file missing" and cannot be rolled back.
+
+### Starting from an existing database
+
+An application that already has a database, for example one moving from Laravel, starts its migrations with a baseline:
+
+```sh
+php xpsr migrate:baseline --exclude=cache --exclude=jobs
+```
+
+1. It reads every table of the database, with its columns, indexes, unique constraints, and foreign keys, and writes `migrations/00000000000000_baseline.php`. The file builds them with DBAL's schema editors, as a hand-written migration would, so it runs on any database DBAL supports: the MySQL tables of production can be created in SQLite for tests.
+2. It checks the file: the tables it builds are compared with the database's, and any difference is printed as the statements that would close it. Some details have no DBAL equivalent, such as a MySQL column type DBAL maps to another.
+3. It records the baseline as run on this database, without running it: the tables are already there.
+
+The name sorts before every other migration. On a new database, `php xpsr migrate` runs the baseline and then the later migrations. On another database that already has the tables, such as staging, `migrate:baseline` finds the file and only records it, after checking that each of its tables is there. Rolling the baseline back is refused, because it would drop every table.
+
+- **Left out:** the migrations table, Laravel's migrations table (`id`, `migration`, `batch`), and each `--exclude` table. The data, views, triggers, stored procedures, and sequences that no auto-increment column uses are not in the baseline either; the command names the views and sequences it saw.
+- **Before other migrations.** It refuses when other migrations have already run on the database: their tables would be in the baseline, and a new database would get them twice. Pending migrations are fine; they run after it.
+- **Production** needs `--force`, or a confirmation in a terminal, as `migrate` does.
+- **Another runner.** It works with XPSR's migrator, not with one in `database.migrations.runner`.
+
+**Laravel's migrations table.** A Laravel database has a `migrations` table of its own, which XPSR cannot use: it has no `executed_at` column. The migration commands stop with a message when `database.migrations.table` names it. Set another name, such as `'table' => 'xpsr_migrations'` in `config/database.php`, and both lists stay side by side.
 
 ## Testing
 

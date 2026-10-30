@@ -131,6 +131,30 @@ final class Migrator implements MigratorInterface
         return $done;
     }
 
+    /**
+     * Record a migration as run without running it, as one new batch: for a baseline whose
+     * tables the database already has.
+     */
+    public function record(string $name): void
+    {
+        if (!isset($this->files()[$name])) {
+            throw new MigrationException("There is no migration {$name} in {$this->directory}.");
+        }
+        if (isset($this->repository->ran()[$name])) {
+            throw new MigrationException("{$name} is already recorded as run on this database.");
+        }
+        $this->repository->create();
+        $this->repository->log($name, $this->repository->lastBatch() + 1);
+    }
+
+    /** The migration in a file, loaded once per process as for running it. */
+    public function migration(string $name): Migration
+    {
+        $files = $this->files();
+
+        return isset($files[$name]) ? $this->load($name, $files[$name]) : throw new MigrationException("There is no migration {$name} in {$this->directory}.");
+    }
+
     /** @return array<string, string> migration name => file path, in name order */
     private function files(): array
     {

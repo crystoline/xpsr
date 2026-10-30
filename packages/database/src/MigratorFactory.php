@@ -25,12 +25,18 @@ final class MigratorFactory implements MigratorFactoryInterface
 
     public function create(?string $connection = null): Migrator
     {
+        return new Migrator($this->connections->connection($connection), $this->directory(), $this->table());
+    }
+
+    /** The table that records which migrations ran. */
+    public function table(): string
+    {
         $table = $this->config['table'] ?? 'migrations';
         if (!is_string($table)) {
             throw new InvalidArgumentException('database.migrations.table must be a table name.');
         }
 
-        return new Migrator($this->connections->connection($connection), $this->directory(), $table);
+        return $table;
     }
 
     /** The absolute migrations directory. */

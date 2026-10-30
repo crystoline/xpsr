@@ -8,6 +8,7 @@ use Crystoline\Xpsr\Application;
 use Crystoline\Xpsr\Configuration;
 use Crystoline\Xpsr\Console\CommandRegistry;
 use Crystoline\Xpsr\Database\Console\MakeMigrationCommand;
+use Crystoline\Xpsr\Database\Console\MigrateBaselineCommand;
 use Crystoline\Xpsr\Database\Console\MigrateCommand;
 use Crystoline\Xpsr\Database\Console\MigrateRollbackCommand;
 use Crystoline\Xpsr\Auth\AuthOptions;
@@ -41,7 +42,7 @@ use Psr\Log\LoggerInterface;
  *                                                                   service in database.migrations.runner
  *
  * the session store for session.store "database", the "database" user provider and the "token"
- * and "sanctum" guards for config/auth.php, and migrate, migrate:rollback, migrate:status, make:migration,
+ * and "sanctum" guards for config/auth.php, and migrate, migrate:rollback, migrate:status, migrate:baseline, make:migration,
  * make:session-table, make:token-table, auth:token, and auth:token-revoke when the console is
  * part of the application. Configuration lives in config/database.php.
  */
@@ -84,7 +85,7 @@ final class DatabaseServiceRegistry extends ServiceRegistry
 
             return $factory;
         }, shared: true);
-        foreach ([MigrateCommand::class, MigrateRollbackCommand::class, MigrateStatusCommand::class, MakeMigrationCommand::class, MakeSessionTableCommand::class, MakeTokenTableCommand::class, CreateTokenCommand::class, RevokeTokenCommand::class] as $command) {
+        foreach ([MigrateCommand::class, MigrateRollbackCommand::class, MigrateStatusCommand::class, MigrateBaselineCommand::class, MakeMigrationCommand::class, MakeSessionTableCommand::class, MakeTokenTableCommand::class, CreateTokenCommand::class, RevokeTokenCommand::class] as $command) {
             $this->container->bind($command);
         }
         // auth.users driver "database" and auth.guards driver "token", resolved by the framework's AuthManager.
@@ -137,6 +138,7 @@ final class DatabaseServiceRegistry extends ServiceRegistry
         $commands->register('migrate', MigrateCommand::class, 'Run the pending database migrations.');
         $commands->register('migrate:rollback', MigrateRollbackCommand::class, 'Roll back the last batch of migrations.');
         $commands->register('migrate:status', MigrateStatusCommand::class, 'Show which migrations have run.');
+        $commands->register('migrate:baseline', MigrateBaselineCommand::class, 'Write a migration with every table the database has, and record it as run there.');
         $commands->register('make:migration', MakeMigrationCommand::class, 'Create a migration file.');
         $commands->register('make:session-table', MakeSessionTableCommand::class, 'Create the migration for the database session table.');
         $commands->register('make:token-table', MakeTokenTableCommand::class, 'Create the migration for the API token table.');

@@ -26,6 +26,12 @@ Nothing breaks if the web server can write `var/locks`, which rate limits now us
   - `expires_at` and `auth.sanctum.expiration` end tokens as in Sanctum. Times are in `app.timezone`, as Laravel stores them.
   - `SanctumTokenRepository` creates, lists, and revokes tokens from code, and `auth:token` and `auth:token-revoke` work on sanctum guards. `auth:token-revoke` gains `--guard`.
   - Checked against Laravel Sanctum 4 itself: each accepts tokens the other created.
+- `php xpsr migrate:baseline` in `crystoline/xpsr-database` starts the migrations of an existing database, such as a Laravel application's. See [its README](packages/database/README.md#starting-from-an-existing-database).
+  - It writes `migrations/00000000000000_baseline.php`, which creates every table the database has, with columns, indexes, unique constraints, and foreign keys. The file uses DBAL's schema editors, so the tables of a MySQL database can also be created in SQLite for tests.
+  - It compares the tables the file builds with the database's and prints any difference, then records the baseline as run without running it.
+  - On another database that already has the tables, it only records the baseline. Rolling the baseline back is refused.
+  - `--exclude` leaves tables out, and Laravel's migrations table is left out on its own.
+  - The migration commands stop with a message when `database.migrations.table` names Laravel's migrations table, which has no `executed_at` column. Before, `migrate` failed with a database error when it recorded a migration.
 - `php xpsr view:clear` empties `app.view_cache_dir`, for deploys that keep the files' original times. See [docs/VIEWS.md](docs/VIEWS.md).
 
 ### Changed

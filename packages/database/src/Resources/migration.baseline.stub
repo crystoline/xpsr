@@ -1,0 +1,27 @@
+<?php
+
+declare(strict_types=1);
+
+{{ uses }}
+
+// The baseline: the {{ count }} tables of the {{ platform }} database on {{ date }}, written by
+// php xpsr migrate:baseline. Databases that already have them record it as run without running
+// it (php xpsr migrate:baseline); on a new database, php xpsr migrate creates them.
+return new class extends Migration {
+    public function up(Connection $db): void
+    {
+        $db->createSchemaManager()->createSchemaObjects(self::schema());
+    }
+
+    public function down(Connection $db): void
+    {
+        throw new MigrationException('The baseline is not rolled back: that would drop every table it created.');
+    }
+
+    public static function schema(): Schema
+    {
+        return new Schema([
+{{ tables }}
+        ]);
+    }
+};

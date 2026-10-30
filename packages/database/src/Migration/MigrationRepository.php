@@ -20,6 +20,8 @@ use InvalidArgumentException;
  */
 final class MigrationRepository
 {
+    private bool $checked = false;
+
     public function __construct(private readonly Connection $connection, private readonly string $table = 'migrations')
     {
         if (!preg_match('/\A[A-Za-z_][A-Za-z0-9_]{0,62}\z/', $table)) {
@@ -27,9 +29,31 @@ final class MigrationRepository
         }
     }
 
+    /** @throws MigrationException when the table exists but is not XPSR's, such as Laravel's */
     public function exists(): bool
     {
-        return $this->connection->createSchemaManager()->tableExists($this->table);
+        $schema = $this->connection->createSchemaManager();
+        if (!$schema->tableExists($this->table)) {
+            return false;
+        }
+        if (!$this->checked) {
+            $columns = array_map(
+                static fn(Column $column): string => strtolower($column->getObjectName()->getIdentifier()->getValue()),
+                $schema->introspectTableByUnquotedName($this->table)->getColumns(),
+            );
+            if (!in_array('executed_at', $columns, true)) {
+                // Laravel's has id, migration, and batch: a database moving from Laravel has one.
+                $laravel = array_diff(['id', 'migration', 'batch'], $columns) === [];
+                throw new MigrationException(sprintf(
+                    'The table %s is not XPSR\'s record of migrations: it has no executed_at column%s. Set database.migrations.table to another name, such as xpsr_migrations, so XPSR keeps its own record.',
+                    $this->table,
+                    $laravel ? '. It looks like Laravel\'s' : '',
+                ));
+            }
+            $this->checked = true;
+        }
+
+        return true;
     }
 
     public function create(): void
