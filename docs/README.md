@@ -48,6 +48,7 @@ lead there.
 - [Queues](../packages/queue/README.md)
 - [Mail](../packages/mail/README.md)
 - [Locks](../packages/lock/README.md)
+- [Notifications](../packages/notifications/README.md)
 - [Scheduler](../packages/scheduler/README.md)
 - [File storage](../packages/storage/README.md)
 - [Plates views](../packages/view-plates/README.md)

@@ -1,0 +1,65 @@
+{
+  "name": "crystoline/xpsr-notifications",
+  "description": "Notifications for XPSR applications: email, SMS through Symfony Notifier's providers, an in-app inbox in the database, and browser push",
+  "type": "library",
+  "license": "MIT",
+  "homepage": "https://xpsr.crysto.name.ng",
+  "authors": [
+    {
+      "name": "Adekunle",
+      "email": "crystoline@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.4",
+    "crystoline/xpsr-framework": "^0.4@dev",
+    "psr/clock": "^1.0",
+    "psr/container": "^2.0",
+    "psr/event-dispatcher": "^1.0",
+    "psr/log": "^3.0",
+    "symfony/console": "^7.4",
+    "symfony/notifier": "^7.4 || ^8.0"
+  },
+  "require-dev": {
+    "crystoline/xpsr-database": "^0.4@dev",
+    "crystoline/xpsr-http-client": "^0.4@dev",
+    "crystoline/xpsr-mail": "^0.4@dev",
+    "crystoline/xpsr-queue": "^0.4@dev",
+    "minishlink/web-push": "^11.0",
+    "nyholm/psr7": "^1.8.2",
+    "phpunit/phpunit": "^12.5",
+    "symfony/termii-notifier": "^7.4 || ^8.0",
+    "twig/twig": "^3.4"
+  },
+  "suggest": {
+    "crystoline/xpsr-mail": "The mail channel",
+    "crystoline/xpsr-database": "The database channel (an in-app inbox) and the push subscriptions of the webpush channel",
+    "crystoline/xpsr-queue": "Needed for Notifier::queue(), which sends notifications from a worker",
+    "crystoline/xpsr-http-client": "The HTTP client SMS providers and web push send through",
+    "minishlink/web-push": "The webpush channel: browser push with VAPID keys",
+    "symfony/twilio-notifier": "twilio:// SMS, and Symfony has bridges for most SMS providers, such as termii://, vonage://, and infobip://"
+  },
+  "conflict": {
+    "php-http/discovery": "<1.19.3"
+  },
+  "config": {
+    "allow-plugins": {
+      "php-http/discovery": false
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Notifications\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Notifications\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.4.x-dev"
+    }
+  }
+}

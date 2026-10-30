@@ -39,6 +39,14 @@ Nothing breaks if the web server can write `var/locks`, which rate limits now us
   - `FakeQueue` drops duplicates too, and lists them in `dropped()`. `queue:retry` keeps a failed unique job, and says so, while an identical job is queued or running.
 - Queued jobs carry the request ID of `crystoline/xpsr-log-monolog`. The worker logs with it while the job runs, so a request's log lines and those of the jobs it queued share one `request_id`.
 - `Locks::key()` and `Locks::fromKey()` in `crystoline/xpsr-lock` let a process release a lock another process took, by sending the lock's key. See [its README](packages/lock/README.md#releasing-a-lock-in-another-process).
+- `crystoline/xpsr-notifications`: notifications by email, SMS, an in-app inbox, and browser push. See [its README](packages/notifications/README.md).
+  - A notification goes to the channels whose interfaces it implements (`MailNotificationInterface`, `SmsNotificationInterface`, `DatabaseNotificationInterface`, `WebPushNotificationInterface`), or to those its `channels()` method chooses for each recipient. Channels of your own implement `ChannelInterface`.
+  - `send()` tries every channel, then throws one exception that lists the failures. `queue()` makes the messages at once and queues one job for each recipient and channel, so a channel that fails is retried alone.
+  - SMS goes through Symfony Notifier's provider bridges, such as Termii, Twilio, or Vonage, chosen by a DSN, with failover to a second provider.
+  - `Inbox` lists, counts, marks, and deletes a user's stored notifications. Every call is limited to that user's notifications.
+  - Web push signs with VAPID keys (`php xpsr webpush:keys`) and keeps browsers' subscriptions in `PushSubscriptions`. It accepts endpoints only on known push services, and deletes subscriptions that have expired.
+  - The notifications and push subscriptions tables, the web push JSON, and the `VAPID_*` keys are Laravel's, so an application that moves from Laravel keeps its users' notifications and subscribed browsers.
+  - `FakeNotifier` makes the messages and keeps them instead of sending them, for tests.
 - `php xpsr view:clear` empties `app.view_cache_dir`, for deploys that keep the files' original times. See [docs/VIEWS.md](docs/VIEWS.md).
 
 ### Changed

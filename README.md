@@ -23,6 +23,7 @@ This repository develops several Composer packages together:
 | `packages/queue` | `crystoline/xpsr-queue` | Queued jobs on Symfony Messenger: sync, database, Redis, AMQP, or SQS; retries and a failed jobs table (optional; see [its README](packages/queue/README.md)) |
 | `packages/mail` | `crystoline/xpsr-mail` | Email on Symfony Mailer: SMTP, sendmail, or a provider by DSN; views as bodies; queued sending (optional; see [its README](packages/mail/README.md)) |
 | `packages/lock` | `crystoline/xpsr-lock` | Locks across processes and servers: files, Redis, Redlock, or the database (optional; see [its README](packages/lock/README.md)) |
+| `packages/notifications` | `crystoline/xpsr-notifications` | Notifications by email, SMS, an in-app inbox, and browser push, on Laravel's tables (optional; see [its README](packages/notifications/README.md)) |
 | `packages/scheduler` | `crystoline/xpsr-scheduler` | Scheduled tasks from one cron entry: commands, callbacks, and queued jobs, with overlap locks (optional; see [its README](packages/scheduler/README.md)) |
 | `packages/storage` | `crystoline/xpsr-storage` | File storage on Flysystem: named disks (local, S3, or your own driver), uploads, and downloads (optional; see [its README](packages/storage/README.md)) |
 | `packages/view-plates` | `crystoline/xpsr-view-plates` | Plates views (native PHP templates) in place of Twig (optional; see [docs/VIEWS.md](docs/VIEWS.md)) |

@@ -20,6 +20,7 @@ crystoline/xpsr (skeleton, repository root)
 ├── (suggested) crystoline/xpsr-queue           packages/queue ──► framework, database, symfony/messenger
 ├── (suggested) crystoline/xpsr-mail            packages/mail ──► framework, symfony/mailer
 ├── (suggested) crystoline/xpsr-lock            packages/lock ──► framework, symfony/lock
+├── (suggested) crystoline/xpsr-notifications   packages/notifications ──► framework, symfony/notifier
 ├── (suggested) crystoline/xpsr-scheduler       packages/scheduler ──► framework, dragonmantank/cron-expression, symfony/lock
 ├── (suggested) crystoline/xpsr-storage         packages/storage ──► framework, league/flysystem
 ├── (suggested) crystoline/xpsr-view-plates     packages/view-plates ──► framework, league/plates
@@ -41,6 +42,7 @@ crystoline/xpsr (skeleton, repository root)
 | `crystoline/xpsr-queue` | `Crystoline\Xpsr\Queue\` | framework, database, `symfony/messenger`, `symfony/doctrine-messenger`, and `symfony/event-dispatcher` 7.4 or 8; Redis, AMQP, and SQS through their Messenger bridges. |
 | `crystoline/xpsr-mail` | `Crystoline\Xpsr\Mail\` | framework, `symfony/mailer` and `symfony/mime` 7.4 or 8; `crystoline/xpsr-queue` for queued email; providers through Symfony's mailer bridges. |
 | `crystoline/xpsr-lock` | `Crystoline\Xpsr\Lock\` | framework, `symfony/lock` and `symfony/clock` 7.4 or 8; `symfony/cache` with phpredis or `predis/predis` for Redis and Redlock; `crystoline/xpsr-database` for the database store. |
+| `crystoline/xpsr-notifications` | `Crystoline\Xpsr\Notifications\` | framework, `symfony/notifier` 7.4 or 8; `crystoline/xpsr-mail` for the mail channel, `crystoline/xpsr-database` for the database and webpush channels, `minishlink/web-push` ^11 for web push, `crystoline/xpsr-queue` for queued notifications; SMS providers through Symfony's notifier bridges. |
 | `crystoline/xpsr-scheduler` | `Crystoline\Xpsr\Scheduler\` | framework, `dragonmantank/cron-expression` ^3.4, `symfony/lock` 7.4 or 8; `crystoline/xpsr-queue` for scheduled jobs. |
 | `crystoline/xpsr-storage` | `Crystoline\Xpsr\Storage\` | framework, `league/flysystem`, `league/flysystem-local`, and `league/flysystem-memory` ^3.29; `league/flysystem-async-aws-s3` for the s3 driver. |
 | `crystoline/xpsr-view-plates` | `Crystoline\Xpsr\View\Plates\` | framework, `league/plates` ^3.6. |
@@ -126,7 +128,7 @@ The CI job `lowest-dependencies` runs the whole suite after `composer update --p
 
 ## Publishing
 
-`scripts/split.sh` publishes the monorepo into twenty read-only repositories, and the `split` job in `.github/workflows/ci.yml` runs it after every other CI job passes:
+`scripts/split.sh` publishes the monorepo into twenty-one read-only repositories, and the `split` job in `.github/workflows/ci.yml` runs it after every other CI job passes:
 
 | Repository | Content | Packagist package |
 |---|---|---|
@@ -144,6 +146,7 @@ The CI job `lowest-dependencies` runs the whole suite after `composer update --p
 | `crystoline/xpsr-queue` | `packages/queue`, with its history | `crystoline/xpsr-queue` |
 | `crystoline/xpsr-mail` | `packages/mail`, with its history | `crystoline/xpsr-mail` |
 | `crystoline/xpsr-lock` | `packages/lock`, with its history | `crystoline/xpsr-lock` |
+| `crystoline/xpsr-notifications` | `packages/notifications`, with its history | `crystoline/xpsr-notifications` |
 | `crystoline/xpsr-scheduler` | `packages/scheduler`, with its history | `crystoline/xpsr-scheduler` |
 | `crystoline/xpsr-storage` | `packages/storage`, with its history | `crystoline/xpsr-storage` |
 | `crystoline/xpsr-view-plates` | `packages/view-plates`, with its history | `crystoline/xpsr-view-plates` |

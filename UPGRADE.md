@@ -55,6 +55,10 @@ See [docs/ENCRYPTION.md](docs/ENCRYPTION.md).
 
 For an application that moves from Laravel, a guard with `'driver' => 'sanctum'` accepts the tokens in Laravel's `personal_access_tokens` table. See [docs/AUTH.md](docs/AUTH.md#laravel-sanctum-tokens).
 
+### 7. Notifications (optional)
+
+To send notifications by email, SMS, an in-app inbox, or browser push, `composer require crystoline/xpsr-notifications`, add `Crystoline\Xpsr\Notifications\NotificationServiceRegistry::class` to `app.registry`, and create `config/notifications.php` as [its README](packages/notifications/README.md) shows. Coming from Laravel, keep its `VAPID_*` keys, and set `database.table` and `webpush.table` to its tables if their names differ.
+
 ## From 0.3 to 0.4
 
 0.4 adds sessions, sign-in, more view engines, and packages for queues, mail, scheduled tasks, file storage, and Eloquent. One change can affect existing code (step 2); everything after it is optional. Run the steps from the project root.

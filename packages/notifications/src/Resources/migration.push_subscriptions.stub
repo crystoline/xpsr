@@ -1,0 +1,56 @@
+<?php
+
+declare(strict_types=1);
+
+use Crystoline\Xpsr\Database\Migration\Migration;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\Index;
+use Doctrine\DBAL\Schema\Index\IndexType;
+use Doctrine\DBAL\Schema\PrimaryKeyConstraint;
+use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\Types;
+
+/**
+ * The browsers subscribed to web push, for crystoline/xpsr-notifications' webpush channel, laid
+ * out as the table of Laravel's web push channel (laravel-notification-channels/webpush).
+ */
+return new class extends Migration {
+    public function up(Connection $db): void
+    {
+        $endpoint = Column::editor()->setUnquotedName('endpoint')->setTypeName(Types::STRING)->setLength(1024);
+        if ($db->getDatabasePlatform() instanceof AbstractMySQLPlatform) {
+            // One byte a character, so the unique index fits MySQL's limit; case matters in URLs.
+            $endpoint->setCharset('ascii')->setCollation('ascii_bin');
+        }
+        $db->createSchemaManager()->createTable(
+            Table::editor()
+                ->setUnquotedName({{ table }})
+                ->setColumns(
+                    Column::editor()->setUnquotedName('id')->setTypeName(Types::BIGINT)->setAutoincrement(true)->create(),
+                    Column::editor()->setUnquotedName('subscribable_type')->setTypeName(Types::STRING)->setLength(255)->create(),
+                    Column::editor()->setUnquotedName('subscribable_id')->setTypeName(Types::STRING)->setLength(255)->create(),
+                    // Where the push service takes messages for one browser.
+                    $endpoint->create(),
+                    // The browser's keys (p256dh and auth), in URL-safe base64.
+                    Column::editor()->setUnquotedName('public_key')->setTypeName(Types::STRING)->setLength(255)->setNotNull(false)->create(),
+                    Column::editor()->setUnquotedName('auth_token')->setTypeName(Types::STRING)->setLength(255)->setNotNull(false)->create(),
+                    Column::editor()->setUnquotedName('content_encoding')->setTypeName(Types::STRING)->setLength(255)->setNotNull(false)->create(),
+                    Column::editor()->setUnquotedName('created_at')->setTypeName(Types::DATETIME_IMMUTABLE)->setNotNull(false)->create(),
+                    Column::editor()->setUnquotedName('updated_at')->setTypeName(Types::DATETIME_IMMUTABLE)->setNotNull(false)->create(),
+                )
+                ->setPrimaryKeyConstraint(PrimaryKeyConstraint::editor()->setUnquotedColumnNames('id')->create())
+                ->setIndexes(
+                    Index::editor()->setUnquotedName('{{ prefix }}_endpoint')->setType(IndexType::UNIQUE)->setUnquotedColumnNames('endpoint')->create(),
+                    Index::editor()->setUnquotedName('{{ prefix }}_subscribable')->setUnquotedColumnNames('subscribable_type', 'subscribable_id')->create(),
+                )
+                ->create(),
+        );
+    }
+
+    public function down(Connection $db): void
+    {
+        $db->createSchemaManager()->dropTable({{ table }});
+    }
+};

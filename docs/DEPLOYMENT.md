@@ -156,6 +156,13 @@ With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user 
 - **Rate limits** lock each count. With several servers and a shared cache, they also need the lock package on a shared store, or parallel requests on different servers can pass a limit together. See [the cache package](../packages/cache/README.md#parallel-requests-and-several-servers).
 - **Locks are not exactly-once.** A lock that expires while its holder is stalled can be taken by another process. Keep payments and other once-only work safe in the database as well, with a unique idempotency key or `SELECT … FOR UPDATE`.
 
+## Notifications
+
+- **SMS** needs the provider's credentials in `SMS_DSN`, such as `termii://API_KEY@default?from=MPAY&channel=generic`. The default, `log://default`, only writes each SMS to the log.
+- **Web push keys** (`VAPID_PUBLIC_KEY` and `VAPID_PRIVATE_KEY`) must stay the same across deploys and servers. Browsers that subscribed with one public key get no pushes signed with another.
+- **Queued notifications** need queue workers (see [Queue workers](#queue-workers)). A channel that fails is retried alone, so a retry does not send the other channels again.
+- See [the notifications package](../packages/notifications/README.md).
+
 ## File storage
 
 - **Local disks** (`var/storage` by default) must survive deploys: keep them outside the release directory, or link them in, and back them up.

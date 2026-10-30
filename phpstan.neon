@@ -22,6 +22,8 @@ parameters:
         - packages/validation/tests
         - packages/auth-jwt/src
         - packages/auth-jwt/tests
+        - packages/notifications/src
+        - packages/notifications/tests
         - packages/lock/src
         - packages/lock/tests
         - packages/view-blade/src

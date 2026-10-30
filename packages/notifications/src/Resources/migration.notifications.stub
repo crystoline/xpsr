@@ -1,0 +1,46 @@
+<?php
+
+declare(strict_types=1);
+
+use Crystoline\Xpsr\Database\Migration\Migration;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\Index;
+use Doctrine\DBAL\Schema\PrimaryKeyConstraint;
+use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\Types;
+
+/**
+ * The table of crystoline/xpsr-notifications' database channel, laid out as Laravel's
+ * notifications table. notifiable_id is text, so recipients can have UUIDs as IDs.
+ */
+return new class extends Migration {
+    public function up(Connection $db): void
+    {
+        $db->createSchemaManager()->createTable(
+            Table::editor()
+                ->setUnquotedName({{ table }})
+                ->setColumns(
+                    Column::editor()->setUnquotedName('id')->setTypeName(Types::GUID)->create(),
+                    // The notification's class, or its databaseType().
+                    Column::editor()->setUnquotedName('type')->setTypeName(Types::STRING)->setLength(255)->create(),
+                    Column::editor()->setUnquotedName('notifiable_type')->setTypeName(Types::STRING)->setLength(255)->create(),
+                    Column::editor()->setUnquotedName('notifiable_id')->setTypeName(Types::STRING)->setLength(255)->create(),
+                    // JSON.
+                    Column::editor()->setUnquotedName('data')->setTypeName(Types::TEXT)->create(),
+                    // "Y-m-d H:i:s" in the application's time zone, as Laravel stores them.
+                    Column::editor()->setUnquotedName('read_at')->setTypeName(Types::DATETIME_IMMUTABLE)->setNotNull(false)->create(),
+                    Column::editor()->setUnquotedName('created_at')->setTypeName(Types::DATETIME_IMMUTABLE)->setNotNull(false)->create(),
+                    Column::editor()->setUnquotedName('updated_at')->setTypeName(Types::DATETIME_IMMUTABLE)->setNotNull(false)->create(),
+                )
+                ->setPrimaryKeyConstraint(PrimaryKeyConstraint::editor()->setUnquotedColumnNames('id')->create())
+                ->setIndexes(Index::editor()->setUnquotedName('{{ prefix }}_notifiable')->setUnquotedColumnNames('notifiable_type', 'notifiable_id')->create())
+                ->create(),
+        );
+    }
+
+    public function down(Connection $db): void
+    {
+        $db->createSchemaManager()->dropTable({{ table }});
+    }
+};

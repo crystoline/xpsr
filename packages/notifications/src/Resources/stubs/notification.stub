@@ -1,0 +1,38 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Crystoline\Xpsr\Mail\Mailer;
+use Crystoline\Xpsr\Notifications\DatabaseNotificationInterface;
+use Crystoline\Xpsr\Notifications\MailNotificationInterface;
+use Crystoline\Xpsr\Notifications\NotifiableInterface;
+use Symfony\Component\Mime\Email;
+
+/**
+ * Send with: $notifier->send($user, new {{ class }}(...)); or later, from a queue worker, with
+ * $notifier->queue(...). Each channel interface it implements is a channel it goes to:
+ * MailNotificationInterface, SmsNotificationInterface, DatabaseNotificationInterface, or
+ * WebPushNotificationInterface.
+ */
+final class {{ class }} implements MailNotificationInterface, DatabaseNotificationInterface
+{
+    /** Its messages are made when it is sent or queued, so its data can be entities. */
+    public function __construct(
+        public readonly string $reference,
+    ) {}
+
+    public function toMail(NotifiableInterface $to, Mailer $mailer): Email
+    {
+        return (new Email())
+            ->subject('{{ class }}')
+            ->text("Reference {$this->reference}.");
+    }
+
+    /** Kept for the in-app inbox (Inbox), as JSON. */
+    public function toDatabase(NotifiableInterface $to): array
+    {
+        return ['reference' => $this->reference];
+    }
+}
