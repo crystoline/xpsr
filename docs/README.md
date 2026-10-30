@@ -15,6 +15,7 @@ lead there.
 
 - [Getting started](GETTING_STARTED.md)
 - [Deployment](DEPLOYMENT.md)
+- [Coming from Laravel](FROM_LARAVEL.md)
 
 ## The basics
 
@@ -60,3 +61,4 @@ lead there.
 - [Versioning](VERSIONING.md)
 - [Upgrade guide](../UPGRADE.md)
 - [Changelog](../CHANGELOG.md)
+- [Security policy](../SECURITY.md)

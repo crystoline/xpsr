@@ -6,6 +6,8 @@ The framework now provides application bootstrapping, a PSR-11 container with ex
 
 **New to XPSR?** Follow [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) to build a small API with tests. Then read [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) before going to production. [docs/README.md](docs/README.md) lists every guide; the documentation is also on the web, with search, at [xpsr.crysto.name.ng](https://xpsr.crysto.name.ng/docs/). Release promises are in [docs/VERSIONING.md](docs/VERSIONING.md), and changes are in [CHANGELOG.md](CHANGELOG.md).
 
+**Coming from Laravel?** [docs/FROM_LARAVEL.md](docs/FROM_LARAVEL.md) moves an application over, keeping its database, encrypted data, Sanctum tokens, and users. To report a vulnerability, see [SECURITY.md](SECURITY.md).
+
 ## Repository layout
 
 This repository develops several Composer packages together:

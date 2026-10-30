@@ -47,6 +47,8 @@ Nothing breaks if the web server can write `var/locks`, which rate limits now us
   - Web push signs with VAPID keys (`php xpsr webpush:keys`) and keeps browsers' subscriptions in `PushSubscriptions`. It accepts endpoints only on known push services, and deletes subscriptions that have expired.
   - The notifications and push subscriptions tables, the web push JSON, and the `VAPID_*` keys are Laravel's, so an application that moves from Laravel keeps its users' notifications and subscribed browsers.
   - `FakeNotifier` makes the messages and keeps them instead of sending them, for tests.
+- [docs/FROM_LARAVEL.md](docs/FROM_LARAVEL.md) moves a Laravel application to XPSR: what carries over as it is, the steps, Laravel's APIs and their XPSR counterparts, and running both on one database during the move.
+- [SECURITY.md](SECURITY.md): how to report a vulnerability, and which versions get fixes.
 - `php xpsr view:clear` empties `app.view_cache_dir`, for deploys that keep the files' original times. See [docs/VIEWS.md](docs/VIEWS.md).
 
 ### Changed
