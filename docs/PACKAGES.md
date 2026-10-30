@@ -126,7 +126,7 @@ The CI job `lowest-dependencies` runs the whole suite after `composer update --p
 
 ## Publishing
 
-`scripts/split.sh` publishes the monorepo into ten read-only repositories, and the `split` job in `.github/workflows/ci.yml` runs it after every other CI job passes:
+`scripts/split.sh` publishes the monorepo into twenty read-only repositories, and the `split` job in `.github/workflows/ci.yml` runs it after every other CI job passes:
 
 | Repository | Content | Packagist package |
 |---|---|---|
@@ -137,11 +137,21 @@ The CI job `lowest-dependencies` runs the whole suite after `composer update --p
 | `crystoline/xpsr-http-client` | `packages/http-client`, with its history | `crystoline/xpsr-http-client` |
 | `crystoline/xpsr-database` | `packages/database`, with its history | `crystoline/xpsr-database` |
 | `crystoline/xpsr-orm-doctrine` | `packages/orm-doctrine`, with its history | `crystoline/xpsr-orm-doctrine` |
+| `crystoline/xpsr-orm-eloquent` | `packages/orm-eloquent`, with its history | `crystoline/xpsr-orm-eloquent` |
 | `crystoline/xpsr-log-monolog` | `packages/log-monolog`, with its history | `crystoline/xpsr-log-monolog` |
 | `crystoline/xpsr-validation` | `packages/validation`, with its history | `crystoline/xpsr-validation` |
+| `crystoline/xpsr-auth-jwt` | `packages/auth-jwt`, with its history | `crystoline/xpsr-auth-jwt` |
+| `crystoline/xpsr-queue` | `packages/queue`, with its history | `crystoline/xpsr-queue` |
+| `crystoline/xpsr-mail` | `packages/mail`, with its history | `crystoline/xpsr-mail` |
+| `crystoline/xpsr-lock` | `packages/lock`, with its history | `crystoline/xpsr-lock` |
+| `crystoline/xpsr-scheduler` | `packages/scheduler`, with its history | `crystoline/xpsr-scheduler` |
+| `crystoline/xpsr-storage` | `packages/storage`, with its history | `crystoline/xpsr-storage` |
+| `crystoline/xpsr-view-plates` | `packages/view-plates`, with its history | `crystoline/xpsr-view-plates` |
+| `crystoline/xpsr-view-latte` | `packages/view-latte`, with its history | `crystoline/xpsr-view-latte` |
+| `crystoline/xpsr-view-blade` | `packages/view-blade`, with its history | `crystoline/xpsr-view-blade` |
 | `crystoline/xpsr-skeleton` | the output of `scripts/export-skeleton.php`, one sync commit per change | `crystoline/xpsr` |
 
-Each repository is named after its Composer package without the vendor prefix. The skeleton is the exception: its package is `crystoline/xpsr`, so that `composer create-project crystoline/xpsr` works, but its repository is `xpsr-skeleton`, because `crystoline/xpsr` is this monorepo. Development, issues, and pull requests happen in `crystoline/xpsr`. The other ten repositories are read-only mirrors.
+Each repository is named after its Composer package without the vendor prefix. The skeleton is the exception: its package is `crystoline/xpsr`, so that `composer create-project crystoline/xpsr` works, but its repository is `xpsr-skeleton`, because `crystoline/xpsr` is this monorepo. Development, issues, and pull requests happen in `crystoline/xpsr`. The other repositories are read-only mirrors.
 
 - **A push to `master`** updates each repository's `master` branch. Packages declare the branch alias `dev-master` → `0.4.x-dev`, so `^0.4@dev` resolves to it.
 - **A `v*` tag** pushes that tag to every repository and leaves branches alone. The skeleton's tagged commit is exported with `--release`, so it requires the release range (`^0.4`), while its `master` keeps `^0.4@dev`.
