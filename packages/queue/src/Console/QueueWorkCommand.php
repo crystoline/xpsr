@@ -18,6 +18,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\Event\WorkerRunningEvent;
@@ -39,6 +40,7 @@ final class QueueWorkCommand extends Command implements SignalableCommandInterfa
 {
     private ?Worker $worker = null;
 
+    /** @param list<EventSubscriberInterface> $subscribers more listeners on the worker, such as the release of #[Unique] locks */
     public function __construct(
         private readonly Transports $transports,
         private readonly MessageBusInterface $bus,
@@ -46,6 +48,7 @@ final class QueueWorkCommand extends Command implements SignalableCommandInterfa
         private readonly ?FailedJobStore $failed = null,
         private readonly ?CacheItemPoolInterface $cache = null,
         private readonly ?LoggerInterface $logger = null,
+        private readonly array $subscribers = [],
     ) {
         parent::__construct('queue:work');
     }
@@ -89,6 +92,9 @@ final class QueueWorkCommand extends Command implements SignalableCommandInterfa
         $events = new EventDispatcher();
         $events->addSubscriber(new SendFailedMessageForRetryListener($this->transports, $this->transports->retryStrategies(), $this->logger, $events));
         $events->addSubscriber(new FailedJobListener($this->failed, $this->logger));
+        foreach ($this->subscribers as $subscriber) {
+            $events->addSubscriber($subscriber);
+        }
         if ($jobs !== null) {
             $events->addSubscriber(new StopWorkerOnMessageLimitListener($jobs, $this->logger));
         }

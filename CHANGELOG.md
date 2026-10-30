@@ -32,6 +32,13 @@ Nothing breaks if the web server can write `var/locks`, which rate limits now us
   - On another database that already has the tables, it only records the baseline. Rolling the baseline back is refused.
   - `--exclude` leaves tables out, and Laravel's migrations table is left out on its own.
   - The migration commands stop with a message when `database.migrations.table` names Laravel's migrations table, which has no `executed_at` column. Before, `migrate` failed with a database error when it recorded a migration.
+- `#[Unique]` jobs in `crystoline/xpsr-queue`: while a job is queued or running, dispatching an identical one drops the new one. See [its README](packages/queue/README.md#unique-jobs).
+  - Jobs are identical when they are of the same class and their `uniqueId()` methods return the same value.
+  - The lock is released when the job succeeds or fails for the last time; with `until: 'processing'`, when it starts. `for` caps how long it lasts, so a worker that dies cannot keep it.
+  - It needs `crystoline/xpsr-lock` on the Redis, Redlock, or database store, because the worker releases the lock that the dispatching process took. With the `flock` store, dispatching a unique job throws an exception that says so.
+  - `FakeQueue` drops duplicates too, and lists them in `dropped()`. `queue:retry` keeps a failed unique job, and says so, while an identical job is queued or running.
+- Queued jobs carry the request ID of `crystoline/xpsr-log-monolog`. The worker logs with it while the job runs, so a request's log lines and those of the jobs it queued share one `request_id`.
+- `Locks::key()` and `Locks::fromKey()` in `crystoline/xpsr-lock` let a process release a lock another process took, by sending the lock's key. See [its README](packages/lock/README.md#releasing-a-lock-in-another-process).
 - `php xpsr view:clear` empties `app.view_cache_dir`, for deploys that keep the files' original times. See [docs/VIEWS.md](docs/VIEWS.md).
 
 ### Changed

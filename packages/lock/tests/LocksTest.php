@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\Clock\ClockInterface;
 use Symfony\Component\Clock\MockClock;
+use Symfony\Component\Lock\Key;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\LockInterface;
 
@@ -135,6 +136,26 @@ final class LocksTest extends TestCase
             return $lock->getRemainingLifetime();
         }, ttl: 10);
         self::assertEqualsWithDelta(600.0, $remaining, 1.0);
+    }
+
+    public function testAnotherProcessCanReleaseALockFromItsSerializedKey(): void
+    {
+        $locks = $this->locks();
+        $key = $locks->key('queue-unique:sync-wallet:7');
+        self::assertSame('app:queue-unique:sync-wallet:7', (string) $key, 'With lock.prefix.');
+        self::assertTrue($locks->fromKey($key, ttl: 60, autoRelease: false)->acquire());
+
+        // Another process receives the key, with the store's token, and releases the lock.
+        $received = unserialize(serialize($key));
+        self::assertInstanceOf(Key::class, $received);
+        self::assertFalse($locks->lock('queue-unique:sync-wallet:7')->acquire(), 'Held until then.');
+        $locks->fromKey($received, autoRelease: false)->release();
+        $held = $locks->lock('queue-unique:sync-wallet:7');
+        self::assertTrue($held->acquire());
+
+        // A fresh key has no token, so it cannot release a lock someone else holds.
+        $locks->fromKey($locks->key('queue-unique:sync-wallet:7'))->release();
+        self::assertTrue($held->isAcquired());
     }
 
     public function testPeriodsAreChecked(): void

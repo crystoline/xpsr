@@ -66,6 +66,24 @@ try {
 
 `Symfony\Component\Lock\LockFactory` is also a service, with the same store and without the prefix.
 
+### Releasing a lock in another process
+
+One process can take a lock and another release it, for example a web request that starts work a worker finishes. Take the lock through its key, then send the key to the other process: once the lock is acquired, the key holds the store's token for it.
+
+```php
+$key = $locks->key("export:{$user->id}");
+if ($locks->fromKey($key, ttl: '10 minutes', autoRelease: false)->acquire()) {
+    $outbox->send(serialize($key));
+}
+
+// In the other process:
+use Symfony\Component\Lock\Key;
+
+$locks->fromKey(unserialize($message, ['allowed_classes' => [Key::class]]))->release();
+```
+
+Keys serialize with the Redis, Redlock, and database stores. With `flock`, whose locks belong to the process that took them, `serialize()` throws `Symfony\Component\Lock\Exception\UnserializableKeyException`. Pass `autoRelease: false` in the first process, or the lock is released when the lock object is destroyed.
+
 ## Stores
 
 | `lock.store` | Locks are kept | Use it for |
@@ -127,11 +145,13 @@ $locks->run("payment:{$id}", function () use ($db, $gateway, $id): void {
 
 Rate limits in [`crystoline/xpsr-cache`](../cache/README.md#parallel-requests-and-several-servers) use them whenever `LockServiceRegistry` is in `app.registry`, to update each count under a lock that lasts 5 seconds at most. Without this package, they lock with files in `var/locks`.
 
+`#[Unique]` jobs in [`crystoline/xpsr-queue`](../queue/README.md#unique-jobs) need these locks, on the Redis, Redlock, or database store: the process that dispatches a job takes its lock, and the worker releases it.
+
 ## Services
 
 | Service | Provides |
 |---|---|
-| `Crystoline\Xpsr\Lock\Locks` | `run()` and `lock()`, with `lock.prefix`. Shared. |
+| `Crystoline\Xpsr\Lock\Locks` | `run()`, `lock()`, `key()`, and `fromKey()`, with `lock.prefix`. Shared. |
 | `Symfony\Component\Lock\LockFactory` | Symfony's factory for the same store, without the prefix. Shared. |
 | `Symfony\Component\Lock\PersistingStoreInterface` | The store. Shared. |
 | `Crystoline\Xpsr\Lock\LockOptions` | The validated `lock` configuration. |

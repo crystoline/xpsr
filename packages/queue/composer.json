@@ -25,6 +25,8 @@
     "symfony/messenger": "^7.4 || ^8.0"
   },
   "require-dev": {
+    "crystoline/xpsr-lock": "^0.4@dev",
+    "crystoline/xpsr-log-monolog": "^0.4@dev",
     "nyholm/psr7": "^1.8.2",
     "phpunit/phpunit": "^12.5",
     "symfony/cache": "^7.4"
@@ -34,6 +36,8 @@
   },
   "suggest": {
     "crystoline/xpsr-cache": "Needed for php xpsr queue:restart, which tells workers to stop after their current job",
+    "crystoline/xpsr-lock": "Needed for #[Unique] jobs, with the Redis, Redlock, or database lock store",
+    "crystoline/xpsr-log-monolog": "Jobs carry the ID of the request that dispatched them, and the worker logs with it",
     "symfony/redis-messenger": "The redis:// transport",
     "symfony/amqp-messenger": "The amqp:// transport (RabbitMQ)",
     "symfony/amazon-sqs-messenger": "The sqs:// transport (Amazon SQS)"

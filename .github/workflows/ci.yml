@@ -128,8 +128,8 @@ jobs:
         if: failure()
         run: php scripts/ci-annotate.php var/junit.xml var/phpunit.log
 
-  # Locks and rate limits against real Redis servers: one server, and Redlock across three with
-  # some of them down. Once through predis/predis and once through the phpredis extension.
+  # Locks, rate limits, and unique jobs against real Redis servers: one server, and Redlock across
+  # three with some of them down. Once through predis/predis and once through the phpredis extension.
   redis:
     runs-on: ubuntu-latest
     strategy:
@@ -160,7 +160,7 @@ jobs:
         shell: bash
         env:
           XPSR_TEST_REDIS_URLS: redis://127.0.0.1:6379,redis://127.0.0.1:6380,redis://127.0.0.1:6381
-        run: mkdir -p var && vendor/bin/phpunit --testsuite cache,lock,scheduler --log-junit var/junit.xml 2>&1 | tee var/phpunit.log
+        run: mkdir -p var && vendor/bin/phpunit --testsuite cache,lock,queue,scheduler --log-junit var/junit.xml 2>&1 | tee var/phpunit.log
       - name: Annotate failed tests
         if: failure()
         run: php scripts/ci-annotate.php var/junit.xml var/phpunit.log

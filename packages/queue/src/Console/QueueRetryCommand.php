@@ -8,6 +8,7 @@ use Crystoline\Xpsr\Queue\Failed\FailedJob;
 use Crystoline\Xpsr\Queue\Failed\FailedJobStore;
 use Crystoline\Xpsr\Queue\QueueInterface;
 use Crystoline\Xpsr\Queue\Messenger\Transports;
+use Crystoline\Xpsr\Queue\Messenger\UniqueJobs;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Input\InputArgument;
@@ -18,7 +19,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Queues failed jobs again on the transport they failed on (or queue.default when it is gone),
- * and removes them from the failed jobs table.
+ * and removes them from the failed jobs table. A #[Unique] job stays there while an identical job
+ * is still queued or running.
  *
  * @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md.
  */
@@ -28,6 +30,7 @@ final class QueueRetryCommand extends Command
         private readonly FailedJobStore $failed,
         private readonly QueueInterface $queue,
         private readonly Transports $transports,
+        private readonly UniqueJobs $unique,
     ) {
         parent::__construct('queue:retry');
     }
@@ -79,6 +82,11 @@ final class QueueRetryCommand extends Command
         }
         $transport = $this->transports->has($failed->transport) ? $failed->transport : null;
         $this->queue->dispatch($failed->job, queue: $transport);
+        if ($this->unique->dropped($failed->job)) {
+            $errors->warning("Failed job {$failed->id} ({$failed->jobClass}) was not queued again: it is #[Unique], and an identical job is still queued or running. It stays in the failed jobs.");
+
+            return false;
+        }
         $this->failed->forget($failed->id);
         $output->writeln(OutputFormatter::escape("Queued failed job {$failed->id} ({$failed->jobClass}) again."));
 

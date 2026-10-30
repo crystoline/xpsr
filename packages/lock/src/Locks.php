@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Crystoline\Xpsr\Lock;
 
 use Symfony\Component\Clock\ClockInterface;
+use Symfony\Component\Lock\Key;
 use Symfony\Component\Lock\LockFactory;
 use Symfony\Component\Lock\LockInterface;
 use Throwable;
@@ -39,8 +40,31 @@ final class Locks
      */
     public function lock(string $key, int|float|string|null $ttl = null, bool $autoRelease = true): LockInterface
     {
-        return $this->factory->createLock(
-            $this->options->prefix . ':' . $key,
+        return $this->fromKey($this->key($key), $ttl, $autoRelease);
+    }
+
+    /**
+     * The key of the lock on $key, with lock.prefix, for fromKey(). Once the lock is acquired,
+     * the key holds the store's token for it. With the Redis, Redlock, and database stores it
+     * can be serialized, so another process can rebuild the lock and release it. Keys from the
+     * flock store throw Symfony\Component\Lock\Exception\UnserializableKeyException instead:
+     * their locks belong to the process that took them.
+     */
+    public function key(string $key): Key
+    {
+        return new Key($this->options->prefix . ':' . $key);
+    }
+
+    /**
+     * The lock on a key from key(), perhaps one that another process acquired and serialized.
+     *
+     * @param int|float|string|null $ttl as for lock()
+     * @param bool $autoRelease release the lock when the object is destroyed
+     */
+    public function fromKey(Key $key, int|float|string|null $ttl = null, bool $autoRelease = true): LockInterface
+    {
+        return $this->factory->createLockFromKey(
+            $key,
             $ttl === null ? $this->options->ttl : LockOptions::seconds($ttl, 'A lock\'s ttl'),
             $autoRelease,
         );

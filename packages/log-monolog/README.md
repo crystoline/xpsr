@@ -59,7 +59,7 @@ Exceptions passed as `['exception' => $exception]`, as the exception handler doe
 - is available to your code as the `request_id` request attribute, and as `Crystoline\Xpsr\Log\Monolog\RequestId::get()`;
 - is returned in the `X-Request-Id` response header, so a user reporting a problem can quote it. Error pages rendered for exceptions that escape every middleware do not carry the header; their log lines still carry the ID.
 
-Console commands have no request ID.
+Console commands have no request ID. Jobs queued with [crystoline/xpsr-queue](../queue/README.md#request-ids) during a request carry its ID, and the worker logs with it while each job runs.
 
 ## Services
 
