@@ -385,7 +385,7 @@ Verified on 28 October 2026: 510 tests pass with PHPStan and style checks, inclu
 
 The first twenty-one milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
 
-- **Publishing.** Live since 28 October 2026. CI publishes `master` to the 19 mirror repositories under `crystoline` (18 packages and the skeleton), and Packagist serves every package from them. The first release is `0.1.0`. The old prototype's `v1.0.0` is removed from Packagist; its git tag remains in `crystoline/xpsr`, where it no longer affects installs.
+- **Publishing.** Live since 28 October 2026. CI publishes `master` to the 21 mirror repositories under `crystoline` (20 packages and the skeleton), and Packagist serves every package from them. The first release is `0.1.0`. The old prototype's `v1.0.0` is removed from Packagist; its git tag remains in `crystoline/xpsr`, where it no longer affects installs.
 - **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.
 - **Containers.** Alternative containers need an adapter for XPSR's registration/deferred-group contract; PSR-11 alone only standardizes consumption.
 - **Deferred services.** Deferred service claims cannot overlap. Rebinding does not rebuild existing consumers automatically.
@@ -399,6 +399,22 @@ The first twenty-one milestones are working slices, not completion of all roadma
 - **Dependencies.** The framework's remaining third-party requirements are Symfony Console, Process, and Finder; Illuminate Config; phpdotenv; and Nyholm's PSR-7 server helper. Finder only lists configuration files, and Illuminate Config pulls in parts of Illuminate Support, so both are candidates for small in-house replacements.
 - **Not yet available:** configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
+- **Password hashes alongside Laravel.** XPSR upgrades bcrypt hashes to Argon2id at sign-in, with no setting to keep bcrypt. While a Laravel application runs on the same users table, it needs `HASH_VERIFY=false` (`docs/FROM_LARAVEL.md`).
+
+## Thirty-third milestone: completed — moving from Laravel
+
+Built on 29 and 30 October 2026, after checking an outside report on moving a Laravel 12 payments API to XPSR against the code. Each part's design was settled with the user first:
+
+- **Locks.** `crystoline/xpsr-lock` on Symfony Lock: flock, one Redis server, Redlock across three or more, the database, or any DSN. `Locks::run()`, `lock()`, `key()`, and `fromKey()`. The scheduler and rate limits use it when it is listed.
+- **Rate limits.** Counts are updated under a lock, so parallel requests no longer pass a limit together (four processes making 20 attempts against a limit of 20 had 70 to 78 accepted before). `RateLimits` applies a limit to a key chosen in code.
+- **Encryption.** `Encrypter` in Laravel's payload format with `APP_KEY` and `APP_PREVIOUS_KEYS`, `key:generate`, and Eloquent's encrypted casts. Serialized objects are refused.
+- **Sanctum tokens.** The `sanctum` guard driver reads and writes `personal_access_tokens` as Sanctum 4 does; checked both ways against Laravel Sanctum itself.
+- **Existing databases.** `migrate:baseline` writes a migration of the live schema, checks it, and records it.
+- **Queues.** `#[Unique]` jobs, on the lock package's shared stores; request IDs travel with jobs into the worker's logs.
+- **Notifications.** `crystoline/xpsr-notifications`: mail, SMS through Symfony Notifier's bridges, an in-app inbox, and web push, on Laravel's tables.
+- **Documents.** `docs/FROM_LARAVEL.md`, and `SECURITY.md`.
+
+Verified on 30 October 2026: 1114 tests pass with PHPStan and style checks, on PHP 8.4 and 8.5, with the lowest dependencies, and in the packaging test. The database suites pass against MySQL 8.4, MariaDB 11, and PostgreSQL 17, and the Redis cases against real Redis servers through Predis and phpredis.
 
 ## Thirty-second milestone: completed — view engines
 
@@ -518,6 +534,17 @@ Built with the choices accepted on 28 October 2026 (`FRAMEWORK_PLAN.md` section 
 
 Verified on 28 October 2026: 549 tests pass with PHPStan and style checks, including both packages in the skeleton's full HTTP kernel (a limit through `app.middleware` reaching 429, and a 500 logged as JSON with its request ID).
 
+## Release 0.5.0 (30 October 2026)
+
+Tagged `v0.5.0` in all 21 repositories. Packagist serves 0.5.0 for every package, including the two first published with it, `crystoline/xpsr-lock` and `crystoline/xpsr-notifications`. Checked from Packagist with the production `php.ini`:
+
+- `composer create-project crystoline/xpsr` installs framework and FastRoute 0.5.0; `about` reports 0.5.0; the application's tests pass; `/` and `/hello` answer.
+- In that project, the lock and notifications packages install at 0.5.0: `make:notification` writes a notification that sends by email to the log, `webpush:keys` makes a key pair, and `Locks::run()` takes and releases a lock in `var/locks`.
+- `setup --router=sunrise --install-dependencies` installs the Sunrise adapter `^0.5`.
+- All 20 packages install together at 0.5.0.
+- `UPGRADE.md` was rehearsed on an installed 0.4.0 application: after step 1 it runs 0.5.0 and passes its tests. Step 3 caches compiled templates once the existing `'view_cache_dir' => false,` is replaced; a second line added before it had no effect, so the step now says to replace it.
+- The website, [xpsr.crysto.name.ng](https://xpsr.crysto.name.ng), runs on 0.5.0 and serves `/docs/0.5/` as the latest documentation.
+
 ## Release 0.4.0 (29 October 2026)
 
 Tagged `v0.4.0` in all 19 repositories. Packagist serves 0.4.0 for every package, including the nine first published with it: `crystoline/xpsr-auth-jwt`, `-orm-eloquent`, `-queue`, `-mail`, `-scheduler`, `-storage`, `-view-plates`, `-view-latte`, and `-view-blade`. Checked from Packagist with the production `php.ini`:
@@ -550,4 +577,4 @@ Tagged `v0.2.0` in all eight repositories. Packagist serves 0.2.0 for every pack
 
 ## Next implementation slice
 
-Every component in `FRAMEWORK_PLAN.md` section 10 is done and released in 0.4.0. The largest gap left is configuration and route caches (see "Not yet available" above); an installer package for `xpsr new` would remove the `setup` presets' knowledge of the skeleton. Settle a component's open decisions with the user before starting it. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.
+Every component in `FRAMEWORK_PLAN.md` section 10 is done and released in 0.4.0, and the work for moving from Laravel in 0.5.0. A setting to keep bcrypt hashes would make running beside Laravel simpler. The largest gap left is configuration and route caches (see "Not yet available" above); an installer package for `xpsr new` would remove the `setup` presets' knowledge of the skeleton. Settle a component's open decisions with the user before starting it. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.

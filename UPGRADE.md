@@ -23,11 +23,13 @@ With several servers and a shared cache, install the lock package with a store t
 
 ### 3. Cache compiled templates (optional)
 
-New projects keep compiled Twig, Latte, and Blade templates instead of compiling them on every request. To do the same, set this in `config/app.php`:
+New projects keep compiled Twig, Latte, and Blade templates instead of compiling them on every request. To do the same, replace `'view_cache_dir' => false,` in `config/app.php` with:
 
 ```php
 'view_cache_dir' => dirname(__DIR__) . '/var/cache/views',
 ```
+
+Replace the line rather than adding one: in a PHP array, the last `view_cache_dir` wins.
 
 The web server user must be able to write to `var/cache/views`. A changed template is compiled again on its own, even with `app.debug` off. If your deploy keeps the files' original times, for example by unpacking an archive or with `rsync -a`, add `php xpsr view:clear` to it. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md#writable-directories).
 
