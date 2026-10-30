@@ -12,8 +12,8 @@
   ],
   "require": {
     "php": "^8.4",
-    "crystoline/xpsr-database": "^0.4@dev",
-    "crystoline/xpsr-framework": "^0.4@dev",
+    "crystoline/xpsr-database": "^0.5@dev",
+    "crystoline/xpsr-framework": "^0.5@dev",
     "doctrine/dbal": "^4.5",
     "illuminate/contracts": "^12.0",
     "illuminate/database": "^12.0",
@@ -40,7 +40,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.4.x-dev"
+      "dev-master": "0.5.x-dev"
     }
   }
 }

@@ -15,7 +15,7 @@ declare(strict_types=1);
  * composer.lock is not exported. Each new application resolves its dependencies at
  * create-project time and commits its own lock file.
  *
- * --release=X.Y.Z replaces the development constraints on XPSR packages (^0.4@dev) with the
+ * --release=X.Y.Z replaces the development constraints on XPSR packages (^0.5@dev) with the
  * release range (^0.1 for 0.1.x, ^1.2 for 1.2.x), for tagging the skeleton.
  */
 

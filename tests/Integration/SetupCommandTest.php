@@ -132,7 +132,7 @@ final class SetupCommandTest extends TestCase
         self::assertSame($routeLists['sunrise'], $routeLists['fastroute']);
 
         // Sunrise is only a development dependency here, so setup asked Composer for it. FastRoute is required already.
-        self::assertSame([['require', 'crystoline/xpsr-router-sunrise:^0.4@dev', '--update-with-dependencies', '--no-interaction', '--working-dir=' . $this->root]], $this->composerCalls());
+        self::assertSame([['require', 'crystoline/xpsr-router-sunrise:^0.5@dev', '--update-with-dependencies', '--no-interaction', '--working-dir=' . $this->root]], $this->composerCalls());
     }
 
     public function testRerunningWithoutOptionsKeepsChoicesAndChangesNothing(): void
@@ -174,7 +174,7 @@ final class SetupCommandTest extends TestCase
         $before = $this->snapshot();
         [$status, $stdout, $stderr] = $this->runSetup(['--router=sunrise', '--preset=api']);
         self::assertSame(1, $status);
-        self::assertStringContainsString('composer require crystoline/xpsr-router-sunrise:^0.4@dev', $stderr);
+        self::assertStringContainsString('composer require crystoline/xpsr-router-sunrise:^0.5@dev', $stderr);
         self::assertStringContainsString('--install-dependencies', $stderr);
         self::assertStringContainsString('No files were changed.', $stderr);
         self::assertSame($before, $this->snapshot());
@@ -183,7 +183,7 @@ final class SetupCommandTest extends TestCase
         $failingComposer = $this->fakeComposer(3);
         [$status, , $stderr] = $this->xpsr(['setup', '-n', '--router=sunrise', '--preset=api', '--install-dependencies', '--composer=' . $failingComposer]);
         self::assertSame(1, $status);
-        self::assertStringContainsString('Composer could not install crystoline/xpsr-router-sunrise:^0.4@dev (exit status 3). No files were changed.', $stderr);
+        self::assertStringContainsString('Composer could not install crystoline/xpsr-router-sunrise:^0.5@dev (exit status 3). No files were changed.', $stderr);
         self::assertSame($before, $this->snapshot());
         self::assertCount(1, $this->composerCalls());
 
@@ -260,7 +260,7 @@ final class SetupCommandTest extends TestCase
 
         [$status, $stdout] = $this->runSetup(['--router=sunrise', '--preset=api', '--dry-run']);
         self::assertSame(0, $status);
-        self::assertStringContainsString('Would run: composer require crystoline/xpsr-router-sunrise:^0.4@dev', $stdout);
+        self::assertStringContainsString('Would run: composer require crystoline/xpsr-router-sunrise:^0.5@dev', $stdout);
         self::assertStringContainsString('Would create .env from .env.example with ROUTER_ADAPTER=sunrise.', $stdout);
         self::assertStringContainsString('Would write config/routing.php to load routes/api.php.', $stdout);
         self::assertSame($before, $this->snapshot());
@@ -277,7 +277,7 @@ final class SetupCommandTest extends TestCase
 
             public function releaseConstraint(): string
             {
-                return '^0.4@dev';
+                return '^0.5@dev';
             }
         };
         $command = new SetupCommand(new Application($this->root), $packages, new BootstrapCheck());
@@ -285,7 +285,7 @@ final class SetupCommandTest extends TestCase
         $tester->setInputs(['sunrise', 'api', 'no']);
         self::assertSame(1, $tester->execute(['--composer' => $this->fakeComposer()], ['interactive' => true, 'capture_stderr_separately' => true]));
         self::assertStringContainsString('Router adapter', $tester->getDisplay());
-        self::assertStringContainsString('Install crystoline/xpsr-router-sunrise:^0.4@dev with Composer now?', $tester->getDisplay());
+        self::assertStringContainsString('Install crystoline/xpsr-router-sunrise:^0.5@dev with Composer now?', $tester->getDisplay());
         self::assertNull($this->file('.env'));
 
         $tester->setInputs(['sunrise', 'api', 'yes']);

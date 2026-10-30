@@ -12,14 +12,14 @@
   ],
   "require": {
     "php": "^8.4",
-    "crystoline/xpsr-framework": "^0.4@dev",
+    "crystoline/xpsr-framework": "^0.5@dev",
     "psr/container": "^2.0",
     "psr/log": "^3.0",
     "symfony/clock": "^7.4 || ^8.0",
     "symfony/lock": "^7.4 || ^8.0"
   },
   "require-dev": {
-    "crystoline/xpsr-database": "^0.4@dev",
+    "crystoline/xpsr-database": "^0.5@dev",
     "nyholm/psr7": "^1.8.2",
     "phpunit/phpunit": "^12.5",
     "predis/predis": "^3.0",
@@ -42,7 +42,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.4.x-dev"
+      "dev-master": "0.5.x-dev"
     }
   }
 }

@@ -12,7 +12,7 @@
   ],
   "require": {
     "php": "^8.4",
-    "crystoline/xpsr-framework": "^0.4@dev",
+    "crystoline/xpsr-framework": "^0.5@dev",
     "illuminate/container": "^12.0",
     "illuminate/events": "^12.0",
     "illuminate/filesystem": "^12.0",
@@ -35,7 +35,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.4.x-dev"
+      "dev-master": "0.5.x-dev"
     }
   }
 }

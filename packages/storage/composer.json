@@ -13,7 +13,7 @@
   "require": {
     "php": "^8.4",
     "ext-fileinfo": "*",
-    "crystoline/xpsr-framework": "^0.4@dev",
+    "crystoline/xpsr-framework": "^0.5@dev",
     "league/flysystem": "^3.29",
     "league/flysystem-local": "^3.29",
     "league/flysystem-memory": "^3.29",
@@ -42,7 +42,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.4.x-dev"
+      "dev-master": "0.5.x-dev"
     }
   }
 }

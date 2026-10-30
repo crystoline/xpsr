@@ -4,6 +4,8 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+## 0.5.0 (2026-10-30)
+
 Nothing breaks if the web server can write `var/locks`, which rate limits now use. Upgrade steps are in [UPGRADE.md](UPGRADE.md#from-04-to-05).
 
 ### Added

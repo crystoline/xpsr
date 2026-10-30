@@ -4,15 +4,15 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "18290ff83ad12dad4b4b2598042f8da3",
+    "content-hash": "a7e35beae9f69b4921505526f5241ef0",
     "packages": [
         {
             "name": "crystoline/xpsr-framework",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "7f2b934ef71f195fdae2eee0b5c82bdb0c16ccba"
+                "reference": "5219f2b185529a7b686078b2d5b1dae074dcf6d7"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
@@ -55,7 +55,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -89,14 +89,14 @@
         },
         {
             "name": "crystoline/xpsr-router-fastroute",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/router-fastroute",
-                "reference": "b6cd70e571a43087572e81c400e822425ca7937a"
+                "reference": "f520ea81444ede4500c6fb5d9f2ba7e37eb0c409"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "nikic/fast-route": "^1.3",
                 "php": "^8.4"
             },
@@ -107,7 +107,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -3126,14 +3126,14 @@
         },
         {
             "name": "crystoline/xpsr-auth-jwt",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/auth-jwt",
-                "reference": "04754c92c5fd28713676aa193cb68c4d4e4cde58"
+                "reference": "96e1dc79abed84189a6af903775b9dc7b38330bd"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "lcobucci/jwt": "^5.6",
                 "php": "^8.4",
                 "psr/clock": "^1.0",
@@ -3148,7 +3148,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -3179,14 +3179,14 @@
         },
         {
             "name": "crystoline/xpsr-cache",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/cache",
-                "reference": "3663779cf9fb0831a1aee48294e0b80ce218d62c"
+                "reference": "33fb96ead3f0b70c25caf134e421efceac7c0313"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "php": "^8.4",
                 "psr/cache": "^2.0 || ^3.0",
                 "psr/clock": "^1.0",
@@ -3199,7 +3199,7 @@
                 "symfony/rate-limiter": "^7.4"
             },
             "require-dev": {
-                "crystoline/xpsr-lock": "^0.4@dev",
+                "crystoline/xpsr-lock": "^0.5@dev",
                 "nyholm/psr7": "^1.8.2",
                 "phpunit/phpunit": "^12.5"
             },
@@ -3209,7 +3209,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -3240,14 +3240,14 @@
         },
         {
             "name": "crystoline/xpsr-database",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/database",
-                "reference": "c4e4de2f33f17c253c5c88f7ee6563958844422e"
+                "reference": "ed072c5062c290c863aac7083bd129ad4dd95ebe"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "doctrine/dbal": "^4.5",
                 "php": "^8.4",
                 "psr/clock": "^1.0",
@@ -3268,7 +3268,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -3299,14 +3299,14 @@
         },
         {
             "name": "crystoline/xpsr-http-client",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/http-client",
-                "reference": "9d48a9d481cbc40cb2e5167bed9e24b351e0454e"
+                "reference": "72a00aec74514c01a9500a4a248c3295c27542b5"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "php": "^8.4",
                 "psr/http-client": "^1.0.3",
                 "psr/http-factory": "^1.1",
@@ -3324,7 +3324,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -3355,14 +3355,14 @@
         },
         {
             "name": "crystoline/xpsr-lock",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/lock",
-                "reference": "f18b8f10ce615094ae7615287f6c5e93b628731f"
+                "reference": "5ed36fe9c1ceb3f02346a583aff989b0a0d08fb1"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "php": "^8.4",
                 "psr/container": "^2.0",
                 "psr/log": "^3.0",
@@ -3370,7 +3370,7 @@
                 "symfony/lock": "^7.4 || ^8.0"
             },
             "require-dev": {
-                "crystoline/xpsr-database": "^0.4@dev",
+                "crystoline/xpsr-database": "^0.5@dev",
                 "nyholm/psr7": "^1.8.2",
                 "phpunit/phpunit": "^12.5",
                 "predis/predis": "^3.0",
@@ -3384,7 +3384,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -3415,14 +3415,14 @@
         },
         {
             "name": "crystoline/xpsr-log-monolog",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/log-monolog",
-                "reference": "230b9caa9bddf03748996e9ae9f6f80de6583837"
+                "reference": "4c087f70dd32d1e1cf67a1042f4652b19ffb274b"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "monolog/monolog": "^3.9",
                 "php": "^8.4",
                 "psr/container": "^2.0",
@@ -3438,7 +3438,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -3469,14 +3469,14 @@
         },
         {
             "name": "crystoline/xpsr-mail",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/mail",
-                "reference": "cacb63cc2108ecb4797a0f084537884396c46126"
+                "reference": "6b89eb49b29f748613b0ce4a90367b64e560cb61"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "php": "^8.4",
                 "psr/container": "^2.0",
                 "psr/log": "^3.0",
@@ -3485,8 +3485,8 @@
                 "symfony/mime": "^7.4 || ^8.0"
             },
             "require-dev": {
-                "crystoline/xpsr-database": "^0.4@dev",
-                "crystoline/xpsr-queue": "^0.4@dev",
+                "crystoline/xpsr-database": "^0.5@dev",
+                "crystoline/xpsr-queue": "^0.5@dev",
                 "nyholm/psr7": "^1.8.2",
                 "phpunit/phpunit": "^12.5",
                 "twig/twig": "^3.4"
@@ -3498,7 +3498,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -3529,14 +3529,14 @@
         },
         {
             "name": "crystoline/xpsr-notifications",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/notifications",
-                "reference": "62eab586dfc3a8d57db8fb79b9709c2f8376e904"
+                "reference": "ce909e2f983344b2cb587f108e3bc91f0c65e618"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "php": "^8.4",
                 "psr/clock": "^1.0",
                 "psr/container": "^2.0",
@@ -3549,10 +3549,10 @@
                 "php-http/discovery": "<1.19.3"
             },
             "require-dev": {
-                "crystoline/xpsr-database": "^0.4@dev",
-                "crystoline/xpsr-http-client": "^0.4@dev",
-                "crystoline/xpsr-mail": "^0.4@dev",
-                "crystoline/xpsr-queue": "^0.4@dev",
+                "crystoline/xpsr-database": "^0.5@dev",
+                "crystoline/xpsr-http-client": "^0.5@dev",
+                "crystoline/xpsr-mail": "^0.5@dev",
+                "crystoline/xpsr-queue": "^0.5@dev",
                 "minishlink/web-push": "^11.0",
                 "nyholm/psr7": "^1.8.2",
                 "phpunit/phpunit": "^12.5",
@@ -3570,7 +3570,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -3601,15 +3601,15 @@
         },
         {
             "name": "crystoline/xpsr-orm-doctrine",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/orm-doctrine",
-                "reference": "572c6ccb68c7df8d63cd11efe2f83c00f0ee4616"
+                "reference": "e5e710eb657e402d8c0446d26bc46aa13830ec49"
             },
             "require": {
-                "crystoline/xpsr-database": "^0.4@dev",
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-database": "^0.5@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "doctrine/dbal": "^4.5",
                 "doctrine/orm": "^3.7",
                 "doctrine/persistence": "^4.1",
@@ -3628,7 +3628,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -3659,15 +3659,15 @@
         },
         {
             "name": "crystoline/xpsr-orm-eloquent",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/orm-eloquent",
-                "reference": "da3d6b7a5347dd7119ab7473580582faeb8fb823"
+                "reference": "ec1db9ec34ba5388f2c8d37036aadccb1cbc1bf1"
             },
             "require": {
-                "crystoline/xpsr-database": "^0.4@dev",
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-database": "^0.5@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "doctrine/dbal": "^4.5",
                 "illuminate/contracts": "^12.0",
                 "illuminate/database": "^12.0",
@@ -3686,7 +3686,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -3717,15 +3717,15 @@
         },
         {
             "name": "crystoline/xpsr-queue",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/queue",
-                "reference": "344f47481020f51a317615824052a60c99bd9158"
+                "reference": "6204869b81abc330cc46b0878f9aad54ae861e29"
             },
             "require": {
-                "crystoline/xpsr-database": "^0.4@dev",
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-database": "^0.5@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "doctrine/dbal": "^4.5",
                 "php": "^8.4",
                 "psr/cache": "^2.0 || ^3.0",
@@ -3741,8 +3741,8 @@
                 "symfony/event-dispatcher-contracts": "<3.5"
             },
             "require-dev": {
-                "crystoline/xpsr-lock": "^0.4@dev",
-                "crystoline/xpsr-log-monolog": "^0.4@dev",
+                "crystoline/xpsr-lock": "^0.5@dev",
+                "crystoline/xpsr-log-monolog": "^0.5@dev",
                 "nyholm/psr7": "^1.8.2",
                 "phpunit/phpunit": "^12.5",
                 "symfony/cache": "^7.4"
@@ -3758,7 +3758,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -3789,14 +3789,14 @@
         },
         {
             "name": "crystoline/xpsr-router-sunrise",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/router-sunrise",
-                "reference": "06fc524697a2b4b1679c8f182d24f63eeab166a8"
+                "reference": "cdd382173b1d423af423001d73cb6ed1ab505787"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "php": "^8.4",
                 "psr/http-message": "^1.1",
                 "sunrise/http-router": "^2.16"
@@ -3808,7 +3808,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -3839,14 +3839,14 @@
         },
         {
             "name": "crystoline/xpsr-scheduler",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/scheduler",
-                "reference": "2b13b2002329c0f98a16a1987fe0151b9a44ba95"
+                "reference": "2948072114b6e85d137a8c9d8e89ffbab7f3ffcb"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "dragonmantank/cron-expression": "^3.4",
                 "php": "^8.4",
                 "psr/clock": "^1.0",
@@ -3858,9 +3858,9 @@
                 "symfony/process": "^7.4"
             },
             "require-dev": {
-                "crystoline/xpsr-database": "^0.4@dev",
-                "crystoline/xpsr-lock": "^0.4@dev",
-                "crystoline/xpsr-queue": "^0.4@dev",
+                "crystoline/xpsr-database": "^0.5@dev",
+                "crystoline/xpsr-lock": "^0.5@dev",
+                "crystoline/xpsr-queue": "^0.5@dev",
                 "nyholm/psr7": "^1.8.2",
                 "phpunit/phpunit": "^12.5"
             },
@@ -3871,7 +3871,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -3902,14 +3902,14 @@
         },
         {
             "name": "crystoline/xpsr-storage",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/storage",
-                "reference": "23333cfb1b274423861f4f658aed2f5290cc990a"
+                "reference": "03f5e6070a6718889230067c83f0075223403d52"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "ext-fileinfo": "*",
                 "league/flysystem": "^3.29",
                 "league/flysystem-local": "^3.29",
@@ -3931,7 +3931,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -3962,14 +3962,14 @@
         },
         {
             "name": "crystoline/xpsr-validation",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/validation",
-                "reference": "2b778b5b7029221ac0ac509616e8075c44e15add"
+                "reference": "940d0d0f07e6c39d79c3e7c26bb2256fe2a8f292"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "php": "^8.4",
                 "psr/cache": "^2.0 || ^3.0",
                 "psr/container": "^2.0",
@@ -3988,7 +3988,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -4019,14 +4019,14 @@
         },
         {
             "name": "crystoline/xpsr-view-blade",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/view-blade",
-                "reference": "59388d72f0036a127c04feae1177556c8e08a9bb"
+                "reference": "b7967accc3945282bfcd2192183ac8b040cefe30"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "illuminate/container": "^12.0",
                 "illuminate/events": "^12.0",
                 "illuminate/filesystem": "^12.0",
@@ -4041,7 +4041,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -4072,14 +4072,14 @@
         },
         {
             "name": "crystoline/xpsr-view-latte",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/view-latte",
-                "reference": "75817e9584301a2cc920f7265dac4999925c2432"
+                "reference": "ff014ce2021d503ec8ab18c37965c9b1e0715f5a"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "latte/latte": "^3.1.2",
                 "php": "^8.4"
             },
@@ -4090,7 +4090,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {
@@ -4121,14 +4121,14 @@
         },
         {
             "name": "crystoline/xpsr-view-plates",
-            "version": "0.4.x-dev",
+            "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/view-plates",
-                "reference": "97a05c2a8bb2034a5352454e8a0b15efe1eb0104"
+                "reference": "7ef8df92acc274f7bdc9958463062346eb427a7d"
             },
             "require": {
-                "crystoline/xpsr-framework": "^0.4@dev",
+                "crystoline/xpsr-framework": "^0.5@dev",
                 "league/plates": "^3.6",
                 "php": "^8.4"
             },
@@ -4139,7 +4139,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.4.x-dev"
+                    "dev-master": "0.5.x-dev"
                 }
             },
             "autoload": {

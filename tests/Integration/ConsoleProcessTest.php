@@ -19,7 +19,7 @@ final class ConsoleProcessTest extends TestCase
         $about = json_decode($process->getOutput(), true, flags: JSON_THROW_ON_ERROR);
         self::assertSame($root, $about['root']);
         self::assertSame('XPSR', $about['framework']);
-        // In this repository the framework is installed as 0.4.x-dev; a released install reports e.g. 0.1.1.
+        // In this repository the framework is installed as 0.5.x-dev; a released install reports e.g. 0.1.1.
         $version = ltrim((string) InstalledVersions::getPrettyVersion('crystoline/xpsr-framework'), 'v');
         self::assertSame($version, $about['version']);
         $banner = new Process([PHP_BINARY, $root . '/xpsr', '--version', '--no-interaction'], sys_get_temp_dir(), timeout: 10);
