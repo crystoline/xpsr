@@ -264,7 +264,7 @@ php xpsr route:list         # the four routes, with the middleware on POST /task
 
 ## 5. Write tests
 
-`tests/TestCase.php` sends requests through the full HTTP kernel (middleware, routing, error rendering) without a web server, and runs console commands. PHPUnit sets `APP_ENV=testing`, which loads overrides from `config/testing/`. Give the tests a known key in `config/testing/tasks.php`:
+`tests/TestCase.php` sends requests through the full HTTP kernel (middleware, routing, error rendering) without a web server, and runs console commands. Responses come back with assertions, such as `$this->get('/tasks')->assertOk()->assertJsonCount(2)`; [Testing](TESTING.md) lists them all. PHPUnit sets `APP_ENV=testing`, which loads overrides from `config/testing/`. Give the tests a known key in `config/testing/tasks.php`:
 
 ```php
 <?php

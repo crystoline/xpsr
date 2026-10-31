@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "5219f2b185529a7b686078b2d5b1dae074dcf6d7"
+                "reference": "46af024e7d12eb5c516b129212a14cf405e30f95"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
@@ -35,6 +35,7 @@
                 "vlucas/phpdotenv": "^5.6.1"
             },
             "conflict": {
+                "sebastian/recursion-context": "<7.0.1",
                 "symfony/var-dumper": "<7.4"
             },
             "require-dev": {

@@ -314,13 +314,17 @@ use Crystoline\Xpsr\Notifications\Testing\FakeNotifier;
 $this->swap(NotifierInterface::class, $notifier = $this->application()->get(FakeNotifier::class));
 $this->postJson('/payments', [...]);
 
+$notifier->assertSent(PaymentReceived::class, $user);
+$notifier->assertSent(PaymentReceived::class, $user, 1);       // exactly once
+$notifier->assertNotSent(SecurityAlert::class);
+$notifier->assertNothingSent();
+
 $sent = $notifier->sentTo($user, PaymentReceived::class);
-self::assertCount(1, $sent);
 self::assertSame(['mail', 'sms', 'database'], $sent[0]->channels());
 self::assertStringContainsString('NGN 5000', $sent[0]->message('sms')->getSubject());
 ```
 
-The fake makes each channel's message, as the notifier does, and keeps it instead of sending it, so a template error still fails the test. A recipient with a key matches another instance of the same user.
+The fake makes each channel's message, as the notifier does, and keeps it instead of sending it, so a template error still fails the test. A recipient with a key matches another instance of the same user. `sent()` and `sentTo()` list the notifications with the message made for each channel; a failed assertion names the ones sent. See [docs/TESTING.md](../../docs/TESTING.md) for the test case.
 
 To send for real in tests, set `SMS_DSN=array://default` and `MAIL_DSN=array://default`, and read `Crystoline\Xpsr\Notifications\Sms\ArrayTransport::messages()` and the mail package's `ArrayTransport::emails()`.
 

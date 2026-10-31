@@ -8,10 +8,12 @@ use LogicException;
 use Psr\Container\ContainerInterface;
 use ReflectionMethod;
 use ReflectionNamedType;
+use Throwable;
 
 /**
  * Runs a job's handle() method, passing each parameter from the container by its class or
- * interface type; parameters with a default value and no service get the default.
+ * interface type; parameters with a default value and no service get the default. After a job
+ * fails for the last time, calls its failed() method the same way, with the exception first.
  */
 final class JobRunner
 {
@@ -22,11 +24,32 @@ final class JobRunner
         if (!method_exists($job, 'handle')) {
             throw new LogicException(sprintf('The job %s has no handle() method.', $job::class));
         }
-        $method = new ReflectionMethod($job, 'handle');
+        $this->call($job, 'handle');
+    }
+
+    /**
+     * Calls the job's failed() method, if it has one: failed(Throwable $error, ...services).
+     * Returns whether the job has one.
+     */
+    public function fail(JobInterface $job, Throwable $error): bool
+    {
+        if (!method_exists($job, 'failed')) {
+            return false;
+        }
+        $this->call($job, 'failed', $error);
+
+        return true;
+    }
+
+    private function call(JobInterface $job, string $method, ?Throwable $error = null): void
+    {
+        $reflection = new ReflectionMethod($job, $method);
         $arguments = [];
-        foreach ($method->getParameters() as $parameter) {
+        foreach ($reflection->getParameters() as $parameter) {
             $type = $parameter->getType();
-            if ($type instanceof ReflectionNamedType && !$type->isBuiltin() && $this->container->has($type->getName())) {
+            if ($error !== null && $parameter->getPosition() === 0) {
+                $arguments[] = $error;
+            } elseif ($type instanceof ReflectionNamedType && !$type->isBuiltin() && $this->container->has($type->getName())) {
                 $arguments[] = $this->container->get($type->getName());
             } elseif ($parameter->isDefaultValueAvailable()) {
                 $arguments[] = $parameter->getDefaultValue();
@@ -34,12 +57,13 @@ final class JobRunner
                 $arguments[] = null;
             } else {
                 throw new LogicException(sprintf(
-                    '%s::handle() parameter $%s needs a class or interface type the container provides, or a default value. Keep job data in properties instead.',
+                    '%s::%s() parameter $%s needs a class or interface type the container provides, or a default value. Keep job data in properties instead.',
                     $job::class,
+                    $method,
                     $parameter->getName(),
                 ));
             }
         }
-        $method->invokeArgs($job, $arguments);
+        $reflection->invokeArgs($job, $arguments);
     }
 }

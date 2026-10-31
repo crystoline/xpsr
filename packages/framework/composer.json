@@ -38,6 +38,7 @@
     "twig/twig": "^3.4"
   },
   "conflict": {
+    "sebastian/recursion-context": "<7.0.1",
     "symfony/var-dumper": "<7.4"
   },
   "suggest": {

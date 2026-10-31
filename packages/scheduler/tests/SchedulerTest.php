@@ -103,6 +103,60 @@ final class SchedulerTest extends TestCase
         self::assertSame("No tasks are due.\n", $tester->getDisplay());
     }
 
+    public function testTasksWithEverySecondsRepeatUntilTheMinuteEnds(): void
+    {
+        $application = $this->application(<<<'PHP'
+            <?php
+            use Crystoline\Xpsr\Scheduler\Schedule;
+            use Crystoline\Xpsr\Scheduler\Tests\Fixtures\Recorder;
+            use Psr\Clock\ClockInterface;
+
+            return static function (Schedule $schedule): void {
+                $schedule->command('test:echo once');
+                $schedule->call(static function (Recorder $recorder, ClockInterface $clock): void {
+                    $recorder->done[] = 'poll ' . $clock->now()->format('i:s');
+                })->name('poll')->everySeconds(20);
+                $schedule->command('test:echo hourly')->hourly()->everySeconds(30);
+            };
+            PHP);
+
+        $tester = $this->runSchedule($application);
+        self::assertSame(Command::SUCCESS, $tester->getStatusCode());
+        self::assertSame(
+            ['command once', 'poll 00:00', 'command hourly', 'poll 00:20', 'command hourly', 'poll 00:40'],
+            $this->recorder->done,
+            'Every due task once, then the repeats, each on its own period, until the minute ends.',
+        );
+        self::assertSame(3, substr_count($tester->getDisplay(), 'Ran poll in'));
+        self::assertSame('2026-10-29 08:01:00', $this->clock->now()->format('Y-m-d H:i:s'), 'schedule:run waited for the end of its minute.');
+
+        $this->recorder->done = [];
+        $this->runSchedule($application);
+        self::assertSame(['command once', 'poll 01:00', 'poll 01:20', 'poll 01:40'], $this->recorder->done, 'Not the hourly task: its minute has passed.');
+    }
+
+    public function testARepeatThatOverrunsItsPeriodIsNotCaughtUpOn(): void
+    {
+        $application = $this->application(<<<'PHP'
+            <?php
+            use Crystoline\Xpsr\Scheduler\Schedule;
+            use Crystoline\Xpsr\Scheduler\Tests\Fixtures\Recorder;
+            use Symfony\Component\Clock\ClockInterface;
+
+            return static function (Schedule $schedule): void {
+                $schedule->call(static function (Recorder $recorder, ClockInterface $clock): void {
+                    $recorder->done[] = 'slow ' . $clock->now()->format('i:s');
+                    $clock->sleep(25);
+                })->name('slow')->everySeconds(15)->skip(static fn(Recorder $recorder): bool => count($recorder->done) === 2);
+            };
+            PHP);
+
+        $tester = $this->runSchedule($application);
+        self::assertSame(['slow 00:00', 'slow 00:25'], $this->recorder->done, 'A period after each run began, or at once when that has passed; the third repeat was skipped by skip().');
+        self::assertStringContainsString("Skipped slow: its skip() condition is true\n", $tester->getDisplay());
+        self::assertSame('2026-10-29 08:01:00', $this->clock->now()->format('Y-m-d H:i:s'));
+    }
+
     public function testFailuresAreReportedAndTheOtherTasksStillRun(): void
     {
         $application = $this->application(<<<'PHP'
@@ -238,6 +292,7 @@ final class SchedulerTest extends TestCase
                 $schedule->command('test:echo hello')->daily('09:30');
                 $schedule->call(static fn() => null, 'ping')->everyMinutes(15)->withoutOverlapping();
                 $schedule->job(new RecordJob('weekly'))->weekly('monday', '06:00')->timezone('Africa/Lagos');
+                $schedule->call(static fn() => null, 'poll')->everySeconds(10);
             };
             PHP);
 
@@ -248,6 +303,7 @@ final class SchedulerTest extends TestCase
         self::assertMatchesRegularExpression('/\| test:echo hello +\| 30 9 \* \* \* +\| UTC +\| 2026-10-29 09:30 \|/', $display);
         self::assertMatchesRegularExpression('/\| ping \(without overlapping\) +\| \*\/15 \* \* \* \* +\| UTC +\| 2026-10-29 08:15 \|/', $display);
         self::assertMatchesRegularExpression('/\| Crystoline\\\\Xpsr\\\\Scheduler\\\\Tests\\\\Fixtures\\\\RecordJob +\| 0 6 \* \* 1 +\| Africa\/Lagos +\| 2026-11-02 06:00 \|/', $display);
+        self::assertMatchesRegularExpression('/\| poll +\| \* \* \* \* \*, every 10 seconds +\| UTC +\| 2026-10-29 08:01 \|/', $display);
 
         unlink($this->root . '/routes/schedule.php');
         $tester = new CommandTester($this->application(null)->get(ScheduleListCommand::class));
@@ -314,6 +370,8 @@ final class SchedulerTest extends TestCase
         yield 'default' => [static fn(Task $task): Task => $task, '* * * * *'];
         yield 'every minute' => [static fn(Task $task): Task => $task->daily()->everyMinute(), '* * * * *'];
         yield 'every 5 minutes' => [static fn(Task $task): Task => $task->everyMinutes(5), '*/5 * * * *'];
+        yield 'every 10 seconds' => [static fn(Task $task): Task => $task->everySeconds(10), '* * * * *'];
+        yield 'every 10 seconds of the first minute of each hour' => [static fn(Task $task): Task => $task->hourly()->everySeconds(10), '0 * * * *'];
         yield 'hourly' => [static fn(Task $task): Task => $task->hourly(15), '15 * * * *'];
         yield 'every 6 hours' => [static fn(Task $task): Task => $task->everyHours(6, 30), '30 */6 * * *'];
         yield 'daily' => [static fn(Task $task): Task => $task->daily('03:05'), '5 3 * * *'];
@@ -345,6 +403,8 @@ final class SchedulerTest extends TestCase
     {
         yield 'uneven minutes' => [static fn(Task $task) => $task->everyMinutes(7), 'everyMinutes(7): the minutes must divide an hour evenly'];
         yield 'uneven hours' => [static fn(Task $task) => $task->everyHours(5), 'everyHours(5): the hours must divide a day evenly'];
+        yield 'uneven seconds' => [static fn(Task $task) => $task->everySeconds(7), 'everySeconds(7): the seconds must divide a minute evenly'];
+        yield 'a whole minute of seconds' => [static fn(Task $task) => $task->everySeconds(60), 'everySeconds(60): the seconds must divide a minute evenly'];
         yield 'bad hour' => [static fn(Task $task) => $task->daily('24:00'), '"24:00" is not a time of day. Use 24-hour HH:MM'];
         yield 'not a time' => [static fn(Task $task) => $task->daily('8am'), '"8am" is not a time of day.'];
         yield 'bad minute' => [static fn(Task $task) => $task->hourly(60), '60 is not a minute: it must be from 0 to 59.'];
@@ -374,6 +434,9 @@ final class SchedulerTest extends TestCase
         self::assertSame([], $schedule->due(new \DateTimeImmutable('2026-10-29 08:01:00 UTC')));
         self::assertSame(300, $task->withoutOverlapping('5 minutes')->lockSeconds());
         self::assertSame(90, $task->withoutOverlapping(90)->lockSeconds());
+        self::assertNull($task->repeatSeconds());
+        self::assertSame(10, $task->everySeconds(10)->repeatSeconds());
+        self::assertSame('0 9 * * *', $task->expression(), 'everySeconds() keeps the minutes the task is due in.');
         self::assertNotSame($task->lockKey(), $schedule->command('test:echo y')->daily('09:00')->lockKey());
     }
 

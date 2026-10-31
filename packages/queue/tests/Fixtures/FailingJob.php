@@ -6,6 +6,7 @@ namespace Crystoline\Xpsr\Queue\Tests\Fixtures;
 
 use Crystoline\Xpsr\Queue\JobInterface;
 use RuntimeException;
+use Throwable;
 
 final class FailingJob implements JobInterface
 {
@@ -15,5 +16,10 @@ final class FailingJob implements JobInterface
     {
         $recorder->done[] = 'attempt';
         throw new RuntimeException($this->reason);
+    }
+
+    public function failed(Throwable $error, Recorder $recorder): void
+    {
+        $recorder->done[] = 'failed: ' . $error->getMessage();
     }
 }

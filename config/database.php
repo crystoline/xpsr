@@ -44,4 +44,7 @@ return [
 
     // Log every query at debug level through the application logger.
     'log_queries' => filter_var(env('DB_LOG_QUERIES', false), FILTER_VALIDATE_BOOL),
+
+    // Log queries that take longer than this as warnings: seconds, or a period such as "500 milliseconds".
+    'slow_queries' => env('DB_SLOW_QUERIES'),
 ];

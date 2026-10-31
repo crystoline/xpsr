@@ -5,3 +5,5 @@
 /.php-cs-fixer.cache
 /var/
 
+.DS_Store
+.claude/

@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Crystoline\Xpsr\Database;
 
+use Crystoline\Xpsr\Database\Query\QueryTiming;
 use Doctrine\DBAL\Configuration as DbalConfiguration;
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Connection as DbalConnection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Logging\Middleware as LoggingMiddleware;
 use Doctrine\DBAL\Tools\DsnParser;
@@ -15,17 +16,23 @@ use Psr\Log\LoggerInterface;
 /**
  * Creates the configured database connections on first use and keeps one per name.
  *
- * Connections are Doctrine DBAL connections. DBAL connects to the server only when the first
- * query runs, so asking for a connection is cheap.
+ * Connections are Doctrine DBAL connections (Crystoline\Xpsr\Database\Connection, which reports
+ * its transactions for Transactions::afterCommit()). DBAL connects to the server only when the
+ * first query runs, so asking for a connection is cheap.
  *
  * Configuration (the "database" configuration, usually config/database.php):
  *
- *   default      name of the default connection
- *   connections  name => DBAL connection parameters, for example
- *                ['driver' => 'pdo_mysql', 'host' => ..., 'dbname' => ..., 'user' => ..., 'password' => ...]
- *                or ['url' => 'mysql://user:secret@localhost/app']. A relative SQLite "path" is
- *                resolved against the application root.
- *   log_queries  true to log every query at debug level through the application logger
+ *   default       name of the default connection
+ *   connections   name => DBAL connection parameters, for example
+ *                 ['driver' => 'pdo_mysql', 'host' => ..., 'dbname' => ..., 'user' => ..., 'password' => ...]
+ *                 or ['url' => 'mysql://user:secret@localhost/app']. A relative SQLite "path" is
+ *                 resolved against the application root. A "wrapperClass" must extend
+ *                 Crystoline\Xpsr\Database\Connection.
+ *   log_queries   true to log every query at debug level through the application logger
+ *   slow_queries  log queries that take longer than this as warnings: seconds, or a period such
+ *                 as "500 milliseconds"
+ *
+ * Queries are reported through QueryEvents, and transactions to Transactions, when they are given.
  */
 final class ConnectionManager
 {
@@ -40,7 +47,7 @@ final class ConnectionManager
         'sqlite3' => 'pdo_sqlite',
     ];
 
-    /** @var array<string, Connection> */
+    /** @var array<string, DbalConnection> */
     private array $connections = [];
 
     /** @param array<array-key, mixed> $config the "database" configuration */
@@ -48,24 +55,27 @@ final class ConnectionManager
         private readonly array $config,
         private readonly string $rootDir,
         private readonly ?LoggerInterface $logger = null,
+        private readonly ?QueryEvents $queries = null,
+        private readonly ?Transactions $transactions = null,
     ) {}
 
     /** The connection with this name, or the default connection. */
-    public function connection(?string $name = null): Connection
+    public function connection(?string $name = null): DbalConnection
     {
         $name ??= $this->defaultName();
 
-        return $this->connections[$name] ??= $this->create($name);
+        return $this->connections[$name] ??= $this->create($name, shared: true);
     }
 
     /**
      * A new connection with the settings of this one (or the default), not shared: for work that
      * must stay out of the application's transactions, such as locks, which other processes
-     * must see at once and which a rollback must not undo.
+     * must see at once and which a rollback must not undo. Its transactions do not count for
+     * Transactions::afterCommit().
      */
-    public function open(?string $name = null): Connection
+    public function open(?string $name = null): DbalConnection
     {
-        return $this->create($name ?? $this->defaultName());
+        return $this->create($name ?? $this->defaultName(), shared: false);
     }
 
     public function defaultName(): string
@@ -127,15 +137,26 @@ final class ConnectionManager
             $parameters['path'] = $this->rootDir . '/' . $parameters['path'];
         }
 
+        $wrapper = $parameters['wrapperClass'] ?? Connection::class;
+        if (!is_string($wrapper) || !is_a($wrapper, Connection::class, true)) {
+            throw new InvalidArgumentException("database.connections.{$name}.wrapperClass must extend " . Connection::class . ', which reports transactions for afterCommit().');
+        }
+        $parameters['wrapperClass'] = $wrapper;
+
         /** @var array<string, mixed> $parameters */
         return $parameters;
     }
 
-    private function create(string $name): Connection
+    private function create(string $name, bool $shared): DbalConnection
     {
         $parameters = $this->parameters($name);
         $configuration = new DbalConfiguration();
-        if (($this->config['log_queries'] ?? false) === true && $this->logger !== null) {
+        if ($this->queries?->active()) {
+            $queries = $this->queries;
+            $configuration->setMiddlewares([new QueryTiming(static function (string $sql, array $values, float $seconds) use ($queries, $name): void {
+                $queries->executed($name, $sql, $values, $seconds);
+            })]);
+        } elseif ($this->queries === null && ($this->config['log_queries'] ?? false) === true && $this->logger !== null) {
             $configuration->setMiddlewares([new LoggingMiddleware($this->logger)]);
         }
         if (in_array($parameters['driver'] ?? null, ['pdo_sqlite', 'sqlite3'], true) && isset($parameters['path']) && is_string($parameters['path'])) {
@@ -146,7 +167,12 @@ final class ConnectionManager
             }
         }
 
-        return DriverManager::getConnection($parameters, $configuration);
+        $connection = DriverManager::getConnection($parameters, $configuration);
+        if ($shared && $this->transactions !== null && $connection instanceof Connection) {
+            $connection->reportTransactionsTo($this->transactions, $name);
+        }
+
+        return $connection;
     }
 
     /** @return array<array-key, mixed> */

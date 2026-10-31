@@ -30,6 +30,7 @@ final class Task
     /** @var list<string> minute, hour, day of month, month, day of week */
     private array $fields = ['*', '*', '*', '*', '*'];
     private string $description;
+    private ?int $repeatSeconds = null;
     private ?int $lockSeconds = null;
     /** @var list<array{Closure, bool}> */
     private array $conditions = [];
@@ -88,6 +89,21 @@ final class Task
     public function everyMinute(): self
     {
         return $this->at('*', '*', '*', '*');
+    }
+
+    /**
+     * Every $seconds seconds within each minute the schedule matches; $seconds must divide a
+     * minute evenly. schedule:run repeats the task until the minute it started in ends, in its
+     * own process, so keep the task short, or make it a job.
+     */
+    public function everySeconds(int $seconds): self
+    {
+        if ($seconds < 1 || $seconds > 30 || 60 % $seconds !== 0) {
+            throw new InvalidArgumentException("everySeconds({$seconds}): the seconds must divide a minute evenly (1, 2, 3, 4, 5, 6, 10, 12, 15, 20, or 30). Use everyMinutes() for a minute or longer.");
+        }
+        $this->repeatSeconds = $seconds;
+
+        return $this;
     }
 
     /** Every $minutes minutes from the start of each hour; $minutes must divide an hour evenly. */
@@ -243,6 +259,12 @@ final class Task
     public function lockSeconds(): ?int
     {
         return $this->lockSeconds;
+    }
+
+    /** How often the task repeats within a due minute, in seconds, or null when it runs once in it. */
+    public function repeatSeconds(): ?int
+    {
+        return $this->repeatSeconds;
     }
 
     /** @return list<array{Closure, bool}> conditions, with the result each one needs for the task to run */

@@ -43,7 +43,7 @@ $open = Task::query()->where('done', false)->orderBy('id')->get();
 $task->update(['done' => true]);
 ```
 
-Everything Eloquent offers works: relationships, casts, scopes, accessors, soft deletes, and model events and observers. A model with `protected $connection = 'reporting';` uses the XPSR connection named `reporting`.
+Everything Eloquent offers works: relationships, casts, scopes, accessors, soft deletes, and model events and observers. A model with `protected $connection = 'reporting';` uses the XPSR connection named `reporting`. The connections have an event dispatcher (`Illuminate\Events\Dispatcher`, a service), so `$db->listen()` and `whenQueryingForLongerThan()` work, and every query Eloquent runs is reported to the database package's [query events](../database/README.md#query-events), `log_queries`, and `slow_queries`, as DBAL's are.
 
 Two features need more packages: `paginate()` needs `illuminate/pagination`, and model factories need `fakerphp/faker`. Without them, use `forPage($page, $perPage)` and plain test data.
 
@@ -63,6 +63,8 @@ $db->transaction(static function () {
 ```
 
 Eloquent's transactions run through the XPSR connection, which nests them with savepoints. An Eloquent transaction inside an XPSR one (as in `DatabaseTransactions` tests), or the reverse, never starts a second transaction on the same PDO, and rolling back the outer one undoes everything inside it. `transaction($callback, attempts: 3)` retries deadlocks at the outermost level, as in Laravel.
+
+Code that must run once the transaction has committed, and not if it rolls back, goes through `Crystoline\Xpsr\Database\Transactions::afterCommit()`, which follows Eloquent's transactions because they run through XPSR's; see [the database package](../database/README.md#after-a-transaction-commits). Eloquent's own `afterCommit()` needs Laravel's transaction manager, which is not set, and throws. Jobs from `crystoline/xpsr-queue` wait with `#[AfterCommit]`.
 
 ## Users
 
@@ -113,5 +115,6 @@ Static analysis tools do not see Eloquent's static forwarding (`Task::where(...)
 |---|---|
 | `Crystoline\Xpsr\Orm\Eloquent\ConnectionResolver` | Eloquent's connections by XPSR connection name (also `Illuminate\Database\ConnectionResolverInterface`). Shared. |
 | `Illuminate\Database\ConnectionInterface` | The default connection, for the query builder: `$db->table('tasks')->count()`. |
+| `Illuminate\Events\Dispatcher` | The dispatcher of model and connection events (also `Illuminate\Contracts\Events\Dispatcher`). Shared. |
 
 Requires PHP 8.4+ and a PDO driver: `pdo_mysql`, `pdo_pgsql`, `pdo_sqlite`, or `pdo_sqlsrv`.

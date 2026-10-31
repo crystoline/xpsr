@@ -42,7 +42,7 @@ final class ScheduleListCommand extends Command
             ->setHeaders(['Task', 'Schedule', 'Time zone', 'Next run'])
             ->setRows(array_map(static fn(Task $task): array => [
                 $task->description() . ($task->lockSeconds() === null ? '' : ' (without overlapping)'),
-                $task->expression(),
+                $task->expression() . ($task->repeatSeconds() === null ? '' : ", every {$task->repeatSeconds()} seconds"),
                 $task->timezoneName(),
                 $task->nextRun($now)->format('Y-m-d H:i'),
             ], $tasks))

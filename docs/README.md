@@ -26,6 +26,7 @@ lead there.
 - [Authentication](AUTH.md)
 - [Encryption](ENCRYPTION.md)
 - [Console](CONSOLE.md)
+- [Testing](TESTING.md)
 
 ## Architecture
 

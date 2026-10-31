@@ -11,7 +11,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Messenger\Retry\MultiplierRetryStrategy;
 use Symfony\Component\Messenger\Retry\RetryStrategyInterface;
 use Symfony\Component\Messenger\Transport\InMemory\InMemoryTransportFactory;
 use Symfony\Component\Messenger\Transport\Serialization\PhpSerializer;
@@ -82,13 +81,13 @@ final class Transports implements ContainerInterface
         return $this->serializer;
     }
 
-    /** The retry strategies by transport name, for SendFailedMessageForRetryListener. */
+    /** The retry strategies by transport name, for SendFailedMessageForRetryListener; a job's #[Retry] replaces a transport's settings. */
     public function retryStrategies(): ContainerInterface
     {
         $strategies = [];
         foreach ($this->options->transports as $name => $transport) {
             [$max, $delay, $multiplier, $maxDelay] = $transport['retry'];
-            $strategies[$name] = new MultiplierRetryStrategy($max, $delay, $multiplier, $maxDelay);
+            $strategies[$name] = new JobRetryStrategy($max, $delay, $multiplier, $maxDelay);
         }
 
         return new class ($strategies) implements ContainerInterface {

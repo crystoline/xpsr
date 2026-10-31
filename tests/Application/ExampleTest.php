@@ -13,26 +13,24 @@ final class ExampleTest extends TestCase
 {
     public function testHelloRouteReturnsJson(): void
     {
-        $response = $this->get('/hello');
-
-        self::assertSame(200, $response->getStatusCode());
-        self::assertSame('application/json', $response->getHeaderLine('Content-Type'));
-        self::assertSame(['helloooooooo'], json_decode((string) $response->getBody(), true));
+        $this->get('/hello')
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/json')
+            ->assertExactJson(['helloooooooo']);
     }
 
     public function testUnknownRoutesReturnJsonErrorsToApiClients(): void
     {
-        $response = $this->request('GET', '/does-not-exist', ['Accept' => 'application/json']);
-
-        self::assertSame(404, $response->getStatusCode());
-        self::assertSame(['message' => 'Not Found'], json_decode((string) $response->getBody(), true));
+        $this->getJson('/does-not-exist')
+            ->assertNotFound()
+            ->assertJsonPath('message', 'Not Found');
     }
 
     public function testMalformedJsonIsRejected(): void
     {
         $response = $this->request('POST', '/hello', ['Content-Type' => 'application/json', 'Accept' => 'application/json'], '{"broken"');
 
-        self::assertSame(400, $response->getStatusCode());
+        $response->assertStatus(400);
     }
 
     public function testGreetCommand(): void

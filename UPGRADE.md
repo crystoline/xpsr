@@ -2,6 +2,47 @@
 
 Steps for moving an application between minor versions. What changed is in [CHANGELOG.md](CHANGELOG.md); what each kind of release promises is in [docs/VERSIONING.md](docs/VERSIONING.md).
 
+## From 0.5 to 0.6
+
+Nothing breaks. The steps after the first are optional, and worth doing for the tests.
+
+### 1. Require 0.6
+
+In `composer.json`, change every `crystoline/xpsr-*` requirement from `^0.5` to `^0.6`, then run:
+
+```sh
+composer update 'crystoline/*' --with-dependencies
+composer test
+```
+
+### 2. Response assertions in tests (optional)
+
+The helpers of `tests/TestCase.php` now live in the framework, in `Crystoline\Xpsr\Testing\ApplicationTestCase`, and requests come back as a `TestResponse` with assertions. Replace the class in `tests/TestCase.php` with the skeleton's, keeping any helpers of your own in it:
+
+```php
+abstract class TestCase extends ApplicationTestCase
+{
+    protected function createApplication(): Application
+    {
+        return require dirname(__DIR__) . '/bootstrap/app.php';
+    }
+}
+```
+
+Tests that read `getStatusCode()` or `getBody()` keep working; new ones can write `$this->getJson('/tasks')->assertOk()->assertJsonCount(2)`. See [docs/TESTING.md](docs/TESTING.md).
+
+### 3. Database tests (optional)
+
+Where `setUp()` ran `migrate` or called `beginDatabaseTransaction()`, `use RefreshDatabase;` does both, and `DatabaseAssertions` adds `assertDatabaseHas()` and the others. See [the database package's README](packages/database/README.md#testing).
+
+### 4. Jobs that wait for the commit (optional)
+
+A job dispatched inside a database transaction can now wait for it: add `#[AfterCommit]` to jobs that act on rows the transaction writes, such as refunds and receipts. A job's `failed()` method is now called after its last attempt, and `#[Retry]` sets a job's retries. See [the queue package's README](packages/queue/README.md#failures-and-retries).
+
+### 5. A custom `wrapperClass` (rare)
+
+A connection in `config/database.php` with a `wrapperClass` of its own must now extend `Crystoline\Xpsr\Database\Connection`, which reports transactions for `afterCommit()`. The connection manager refuses any other class, with a message that says so.
+
 ## From 0.4 to 0.5
 
 Nothing breaks. Projects with rate limits have one thing to check, in step 2; the other steps are optional. Run the steps from the project root.

@@ -4,6 +4,34 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+### Added
+
+- `#[AfterCommit]` jobs in `crystoline/xpsr-queue`: dispatched inside a database transaction, the job is sent once the outermost transaction has committed, and dropped if it rolls back, or if the savepoint it was dispatched in does. Outside a transaction, it is sent at once; on `sync://`, it runs after the commit. See [its README](packages/queue/README.md#jobs-and-database-transactions).
+- `Transactions::afterCommit()` in `crystoline/xpsr-database` does the same for any callback, on transactions DBAL or Eloquent opened. The connections of `ConnectionManager` are now `Crystoline\Xpsr\Database\Connection`, a DBAL connection that reports its transactions; a configured `wrapperClass` must extend it. See [its README](packages/database/README.md#after-a-transaction-commits).
+- A job's `failed()` method is called after its last attempt, with the exception first and services after, as in Laravel, on `sync://` too. An exception from `failed()` is logged. `JobRunner::fail()` does the calling.
+- `#[Retry]` on a job sets its retries in place of its transport's: `maxRetries`, `delay`, `multiplier`, and `maxDelay`, each kept from the transport when left out. A mistake in it is reported when the job is dispatched.
+- Query events in `crystoline/xpsr-database`: with the event dispatcher, each query dispatches `Crystoline\Xpsr\Database\Event\QueryExecuted` (connection, SQL, parameters, seconds), whether DBAL or Eloquent ran it, and `database.slow_queries` logs queries over a duration as warnings. See [its README](packages/database/README.md#query-events).
+- Eloquent's connections in `crystoline/xpsr-orm-eloquent` have an event dispatcher (`Illuminate\Events\Dispatcher`, a service), so `listen()`, `whenQueryingForLongerThan()`, and Eloquent's query and transaction events work. Before, they did nothing, without an error.
+- `everySeconds()` in `crystoline/xpsr-scheduler`: a task repeats every so many seconds within each minute its schedule matches, and `schedule:run` stays alive until that minute ends. `schedule:list` shows the period. See [its README](packages/scheduler/README.md#frequencies).
+- `Crystoline\Xpsr\Testing\TestResponse`: requests in tests come back with assertions that chain: `assertStatus()`, `assertOk()`, `assertCreated()`, `assertNoContent()`, `assertNotFound()`, `assertUnauthorized()`, `assertForbidden()`, `assertUnprocessable()`, `assertRedirect()`, `assertHeader()`, `assertHeaderMissing()`, `assertJson()`, `assertExactJson()`, `assertJsonPath()`, `assertJsonMissingPath()`, `assertJsonCount()`, `assertJsonValidationErrors()`, `assertSee()`, and `assertDontSee()`, with `json()`, `body()`, and `status()`. It is the PSR-7 response as well, so `getStatusCode()` and `getBody()` work as before. A failed assertion shows the status and the start of the body. See [docs/TESTING.md](docs/TESTING.md).
+- `Crystoline\Xpsr\Testing\ApplicationTestCase`, the base class of an application's tests: what the skeleton's `tests/TestCase.php` used to hold, so that `tests/TestCase.php` is three lines and new helpers reach existing applications. New in it: `getJson()`, `putJson()`, `patchJson()`, `deleteJson()`, `json()`, `withHeaders()`, and `withToken()`.
+- Test traits in `crystoline/xpsr-database`: `DatabaseAssertions` (`assertDatabaseHas()`, `assertDatabaseMissing()`, `assertDatabaseCount()`, `assertDatabaseEmpty()`), `RefreshDatabase` (drops and migrates the database before the first test of the process, then rolls each test back; migrates every time on an in-memory SQLite database), and `DatabaseTruncation` (commits, and empties the tables after each test, for data that other connections or processes must see). See [its README](packages/database/README.md#testing).
+- Assertions on the fakes: `FakeQueue::assertDispatched()`, `assertNotDispatched()`, and `assertNothingDispatched()`; `FakeNotifier::assertSent()`, `assertNotSent()`, and `assertNothingSent()`; `FakeClient::assertRequested()`, `assertNotRequested()`, and `assertNothingRequested()`. A failed assertion lists what was dispatched, sent, or requested.
+- [docs/TESTING.md](docs/TESTING.md): everything an application's tests have.
+
+### Changed
+
+- `database.log_queries` logs Eloquent's queries too, and each query's parameters and time, in one format ("Query on main took 0.21 ms: SELECT ...") in place of DBAL's. Before, only the queries DBAL ran were logged.
+- `DatabaseTransactions` does not count the test's own transaction for `afterCommit()`: callbacks and `#[AfterCommit]` jobs run when the code under test commits its outermost transaction, inside the test's.
+- `schedule:run` handles SIGTERM and SIGINT: the repeats of `everySeconds()` tasks stop after the current task.
+- The Eloquent adapter asks DBAL for the database name once per connection instead of twice.
+- The framework conflicts with `sebastian/recursion-context` below 7.0.1: older versions call `SplObjectStorage::contains()`, deprecated in PHP 8.5, when PHPUnit reports a failed assertion on objects.
+- `tests/TestCase.php` in new projects extends `ApplicationTestCase`; the skeleton's example test uses the response assertions. An existing project gets them by making its `tests/TestCase.php` do the same; see [UPGRADE.md](UPGRADE.md#from-05-to-06). `actingAs()` returns the test case, so it chains.
+
+### Fixed
+
+- The Eloquent adapter kept counting a transaction as open when its commit threw. It now counts it down first, as Laravel does.
+
 ## 0.5.0 (2026-10-30)
 
 Nothing breaks if the web server can write `var/locks`, which rate limits now use. Upgrade steps are in [UPGRADE.md](UPGRADE.md#from-04-to-05).
