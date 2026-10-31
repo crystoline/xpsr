@@ -94,7 +94,7 @@ final class SchedulerServiceRegistry extends ServiceRegistry
         $this->container->factory(ScheduleRunCommand::class, static fn(ContainerInterface $container): ScheduleRunCommand => new ScheduleRunCommand(
             $container->get(Schedule::class),
             $container->get(TaskRunner::class),
-            $container->get(ClockInterface::class),
+            $container->get(SymfonyClockInterface::class),
             $container->has(LoggerInterface::class) ? $container->get(LoggerInterface::class) : new NullLogger(),
         ));
         $this->container->factory(ScheduleListCommand::class, static fn(ContainerInterface $container): ScheduleListCommand => new ScheduleListCommand(

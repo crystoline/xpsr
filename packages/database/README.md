@@ -60,6 +60,7 @@ return [
     ],
     'migrations' => ['path' => 'migrations', 'table' => 'migrations'],
     'log_queries' => false,
+    'slow_queries' => env('DB_SLOW_QUERIES'),   // such as "500 milliseconds"
 ];
 ```
 
@@ -70,7 +71,8 @@ return [
 | `connections.<name>.url` | A URL such as `mysql://user:secret@host:3306/app`, `postgresql://user:secret@host/app`, or `sqlite:///var/app.sqlite`. When set and not empty, its values replace the separate settings. Encode special characters in the password (`@` as `%40`). |
 | `migrations.path` | Directory of migration files, relative to the project root. |
 | `migrations.table` | Table that records which migrations have run. |
-| `log_queries` | `true` logs every query at debug level through the application's PSR-3 logger. Use it in development only: it logs parameters too. |
+| `log_queries` | `true` logs every query, DBAL's and Eloquent's, at debug level through the application's PSR-3 logger, with its parameters and the time it took. Use it in development only: it logs parameters too. |
+| `slow_queries` | Logs queries that take longer than this as warnings: seconds, or a period such as `'500 milliseconds'`. Unset, none are. See [Query events](#query-events). |
 
 A relative SQLite `path` is resolved against the project root, and its directory is created if needed. Invalid settings fail when the connection is first used, with the setting's name.
 
@@ -81,6 +83,57 @@ $reports = $connections->connection('reporting');
 ```
 
 `connection()` returns the same connection each time, so code that shares it also shares its transactions. `open()` returns a new connection with the same settings. Use it for work that must stay out of the application's transactions, where other processes must see each write at once and a rollback must not undo it, such as the lock package's database store.
+
+## After a transaction commits
+
+Work that belongs after a transaction, such as queuing a job or sending a notification about rows that must exist by then, goes through `Crystoline\Xpsr\Database\Transactions`:
+
+```php
+use Crystoline\Xpsr\Database\Transactions;
+
+public function __construct(
+    private readonly Connection $db,
+    private readonly Transactions $transactions,
+    private readonly QueueInterface $queue,
+) {}
+
+$this->db->transactional(function () use ($order): void {
+    $order->markPaid();
+    $this->transactions->afterCommit(fn() => $this->queue->dispatch(new SendReceipt($order->id)));
+});
+```
+
+The callback runs once the outermost transaction has committed: inside nested transactions (savepoints), it waits for the whole transaction, and rolling back to the savepoint it was added in drops it. A rollback drops it. Without an open transaction, it runs at once. Without a connection name, a callback waits for the transaction that began last, on any connection; `afterCommit($callback, 'reporting')` names one. `inTransaction()` tells whether a transaction is open.
+
+A transaction's callbacks run in order. One that throws does not stop the others: its exception is thrown from `commit()`, or `transactional()`, once the last one has run, and any further exceptions are logged. The transaction has committed by then.
+
+Transactions opened through Eloquent count too, as its connections run them through XPSR's. Connections from `open()` are outside the application's transactions, so theirs do not. Jobs from [`crystoline/xpsr-queue`](../queue/README.md#jobs-and-database-transactions) wait with `#[AfterCommit]`.
+
+## Query events
+
+With the event dispatcher (`Crystoline\Xpsr\Registry\EventServiceRegistry` in `app.registry`), every query on a connection dispatches a `Crystoline\Xpsr\Database\Event\QueryExecuted` event, whether DBAL or Eloquent ran it: the connection's name, the SQL as the driver got it, the values bound to it, and the seconds it took. Listen for it in `config/events.php`:
+
+```php
+'listeners' => [
+    Crystoline\Xpsr\Database\Event\QueryExecuted::class => [App\Listeners\ReportSlowQueries::class],
+],
+```
+
+```php
+final class ReportSlowQueries
+{
+    public function __construct(private readonly LoggerInterface $logger) {}
+
+    public function __invoke(QueryExecuted $event): void
+    {
+        if ($event->seconds > 1) {
+            $this->logger->warning('Slow query on {connection}: {sql}', ['connection' => $event->connection, 'sql' => $event->sql]);
+        }
+    }
+}
+```
+
+For that case alone, `slow_queries` in the configuration does the same without a listener, and `log_queries` logs every query. Queries that fail are not reported.
 
 ## Migrations
 
@@ -178,19 +231,37 @@ return [
 ];
 ```
 
-Each test gets a new application and therefore an empty database. Run the migrations in `setUp()`:
+`Crystoline\Xpsr\Database\Testing\RefreshDatabase` gives every test a migrated, empty database, and `DatabaseAssertions` checks tables. Both need the test case's `application()` method, which the skeleton's test case has:
 
 ```php
-protected function setUp(): void
+use Crystoline\Xpsr\Database\Testing\DatabaseAssertions;
+use Crystoline\Xpsr\Database\Testing\RefreshDatabase;
+
+final class OrderTest extends TestCase
 {
-    [$status] = $this->console('migrate');
-    self::assertSame(0, $status);
+    use RefreshDatabase;
+    use DatabaseAssertions;
+
+    public function testAnOrderIsStored(): void
+    {
+        $this->postJson('/orders', ['sku' => 'A-1'])->assertCreated();
+
+        $this->assertDatabaseHas('orders', ['sku' => 'A-1', 'status' => 'new']);
+        $this->assertDatabaseMissing('orders', ['sku' => 'B-2']);
+        $this->assertDatabaseCount('orders', 1);
+    }
 }
 ```
 
-SQLite differs from MySQL and PostgreSQL in places, such as type checking and some SQL functions. Run the suite against your production database type as well before relying on it.
+`RefreshDatabase` runs before `setUp()`. Before the first test of the process, it drops every table on the connection and runs the migrations; then it wraps each test in a transaction that is rolled back afterwards, rows seeded in `setUp()` included. On an in-memory SQLite database, which is new for every test, the migrations run each time. Override `connectionsToRefresh()` to refresh other connections as well. It refuses to run when `app.env` is `production`.
 
-To test against a real database without leaving data behind, migrate it once and wrap each test in a transaction with `Crystoline\Xpsr\Database\Testing\DatabaseTransactions`:
+`assertDatabaseHas()`, `assertDatabaseMissing()`, `assertDatabaseCount()`, and `assertDatabaseEmpty()` take the table, the columns and values a row must have (null matches `NULL`), and a connection name other than the default. A failed `assertDatabaseHas()` shows the rows that match the first column.
+
+SQLite differs from MySQL and PostgreSQL in places, such as type checking and some SQL functions. Point the connection at a real test database to run the suite against your production database type as well; `RefreshDatabase` migrates it once per run.
+
+For a test whose data must be seen by other connections or processes, such as one that runs two workers against one row to prove a lock, `Crystoline\Xpsr\Database\Testing\DatabaseTruncation` commits instead: before the first test the database is dropped and migrated, and after each test (after `tearDown()`) every table but the migrations table is emptied, with auto-increment counters reset. Override `tablesToKeep()` for tables to leave alone, such as reference data. Emptying tables is slower than a rollback, so use it only where the rollback does not work.
+
+To keep the rollback alone, on a database that is already migrated, wrap each test in a transaction with `Crystoline\Xpsr\Database\Testing\DatabaseTransactions`:
 
 ```php
 use Crystoline\Xpsr\Database\Testing\DatabaseTransactions;
@@ -206,7 +277,7 @@ final class OrderTest extends TestCase
 }
 ```
 
-The transaction is rolled back after every test, together with any transactions the code under test left open. It covers everything that uses XPSR's connections. MySQL and MariaDB commit implicitly on schema changes, so do not change the schema inside such a test.
+The transaction is rolled back after every test, together with any transactions the code under test left open. It covers everything that uses XPSR's connections. The test's transaction does not count for `Transactions::afterCommit()`, so callbacks and `#[AfterCommit]` jobs run when the code under test commits its own outermost transaction, inside the test's. MySQL and MariaDB commit implicitly on schema changes, so do not change the schema inside such a test.
 
 ## Sessions
 
@@ -252,6 +323,8 @@ A runner implements `MigratorInterface` and a factory implementing `MigratorFact
 |---|---|
 | `Doctrine\DBAL\Connection` | The default connection. Shared. |
 | `Crystoline\Xpsr\Database\ConnectionManager` | Every configured connection, by name: `connection('reporting')`, or a new one with `open()`. Shared. |
+| `Crystoline\Xpsr\Database\Transactions` | `afterCommit($callback)` runs code once the open transaction commits; `inTransaction()`. Shared. |
+| `Crystoline\Xpsr\Database\QueryEvents` | What is done with each query: `QueryExecuted` events, `log_queries`, and `slow_queries`. ORM adapters report their queries to it. Shared. |
 | `Crystoline\Xpsr\Database\Migration\MigratorFactoryInterface` | The runner the migrate commands use: `create(?string $connection)` returns a `MigratorInterface`. |
 | `Crystoline\Xpsr\Database\MigratorFactory` | XPSR's own runner, for timestamped files in `migrations/`. |
 

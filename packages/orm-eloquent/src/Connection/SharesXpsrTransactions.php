@@ -64,8 +64,10 @@ trait SharesXpsrTransactions
         if ($this->transactions === 1) {
             $this->fireConnectionEvent('committing');
         }
-        $this->xpsr->commit();
+        // Counted down first, as Laravel does when a commit fails: an exception from commit(), such
+        // as an after-commit callback's, must not leave a transaction counted that is gone.
         [$level, $this->transactions] = [$this->transactions, $this->transactions - 1];
+        $this->xpsr->commit();
         $this->transactionsManager?->commit($this->getName(), $level, $this->transactions);
         $this->fireConnectionEvent('committed');
     }

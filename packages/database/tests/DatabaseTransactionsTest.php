@@ -12,6 +12,7 @@ use Crystoline\Xpsr\Database\Migration\MigratorInterface;
 use Crystoline\Xpsr\Database\MigratorFactory;
 use Crystoline\Xpsr\Database\Testing\DatabaseTransactions;
 use Crystoline\Xpsr\Database\Tests\Fixtures\Workspace;
+use Crystoline\Xpsr\Database\Transactions;
 use Crystoline\Xpsr\ServiceContainer\ContainerException;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
@@ -83,6 +84,30 @@ final class DatabaseTransactionsTest extends TestCase
         $db->beginTransaction(); // left open by the code under test
         self::assertSame(2, (int) $db->fetchOne('SELECT COUNT(*) FROM notes'));
         $this->assertNothingKept();
+    }
+
+    public function testTheTestsTransactionDoesNotHoldBackAfterCommitCallbacks(): void
+    {
+        $this->beginDatabaseTransaction();
+        $transactions = $this->app->get(Transactions::class);
+        $db = $this->app->get(Connection::class);
+        self::assertFalse($transactions->inTransaction(), 'The test\'s transaction does not count.');
+        $ran = [];
+        $transactions->afterCommit(static function () use (&$ran): void {
+            $ran[] = 'outside';
+        });
+        self::assertSame(['outside'], $ran);
+        $db->transactional(static function () use ($transactions, &$ran): void {
+            self::assertTrue($transactions->inTransaction());
+            $transactions->afterCommit(static function () use (&$ran): void {
+                $ran[] = 'committed';
+            });
+        });
+        self::assertSame(['outside', 'committed'], $ran, 'The code under test committed its own transaction, inside the test\'s.');
+        $this->assertNothingKept();
+        $db->beginTransaction();
+        self::assertTrue($transactions->inTransaction(), 'After the rollback, every transaction counts again.');
+        $db->rollBack();
     }
 
     public function testNamedConnectionsAreRolledBackToo(): void

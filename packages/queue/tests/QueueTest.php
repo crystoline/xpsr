@@ -17,21 +17,29 @@ use Crystoline\Xpsr\Queue\Console\QueueRestartCommand;
 use Crystoline\Xpsr\Queue\Console\QueueRetryCommand;
 use Crystoline\Xpsr\Queue\Console\QueueWorkCommand;
 use Crystoline\Xpsr\Queue\Failed\FailedJobStore;
+use Crystoline\Xpsr\Queue\JobInterface;
 use Crystoline\Xpsr\Queue\JobRunner;
 use Crystoline\Xpsr\Queue\QueueInterface;
 use Crystoline\Xpsr\Queue\QueueOptions;
 use Crystoline\Xpsr\Queue\QueueServiceRegistry;
 use Crystoline\Xpsr\Queue\Testing\FakeQueue;
+use Crystoline\Xpsr\Queue\Tests\Fixtures\AfterCommitJob;
+use Crystoline\Xpsr\Queue\Tests\Fixtures\BadRetryJob;
+use Crystoline\Xpsr\Queue\Tests\Fixtures\BrokenFailedJob;
 use Crystoline\Xpsr\Queue\Tests\Fixtures\ChainJob;
 use Crystoline\Xpsr\Queue\Tests\Fixtures\FailingJob;
 use Crystoline\Xpsr\Queue\Tests\Fixtures\MemoryJob;
+use Crystoline\Xpsr\Queue\Tests\Fixtures\MemoryLogger;
 use Crystoline\Xpsr\Queue\Tests\Fixtures\NeedsScalarJob;
 use Crystoline\Xpsr\Queue\Tests\Fixtures\RecordJob;
 use Crystoline\Xpsr\Queue\Tests\Fixtures\Recorder;
+use Crystoline\Xpsr\Queue\Tests\Fixtures\RetriedJob;
+use Psr\Log\LoggerInterface;
 use Crystoline\Xpsr\Registry\ConsoleServiceRegistry;
 use Doctrine\DBAL\Connection;
 use InvalidArgumentException;
 use LogicException;
+use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Cache\CacheItemPoolInterface;
@@ -54,6 +62,7 @@ final class QueueTest extends TestCase
     private string $suffix;
     private Application $application;
     private Recorder $recorder;
+    private MemoryLogger $logger;
 
     protected function setUp(): void
     {
@@ -80,7 +89,9 @@ final class QueueTest extends TestCase
             'failed' => ['table' => "failed_{$this->suffix}"],
         ]);
         $this->recorder = new Recorder();
+        $this->logger = new MemoryLogger();
         $this->application->getContainer()->instance(Recorder::class, $this->recorder);
+        $this->application->getContainer()->instance(LoggerInterface::class, $this->logger);
         $this->application->boot();
 
         $make = new CommandTester($this->application->get(MakeQueueTableCommand::class));
@@ -113,6 +124,7 @@ final class QueueTest extends TestCase
         } catch (RuntimeException $exception) {
             self::assertSame('Sync failure.', $exception->getMessage(), 'The job\'s own exception, not a Messenger wrapper.');
         }
+        self::assertSame(['now', 'attempt', 'failed: Sync failure.'], $this->recorder->done, 'On sync:// there are no retries, so failed() runs at once.');
     }
 
     public function testJobsGoToTheirTransportAndTheWorkerRunsThem(): void
@@ -141,7 +153,7 @@ final class QueueTest extends TestCase
     {
         $this->queue()->dispatch(new FailingJob('Out of luck.'), queue: 'db');
         $worker = $this->work(['transports' => ['db'], '--stop-when-empty' => true]);
-        self::assertSame(['attempt', 'attempt'], $this->recorder->done, 'One retry, then no more.');
+        self::assertSame(['attempt', 'attempt', 'failed: Out of luck.'], $this->recorder->done, 'One retry, then no more, then failed().');
         self::assertStringContainsString('Out of luck. Retrying later.', $worker);
         self::assertStringContainsString('Out of luck. No retries left.', $worker);
 
@@ -168,6 +180,69 @@ final class QueueTest extends TestCase
         self::assertSame("Forgot 1 failed job(s).\n", $forget->getDisplay());
         self::assertSame(Command::FAILURE, $forget->execute(['ids' => ['999']]));
         self::assertSame(Command::INVALID, $retry->execute([]));
+    }
+
+    public function testAFailedMethodThatThrowsIsLoggedAndTheWorkerGoesOn(): void
+    {
+        $this->queue()->dispatch(new BrokenFailedJob(), queue: 'db');
+        $this->queue()->dispatch(new RecordJob('next'), queue: 'db');
+        $worker = $this->work(['transports' => ['db'], '--stop-when-empty' => true]);
+        self::assertSame(['broken attempt', 'next', 'broken attempt', 'broken failed: Broken.'], $this->recorder->done, 'failed() once, after the last attempt, which came after the next job: a retry goes to the back of the queue.');
+        self::assertStringContainsString('Broken. No retries left.', $worker);
+        self::assertCount(1, $this->application->get(FailedJobStore::class)->all(), 'Kept before failed() was called.');
+        self::assertContains('error: ' . BrokenFailedJob::class . '::failed() threw: failed() broke.', $this->logger->lines());
+    }
+
+    public function testARetryAttributeReplacesTheTransportsRetrySettings(): void
+    {
+        $this->queue()->dispatch(new RetriedJob(), queue: 'db');
+        $this->work(['transports' => ['db'], '--stop-when-empty' => true]);
+        self::assertSame(array_fill(0, 4, 'retried attempt'), $this->recorder->done, '#[Retry(maxRetries: 3)] on a transport that allows 1.');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('#[Retry] maxRetries on ' . BadRetryJob::class . ' must be 0 or more.');
+        $this->queue()->dispatch(new BadRetryJob(), queue: 'memory');
+    }
+
+    public function testAnAfterCommitJobIsSentOnceTheTransactionCommits(): void
+    {
+        $db = $this->db();
+        $queued = fn(): int => (int) $db->fetchOne("SELECT COUNT(*) FROM queue_{$this->suffix}");
+
+        $db->beginTransaction();
+        $this->queue()->dispatch(new AfterCommitJob('a'), queue: 'db');
+        self::assertSame(0, $queued(), 'Not sent while the transaction is open.');
+        $db->commit();
+        self::assertSame(1, $queued());
+
+        $db->beginTransaction();
+        $this->queue()->dispatch(new AfterCommitJob('b'), queue: 'db');
+        $db->rollBack();
+        self::assertSame(1, $queued(), 'A rollback drops it.');
+
+        $db->transactional(function () use ($db): void {
+            $this->queue()->dispatch(new AfterCommitJob('c'), queue: 'db');
+            try {
+                $db->transactional(function (): void {
+                    $this->queue()->dispatch(new AfterCommitJob('d'), queue: 'db');
+                    throw new RuntimeException('Undo the inner part.');
+                });
+            } catch (RuntimeException) {
+            }
+        });
+        self::assertSame(2, $queued(), 'The outer job is sent; the one from the rolled-back savepoint is not.');
+
+        $db->beginTransaction();
+        $this->queue()->dispatch(new AfterCommitJob('sync'));
+        self::assertSame([], $this->recorder->done, 'On sync://, the job runs after the commit.');
+        $db->commit();
+        self::assertSame(['after commit sync'], $this->recorder->done);
+
+        $this->queue()->dispatch(new AfterCommitJob('now'));
+        self::assertSame(['after commit sync', 'after commit now'], $this->recorder->done, 'Outside a transaction, at once.');
+
+        $this->work(['transports' => ['db'], '--stop-when-empty' => true]);
+        self::assertSame(['after commit sync', 'after commit now', 'after commit a', 'after commit c'], $this->recorder->done);
     }
 
     public function testTheWorkerStopsAtItsLimitsAndRefusesSync(): void
@@ -201,6 +276,37 @@ final class QueueTest extends TestCase
         $fake->run($this->application->get(JobRunner::class));
         self::assertSame(['a', 'memory'], $this->recorder->done);
         self::assertSame([], $fake->dispatched());
+    }
+
+    public function testFakeQueueAssertions(): void
+    {
+        $queue = new FakeQueue();
+        $queue->assertNothingDispatched();
+        $queue->dispatch(new RecordJob('a'));
+        $queue->dispatch(new RecordJob('b'));
+        $queue->dispatch(new MemoryJob());
+        $queue->assertDispatched(RecordJob::class);
+        $queue->assertDispatched(RecordJob::class, 2);
+        $queue->assertDispatched(RecordJob::class, static fn(JobInterface $job): bool => $job instanceof RecordJob && $job->label === 'b');
+        $queue->assertNotDispatched(ChainJob::class);
+        $queue->assertNotDispatched(RecordJob::class, static fn(JobInterface $job): bool => $job instanceof RecordJob && $job->label === 'c');
+
+        $dispatched = ' Dispatched: ' . RecordJob::class . ', ' . RecordJob::class . ', ' . MemoryJob::class . '.';
+        foreach ([
+            [static fn() => $queue->assertDispatched(ChainJob::class), 'No ' . ChainJob::class . ' job was dispatched.' . $dispatched],
+            [static fn() => $queue->assertDispatched(RecordJob::class, 1), 'Expected 1 ' . RecordJob::class . ' jobs to be dispatched, not 2.' . $dispatched],
+            [static fn() => $queue->assertDispatched(RecordJob::class, static fn(): bool => false), 'No ' . RecordJob::class . ' job that passes the check was dispatched; 2 of that class were.'],
+            [static fn() => $queue->assertNotDispatched(MemoryJob::class), '1 ' . MemoryJob::class . ' job(s) were dispatched.'],
+            [static fn() => $queue->assertNotDispatched(RecordJob::class, static fn(): bool => true), '2 ' . RecordJob::class . ' job(s) were dispatched that pass the check.'],
+            [static fn() => $queue->assertNothingDispatched(), 'Jobs were dispatched.' . $dispatched],
+        ] as [$assertion, $message]) {
+            try {
+                $assertion();
+                self::fail('The assertion passed: ' . $message);
+            } catch (AssertionFailedError $exception) {
+                self::assertStringContainsString($message, $exception->getMessage());
+            }
+        }
     }
 
     public function testHandleParametersNeedServicesOrDefaults(): void

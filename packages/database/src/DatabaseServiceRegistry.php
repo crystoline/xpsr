@@ -30,6 +30,7 @@ use Doctrine\DBAL\Connection;
 use InvalidArgumentException;
 use Psr\Clock\ClockInterface;
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -37,6 +38,8 @@ use Psr\Log\LoggerInterface;
  *
  *   Crystoline\Xpsr\Database\ConnectionManager                      every configured connection, by name
  *   Doctrine\DBAL\Connection                                        the default connection
+ *   Crystoline\Xpsr\Database\Transactions                           afterCommit() callbacks
+ *   Crystoline\Xpsr\Database\QueryEvents                            query logging and QueryExecuted events
  *   Crystoline\Xpsr\Database\MigratorFactory                        XPSR's migration runner
  *   Crystoline\Xpsr\Database\Migration\MigratorFactoryInterface     the runner the commands use: the
  *                                                                   service in database.migrations.runner
@@ -55,6 +58,21 @@ final class DatabaseServiceRegistry extends ServiceRegistry
                 self::config($container),
                 $container->get(Application::class)->getRootDir(),
                 $container->has(LoggerInterface::class) ? $container->get(LoggerInterface::class) : null,
+                $container->get(QueryEvents::class),
+                $container->get(Transactions::class),
+            );
+        }, shared: true);
+        $this->container->factory(Transactions::class, static fn(ContainerInterface $container): Transactions => new Transactions(
+            $container->has(LoggerInterface::class) ? $container->get(LoggerInterface::class) : null,
+        ), shared: true);
+        $this->container->factory(QueryEvents::class, static function (ContainerInterface $container): QueryEvents {
+            $config = self::config($container);
+
+            return new QueryEvents(
+                $container->has(EventDispatcherInterface::class) ? $container->get(EventDispatcherInterface::class) : null,
+                $container->has(LoggerInterface::class) ? $container->get(LoggerInterface::class) : null,
+                ($config['log_queries'] ?? false) === true,
+                QueryEvents::seconds($config['slow_queries'] ?? null, 'database.slow_queries'),
             );
         }, shared: true);
         $this->container->factory(

@@ -93,7 +93,7 @@ foreach ($responses as $response) {
 
 ## Testing
 
-`Crystoline\Xpsr\HttpClient\Testing\FakeClient` answers requests from a queue and records them, so tests never reach the network. Replace the client with `swap()` from the skeleton's `tests/TestCase.php`:
+`Crystoline\Xpsr\HttpClient\Testing\FakeClient` answers requests from a queue and records them, so tests never reach the network. Replace the client with `swap()` from the test case (see [docs/TESTING.md](../../docs/TESTING.md)):
 
 ```php
 use Crystoline\Xpsr\HttpClient\Testing\FakeClient;
@@ -110,11 +110,13 @@ $this->swap(ClientInterface::class, $fake);           // or 'http_client.github'
 
 $response = $this->get('/status');
 
-self::assertSame('https://api.example.com/status', (string) $fake->lastRequest()->getUri());
+$fake->assertRequested('GET https://api.example.com/status');
+$fake->assertRequested(static fn (RequestInterface $request): bool => $request->hasHeader('Authorization'), 1);
+$fake->assertNotRequested('DELETE https://api.example.com/status');
 self::assertSame(1, $fake->remaining());
 ```
 
-A queued closure receives the request and returns a response, or throws to simulate a failure. A request with nothing left in the queue fails with a `LogicException` naming the request, so an unexpected call does not pass silently.
+A queued closure receives the request and returns a response, or throws to simulate a failure. A request with nothing left in the queue fails with a `LogicException` naming the request, so an unexpected call does not pass silently. `assertRequested()` takes the method and the whole URL, or a closure, and a count for "exactly this many"; `assertNothingRequested()` and `requests()` cover the rest, and a failed assertion lists the requests sent.
 
 ## Services
 

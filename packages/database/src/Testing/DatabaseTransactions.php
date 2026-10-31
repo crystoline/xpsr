@@ -6,6 +6,7 @@ namespace Crystoline\Xpsr\Database\Testing;
 
 use Crystoline\Xpsr\Application;
 use Crystoline\Xpsr\Database\ConnectionManager;
+use Crystoline\Xpsr\Database\Transactions;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\After;
 
@@ -24,24 +25,31 @@ use PHPUnit\Framework\Attributes\After;
  *
  * Everything that uses XPSR's connections is covered, including code that opens its own
  * transactions (DBAL nests them as savepoints) and ORM adapters, which share the connections.
+ * The test's transaction does not count for Transactions::afterCommit(): callbacks, and
+ * #[AfterCommit] jobs, run when the code under test commits its own outermost transaction.
  * MySQL and MariaDB commit implicitly on schema changes, so do not change the schema inside the
  * test there; migrate before beginDatabaseTransaction().
  */
 trait DatabaseTransactions
 {
-    /** @var list<Connection> */
+    /** @var array<string, Connection> by connection name */
     private array $databaseTransactionConnections = [];
+
+    private ?Transactions $databaseTransactionCallbacks = null;
 
     abstract protected function application(): Application;
 
     /** Start a transaction on each named connection, or on the default connection. */
     protected function beginDatabaseTransaction(string ...$connections): void
     {
-        $manager = $this->application()->get(ConnectionManager::class);
-        foreach ($connections === [] ? [null] : $connections as $name) {
+        $application = $this->application();
+        $manager = $application->get(ConnectionManager::class);
+        $this->databaseTransactionCallbacks = $application->get(Transactions::class);
+        foreach ($connections === [] ? [$manager->defaultName()] : $connections as $name) {
             $connection = $manager->connection($name);
             $connection->beginTransaction();
-            $this->databaseTransactionConnections[] = $connection;
+            $this->databaseTransactionCallbacks->ignoreUpTo($name, $connection->getTransactionNestingLevel());
+            $this->databaseTransactionConnections[$name] = $connection;
         }
     }
 
@@ -49,10 +57,11 @@ trait DatabaseTransactions
     #[After]
     protected function rollBackDatabaseTransactions(): void
     {
-        foreach (array_reverse($this->databaseTransactionConnections) as $connection) {
+        foreach (array_reverse($this->databaseTransactionConnections, true) as $name => $connection) {
             while ($connection->isTransactionActive()) {
                 $connection->rollBack();
             }
+            $this->databaseTransactionCallbacks?->ignoreUpTo($name, 0);
         }
         $this->databaseTransactionConnections = [];
     }

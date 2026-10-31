@@ -6,6 +6,7 @@ namespace Crystoline\Xpsr\HttpClient\Testing;
 
 use Closure;
 use LogicException;
+use PHPUnit\Framework\Assert;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -61,6 +62,54 @@ final class FakeClient implements ClientInterface
     public function lastRequest(): RequestInterface
     {
         return $this->requests[array_key_last($this->requests) ?? throw new LogicException('FakeClient has not sent any request.')];
+    }
+
+    /**
+     * A request was sent that matches: "GET https://api.example.com/charges" (the method and the
+     * whole URL), or a closure that takes the request and returns true. At least one, or exactly
+     * $times.
+     *
+     * @param string|Closure(RequestInterface): bool $request
+     */
+    public function assertRequested(string|Closure $request, ?int $times = null): void
+    {
+        $matching = $this->matching($request);
+        $what = is_string($request) ? $request : 'that passes the check';
+        if ($times === null) {
+            Assert::assertNotEmpty($matching, "No request {$what} was sent." . $this->requestSummary());
+        } else {
+            Assert::assertCount($times, $matching, sprintf('Expected %d requests %s, not %d.%s', $times, $what, count($matching), $this->requestSummary()));
+        }
+    }
+
+    /** @param string|Closure(RequestInterface): bool $request */
+    public function assertNotRequested(string|Closure $request): void
+    {
+        $matching = $this->matching($request);
+        Assert::assertCount(0, $matching, sprintf('%d request(s) %s were sent.', count($matching), is_string($request) ? $request : 'that pass the check'));
+    }
+
+    public function assertNothingRequested(): void
+    {
+        Assert::assertSame([], $this->requests, 'Requests were sent.' . $this->requestSummary());
+    }
+
+    /**
+     * @param string|Closure(RequestInterface): bool $request
+     * @return list<RequestInterface>
+     */
+    private function matching(string|Closure $request): array
+    {
+        return array_values(array_filter($this->requests, static fn(RequestInterface $sent): bool => is_string($request)
+            ? strcasecmp($request, $sent->getMethod() . ' ' . $sent->getUri()) === 0
+            : (bool) $request($sent)));
+    }
+
+    private function requestSummary(): string
+    {
+        $lines = array_map(static fn(RequestInterface $request): string => $request->getMethod() . ' ' . $request->getUri(), $this->requests);
+
+        return $lines === [] ? ' Nothing was sent.' : ' Sent: ' . implode(', ', $lines) . '.';
     }
 
     /** The number of queued responses not used yet. */

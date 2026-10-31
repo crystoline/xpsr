@@ -6,6 +6,7 @@ namespace Crystoline\Xpsr\Queue\Console;
 
 use Crystoline\Xpsr\Queue\Failed\FailedJobListener;
 use Crystoline\Xpsr\Queue\Failed\FailedJobStore;
+use Crystoline\Xpsr\Queue\JobRunner;
 use Crystoline\Xpsr\Queue\Messenger\Transports;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Log\LoggerInterface;
@@ -49,6 +50,7 @@ final class QueueWorkCommand extends Command implements SignalableCommandInterfa
         private readonly ?CacheItemPoolInterface $cache = null,
         private readonly ?LoggerInterface $logger = null,
         private readonly array $subscribers = [],
+        private readonly ?JobRunner $runner = null,
     ) {
         parent::__construct('queue:work');
     }
@@ -91,7 +93,7 @@ final class QueueWorkCommand extends Command implements SignalableCommandInterfa
 
         $events = new EventDispatcher();
         $events->addSubscriber(new SendFailedMessageForRetryListener($this->transports, $this->transports->retryStrategies(), $this->logger, $events));
-        $events->addSubscriber(new FailedJobListener($this->failed, $this->logger));
+        $events->addSubscriber(new FailedJobListener($this->failed, $this->logger, $this->runner));
         foreach ($this->subscribers as $subscriber) {
             $events->addSubscriber($subscriber);
         }

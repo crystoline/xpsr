@@ -15,6 +15,7 @@ use Doctrine\DBAL\Platforms\MariaDBPlatform;
 use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\DBAL\Platforms\SQLitePlatform;
 use Doctrine\DBAL\Platforms\SQLServerPlatform;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Connection;
 use Illuminate\Database\ConnectionResolverInterface;
 use InvalidArgumentException;
@@ -24,7 +25,8 @@ use PDO;
 /**
  * Eloquent's connections, one per XPSR connection of the same name (config/database.php), each
  * on the PDO that XPSR's DBAL connection opened. Models without a $connection use the default
- * XPSR connection.
+ * XPSR connection. With a dispatcher, the connections fire Eloquent's query and transaction
+ * events, so listen() and whenQueryingForLongerThan() work.
  */
 final class ConnectionResolver implements ConnectionResolverInterface
 {
@@ -33,7 +35,7 @@ final class ConnectionResolver implements ConnectionResolverInterface
 
     private ?string $default = null;
 
-    public function __construct(private readonly ConnectionManager $connections) {}
+    public function __construct(private readonly ConnectionManager $connections, private readonly ?Dispatcher $events = null) {}
 
     /** @param string|null $name */
     public function connection($name = null): Connection
@@ -73,8 +75,12 @@ final class ConnectionResolver implements ConnectionResolverInterface
                 ? $native
                 : throw new LogicException("Eloquent needs a PDO driver; connection \"{$name}\" uses " . get_debug_type($native) . '. Use pdo_mysql, pdo_pgsql, pdo_sqlite, or pdo_sqlsrv.');
         };
-        $connection = new $class($pdo, (string) $dbal->getDatabase(), '', ['name' => $name, 'driver' => $driver, 'database' => $dbal->getDatabase(), 'prefix' => '']);
+        $database = $dbal->getDatabase();   // one query, on most platforms
+        $connection = new $class($pdo, (string) $database, '', ['name' => $name, 'driver' => $driver, 'database' => $database, 'prefix' => '']);
         $connection->useXpsrConnection($dbal);
+        if ($this->events !== null) {
+            $connection->setEventDispatcher($this->events);
+        }
 
         return $connection;
     }

@@ -180,24 +180,27 @@ See [Routing](ROUTING.md) and [HTTP](HTTP.md).
 
 ### 7. Jobs, mail, notifications, events, and the schedule
 
-- **Jobs** implement `Crystoline\Xpsr\Queue\JobInterface`. Their `handle()` methods take services by type, as Laravel's do. `ShouldBeUnique` becomes `#[Unique]`, and `onQueue()` becomes `#[OnQueue]` or a `queue:` argument. Retries are set for each transport. Keep a job's data to IDs and plain values: XPSR does not reload models the way `SerializesModels` does.
+- **Jobs** implement `Crystoline\Xpsr\Queue\JobInterface`. Their `handle()` methods take services by type, as Laravel's do, and so do their `failed()` methods, after the exception. `ShouldBeUnique` becomes `#[Unique]`, `onQueue()` becomes `#[OnQueue]` or a `queue:` argument, `$tries` and `$backoff` become `#[Retry]`, and `afterCommit()` or `ShouldDispatchAfterCommit` becomes `#[AfterCommit]`. Keep a job's data to IDs and plain values: XPSR does not reload models the way `SerializesModels` does.
 - **Mailables** become Symfony `Email` messages, usually from a view: `$mailer->compose('emails.receipt', [...])`.
 - **Notifications** implement one interface per channel instead of `via()`. See [the notifications package](../packages/notifications/README.md#coming-from-laravel).
 - **Events** are PSR-14: dispatch with `EventDispatcherInterface`, and list listeners in `config/events.php`. Listeners run at once; one that should run later dispatches a job.
-- **The schedule** moves to `routes/schedule.php`, and cron runs `php xpsr schedule:run`.
+- **The schedule** moves to `routes/schedule.php`, and cron runs `php xpsr schedule:run`. `everyTenSeconds()` and the other sub-minute frequencies become `everySeconds(10)`.
 
 ### 8. Tests
 
-The skeleton's `tests/TestCase.php` has `get()`, `postJson()`, `request()`, `actingAs()`, `console()`, `swap()`, and `freezeTime()`.
+Tests extend the skeleton's `tests/TestCase.php`, which has `get()`, `getJson()`, `postJson()`, `putJson()`, `patchJson()`, `deleteJson()`, `request()`, `actingAs()`, `withHeaders()`, `withToken()`, `console()`, `swap()`, and `freezeTime()`. Responses have the assertions of Laravel's: `assertStatus()`, `assertOk()`, `assertCreated()`, `assertNoContent()`, `assertNotFound()`, `assertUnauthorized()`, `assertForbidden()`, `assertUnprocessable()`, `assertRedirect()`, `assertHeader()`, `assertJson()`, `assertExactJson()`, `assertJsonPath()`, `assertJsonMissingPath()`, `assertJsonCount()`, `assertJsonValidationErrors()`, and `assertSee()`. See [Testing](TESTING.md).
 
 | Laravel | XPSR |
 |---|---|
-| `RefreshDatabase` | `DatabaseTransactions`, after one `migrate` |
-| `Queue::fake()` | `$this->swap(QueueInterface::class, new FakeQueue())` |
-| `Notification::fake()` | `$this->swap(NotifierInterface::class, $this->application()->get(FakeNotifier::class))` |
+| `RefreshDatabase` | `RefreshDatabase` from the database package: the same, including on an in-memory SQLite database |
+| `DatabaseTruncation` | `DatabaseTruncation` |
+| `assertDatabaseHas()`, `assertDatabaseMissing()`, `assertDatabaseCount()`, `assertDatabaseEmpty()` | The same, from the `DatabaseAssertions` trait |
+| `assertJsonStructure()` | `assertJson()` with the keys, or `assertJsonPath()` for each |
+| `Queue::fake()`, `Queue::assertPushed()` | `$this->swap(QueueInterface::class, $queue = new FakeQueue())`, then `$queue->assertDispatched()` |
+| `Notification::fake()`, `Notification::assertSentTo()` | `$this->swap(NotifierInterface::class, $notifier = $this->application()->get(FakeNotifier::class))`, then `$notifier->assertSent($class, $user)` |
 | `Mail::fake()` | `MAIL_DSN=array://default`, then the mail package's `ArrayTransport` |
 | `Storage::fake('s3')` | `$this->application()->get(StorageManager::class)->fake('s3')` |
-| `Http::fake()` | `$this->swap(ClientInterface::class, new FakeClient(...))` |
+| `Http::fake()`, `Http::assertSent()` | `$this->swap(ClientInterface::class, $http = new FakeClient(...))`, then `$http->assertRequested()` |
 | `Carbon::setTestNow()` | `freezeTime()` for XPSR's clock; Eloquent's timestamps use Carbon, so set both when a test depends on them |
 
 ## Laravel to XPSR
@@ -215,6 +218,8 @@ The skeleton's `tests/TestCase.php` has `get()`, `postJson()`, `request()`, `act
 | `Gate::authorize()`, `$this->authorize()` | `Gate::authorize()` |
 | `$user->createToken()` | `SanctumTokenRepository::create()` |
 | `DB::table()`, `DB::select()` | Doctrine DBAL's `Connection`, or Eloquent |
+| `DB::afterCommit()` | `Transactions::afterCommit()` |
+| `DB::listen()`, `DB::whenQueryingForLongerThan()` | The `QueryExecuted` event in `config/events.php`, or `slow_queries` in `config/database.php` |
 | `Crypt::encryptString()` | `Encrypter::encryptString()` |
 | `Cache::remember()` | PSR-16 `CacheInterface`: `get()`, then `set()` |
 | `Cache::lock()` | `Locks::run()` |

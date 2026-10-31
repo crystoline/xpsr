@@ -91,9 +91,27 @@ A job that throws is tried again after a delay that grows: by default 3 more tim
 'retry' => ['max_retries' => 3, 'delay' => '1 second', 'multiplier' => 2, 'max_delay' => '1 hour'],
 ```
 
-A transport's own `retry` replaces these. Throw `Symfony\Component\Messenger\Exception\UnrecoverableMessageHandlingException` for a failure that a retry cannot fix.
+A transport's own `retry` replaces these, and a job's `#[Retry]` replaces its transport's, for the settings it gives:
 
-After the last attempt, the job goes to the `failed_jobs` table (created by `make:queue-table` with the queue table), and every failed attempt is logged.
+```php
+use Crystoline\Xpsr\Queue\Attribute\Retry;
+
+#[Retry(maxRetries: 5, delay: '30 seconds', multiplier: 2, maxDelay: '10 minutes')]
+final class IssueRefund implements JobInterface { ... }
+```
+
+Throw `Symfony\Component\Messenger\Exception\UnrecoverableMessageHandlingException` for a failure that a retry cannot fix.
+
+After the last attempt, the job goes to the `failed_jobs` table (created by `make:queue-table` with the queue table), and every failed attempt is logged. Then, if the job has a `failed()` method, it is called with the exception first and services after, as in `handle()`, for what must happen once the work is not going to be done, such as marking it unresolved:
+
+```php
+public function failed(Throwable $error, Vends $vends): void
+{
+    $vends->markUnresolved($this->vendId, $error->getMessage());
+}
+```
+
+On `sync://` there are no retries, so `failed()` is called at once, before the exception reaches the caller. An exception from `failed()` is logged and goes no further.
 
 ```sh
 php xpsr queue:failed            # ID, job, transport, time, error
@@ -102,6 +120,19 @@ php xpsr queue:forget 12         # remove without running; --all for every one
 ```
 
 Set `'failed' => false` to only log jobs that ran out of retries, or `'failed' => ['table' => ..., 'connection' => ...]` for another table or connection.
+
+## Jobs and database transactions
+
+A job dispatched inside a database transaction can run before the transaction commits, or after it has rolled back: a refund queued for a payment that was then undone. `#[AfterCommit]` holds the job until the transaction open when it is dispatched has committed, and drops it if that transaction rolls back:
+
+```php
+use Crystoline\Xpsr\Queue\Attribute\AfterCommit;
+
+#[AfterCommit]
+final class IssueRefund implements JobInterface { ... }
+```
+
+Inside nested transactions (savepoints), the job waits for the outermost one, and a rollback to the savepoint it was dispatched in drops it. Dispatched outside a transaction, it is queued at once. On `sync://`, it runs after the commit, and its exception reaches the code that committed. The transactions are those of the application's connections from [`crystoline/xpsr-database`](../database/README.md#after-a-transaction-commits), whether DBAL or Eloquent opened them; `Transactions::afterCommit()` there does the same for any code. In tests with `DatabaseTransactions`, the test's own transaction does not count: the job is sent when the code under test commits its transaction. `FakeQueue` keeps the job at once, as any other.
 
 ## Unique jobs
 
@@ -153,12 +184,15 @@ use Crystoline\Xpsr\Queue\Testing\FakeQueue;
 $this->swap(QueueInterface::class, $queue = new FakeQueue());
 $this->postJson('/users', ['email' => 'ada@example.com']);
 
-self::assertCount(1, $queue->dispatched(SendWelcomeEmail::class));
-self::assertSame(7, $queue->dispatched(SendWelcomeEmail::class)[0]->userId);
-$queue->run($this->application()->get(JobRunner::class));   // when the test needs the jobs' effects
+$queue->assertDispatched(SendWelcomeEmail::class);
+$queue->assertDispatched(SendWelcomeEmail::class, static fn(SendWelcomeEmail $job): bool => $job->userId === 7);
+$queue->assertDispatched(SendWelcomeEmail::class, 1);           // exactly once
+$queue->assertNotDispatched(SendInvoice::class);
+$queue->assertNothingDispatched();
+$queue->run($this->application()->get(JobRunner::class));     // when the test needs the jobs' effects
 ```
 
-The fake drops a `#[Unique]` job while an identical one is waiting in it or running in `run()`, and lists it in `$queue->dropped()`. It does not count `for`: it keeps the lock until the job runs.
+`dispatched()` lists the jobs, all or of one class, and `all()` each with its delay and transport. A failed assertion names the jobs that were dispatched. The fake drops a `#[Unique]` job while an identical one is waiting in it or running in `run()`, and lists it in `$queue->dropped()`. It does not count `for`: it keeps the lock until the job runs. See [docs/TESTING.md](../../docs/TESTING.md) for the test case.
 
 With `QUEUE_DSN=sync://` in tests, jobs instead run at once.
 

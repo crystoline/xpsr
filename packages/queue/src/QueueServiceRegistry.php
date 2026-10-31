@@ -8,6 +8,7 @@ use Crystoline\Xpsr\Configuration;
 use Crystoline\Xpsr\Console\CommandRegistry;
 use Crystoline\Xpsr\Database\ConnectionManager;
 use Crystoline\Xpsr\Database\Migration\MigratorFactoryInterface;
+use Crystoline\Xpsr\Database\Transactions;
 use Crystoline\Xpsr\Lock\Locks;
 use Crystoline\Xpsr\Log\Monolog\RequestId;
 use Crystoline\Xpsr\Queue\Console\MakeJobCommand;
@@ -92,6 +93,10 @@ final class QueueServiceRegistry extends ServiceRegistry
             $container->get(QueueOptions::class)->default,
             $container->get(UniqueJobs::class),
             self::requestIds($container),
+            // Transactions is registered only by DatabaseServiceRegistry, as MigratorFactoryInterface is.
+            $container->has(MigratorFactoryInterface::class) ? $container->get(Transactions::class) : null,
+            $container->get(JobRunner::class),
+            $container->has(LoggerInterface::class) ? $container->get(LoggerInterface::class) : null,
         ), shared: true);
         $this->container->factory(FailedJobStore::class, static function (ContainerInterface $container): FailedJobStore {
             $failed = $container->get(QueueOptions::class)->failed
@@ -111,6 +116,7 @@ final class QueueServiceRegistry extends ServiceRegistry
             $container->has(CacheItemPoolInterface::class) ? $container->get(CacheItemPoolInterface::class) : null,
             $container->has(LoggerInterface::class) ? $container->get(LoggerInterface::class) : null,
             array_values(array_filter([$container->get(UniqueJobs::class), self::requestIds($container)])),
+            $container->get(JobRunner::class),
         ));
         $this->container->factory(QueueRestartCommand::class, static fn(ContainerInterface $container): QueueRestartCommand => new QueueRestartCommand(
             $container->has(CacheItemPoolInterface::class) ? $container->get(CacheItemPoolInterface::class) : null,

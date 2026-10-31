@@ -10,6 +10,7 @@ use Crystoline\Xpsr\Notifications\Notifier;
 use Crystoline\Xpsr\Notifications\NotifierInterface;
 use Crystoline\Xpsr\Notifications\Recipient;
 use InvalidArgumentException;
+use PHPUnit\Framework\Assert;
 use Throwable;
 
 /**
@@ -67,9 +68,45 @@ final class FakeNotifier implements NotifierInterface
         return array_values(array_filter($this->sent($class), static fn(SentNotification $sent): bool => self::same($sent->to, $to)));
     }
 
+    /**
+     * A notification of this class was kept: at least one, or exactly $times; for one recipient
+     * when $to is given.
+     *
+     * @param class-string<NotificationInterface> $class
+     */
+    public function assertSent(string $class, ?NotifiableInterface $to = null, ?int $times = null): void
+    {
+        $sent = $to === null ? $this->sent($class) : $this->sentTo($to, $class);
+        $toText = $to === null ? '' : ' to the recipient';
+        if ($times === null) {
+            Assert::assertNotEmpty($sent, "No {$class} notification{$toText} was sent." . $this->sentSummary());
+        } else {
+            Assert::assertCount($times, $sent, sprintf('Expected %d %s notification(s)%s, not %d.%s', $times, $class, $toText, count($sent), $this->sentSummary()));
+        }
+    }
+
+    /** @param class-string<NotificationInterface> $class */
+    public function assertNotSent(string $class, ?NotifiableInterface $to = null): void
+    {
+        $sent = $to === null ? $this->sent($class) : $this->sentTo($to, $class);
+        Assert::assertCount(0, $sent, sprintf('%d %s notification(s)%s were sent.', count($sent), $class, $to === null ? '' : ' to the recipient'));
+    }
+
+    public function assertNothingSent(): void
+    {
+        Assert::assertSame([], $this->sent, 'Notifications were sent.' . $this->sentSummary());
+    }
+
     public function clear(): void
     {
         $this->sent = [];
+    }
+
+    private function sentSummary(): string
+    {
+        $classes = array_map(static fn(SentNotification $sent): string => $sent->notification::class, $this->sent);
+
+        return $classes === [] ? ' Nothing was sent.' : ' Sent: ' . implode(', ', $classes) . '.';
     }
 
     /** @param NotifiableInterface|iterable<mixed> $to */

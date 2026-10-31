@@ -56,6 +56,7 @@ The due tasks run one after another. Move long work into a queued job, so it doe
 | (none) | `* * * * *`, every minute |
 | `everyMinute()` | `* * * * *` |
 | `everyMinutes(15)` | `*/15 * * * *` (1, 2, 3, 4, 5, 6, 10, 12, 15, 20, or 30) |
+| `everySeconds(10)` | `* * * * *`, repeated every 10 seconds within the minute (1, 2, 3, 4, 5, 6, 10, 12, 15, 20, or 30) |
 | `hourly()`, `hourly(30)` | `0 * * * *`, `30 * * * *` |
 | `everyHours(6)`, `everyHours(6, 30)` | `0 */6 * * *`, `30 */6 * * *` (1, 2, 3, 4, 6, 8, or 12) |
 | `daily()`, `daily('03:00')` | `0 0 * * *`, `0 3 * * *` |
@@ -65,6 +66,8 @@ The due tasks run one after another. Move long work into a queued job, so it doe
 | `cron('30 2 * * 1-5')`, `cron('@daily')` | as given |
 
 `weekdays()`, `weekends()`, and `on('monday', 'thursday')` limit any of them to days of the week, in either order: `daily('08:00')->weekdays()` is `0 8 * * 1-5`. They cannot be combined with a day of the month, because cron would run the task when either one matches; use `when()` for that.
+
+`everySeconds()` repeats a task within each minute its schedule matches: `->everySeconds(10)` runs it at the start of every minute and every 10 seconds after, and `->hourly()->everySeconds(10)` does so in the first minute of each hour. `schedule:run` then stays alive until the end of the minute it started in. The repeats begin once the other due tasks have finished, and run one after another in the `schedule:run` process, so keep such tasks short, or make them queued jobs. A run that takes longer than its period is not caught up on: the next one starts when it ends. `withoutOverlapping()`, `when()`, and `skip()` apply to every repeat.
 
 Times are 24-hour `HH:MM`. Schedules are read in `app.timezone` (or `scheduler.timezone`), and `->timezone('Africa/Lagos')` gives a task its own. Across daylight-saving changes, a time that clocks skip when they go forward runs an hour later, and one that happens twice when they go back runs twice. For tasks that must run exactly once a day, schedule them in UTC or outside the hours clocks change.
 
@@ -89,7 +92,7 @@ php xpsr schedule:work                    # schedule:run at the start of each mi
 php xpsr schedule:work --time-limit=3600
 ```
 
-`schedule:work` starts `php xpsr schedule:run` as a new process each minute, so it picks up code changes. SIGTERM and SIGINT stop it after the current run.
+`schedule:work` starts `php xpsr schedule:run` as a new process each minute, so it picks up code changes. SIGTERM and SIGINT stop it after the current run. With `everySeconds()` tasks, each `schedule:run` keeps going until its minute ends, and SIGTERM or SIGINT ends the repeats after the current task.
 
 ## Configuration
 

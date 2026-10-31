@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace Crystoline\Xpsr\Queue\Testing;
 
+use Closure;
 use Crystoline\Xpsr\Queue\JobInterface;
 use Crystoline\Xpsr\Queue\JobRunner;
 use Crystoline\Xpsr\Queue\Messenger\UniqueJob;
 use Crystoline\Xpsr\Queue\QueueInterface;
+use PHPUnit\Framework\Assert;
 
 /**
  * A queue for tests: it keeps dispatched jobs instead of sending them.
  *
  *     $this->swap(QueueInterface::class, $queue = new FakeQueue());
  *     $this->postJson('/users', [...]);
- *     self::assertCount(1, $queue->dispatched(SendWelcomeEmail::class));
+ *     $queue->assertDispatched(SendWelcomeEmail::class, static fn(SendWelcomeEmail $job): bool => $job->userId === 7);
  *     $queue->run($this->application()->get(JobRunner::class));   // run them now, if the test needs their effects
  *
  * A #[Unique] job is dropped, and listed by dropped(), while an identical job waits here or runs
@@ -75,6 +77,42 @@ final class FakeQueue implements QueueInterface
         return $this->dispatched;
     }
 
+    /**
+     * A job of this class was dispatched: at least one, exactly $times, or one for which the
+     * closure returns true.
+     *
+     * @param class-string<JobInterface> $class
+     * @param int|Closure(JobInterface): bool|null $times
+     */
+    public function assertDispatched(string $class, int|Closure|null $times = null): void
+    {
+        $jobs = $this->dispatched($class);
+        if ($times instanceof Closure) {
+            Assert::assertTrue(array_any($jobs, static fn(JobInterface $job): bool => (bool) $times($job)), sprintf('No %s job that passes the check was dispatched; %d of that class were.%s', $class, count($jobs), $this->dispatchedSummary()));
+        } elseif ($times === null) {
+            Assert::assertNotEmpty($jobs, "No {$class} job was dispatched." . $this->dispatchedSummary());
+        } else {
+            Assert::assertCount($times, $jobs, sprintf('Expected %d %s jobs to be dispatched, not %d.%s', $times, $class, count($jobs), $this->dispatchedSummary()));
+        }
+    }
+
+    /**
+     * No job of this class was dispatched, or none for which the closure returns true.
+     *
+     * @param class-string<JobInterface> $class
+     * @param (Closure(JobInterface): bool)|null $check
+     */
+    public function assertNotDispatched(string $class, ?Closure $check = null): void
+    {
+        $jobs = array_filter($this->dispatched($class), static fn(JobInterface $job): bool => $check === null || (bool) $check($job));
+        Assert::assertCount(0, $jobs, sprintf('%d %s job(s) were dispatched%s.', count($jobs), $class, $check === null ? '' : ' that pass the check'));
+    }
+
+    public function assertNothingDispatched(): void
+    {
+        Assert::assertSame([], $this->dispatched, 'Jobs were dispatched.' . $this->dispatchedSummary());
+    }
+
     /** Run the dispatched jobs, oldest first, and forget them; jobs they dispatch run too. */
     public function run(JobRunner $runner): void
     {
@@ -94,6 +132,13 @@ final class FakeQueue implements QueueInterface
                 }
             }
         }
+    }
+
+    private function dispatchedSummary(): string
+    {
+        $classes = array_map(static fn(array $entry): string => $entry['job']::class, $this->dispatched);
+
+        return $classes === [] ? ' Nothing was dispatched.' : ' Dispatched: ' . implode(', ', $classes) . '.';
     }
 
     private function held(string $key): bool
