@@ -25,6 +25,7 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 - `DatabaseTransactions` does not count the test's own transaction for `afterCommit()`: callbacks and `#[AfterCommit]` jobs run when the code under test commits its outermost transaction, inside the test's.
 - `schedule:run` handles SIGTERM and SIGINT: the repeats of `everySeconds()` tasks stop after the current task.
 - The Eloquent adapter asks DBAL for the database name once per connection instead of twice.
+- The framework conflicts with `sebastian/recursion-context` below 7.0.1: older versions call `SplObjectStorage::contains()`, deprecated in PHP 8.5, when PHPUnit reports a failed assertion on objects.
 - `tests/TestCase.php` in new projects extends `ApplicationTestCase`; the skeleton's example test uses the response assertions. An existing project gets them by making its `tests/TestCase.php` do the same; see [UPGRADE.md](UPGRADE.md#from-05-to-06). `actingAs()` returns the test case, so it chains.
 
 ### Fixed

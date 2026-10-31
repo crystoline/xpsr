@@ -53,18 +53,19 @@ final class EventsTest extends TestCase
         $this->project->application->get(ConnectionResolver::class)->connection()->listen(static function (EloquentQueryExecuted $event) use (&$listened): void {
             $listened[] = $event->sql;
         });
-        self::assertSame(["SELECT 'main'"], array_map(static fn(QueryExecuted $event): string => $event->sql, $this->events), 'Making the Eloquent connection asks DBAL for the database name.');
+        // Making the Eloquent connection asks DBAL for the database name: one query, whose SQL depends on the database.
+        $setup = count($this->events);
+        self::assertSame(1, $setup);
         ContractRecord::query()->create(['id' => 1, 'label' => 'one']);
         self::assertSame('one', ContractRecord::query()->find(1)?->label);
         self::assertSame(1, (int) $this->project->db()->fetchOne('SELECT COUNT(*) FROM orm_contract_records'));
 
-        $sql = array_map(static fn(QueryExecuted $event): string => $event->sql, $this->events);
-        self::assertSame(
-            ["SELECT 'main'", 'insert into "orm_contract_records" ("id", "label") values (?, ?)', 'select * from "orm_contract_records" where "orm_contract_records"."id" = ? limit 1', 'SELECT COUNT(*) FROM orm_contract_records'],
-            $sql,
-            'Eloquent\'s queries, and DBAL\'s on the same connection.',
-        );
-        self::assertSame([1, 'one'], $this->events[1]->parameters);
+        $sql = array_map(static fn(QueryExecuted $event): string => $event->sql, array_slice($this->events, $setup));
+        self::assertCount(3, $sql, 'Eloquent\'s two queries, and DBAL\'s on the same connection.');
+        self::assertMatchesRegularExpression('/^insert into \W?orm_contract_records\W? \(\W?id\W?, \W?label\W?\) values \(\?, \?\)$/', $sql[0], 'Identifiers are quoted as the database wants.');
+        self::assertMatchesRegularExpression('/^select \* from \W?orm_contract_records\W? where \W?orm_contract_records\W?\.\W?id\W? = \? limit 1$/', $sql[1]);
+        self::assertSame('SELECT COUNT(*) FROM orm_contract_records', $sql[2]);
+        self::assertSame([1, 'one'], $this->events[$setup]->parameters);
         foreach ($this->events as $event) {
             self::assertSame('main', $event->connection);
             self::assertGreaterThanOrEqual(0, $event->seconds);
