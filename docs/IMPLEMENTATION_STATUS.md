@@ -602,6 +602,17 @@ Built with the choices accepted on 28 October 2026 (`FRAMEWORK_PLAN.md` section 
 
 Verified on 28 October 2026: 549 tests pass with PHPStan and style checks, including both packages in the skeleton's full HTTP kernel (a limit through `app.middleware` reaching 429, and a 500 logged as JSON with its request ID).
 
+## Release 0.6.0 (2 November 2026)
+
+Tagged `v0.6.0` in all 26 repositories. Packagist serves 0.6.0 for every package, including the five first published with it: `crystoline/xpsr-api`, `crystoline/xpsr-installer`, `crystoline/xpsr-webhooks`, `crystoline/xpsr-audit`, and `crystoline/xpsr-telemetry`. Checked from Packagist with the production `php.ini`:
+
+- `composer create-project crystoline/xpsr` installs framework and FastRoute 0.6.0; `about` reports 0.6.0; the application's tests pass; `/` and `/hello` answer.
+- In that project, the five new packages install at 0.6.0 beside the database, HTTP client, queue, and Monolog packages: `make:queue-table`, `make:webhooks-table`, and `make:audit-table` write migrations that `migrate` runs on SQLite; `make:resource` writes a resource; with `OTEL_ENABLED=true` and the console exporter, `about` prints its own `command about` span; `vendor/bin/xpsr about` reaches the project's console through the installer.
+- `setup --router=sunrise --install-dependencies` installs the Sunrise adapter `^0.6`.
+- All 25 packages install together at 0.6.0.
+- `UPGRADE.md` was rehearsed on an installed 0.5.0 application: after step 1 it runs 0.6.0 and passes its tests; after step 2, with the skeleton's `tests/TestCase.php` on `ApplicationTestCase`, they pass as well.
+- The website, [xpsr.crysto.name.ng](https://xpsr.crysto.name.ng), runs on 0.6.0 and serves `/docs/0.6/` as the latest documentation.
+
 ## Release 0.5.0 (30 October 2026)
 
 Tagged `v0.5.0` in all 21 repositories. Packagist serves 0.5.0 for every package, including the two first published with it, `crystoline/xpsr-lock` and `crystoline/xpsr-notifications`. Checked from Packagist with the production `php.ini`:
@@ -645,4 +656,4 @@ Tagged `v0.2.0` in all eight repositories. Packagist serves 0.2.0 for every pack
 
 ## Next implementation slice
 
-Every component in `FRAMEWORK_PLAN.md` section 10 is done and released in 0.4.0, and the work for moving from Laravel in 0.5.0. Ten packages were chosen on 1 November 2026, for two releases: 0.6.0 with API resources, the installer, webhooks, the audit log, and OpenTelemetry tracing (all done, above; the release comes next); 0.7.0 with health checks, translation, broadcasting on Mercure, an OAuth2 server, and a Cycle ORM adapter if still wanted. A setting to keep bcrypt hashes would make running beside Laravel simpler, and configuration and route caches remain the largest gap in the framework itself (see "Not yet available" above). Settle a component's open decisions with the user before starting it. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.
+Every component in `FRAMEWORK_PLAN.md` section 10 is done and released in 0.4.0, and the work for moving from Laravel in 0.5.0. Ten packages were chosen on 1 November 2026, for two releases: 0.6.0 with API resources, the installer, webhooks, the audit log, and OpenTelemetry tracing (all released in 0.6.0 on 2 November 2026); 0.7.0 with health checks, translation, broadcasting on Mercure, an OAuth2 server, and a Cycle ORM adapter if still wanted. A setting to keep bcrypt hashes would make running beside Laravel simpler, and configuration and route caches remain the largest gap in the framework itself (see "Not yet available" above). Settle a component's open decisions with the user before starting it. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.
