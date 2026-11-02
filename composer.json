@@ -11,6 +11,7 @@
   },
   "require-dev": {
     "crystoline/xpsr-api": "^0.5@dev",
+    "crystoline/xpsr-installer": "^0.5@dev",
     "crystoline/xpsr-auth-jwt": "^0.5@dev",
     "crystoline/xpsr-orm-eloquent": "^0.5@dev",
     "crystoline/xpsr-queue": "^0.5@dev",
@@ -70,6 +71,7 @@
         "symlink": true,
         "versions": {
           "crystoline/xpsr-api": "0.5.x-dev",
+          "crystoline/xpsr-installer": "0.5.x-dev",
           "crystoline/xpsr-auth-jwt": "0.5.x-dev",
           "crystoline/xpsr-orm-eloquent": "0.5.x-dev",
           "crystoline/xpsr-queue": "0.5.x-dev",
@@ -104,6 +106,7 @@
     "psr-4": {
       "Tests\\": "tests/",
       "Crystoline\\Xpsr\\Api\\Tests\\": "packages/api/tests/",
+      "Crystoline\\Xpsr\\Installer\\Tests\\": "packages/installer/tests/",
       "Crystoline\\Xpsr\\Cache\\Tests\\": "packages/cache/tests/",
       "Crystoline\\Xpsr\\Database\\Tests\\": "packages/database/tests/",
       "Crystoline\\Xpsr\\Tests\\": "packages/framework/tests/",

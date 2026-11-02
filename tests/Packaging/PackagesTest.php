@@ -104,6 +104,7 @@ final class PackagesTest extends TestCase
         yield 'notifications' => ['notifications'];
         yield 'locks' => ['lock'];
         yield 'API resources' => ['api'];
+        yield 'installer' => ['installer'];
         yield 'view-blade' => ['view-blade'];
         yield 'view-latte' => ['view-latte'];
         yield 'view-plates' => ['view-plates'];

@@ -43,6 +43,7 @@ crystoline/xpsr (skeleton, repository root)
 | `crystoline/xpsr-mail` | `Crystoline\Xpsr\Mail\` | framework, `symfony/mailer` and `symfony/mime` 7.4 or 8; `crystoline/xpsr-queue` for queued email; providers through Symfony's mailer bridges. |
 | `crystoline/xpsr-lock` | `Crystoline\Xpsr\Lock\` | framework, `symfony/lock` and `symfony/clock` 7.4 or 8; `symfony/cache` with phpredis or `predis/predis` for Redis and Redlock; `crystoline/xpsr-database` for the database store. |
 | `crystoline/xpsr-notifications` | `Crystoline\Xpsr\Notifications\` | framework, `symfony/notifier` 7.4 or 8; `crystoline/xpsr-mail` for the mail channel, `crystoline/xpsr-database` for the database and webpush channels, `minishlink/web-push` ^11 for web push, `crystoline/xpsr-queue` for queued notifications; SMS providers through Symfony's notifier bridges. |
+| `crystoline/xpsr-installer` | `Crystoline\Xpsr\Installer\` | `symfony/console` and `symfony/process` 7.4 or 8, and nothing of XPSR: it is installed globally and runs Composer and a project's own commands. Provides the `xpsr` binary. |
 | `crystoline/xpsr-api` | `Crystoline\Xpsr\Api\` | framework, `psr/http-message` 1.1 or 2.0; `crystoline/xpsr-database`, `crystoline/xpsr-orm-doctrine`, and `crystoline/xpsr-orm-eloquent` for paging their queries. |
 | `crystoline/xpsr-scheduler` | `Crystoline\Xpsr\Scheduler\` | framework, `dragonmantank/cron-expression` ^3.4, `symfony/lock` 7.4 or 8; `crystoline/xpsr-queue` for scheduled jobs. |
 | `crystoline/xpsr-storage` | `Crystoline\Xpsr\Storage\` | framework, `league/flysystem`, `league/flysystem-local`, and `league/flysystem-memory` ^3.29; `league/flysystem-async-aws-s3` for the s3 driver. |
@@ -149,6 +150,7 @@ The CI job `lowest-dependencies` runs the whole suite after `composer update --p
 | `crystoline/xpsr-lock` | `packages/lock`, with its history | `crystoline/xpsr-lock` |
 | `crystoline/xpsr-notifications` | `packages/notifications`, with its history | `crystoline/xpsr-notifications` |
 | `crystoline/xpsr-api` | `packages/api`, with its history | `crystoline/xpsr-api` |
+| `crystoline/xpsr-installer` | `packages/installer`, with its history | `crystoline/xpsr-installer` |
 | `crystoline/xpsr-scheduler` | `packages/scheduler`, with its history | `crystoline/xpsr-scheduler` |
 | `crystoline/xpsr-storage` | `packages/storage`, with its history | `crystoline/xpsr-storage` |
 | `crystoline/xpsr-view-plates` | `packages/view-plates`, with its history | `crystoline/xpsr-view-plates` |

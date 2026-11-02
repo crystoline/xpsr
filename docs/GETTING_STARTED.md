@@ -6,9 +6,20 @@ You need PHP 8.4 or newer and Composer 2. On Linux and macOS, `php xpsr serve` a
 
 ## 1. Create a project
 
+With [the installer](../packages/installer/README.md), one command creates the project and sets it up. This tutorial builds an API, so it uses the `api` preset, which loads only `routes/api.php`:
+
+```sh
+composer global require crystoline/xpsr-installer
+xpsr new my-app --router=fastroute --preset=api
+cd my-app
+```
+
+Or with Composer alone, in two steps:
+
 ```sh
 composer create-project crystoline/xpsr my-app
 cd my-app
+php xpsr setup --router=fastroute --preset=api
 ```
 
 To try unreleased changes, create a project from a clone of the XPSR repository instead:
@@ -21,11 +32,7 @@ composer create-project crystoline/xpsr my-app 0.5.x-dev --add-repository \
 cd my-app
 ```
 
-Composer creates `.env` from `.env.example`. Now choose the router and preset. This tutorial builds an API, so it uses the `api` preset, which loads only `routes/api.php`:
-
-```sh
-php xpsr setup --router=fastroute --preset=api
-```
+Composer creates `.env` from `.env.example`, and setup, run by the installer or by hand, ends with:
 
 ```text
 Router: fastroute. Preset: api.

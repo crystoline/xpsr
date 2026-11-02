@@ -385,8 +385,8 @@ Verified on 28 October 2026: 510 tests pass with PHPStan and style checks, inclu
 
 The first twenty-one milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
 
-- **Publishing.** Live since 28 October 2026. CI publishes `master` to the 22 mirror repositories under `crystoline` (21 packages and the skeleton), and Packagist serves every package from them. The first release is `0.1.0`. The old prototype's `v1.0.0` is removed from Packagist; its git tag remains in `crystoline/xpsr`, where it no longer affects installs.
-- **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.
+- **Publishing.** Live since 28 October 2026. CI publishes `master` to the 23 mirror repositories under `crystoline` (22 packages and the skeleton), and Packagist serves every package from them. The first release is `0.1.0`. The old prototype's `v1.0.0` is removed from Packagist; its git tag remains in `crystoline/xpsr`, where it no longer affects installs.
+- **Setup presets.** The `setup` presets know the skeleton's route file names. They stay in the framework on purpose: the installer (`crystoline/xpsr-installer`) is installed globally and runs the project's own `setup`, so the skeleton version that owns the files is the one that knows them.
 - **Containers.** Alternative containers need an adapter for XPSR's registration/deferred-group contract; PSR-11 alone only standardizes consumption.
 - **Deferred services.** Deferred service claims cannot overlap. Rebinding does not rebuild existing consumers automatically.
 - **Route grammar.** It intentionally supports static paths, whole-segment placeholders, and simple ASCII constraints. Optional segments, host patterns, arbitrary regex constraints, route caches, and signed/absolute URLs are not supported.
@@ -400,6 +400,17 @@ The first twenty-one milestones are working slices, not completion of all roadma
 - **Not yet available:** configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
 - **Password hashes alongside Laravel.** XPSR upgrades bcrypt hashes to Argon2id at sign-in, with no setting to keep bcrypt. While a Laravel application runs on the same users table, it needs `HASH_VERIFY=false` (`docs/FROM_LARAVEL.md`).
+
+## Thirty-fifth milestone: completed — the installer
+
+Built on 2 November 2026, the second of the ten packages; the design was settled with the user first.
+
+- **Package.** `crystoline/xpsr-installer`, installed globally, with the `xpsr` binary. `xpsr new` checks for Composer, refuses a directory that is not empty, runs `composer create-project crystoline/xpsr`, then the new project's own `php xpsr setup --install-dependencies` with the router and preset, optionally `git init` and a first commit, and prints the next steps. Options: `--router`, `--preset`, `--git`, `--dev`, `--release`, `--repository` (repeatable, kept in the project with `--add-repository`), `--composer`. In a terminal it asks for what is missing.
+- **Nothing about the skeleton.** The installer runs only Composer and the project's commands, so one installed version serves every XPSR release; the presets stay in `setup`.
+- **Delegation.** Any command other than `new` (and the console's own `list`, `help`, `completion`, and options) runs the nearest project's `xpsr`, found by walking up to a directory with an `xpsr` file and a `composer.json` requiring the framework. With a terminal the command gets it (TTY), so Composer's progress and questions work; without one, output is passed through.
+- **Dependencies.** `symfony/console` and `symfony/process` only. The binary finds its autoloader through Composer's `_composer_autoload_path`, so `vendor/bin/xpsr` works from a symlinked path repository too.
+- **Tests.** Unit tests with a recording runner for the command sequence, options, prompts, refusals, and the git warnings; `tests/Packaging/InstallerTest` (group `packaging`) creates a project for real from the exported skeleton and the monorepo's packages, then runs `about` through the installer from inside the project.
+- **Documents.** The package README; `GETTING_STARTED.md` leads with `xpsr new`; `CONSOLE.md` points to it.
 
 ## Thirty-fourth milestone: completed — API resources and pagination
 
@@ -588,4 +599,4 @@ Tagged `v0.2.0` in all eight repositories. Packagist serves 0.2.0 for every pack
 
 ## Next implementation slice
 
-Every component in `FRAMEWORK_PLAN.md` section 10 is done and released in 0.4.0, and the work for moving from Laravel in 0.5.0. Ten packages were chosen on 1 November 2026, for two releases: 0.6.0 with API resources (done, above), an installer for `xpsr new`, webhooks, an audit log, and OpenTelemetry tracing; 0.7.0 with health checks, translation, broadcasting on Mercure, an OAuth2 server, and a Cycle ORM adapter if still wanted. A setting to keep bcrypt hashes would make running beside Laravel simpler, and configuration and route caches remain the largest gap in the framework itself (see "Not yet available" above). Settle a component's open decisions with the user before starting it. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.
+Every component in `FRAMEWORK_PLAN.md` section 10 is done and released in 0.4.0, and the work for moving from Laravel in 0.5.0. Ten packages were chosen on 1 November 2026, for two releases: 0.6.0 with API resources and the installer (both done, above), webhooks, an audit log, and OpenTelemetry tracing; 0.7.0 with health checks, translation, broadcasting on Mercure, an OAuth2 server, and a Cycle ORM adapter if still wanted. A setting to keep bcrypt hashes would make running beside Laravel simpler, and configuration and route caches remain the largest gap in the framework itself (see "Not yet available" above). Settle a component's open decisions with the user before starting it. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.

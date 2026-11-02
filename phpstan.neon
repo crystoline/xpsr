@@ -28,6 +28,8 @@ parameters:
         - packages/lock/tests
         - packages/api/src
         - packages/api/tests
+        - packages/installer/src
+        - packages/installer/tests
         - packages/view-blade/src
         - packages/view-blade/tests
         - packages/view-latte/src

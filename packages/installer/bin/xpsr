@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+// Composer's bin proxy names the autoloader; otherwise the installer is on its own (composer
+// global require) or a dependency of a project.
+$autoloads = [$GLOBALS['_composer_autoload_path'] ?? '', __DIR__ . '/../vendor/autoload.php', __DIR__ . '/../../../autoload.php'];
+foreach ($autoloads as $autoload) {
+    if ($autoload !== '' && is_file($autoload)) {
+        require $autoload;
+        exit(Crystoline\Xpsr\Installer\Installer::main($argv));
+    }
+}
+
+fwrite(STDERR, 'The installer is not installed: run "composer global require crystoline/xpsr-installer".' . PHP_EOL);
+exit(1);

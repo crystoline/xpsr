@@ -37,6 +37,7 @@ lead there.
 ## Packages
 
 - [Framework](../packages/framework/README.md)
+- [Installer](../packages/installer/README.md)
 - [FastRoute router](../packages/router-fastroute/README.md)
 - [Sunrise router](../packages/router-sunrise/README.md)
 - [Cache](../packages/cache/README.md)

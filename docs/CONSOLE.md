@@ -68,7 +68,7 @@ php xpsr schedule:run
 
 ## Set up a project
 
-`php xpsr setup` applies two explicit choices and then checks that the application boots:
+`php xpsr setup` applies two explicit choices and then checks that the application boots. `xpsr new` from [the installer](../packages/installer/README.md) runs `composer create-project` and this command in one step.
 
 | Option | Values | What changes |
 |---|---|---|
@@ -217,6 +217,6 @@ The live server tests cover Linux, including application paths with spaces and s
 
 ## Remaining developer tooling
 
-A standalone `xpsr new` installer, application stub overrides, and configuration/route caches are subsequent work.
+Application stub overrides and configuration/route caches are subsequent work. `xpsr new`, and `xpsr <command>` without `php`, come from [the installer](../packages/installer/README.md).
 
 Upstream reference: [Symfony Console documentation](https://symfony.com/doc/7.4/console.html). XPSR provides its own registration and lifecycle; Symfony FrameworkBundle configuration and automatic service discovery do not apply here.
