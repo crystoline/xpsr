@@ -61,7 +61,7 @@ Use `defaults(['id' => 42])` for URL-generation defaults. Defaults must refer to
 
 Supported handlers are PSR-15 handler instances, service IDs resolving to a PSR-15 handler or invokable object, callables, and controller pairs such as `[UserController::class, 'show']`. String entries are treated as service IDs. Controller constructors use ordinary container injection.
 
-Callables and controller methods receive the current server request as their single argument and must return a PSR-7 response. There is no action-parameter autowiring, automatic scalar conversion, or implicit JSON conversion.
+Callables and controller methods receive the current server request as their single argument and must return a PSR-7 response, or an object that becomes one: anything implementing `Crystoline\Xpsr\Http\ResponsableInterface`, whose `toResponse($request, $container)` the framework calls, such as the resources and pages of [`crystoline/xpsr-api`](../packages/api/README.md). There is no action-parameter autowiring, automatic scalar conversion, or implicit JSON conversion of arrays.
 
 ```php
 public function show(\Psr\Http\Message\ServerRequestInterface $request): \Psr\Http\Message\ResponseInterface

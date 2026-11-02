@@ -103,6 +103,7 @@ final class PackagesTest extends TestCase
         yield 'JWT authentication' => ['auth-jwt'];
         yield 'notifications' => ['notifications'];
         yield 'locks' => ['lock'];
+        yield 'API resources' => ['api'];
         yield 'view-blade' => ['view-blade'];
         yield 'view-latte' => ['view-latte'];
         yield 'view-plates' => ['view-plates'];

@@ -26,6 +26,8 @@ parameters:
         - packages/notifications/tests
         - packages/lock/src
         - packages/lock/tests
+        - packages/api/src
+        - packages/api/tests
         - packages/view-blade/src
         - packages/view-blade/tests
         - packages/view-latte/src

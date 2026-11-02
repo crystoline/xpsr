@@ -10,6 +10,7 @@
     "twig/twig": "^3.4"
   },
   "require-dev": {
+    "crystoline/xpsr-api": "^0.5@dev",
     "crystoline/xpsr-auth-jwt": "^0.5@dev",
     "crystoline/xpsr-orm-eloquent": "^0.5@dev",
     "crystoline/xpsr-queue": "^0.5@dev",
@@ -41,6 +42,7 @@
     "symfony/http-kernel": "^7.4"
   },
   "suggest": {
+    "crystoline/xpsr-api": "JSON API responses: resources with conditional fields and a data envelope, and pagination of DBAL, Doctrine, and Eloquent queries",
     "crystoline/xpsr-auth-jwt": "JWT sign-in for APIs: the jwt guard driver, JwtIssuer, and auth:jwt-secret",
     "crystoline/xpsr-orm-eloquent": "Eloquent models on the XPSR database connection",
     "crystoline/xpsr-queue": "Queued jobs on Symfony Messenger: sync, database, Redis, AMQP, or SQS, with retries and a failed jobs table",
@@ -67,6 +69,7 @@
       "options": {
         "symlink": true,
         "versions": {
+          "crystoline/xpsr-api": "0.5.x-dev",
           "crystoline/xpsr-auth-jwt": "0.5.x-dev",
           "crystoline/xpsr-orm-eloquent": "0.5.x-dev",
           "crystoline/xpsr-queue": "0.5.x-dev",
@@ -100,6 +103,7 @@
   "autoload-dev": {
     "psr-4": {
       "Tests\\": "tests/",
+      "Crystoline\\Xpsr\\Api\\Tests\\": "packages/api/tests/",
       "Crystoline\\Xpsr\\Cache\\Tests\\": "packages/cache/tests/",
       "Crystoline\\Xpsr\\Database\\Tests\\": "packages/database/tests/",
       "Crystoline\\Xpsr\\Tests\\": "packages/framework/tests/",

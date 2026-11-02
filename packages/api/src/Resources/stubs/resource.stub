@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Crystoline\Xpsr\Api\Resource;
+use Psr\Http\Message\ServerRequestInterface;
+
+/**
+ * Return it from a route handler: return new {{ class }}($payment); or, for a list,
+ * {{ class }}::collection($payments). A field whose condition is not met is left out.
+ * $this->resource is the object given; $this->field reads its fields as well.
+ */
+final class {{ class }} extends Resource
+{
+    public function toArray(ServerRequestInterface $request): array
+    {
+        return [
+            'id' => $this->resource->id,
+            // 'amount' => $this->resource->amount,
+            // 'customer' => new CustomerResource($this->whenLoaded('customer')),
+            // 'secret' => $this->when($request->getAttribute('admin') === true, $this->resource->secret),
+        ];
+    }
+}

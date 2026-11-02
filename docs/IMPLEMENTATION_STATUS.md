@@ -385,7 +385,7 @@ Verified on 28 October 2026: 510 tests pass with PHPStan and style checks, inclu
 
 The first twenty-one milestones are working slices, not completion of all roadmap phases. Phases 0 to 5 are complete, including publishing.
 
-- **Publishing.** Live since 28 October 2026. CI publishes `master` to the 21 mirror repositories under `crystoline` (20 packages and the skeleton), and Packagist serves every package from them. The first release is `0.1.0`. The old prototype's `v1.0.0` is removed from Packagist; its git tag remains in `crystoline/xpsr`, where it no longer affects installs.
+- **Publishing.** Live since 28 October 2026. CI publishes `master` to the 22 mirror repositories under `crystoline` (21 packages and the skeleton), and Packagist serves every package from them. The first release is `0.1.0`. The old prototype's `v1.0.0` is removed from Packagist; its git tag remains in `crystoline/xpsr`, where it no longer affects installs.
 - **Setup presets.** The `setup` presets know the skeleton's route file names; this belongs in a future installer package.
 - **Containers.** Alternative containers need an adapter for XPSR's registration/deferred-group contract; PSR-11 alone only standardizes consumption.
 - **Deferred services.** Deferred service claims cannot overlap. Rebinding does not rebuild existing consumers automatically.
@@ -400,6 +400,17 @@ The first twenty-one milestones are working slices, not completion of all roadma
 - **Not yet available:** configuration and route caches (`config:cache`, `route:cache`) are not provided; route files and configuration load on each request, which the sixteenth milestone measured as cheap.
 - **Windows.** Native Windows execution of the development server and generators is not verified.
 - **Password hashes alongside Laravel.** XPSR upgrades bcrypt hashes to Argon2id at sign-in, with no setting to keep bcrypt. While a Laravel application runs on the same users table, it needs `HASH_VERIFY=false` (`docs/FROM_LARAVEL.md`).
+
+## Thirty-fourth milestone: completed — API resources and pagination
+
+Built on 1 and 2 November 2026, the first of ten packages chosen after the 0.5.0 release; the design was settled with the user first.
+
+- **Package.** `crystoline/xpsr-api`: `Resource` (`toArray($request)` with `when()`, `whenNotNull()`, `mergeWhen()`, `whenLoaded()`, nested resources, collections, and pages; `withStatus()`, `withHeaders()`, `withMeta()`, `wrap()`), `ResourceCollection`, `Pagination` with `PageRequest` and `Page`, four paginators (DBAL, Doctrine, Eloquent, arrays) chosen by what is installed, `ApiOptions` from `config/api.php`, and `make:resource`.
+- **Returning a resource.** The framework gained `Crystoline\Xpsr\Http\ResponsableInterface`; `HandlerResolver` converts such a return value with the request and the container. Resources take `ResponseBuilder` and `ApiOptions` from the container, so they need no service of their own. The design accepted a `Responder` service instead; returning the resource is shorter and matches Laravel.
+- **whenLoaded() without an ORM contract.** Eloquent models answer `relationLoaded()`. For Doctrine entities and plain objects, a relation is loaded when its property is initialized and its value is neither an uninitialized PHP 8.4 lazy object (`ReflectionClass::isUninitializedLazyObject()`) nor an unloaded `PersistentCollection`. Checked against both ORMs on SQLite, including a fetch join.
+- **Counting.** Doctrine queries are counted and limited with Doctrine's `Paginator`, so a fetch-joined collection does not inflate the total. DBAL query builders are counted by replacing the selection with `COUNT(*)`; a `GROUP BY` query passes its own `count:` closure. Eloquent counts with `getCountForPagination()`.
+- **Static analysis.** `$this->field` works through `__get()`, for resources moved from Laravel; the stub and the README use `$this->resource->field`, and `@property` annotations serve the other style. `make()` was dropped: `new static()` is unsafe under PHPStan, and PHP 8.4 allows `new PaymentResource($x)->withStatus(201)`.
+- **Documents.** The package README, the Laravel guide's resources and `paginate()` lines, and `ROUTING.md` on what a handler may return.
 
 ## Thirty-third milestone: completed — moving from Laravel
 
@@ -577,4 +588,4 @@ Tagged `v0.2.0` in all eight repositories. Packagist serves 0.2.0 for every pack
 
 ## Next implementation slice
 
-Every component in `FRAMEWORK_PLAN.md` section 10 is done and released in 0.4.0, and the work for moving from Laravel in 0.5.0. A setting to keep bcrypt hashes would make running beside Laravel simpler. The largest gap left is configuration and route caches (see "Not yet available" above); an installer package for `xpsr new` would remove the `setup` presets' knowledge of the skeleton. Settle a component's open decisions with the user before starting it. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.
+Every component in `FRAMEWORK_PLAN.md` section 10 is done and released in 0.4.0, and the work for moving from Laravel in 0.5.0. Ten packages were chosen on 1 November 2026, for two releases: 0.6.0 with API resources (done, above), an installer for `xpsr new`, webhooks, an audit log, and OpenTelemetry tracing; 0.7.0 with health checks, translation, broadcasting on Mercure, an OAuth2 server, and a Cycle ORM adapter if still wanted. A setting to keep bcrypt hashes would make running beside Laravel simpler, and configuration and route caches remain the largest gap in the framework itself (see "Not yet available" above). Settle a component's open decisions with the user before starting it. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.

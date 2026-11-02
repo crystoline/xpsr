@@ -23,6 +23,7 @@
         <testsuite name="view-latte"><directory>packages/view-latte/tests</directory></testsuite>
         <testsuite name="view-blade"><directory>packages/view-blade/tests</directory></testsuite>
         <testsuite name="lock"><directory>packages/lock/tests</directory></testsuite>
+        <testsuite name="api"><directory>packages/api/tests</directory></testsuite>
         <testsuite name="notifications"><directory>packages/notifications/tests</directory></testsuite>
         <testsuite name="skeleton"><directory>tests</directory></testsuite>
     </testsuites>
@@ -30,7 +31,7 @@
         <!-- Builds a project with composer create-project; needs network access. Run: composer test:packaging -->
         <exclude><group>packaging</group></exclude>
     </groups>
-    <source><include><directory>packages</directory></include><exclude><directory>packages/framework/tests</directory><directory>packages/router-fastroute/tests</directory><directory>packages/router-sunrise/tests</directory><directory>packages/cache/tests</directory><directory>packages/http-client/tests</directory><directory>packages/database/tests</directory><directory>packages/orm-doctrine/tests</directory><directory>packages/log-monolog/tests</directory><directory>packages/validation/tests</directory><directory>packages/auth-jwt/tests</directory><directory>packages/orm-eloquent/tests</directory><directory>packages/queue/tests</directory><directory>packages/mail/tests</directory><directory>packages/scheduler/tests</directory><directory>packages/storage/tests</directory><directory>packages/view-plates/tests</directory><directory>packages/view-latte/tests</directory><directory>packages/view-blade/tests</directory><directory>packages/lock/tests</directory><directory>packages/notifications/tests</directory></exclude></source>
+    <source><include><directory>packages</directory></include><exclude><directory>packages/framework/tests</directory><directory>packages/router-fastroute/tests</directory><directory>packages/router-sunrise/tests</directory><directory>packages/cache/tests</directory><directory>packages/http-client/tests</directory><directory>packages/database/tests</directory><directory>packages/orm-doctrine/tests</directory><directory>packages/log-monolog/tests</directory><directory>packages/validation/tests</directory><directory>packages/auth-jwt/tests</directory><directory>packages/orm-eloquent/tests</directory><directory>packages/queue/tests</directory><directory>packages/mail/tests</directory><directory>packages/scheduler/tests</directory><directory>packages/storage/tests</directory><directory>packages/view-plates/tests</directory><directory>packages/view-latte/tests</directory><directory>packages/view-blade/tests</directory><directory>packages/lock/tests</directory><directory>packages/notifications/tests</directory><directory>packages/api/tests</directory></exclude></source>
     <php>
         <env name="APP_ENV" value="testing" force="true"/>
         <!-- Sessions in memory, so tests leave no files in var/sessions. -->

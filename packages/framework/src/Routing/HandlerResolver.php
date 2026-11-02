@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Crystoline\Xpsr\Routing;
 
+use Crystoline\Xpsr\Http\ResponsableInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,8 +30,11 @@ final class HandlerResolver
             throw new UnexpectedValueException('The resolved route handler is neither callable nor PSR-15.');
         }
         $response = $handler($request);
+        if ($response instanceof ResponsableInterface) {
+            $response = $response->toResponse($request, $this->container);
+        }
         if (!$response instanceof ResponseInterface) {
-            throw new UnexpectedValueException('Route handlers must return a PSR-7 response.');
+            throw new UnexpectedValueException('Route handlers must return a PSR-7 response, or an object that can become one (ResponsableInterface).');
         }
         return $response;
     }

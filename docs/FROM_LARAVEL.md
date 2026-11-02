@@ -111,7 +111,7 @@ class User extends Model implements UserInterface, NotifiableInterface
 }
 ```
 
-`paginate()` needs `illuminate/pagination`, and model factories need `fakerphp/faker`.
+`paginate()` needs `illuminate/pagination`; `crystoline/xpsr-api` pages Eloquent queries without it, with the same `data`, `links`, and `meta` (see [Routes and controllers](#6-routes-and-controllers)). Model factories need `fakerphp/faker`.
 
 ### 5. Authentication
 
@@ -174,7 +174,7 @@ final class PaymentController
 - **Form requests become input classes** (`php xpsr make:input CreatePayment`): constructor parameters with Symfony Validator attributes. Authorization moves to the gate.
 - **Middleware** is PSR-15 (`php xpsr make:middleware`). `throttle:api` becomes `RateLimit::named('api')`, with the limits in `config/rate_limit.php`.
 - **Errors:** throw an exception from `Crystoline\Xpsr\Http\Exception`, such as `NotFoundHttpException`, where Laravel calls `abort()`. JSON clients get `{"message": ...}`.
-- **API resources** become arrays, or objects that implement `JsonSerializable`.
+- **API resources** are `Crystoline\Xpsr\Api\Resource` from `crystoline/xpsr-api`: the same `toArray($request)`, `when()`, `whenLoaded()`, `mergeWhen()`, `collection()`, and `data` envelope, returned from the handler as before. `paginate()` becomes `$this->pagination->fromRequest($request)->paginate(Payment::query())`, with Laravel's `data`, `links`, and `meta`. See [its README](../packages/api/README.md#coming-from-laravel).
 
 See [Routing](ROUTING.md) and [HTTP](HTTP.md).
 
@@ -211,6 +211,8 @@ Tests extend the skeleton's `tests/TestCase.php`, which has `get()`, `getJson()`
 | `Route::get()` | `$routes->get()` in `routes/*.php` |
 | `$request->input('amount')` | An input class, or `$request->getParsedBody()['amount']` |
 | `response()->json()` | `ResponseBuilder::json()` |
+| `JsonResource`, `PaymentResource::collection()` | `Crystoline\Xpsr\Api\Resource`, `PaymentResource::collection()` |
+| `Payment::query()->paginate()` | `Pagination::fromRequest($request)->paginate(Payment::query())` |
 | `abort(404)` | `throw new NotFoundHttpException()` |
 | `$request->user()`, `auth()->user()` | `Identity::of($request)->user` |
 | `Auth::attempt()` | `AuthManager::attempt()` |
@@ -246,7 +248,7 @@ An application can move a route group or a job at a time, with Laravel and XPSR 
 
 ## Not in XPSR
 
-- Facades, route model binding, API resources, form request `authorize()`, and service injection into controller methods.
+- Facades, route model binding, form request `authorize()`, and service injection into controller methods.
 - Broadcasting, Horizon, Telescope, Pulse, Socialite, Passport, Cashier, and Scout.
 - Octane: long-running servers have not been verified (see [Deployment](DEPLOYMENT.md#not-provided-yet)).
 - Registration, password reset, email verification, two-factor sign-in, and "remember me" cookies.

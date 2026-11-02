@@ -44,6 +44,7 @@ lead there.
 - [Doctrine ORM](../packages/orm-doctrine/README.md)
 - [Eloquent](../packages/orm-eloquent/README.md)
 - [Validation](../packages/validation/README.md)
+- [API responses](../packages/api/README.md)
 - [HTTP client](../packages/http-client/README.md)
 - [Monolog logging](../packages/log-monolog/README.md)
 - [JWT sign-in](../packages/auth-jwt/README.md)
