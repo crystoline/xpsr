@@ -30,6 +30,8 @@ parameters:
         - packages/api/tests
         - packages/installer/src
         - packages/installer/tests
+        - packages/webhooks/src
+        - packages/webhooks/tests
         - packages/view-blade/src
         - packages/view-blade/tests
         - packages/view-latte/src

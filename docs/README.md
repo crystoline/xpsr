@@ -53,6 +53,7 @@ lead there.
 - [Mail](../packages/mail/README.md)
 - [Locks](../packages/lock/README.md)
 - [Notifications](../packages/notifications/README.md)
+- [Webhooks](../packages/webhooks/README.md)
 - [Scheduler](../packages/scheduler/README.md)
 - [File storage](../packages/storage/README.md)
 - [Plates views](../packages/view-plates/README.md)

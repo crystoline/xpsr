@@ -1,0 +1,74 @@
+<?php
+
+declare(strict_types=1);
+
+use Crystoline\Xpsr\Database\Migration\Migration;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\Index;
+use Doctrine\DBAL\Schema\PrimaryKeyConstraint;
+use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\Types;
+
+/**
+ * The tables of crystoline/xpsr-webhooks: the endpoints webhooks go to, with their secrets
+ * encrypted, and the log of deliveries to them.
+ */
+return new class extends Migration {
+    public function up(Connection $db): void
+    {
+        $schema = $db->createSchemaManager();
+        $schema->createTable(
+            Table::editor()
+                ->setUnquotedName({{ table }})
+                ->setColumns(
+                    Column::editor()->setUnquotedName('id')->setTypeName(Types::GUID)->create(),
+                    Column::editor()->setUnquotedName('url')->setTypeName(Types::STRING)->setLength(2048)->create(),
+                    // JSON: event names, "payment.*", or "*".
+                    Column::editor()->setUnquotedName('events')->setTypeName(Types::TEXT)->create(),
+                    // Encrypted with APP_KEY.
+                    Column::editor()->setUnquotedName('secret')->setTypeName(Types::TEXT)->create(),
+                    Column::editor()->setUnquotedName('label')->setTypeName(Types::STRING)->setLength(255)->setNotNull(false)->create(),
+                    Column::editor()->setUnquotedName('enabled')->setTypeName(Types::BOOLEAN)->create(),
+                    // UTC.
+                    Column::editor()->setUnquotedName('created_at')->setTypeName(Types::DATETIME_IMMUTABLE)->create(),
+                    Column::editor()->setUnquotedName('disabled_at')->setTypeName(Types::DATETIME_IMMUTABLE)->setNotNull(false)->create(),
+                )
+                ->setPrimaryKeyConstraint(PrimaryKeyConstraint::editor()->setUnquotedColumnNames('id')->create())
+                ->create(),
+        );
+        $schema->createTable(
+            Table::editor()
+                ->setUnquotedName({{ deliveries }})
+                ->setColumns(
+                    Column::editor()->setUnquotedName('id')->setTypeName(Types::GUID)->create(),
+                    Column::editor()->setUnquotedName('endpoint_id')->setTypeName(Types::GUID)->create(),
+                    Column::editor()->setUnquotedName('event')->setTypeName(Types::STRING)->setLength(255)->create(),
+                    // JSON: the event's data.
+                    Column::editor()->setUnquotedName('payload')->setTypeName(Types::TEXT)->create(),
+                    Column::editor()->setUnquotedName('attempts')->setTypeName(Types::INTEGER)->create(),
+                    // pending, delivered, or failed.
+                    Column::editor()->setUnquotedName('status')->setTypeName(Types::STRING)->setLength(16)->create(),
+                    Column::editor()->setUnquotedName('last_status')->setTypeName(Types::SMALLINT)->setNotNull(false)->create(),
+                    Column::editor()->setUnquotedName('last_error')->setTypeName(Types::TEXT)->setNotNull(false)->create(),
+                    // UTC.
+                    Column::editor()->setUnquotedName('created_at')->setTypeName(Types::DATETIME_IMMUTABLE)->create(),
+                    Column::editor()->setUnquotedName('delivered_at')->setTypeName(Types::DATETIME_IMMUTABLE)->setNotNull(false)->create(),
+                    Column::editor()->setUnquotedName('failed_at')->setTypeName(Types::DATETIME_IMMUTABLE)->setNotNull(false)->create(),
+                )
+                ->setPrimaryKeyConstraint(PrimaryKeyConstraint::editor()->setUnquotedColumnNames('id')->create())
+                ->setIndexes(
+                    Index::editor()->setUnquotedName('{{ deliveries_prefix }}_endpoint')->setUnquotedColumnNames('endpoint_id', 'created_at')->create(),
+                    Index::editor()->setUnquotedName('{{ deliveries_prefix }}_status')->setUnquotedColumnNames('status', 'created_at')->create(),
+                )
+                ->create(),
+        );
+    }
+
+    public function down(Connection $db): void
+    {
+        $schema = $db->createSchemaManager();
+        $schema->dropTable({{ deliveries }});
+        $schema->dropTable({{ table }});
+    }
+};

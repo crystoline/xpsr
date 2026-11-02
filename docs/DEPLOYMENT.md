@@ -163,6 +163,14 @@ With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user 
 - **Queued notifications** need queue workers (see [Queue workers](#queue-workers)). A channel that fails is retried alone, so a retry does not send the other channels again.
 - See [the notifications package](../packages/notifications/README.md).
 
+## Webhooks
+
+- **Deliveries run on the queue**, so they need queue workers (see [Queue workers](#queue-workers)) on a transport with retries: on `sync://` a failed attempt is final and `send()` throws.
+- **Endpoint secrets** are encrypted with `APP_KEY`. Rotate the key with `APP_PREVIOUS_KEYS` set, or the secrets become unreadable and every subscriber needs a new one.
+- **`webhooks.allow_private_urls`** must stay `false` in production: it is what stops a subscriber from pointing deliveries at your own network.
+- **The delivery log grows** with every delivery; schedule `php xpsr webhooks:prune --days=30`.
+- See [the webhooks package](../packages/webhooks/README.md).
+
 ## File storage
 
 - **Local disks** (`var/storage` by default) must survive deploys: keep them outside the release directory, or link them in, and back them up.
