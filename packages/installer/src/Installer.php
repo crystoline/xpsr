@@ -51,7 +51,7 @@ final class Installer
     public static function console(RunnerInterface $runner): Application
     {
         $console = new Application('XPSR installer', self::version());
-        $console->add(new NewCommand($runner));
+        $console->addCommand(new NewCommand($runner));
 
         return $console;
     }

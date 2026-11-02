@@ -48,7 +48,7 @@ final class NewCommandTest extends TestCase
     {
         $runner = new RecordingRunner();
 
-        $tester = $this->execute($runner,['name' => $this->directory]);
+        $tester = $this->execute($runner, ['name' => $this->directory]);
 
         self::assertSame(Command::SUCCESS, $tester->getStatusCode(), self::text($tester));
         self::assertSame([
@@ -69,7 +69,7 @@ final class NewCommandTest extends TestCase
     {
         $runner = new RecordingRunner();
 
-        $tester = $this->execute($runner,[
+        $tester = $this->execute($runner, [
             'name' => $this->directory, '--router' => 'sunrise', '--preset' => 'api', '--dev' => true,
             '--repository' => ['{"type":"path","url":"/src/skeleton"}', 'https://repo.example.com'], '--composer' => '/opt/composer.phar',
         ]);
@@ -85,26 +85,26 @@ final class NewCommandTest extends TestCase
         );
 
         $runner = new RecordingRunner();
-        $this->execute($runner,['name' => $this->directory, '--release' => '^0.5']);
+        $this->execute($runner, ['name' => $this->directory, '--release' => '^0.5']);
         self::assertSame(['/usr/bin/composer', 'create-project', 'crystoline/xpsr', $this->directory, '^0.5', '--no-interaction'], $runner->commands[0]['command']);
     }
 
     public function testGitCommitsTheProjectWhenAsked(): void
     {
         $runner = new RecordingRunner();
-        $tester = $this->execute($runner,['name' => $this->directory, '--git' => true]);
+        $tester = $this->execute($runner, ['name' => $this->directory, '--git' => true]);
         self::assertSame(Command::SUCCESS, $tester->getStatusCode());
         self::assertSame(['/usr/bin/git init -q', '/usr/bin/git add -A', '/usr/bin/git commit -q -m Create the project'], array_slice($runner->texts(), 2, 3));
         self::assertSame($this->directory, $runner->commands[3]['directory']);
         self::assertStringContainsString('Committed the project to a new git repository.', self::text($tester));
 
         $runner = new RecordingRunner(failures: ['commit' => 128]);
-        $tester = $this->execute($runner,['name' => $this->directory, '--git' => true]);
+        $tester = $this->execute($runner, ['name' => $this->directory, '--git' => true]);
         self::assertSame(Command::SUCCESS, $tester->getStatusCode(), 'The project exists; a failed commit is a warning.');
         self::assertStringContainsString('git commit failed (exit 128), so the project is not committed.', self::text($tester));
 
         $runner = new RecordingRunner(programs: ['composer' => '/usr/bin/composer']);
-        $tester = $this->execute($runner,['name' => $this->directory, '--git' => true]);
+        $tester = $this->execute($runner, ['name' => $this->directory, '--git' => true]);
         self::assertSame(Command::SUCCESS, $tester->getStatusCode());
         self::assertStringContainsString('git was not found on the PATH, so the project is not committed.', self::text($tester));
         self::assertCount(3, $runner->commands);
@@ -138,7 +138,7 @@ final class NewCommandTest extends TestCase
     public function testInvalidInputIsRefusedBeforeAnythingRuns(array $input, int $status, string $message): void
     {
         $runner = new RecordingRunner();
-        $tester = $this->execute($runner,$input);
+        $tester = $this->execute($runner, $input);
 
         self::assertSame($status, $tester->getStatusCode());
         self::assertStringContainsString($message, self::text($tester));
@@ -150,26 +150,26 @@ final class NewCommandTest extends TestCase
         mkdir($this->directory);
         touch($this->directory . '/keep');
         $runner = new RecordingRunner();
-        $tester = $this->execute($runner,['name' => $this->directory]);
+        $tester = $this->execute($runner, ['name' => $this->directory]);
         self::assertSame(Command::FAILURE, $tester->getStatusCode());
         self::assertStringContainsString($this->directory . ' exists and is not empty.', self::text($tester));
         self::assertSame([], $runner->commands);
         unlink($this->directory . '/keep');
 
         $runner = new RecordingRunner(programs: []);
-        $tester = $this->execute($runner,['name' => $this->directory]);
+        $tester = $this->execute($runner, ['name' => $this->directory]);
         self::assertSame(Command::FAILURE, $tester->getStatusCode());
         self::assertStringContainsString('Composer was not found on the PATH.', self::text($tester));
         self::assertStringContainsString('--composer=/path/to/composer.phar', self::text($tester));
 
         $runner = new RecordingRunner(failures: ['create-project' => 1]);
-        $tester = $this->execute($runner,['name' => $this->directory]);
+        $tester = $this->execute($runner, ['name' => $this->directory]);
         self::assertSame(Command::FAILURE, $tester->getStatusCode());
         self::assertStringContainsString("Composer could not create the project (exit 1); {$this->directory} may hold a partial project.", self::text($tester));
         self::assertCount(1, $runner->commands, 'Setup does not run.');
 
         $runner = new RecordingRunner(failures: ['setup' => 1]);
-        $tester = $this->execute($runner,['name' => $this->directory, '--git' => true]);
+        $tester = $this->execute($runner, ['name' => $this->directory, '--git' => true]);
         self::assertSame(Command::FAILURE, $tester->getStatusCode());
         self::assertStringContainsString('The project was created, but its setup failed (exit 1)', self::text($tester));
         self::assertStringContainsString("run \"php xpsr setup\" in {$this->directory}.", self::text($tester));

@@ -128,7 +128,9 @@ final class PackagesTest extends TestCase
         $this->composer(getenv('XPSR_DEPENDENCIES') === 'lowest'
             ? ['update', '--prefer-lowest', '--prefer-stable', '--prefer-dist']
             : ['install', '--prefer-dist'], $directory);
-        if ($package !== 'framework') {
+        if ($package === 'installer') {
+            self::assertDirectoryDoesNotExist($directory . '/vendor/crystoline', 'The installer depends on nothing of XPSR, so one installed version serves every release.');
+        } elseif ($package !== 'framework') {
             self::assertDirectoryExists($directory . '/vendor/crystoline/xpsr-framework/src');
             self::assertFalse(is_link($directory . '/vendor/crystoline/xpsr-framework'), 'The framework is installed as a copy.');
         }
