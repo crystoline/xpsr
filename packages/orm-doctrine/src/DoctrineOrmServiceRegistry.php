@@ -13,6 +13,7 @@ use Crystoline\Xpsr\Orm\Doctrine\Auth\DoctrineUserProviderFactory;
 use Crystoline\Xpsr\Orm\Doctrine\Console\ValidateSchemaCommand;
 use Crystoline\Xpsr\Orm\Doctrine\Http\ClearEntityManagerMiddleware;
 use Crystoline\Xpsr\ServiceContainer\ServiceRegistry;
+use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
@@ -57,6 +58,7 @@ final class DoctrineOrmServiceRegistry extends ServiceRegistry
     {
         $this->container->factory(EntityManagerInterface::class, static fn(ContainerInterface $container): EntityManagerInterface => self::entityManager($container), shared: true);
         $this->container->alias(EntityManager::class, EntityManagerInterface::class);
+        $this->container->singleton(DoctrineListeners::class);
         $this->container->factory(
             EntityManagerProvider::class,
             static fn(ContainerInterface $container): EntityManagerProvider => new SingleManagerProvider($container->get(EntityManagerInterface::class)),
@@ -100,7 +102,16 @@ final class DoctrineOrmServiceRegistry extends ServiceRegistry
             $config->setNamingStrategy(new UnderscoreNamingStrategy(CASE_LOWER));
         }
 
-        return new EntityManager($container->get(ConnectionManager::class)->connection($options->connection), $config);
+        $em = new EntityManager($container->get(ConnectionManager::class)->connection($options->connection), $config);
+        foreach ([...$options->listeners, ...$container->get(DoctrineListeners::class)->all()] as $id) {
+            $subscriber = $container->get($id);
+            if (!$subscriber instanceof EventSubscriber) {
+                throw new InvalidArgumentException("orm.listeners: {$id} must implement Doctrine\\Common\\EventSubscriber.");
+            }
+            $em->getEventManager()->addEventSubscriber($subscriber);
+        }
+
+        return $em;
     }
 
     private static function cache(ContainerInterface $container, OrmOptions $options, bool $debug): CacheItemPoolInterface

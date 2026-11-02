@@ -1,0 +1,54 @@
+<?php
+
+declare(strict_types=1);
+
+use Crystoline\Xpsr\Database\Migration\Migration;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\Index;
+use Doctrine\DBAL\Schema\PrimaryKeyConstraint;
+use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\Types;
+
+/** The table of crystoline/xpsr-audit: who changed what, when, and from where. */
+return new class extends Migration {
+    public function up(Connection $db): void
+    {
+        $db->createSchemaManager()->createTable(
+            Table::editor()
+                ->setUnquotedName({{ table }})
+                ->setColumns(
+                    Column::editor()->setUnquotedName('id')->setTypeName(Types::GUID)->create(),
+                    // UTC.
+                    Column::editor()->setUnquotedName('occurred_at')->setTypeName(Types::DATETIME_IMMUTABLE)->create(),
+                    // created, updated, deleted, or the application's own, such as payment.refunded.
+                    Column::editor()->setUnquotedName('action')->setTypeName(Types::STRING)->setLength(100)->create(),
+                    Column::editor()->setUnquotedName('subject_type')->setTypeName(Types::STRING)->setLength(255)->setNotNull(false)->create(),
+                    Column::editor()->setUnquotedName('subject_id')->setTypeName(Types::STRING)->setLength(255)->setNotNull(false)->create(),
+                    Column::editor()->setUnquotedName('actor_type')->setTypeName(Types::STRING)->setLength(255)->setNotNull(false)->create(),
+                    Column::editor()->setUnquotedName('actor_id')->setTypeName(Types::STRING)->setLength(255)->setNotNull(false)->create(),
+                    // http or console.
+                    Column::editor()->setUnquotedName('source')->setTypeName(Types::STRING)->setLength(16)->create(),
+                    Column::editor()->setUnquotedName('request_id')->setTypeName(Types::STRING)->setLength(64)->setNotNull(false)->create(),
+                    Column::editor()->setUnquotedName('ip')->setTypeName(Types::STRING)->setLength(45)->setNotNull(false)->create(),
+                    Column::editor()->setUnquotedName('user_agent')->setTypeName(Types::STRING)->setLength(512)->setNotNull(false)->create(),
+                    // JSON: field => [before, after].
+                    Column::editor()->setUnquotedName('changes')->setTypeName(Types::TEXT)->create(),
+                    // JSON.
+                    Column::editor()->setUnquotedName('context')->setTypeName(Types::TEXT)->create(),
+                )
+                ->setPrimaryKeyConstraint(PrimaryKeyConstraint::editor()->setUnquotedColumnNames('id')->create())
+                ->setIndexes(
+                    Index::editor()->setUnquotedName('{{ prefix }}_subject')->setUnquotedColumnNames('subject_type', 'subject_id', 'occurred_at')->create(),
+                    Index::editor()->setUnquotedName('{{ prefix }}_actor')->setUnquotedColumnNames('actor_type', 'actor_id', 'occurred_at')->create(),
+                    Index::editor()->setUnquotedName('{{ prefix }}_action')->setUnquotedColumnNames('action', 'occurred_at')->create(),
+                )
+                ->create(),
+        );
+    }
+
+    public function down(Connection $db): void
+    {
+        $db->createSchemaManager()->dropTable({{ table }});
+    }
+};

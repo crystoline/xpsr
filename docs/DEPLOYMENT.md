@@ -171,6 +171,13 @@ With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user 
 - **The delivery log grows** with every delivery; schedule `php xpsr webhooks:prune --days=30`.
 - See [the webhooks package](../packages/webhooks/README.md).
 
+## Audit log
+
+- **`AuditContextMiddleware`** must be in `app.middleware` for entries to carry the client IP and user agent; the IP respects `app.trusted_proxies`.
+- **Retention is yours to set:** the log grows with every recorded change. Schedule `php xpsr audit:prune --days=<retention>`, and keep the table where your backups keep it as long as you must.
+- **It records, it does not seal:** there is no hash chain yet, so the log shows what the application wrote, not that the table was never altered. Restrict write access to it in the database.
+- See [the audit package](../packages/audit/README.md).
+
 ## File storage
 
 - **Local disks** (`var/storage` by default) must survive deploys: keep them outside the release directory, or link them in, and back them up.

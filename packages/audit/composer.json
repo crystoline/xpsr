@@ -1,0 +1,52 @@
+{
+  "name": "crystoline/xpsr-audit",
+  "description": "An audit log for XPSR applications: who changed what, when, and from where, with before and after values, recorded by hand or automatically for Eloquent models and Doctrine entities",
+  "type": "library",
+  "license": "MIT",
+  "homepage": "https://xpsr.crysto.name.ng",
+  "authors": [
+    {
+      "name": "Adekunle",
+      "email": "crystoline@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.4",
+    "crystoline/xpsr-database": "^0.5@dev",
+    "crystoline/xpsr-framework": "^0.5@dev",
+    "psr/clock": "^1.0",
+    "psr/container": "^2.0",
+    "psr/http-message": "^1.1 || ^2.0",
+    "psr/http-server-middleware": "^1.0",
+    "symfony/console": "^7.4 || ^8.0"
+  },
+  "require-dev": {
+    "crystoline/xpsr-log-monolog": "^0.5@dev",
+    "crystoline/xpsr-orm-doctrine": "^0.5@dev",
+    "crystoline/xpsr-orm-eloquent": "^0.5@dev",
+    "nyholm/psr7": "^1.8.2",
+    "phpunit/phpunit": "^12.5",
+    "symfony/clock": "^7.4 || ^8.0"
+  },
+  "suggest": {
+    "crystoline/xpsr-orm-eloquent": "Automatic auditing of models with the Audited trait",
+    "crystoline/xpsr-orm-doctrine": "Automatic auditing of entities with the #[Audited] attribute",
+    "crystoline/xpsr-log-monolog": "The request ID on each entry",
+    "crystoline/xpsr-api": "Paging the log with Pagination"
+  },
+  "autoload": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Audit\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Audit\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.5.x-dev"
+    }
+  }
+}

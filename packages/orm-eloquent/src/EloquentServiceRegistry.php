@@ -62,6 +62,10 @@ final class EloquentServiceRegistry extends ServiceRegistry
         Model::setConnectionResolver($this->container->get(ConnectionResolver::class));
         $events = $this->container->get(Dispatcher::class);
         Model::setEventDispatcher($events);
+        // Models register their event listeners (booted(), boot<Trait>()) on the dispatcher of the
+        // moment they are first used. When another application boots in the same process, as in
+        // tests, they must boot again so their listeners reach this dispatcher.
+        Model::clearBootedModels();
         $container = $this->container;
         // Eloquent's queries reach QueryExecuted listeners, log_queries, and slow_queries, as DBAL's do.
         $events->listen(QueryExecuted::class, static function (QueryExecuted $event) use ($container): void {

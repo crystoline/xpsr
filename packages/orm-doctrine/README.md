@@ -91,6 +91,7 @@ return [
     'entities' => ['app/Entity'],     // directories of entity classes, relative to the project root
     'metadata_cache' => 'auto',       // auto, array, or the service ID of a PSR-6 pool
     'naming' => 'underscore',         // underscore (created_at) or default (createdAt)
+    'listeners' => [],                // event subscriber services the entity manager gets
 ];
 ```
 
@@ -99,6 +100,7 @@ return [
 | `entities` | Without this setting, `app/Entity` is used once it exists. A directory listed here must exist. |
 | `metadata_cache` | `auto` caches the mapping in the application cache (`crystoline/xpsr-cache`) when it is installed and `APP_DEBUG` is off, and in memory otherwise, so edits to entities apply at once during development. `array` always uses memory. Run `php xpsr cache:clear` or `orm:clear-cache:metadata` after deploying changed entities. |
 | `naming` | How property names become column names when a column has no explicit `name`. |
+| `listeners` | Service IDs, or class names, of `Doctrine\Common\EventSubscriber` implementations; each is added to the entity manager's event manager when it is built. Other packages add theirs through the `Crystoline\Xpsr\Orm\Doctrine\DoctrineListeners` service in their provider's `boot()`, as the audit log does. |
 
 Unknown or malformed settings fail when the entity manager is first used, with the setting's name.
 

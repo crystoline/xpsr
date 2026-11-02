@@ -7,9 +7,12 @@ namespace Crystoline\Xpsr\Orm\Doctrine\Tests;
 use Crystoline\Xpsr\Console\CommandRegistry;
 use Crystoline\Xpsr\Database\ConnectionManager;
 use Crystoline\Xpsr\Database\Schema\SchemaProviderInterface;
+use Crystoline\Xpsr\Orm\Doctrine\DoctrineListeners;
 use Crystoline\Xpsr\Orm\Doctrine\DoctrineOrmServiceRegistry;
 use Crystoline\Xpsr\Orm\Doctrine\EntitySchemaProvider;
 use Crystoline\Xpsr\Orm\Doctrine\Http\ClearEntityManagerMiddleware;
+use Crystoline\Xpsr\Orm\Doctrine\Tests\Fixtures\AnotherSubscriber;
+use Crystoline\Xpsr\Orm\Doctrine\Tests\Fixtures\CountingSubscriber;
 use Crystoline\Xpsr\Orm\Doctrine\Tests\Fixtures\Entity\Note;
 use Crystoline\Xpsr\Orm\Doctrine\Tests\Fixtures\Project;
 use Crystoline\Xpsr\ServiceContainer\ContainerException;
@@ -90,7 +93,7 @@ final class DoctrineOrmServiceRegistryTest extends TestCase
     /** @return iterable<string, array{array<string, mixed>, string}> */
     public static function invalidOptions(): iterable
     {
-        yield 'unknown option' => [['entity_paths' => []], 'Unknown option orm.entity_paths. Known options: connection, entities, metadata_cache, naming.'];
+        yield 'unknown option' => [['entity_paths' => []], 'Unknown option orm.entity_paths. Known options: connection, entities, metadata_cache, naming, listeners.'];
         yield 'missing directory' => [['entities' => ['app/Missing']], 'The entity directory app/Missing in orm.entities does not exist.'];
         yield 'entities not a list' => [['entities' => 'app/Entity'], 'orm.entities must be a list of directories.'];
         yield 'naming' => [['naming' => 'snake'], 'orm.naming must be "underscore" or "default".'];
@@ -156,6 +159,31 @@ final class DoctrineOrmServiceRegistryTest extends TestCase
         $response = $app->get(ClearEntityManagerMiddleware::class)->process($factory->createServerRequest('GET', '/'), $handler);
         self::assertSame(204, $response->getStatusCode());
         self::assertFalse($em->contains($note));
+    }
+
+    public function testEventSubscribersJoinTheEntityManagerFromConfigurationAndProviders(): void
+    {
+        $app = $this->project(['listeners' => [CountingSubscriber::class]])->boot();
+        $app->get(DoctrineListeners::class)->add(AnotherSubscriber::class);
+        $app->get(DoctrineListeners::class)->add(AnotherSubscriber::class);
+        $em = $app->get(EntityManagerInterface::class);
+
+        self::assertTrue($em->getEventManager()->hasListeners('postFlush'));
+        self::assertSame([AnotherSubscriber::class], $app->get(DoctrineListeners::class)->all(), 'Added once.');
+        $em->flush();
+        $listeners = $em->getEventManager()->getListeners('postFlush');
+        self::assertSame([CountingSubscriber::class, AnotherSubscriber::class], array_values(array_map(static fn(object $listener): string => $listener::class, $listeners)), 'orm.listeners first, then other providers\' through DoctrineListeners.');
+        foreach ($listeners as $listener) {
+            self::assertSame(1, $listener->flushes);
+        }
+
+        $broken = $this->project(['listeners' => [\stdClass::class]])->boot();
+        try {
+            $broken->get(EntityManagerInterface::class);
+            self::fail('A listener that is not a subscriber is refused.');
+        } catch (ContainerException $exception) {
+            self::assertStringContainsString('orm.listeners: stdClass must implement Doctrine\Common\EventSubscriber.', (string) $exception->getPrevious()?->getMessage());
+        }
     }
 
     /** @param array<string, mixed> $orm */

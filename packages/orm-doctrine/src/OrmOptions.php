@@ -16,6 +16,8 @@ use InvalidArgumentException;
  *                   otherwise memory), "array" (memory), or the service ID of a PSR-6 pool
  *   naming          "underscore" (default: property emailAddress maps to column email_address)
  *                   or "default" (columns named exactly like properties)
+ *   listeners       service IDs (or class names) of Doctrine\Common\EventSubscriber
+ *                   implementations the entity manager gets when it is built (default: none)
  *
  * @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md.
  */
@@ -23,18 +25,22 @@ final class OrmOptions
 {
     public const DEFAULT_ENTITIES = 'app/Entity';
 
-    /** @param list<string> $entityPaths absolute directories */
+    /**
+     * @param list<string> $entityPaths absolute directories
+     * @param list<string> $listeners service IDs of event subscribers
+     */
     private function __construct(
         public readonly ?string $connection,
         public readonly array $entityPaths,
         public readonly string $metadataCache,
         public readonly bool $underscoreNaming,
+        public readonly array $listeners = [],
     ) {}
 
     /** @param array<array-key, mixed> $config */
     public static function from(array $config, string $rootDir): self
     {
-        $known = ['connection', 'entities', 'metadata_cache', 'naming'];
+        $known = ['connection', 'entities', 'metadata_cache', 'naming', 'listeners'];
         foreach (array_keys($config) as $key) {
             if (!in_array($key, $known, true)) {
                 throw new InvalidArgumentException(sprintf('Unknown option orm.%s. Known options: %s.', $key, implode(', ', $known)));
@@ -53,7 +59,17 @@ final class OrmOptions
             throw new InvalidArgumentException('orm.naming must be "underscore" or "default".');
         }
 
-        return new self($connection, self::entityPaths($config, $rootDir), $cache, $naming === 'underscore');
+        $listeners = $config['listeners'] ?? [];
+        if (!is_array($listeners) || !array_is_list($listeners)) {
+            throw new InvalidArgumentException('orm.listeners must be a list of service IDs of Doctrine\Common\EventSubscriber implementations.');
+        }
+        foreach ($listeners as $listener) {
+            if (!is_string($listener) || $listener === '') {
+                throw new InvalidArgumentException('orm.listeners must be a list of service IDs of Doctrine\Common\EventSubscriber implementations.');
+            }
+        }
+
+        return new self($connection, self::entityPaths($config, $rootDir), $cache, $naming === 'underscore', $listeners);
     }
 
     /**

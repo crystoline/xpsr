@@ -106,6 +106,7 @@ final class PackagesTest extends TestCase
         yield 'API resources' => ['api'];
         yield 'installer' => ['installer'];
         yield 'webhooks' => ['webhooks'];
+        yield 'audit log' => ['audit'];
         yield 'view-blade' => ['view-blade'];
         yield 'view-latte' => ['view-latte'];
         yield 'view-plates' => ['view-plates'];
