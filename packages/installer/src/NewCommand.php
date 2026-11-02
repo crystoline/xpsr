@@ -35,7 +35,7 @@ final class NewCommand extends Command
             ->addOption('preset', null, InputOption::VALUE_REQUIRED, 'Route files: web (the default: routes/web.php and routes/api.php) or api (routes/api.php only).')
             ->addOption('git', null, InputOption::VALUE_NONE, 'Initialise a git repository and commit the new project.')
             ->addOption('dev', null, InputOption::VALUE_NONE, 'The development line (dev-master) instead of the latest release.')
-            ->addOption('release', null, InputOption::VALUE_REQUIRED, 'A release or constraint to install, such as 0.5.1 or ^0.5.')
+            ->addOption('release', null, InputOption::VALUE_REQUIRED, 'A release or constraint to install, such as 0.6.1 or ^0.6.')
             ->addOption('repository', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'A Composer repository (JSON or URL) to install from, kept in the project. For unreleased packages.')
             ->addOption('composer', null, InputOption::VALUE_REQUIRED, 'The Composer executable or .phar to use, when it is not on the PATH.');
     }

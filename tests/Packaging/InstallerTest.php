@@ -67,8 +67,8 @@ final class InstallerTest extends TestCase
         $installer = [PHP_BINARY, self::REPOSITORY . '/vendor/bin/xpsr'];
 
         $output = $this->runCommand([
-            ...$installer, 'new', $project, '--router=fastroute', '--preset=api', '--no-interaction', '--release=0.5.x-dev',
-            '--repository=' . json_encode(['type' => 'path', 'url' => $skeleton, 'options' => ['symlink' => false, 'versions' => ['crystoline/xpsr' => '0.5.x-dev']]], $flags),
+            ...$installer, 'new', $project, '--router=fastroute', '--preset=api', '--no-interaction', '--release=0.6.x-dev',
+            '--repository=' . json_encode(['type' => 'path', 'url' => $skeleton, 'options' => ['symlink' => false, 'versions' => ['crystoline/xpsr' => '0.6.x-dev']]], $flags),
             '--repository=' . json_encode($packages, $flags),
             '--composer=' . $this->composer,
         ], $this->work);

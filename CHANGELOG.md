@@ -4,6 +4,12 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+## 0.6.0 (2026-11-02)
+
+### Breaking
+
+- `Crystoline\Xpsr\Contracts\Container\ContainerBuilderInterface` gained `extend()`. A container of your own, passed to `Application`, must implement it; the framework's `ServiceContainer` does. See [docs/CONTAINER.md](docs/CONTAINER.md).
+
 ### Added
 
 - `#[AfterCommit]` jobs in `crystoline/xpsr-queue`: dispatched inside a database transaction, the job is sent once the outermost transaction has committed, and dropped if it rolls back, or if the savepoint it was dispatched in does. Outside a transaction, it is sent at once; on `sync://`, it runs after the commit. See [its README](packages/queue/README.md#jobs-and-database-transactions).

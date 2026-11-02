@@ -4,7 +4,7 @@ Steps for moving an application between minor versions. What changed is in [CHAN
 
 ## From 0.5 to 0.6
 
-Nothing breaks. The steps after the first are optional, and worth doing for the tests.
+Nothing breaks for an application on the framework's container; a container of your own must gain `extend()` (see [docs/CONTAINER.md](docs/CONTAINER.md)). The steps after the first are optional, and worth doing for the tests. The five new packages of this release, `crystoline/xpsr-api`, `xpsr-installer`, `xpsr-webhooks`, `xpsr-audit`, and `xpsr-telemetry`, are optional and documented in [docs/PACKAGES.md](docs/PACKAGES.md).
 
 ### 1. Require 0.6
 
