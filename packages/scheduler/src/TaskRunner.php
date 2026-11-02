@@ -7,8 +7,11 @@ namespace Crystoline\Xpsr\Scheduler;
 use Closure;
 use Crystoline\Xpsr\Console\ConsoleKernel;
 use Crystoline\Xpsr\Queue\QueueInterface;
+use Crystoline\Xpsr\Scheduler\Event\TaskFinished;
+use Crystoline\Xpsr\Scheduler\Event\TaskStarting;
 use LogicException;
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionFunction;
 use ReflectionNamedType;
 use Symfony\Component\Console\Input\StringInput;
@@ -20,13 +23,18 @@ use Throwable;
 /**
  * Runs one due task: checks its conditions, takes its lock for withoutOverlapping(), then runs
  * the command through the console kernel, calls the callback, or queues the job. A task's
- * failure is returned, not thrown, so the other due tasks still run.
+ * failure is returned, not thrown, so the other due tasks still run. With the event
+ * dispatcher, a task that runs gets TaskStarting before and TaskFinished after.
  *
  * @internal Used by schedule:run.
  */
 final class TaskRunner
 {
-    public function __construct(private readonly ContainerInterface $container, private readonly LockFactory $locks) {}
+    public function __construct(
+        private readonly ContainerInterface $container,
+        private readonly LockFactory $locks,
+        private readonly ?EventDispatcherInterface $events = null,
+    ) {}
 
     public function run(Task $task, int $verbosity = OutputInterface::VERBOSITY_NORMAL): TaskResult
     {
@@ -47,17 +55,21 @@ final class TaskRunner
                 return TaskResult::skipped('the previous run is still going');
             }
         }
+        $this->events?->dispatch(new TaskStarting($task));
         try {
-            return match ($task->kind) {
+            $result = match ($task->kind) {
                 'command' => $this->command((string) $task->command, $verbosity),
                 'call' => $this->callback($task),
                 'job' => $this->job($task),
             };
         } catch (Throwable $exception) {
-            return TaskResult::failed($exception->getMessage(), exception: $exception);
+            $result = TaskResult::failed($exception->getMessage(), exception: $exception);
         } finally {
             $lock?->release();
         }
+        $this->events?->dispatch(new TaskFinished($task, $result));
+
+        return $result;
     }
 
     private function command(string $command, int $verbosity): TaskResult

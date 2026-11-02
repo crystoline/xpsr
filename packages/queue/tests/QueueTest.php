@@ -9,6 +9,7 @@ use Crystoline\Xpsr\Console\CommandRegistry;
 use Crystoline\Xpsr\Database\ConnectionManager;
 use Crystoline\Xpsr\Database\DatabaseServiceRegistry;
 use Crystoline\Xpsr\Database\MigratorFactory;
+use Crystoline\Xpsr\Queue\BusMiddleware;
 use Crystoline\Xpsr\Queue\Console\MakeJobCommand;
 use Crystoline\Xpsr\Queue\Console\MakeQueueTableCommand;
 use Crystoline\Xpsr\Queue\Console\QueueFailedCommand;
@@ -32,10 +33,12 @@ use Crystoline\Xpsr\Queue\Tests\Fixtures\MemoryJob;
 use Crystoline\Xpsr\Queue\Tests\Fixtures\MemoryLogger;
 use Crystoline\Xpsr\Queue\Tests\Fixtures\NeedsScalarJob;
 use Crystoline\Xpsr\Queue\Tests\Fixtures\RecordJob;
+use Crystoline\Xpsr\Queue\Tests\Fixtures\RecordingMiddleware;
 use Crystoline\Xpsr\Queue\Tests\Fixtures\Recorder;
 use Crystoline\Xpsr\Queue\Tests\Fixtures\RetriedJob;
 use Psr\Log\LoggerInterface;
 use Crystoline\Xpsr\Registry\ConsoleServiceRegistry;
+use Crystoline\Xpsr\ServiceContainer\ContainerException;
 use Doctrine\DBAL\Connection;
 use InvalidArgumentException;
 use LogicException;
@@ -394,5 +397,26 @@ final class QueueTest extends TestCase
         self::assertSame(Command::SUCCESS, $tester->execute($input + ['--sleep' => '0']), $tester->getDisplay());
 
         return $tester->getDisplay();
+    }
+
+    public function testBusMiddlewareRunsFirstOnDispatchAndOnHandling(): void
+    {
+        $middleware = $this->application->get(BusMiddleware::class);
+        $middleware->add(new RecordingMiddleware($this->recorder));
+        $middleware->add(RecordingMiddleware::class);
+        $this->queue()->dispatch(new RecordJob('traced'));
+        self::assertSame(['dispatch RecordJob', 'dispatch RecordJob', 'handle RecordJob', 'handle RecordJob', 'traced'], $this->recorder->done);
+    }
+
+    public function testBusMiddlewareMustBeMessengerMiddleware(): void
+    {
+        $this->application->get(BusMiddleware::class)->add(\stdClass::class);
+        try {
+            $this->queue()->dispatch(new RecordJob('never'));
+            self::fail('The bus was built.');
+        } catch (ContainerException $exception) {
+            self::assertStringContainsString('Queue bus middleware stdClass must implement Symfony\Component\Messenger\Middleware\MiddlewareInterface.', $exception->getMessage());
+        }
+        self::assertSame([], $this->recorder->done);
     }
 }

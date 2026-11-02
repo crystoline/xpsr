@@ -178,6 +178,15 @@ With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user 
 - **It records, it does not seal:** there is no hash chain yet, so the log shows what the application wrote, not that the table was never altered. Restrict write access to it in the database.
 - See [the audit package](../packages/audit/README.md).
 
+## Telemetry
+
+- **Off until `OTEL_ENABLED=true`:** installing [the telemetry package](../packages/telemetry/README.md) changes nothing by itself. Set `OTEL_EXPORTER_OTLP_ENDPOINT` to the collector, and `OTEL_SERVICE_NAME` when `app.name` is not the name you want to see.
+- **`TraceRequestsMiddleware` first in `app.middleware`,** so every other middleware is inside the request's span.
+- **Spans leave after the response:** they are batched and sent from a shutdown function, through the HTTP client package. A collector that is down costs the export's timeout (`telemetry.timeout`, 10 seconds) at the end of each request, after the response was sent, so run a collector near the application, or set the exporter to `none` while it is away.
+- **Sample busy services:** `telemetry.sample` keeps a share of new traces; a request continuing an incoming trace follows that trace's decision.
+- **Queries are recorded as SQL with placeholders,** never with parameter values. Attributes of your own spans are yours to keep clean.
+- See [the telemetry package](../packages/telemetry/README.md).
+
 ## File storage
 
 - **Local disks** (`var/storage` by default) must survive deploys: keep them outside the release directory, or link them in, and back them up.

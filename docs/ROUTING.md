@@ -71,7 +71,7 @@ public function show(\Psr\Http\Message\ServerRequestInterface $request): \Psr\Ht
 }
 ```
 
-The request receives each matched parameter by name, `_route` containing its `RouteDefinition`, and `_route_params` containing the parameter map. Routing passes an immutable request copy onward; it does not modify the original request.
+The request receives each matched parameter by name, `_route` containing its `RouteDefinition`, and `_route_params` containing the parameter map. Routing passes an immutable request copy onward; it does not modify the original request. With the event dispatcher, `Crystoline\Xpsr\Routing\Event\RouteMatched` is dispatched at this point, with the route, the parameters, and that request.
 
 Global middleware runs first. After a successful match, group middleware runs from outer to inner, followed by route middleware in declaration order, then the handler. Responses return through that order in reverse. Middleware can short-circuit; the controller is resolved only when execution reaches it. The kernel's exception boundary covers global middleware, matching, route middleware, and handlers.
 

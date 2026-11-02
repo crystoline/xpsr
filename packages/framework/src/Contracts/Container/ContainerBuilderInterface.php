@@ -21,6 +21,15 @@ interface ContainerBuilderInterface
 
     public function alias(string $alias, string $target): void;
 
+    /**
+     * Wrap a service: $extender gets the service as defined so far, and the container, and
+     * returns what get() gives from now on. The lifetime stays: a shared service is extended
+     * once, a transient one on each resolution.
+     *
+     * @param Closure(mixed, \Psr\Container\ContainerInterface): mixed $extender
+     */
+    public function extend(string $id, Closure $extender): void;
+
     /** @param array<array-key, mixed> $ids Validated as non-empty, unique string identifiers. */
     public function defer(array $ids, Closure $loader): void;
 }

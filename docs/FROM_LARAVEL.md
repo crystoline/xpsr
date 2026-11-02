@@ -249,7 +249,8 @@ An application can move a route group or a job at a time, with Laravel and XPSR 
 ## Not in XPSR
 
 - Facades, route model binding, form request `authorize()`, and service injection into controller methods.
-- Broadcasting, Horizon, Telescope, Pulse, Socialite, Passport, Cashier, and Scout.
+- Broadcasting, Horizon, Socialite, Passport, Cashier, and Scout.
+- Telescope and Pulse. [`crystoline/xpsr-telemetry`](../packages/telemetry/README.md) sends traces of requests, queries, outgoing calls, jobs, and commands to any OpenTelemetry backend instead, which shows them with their timings.
 - Octane: long-running servers have not been verified (see [Deployment](DEPLOYMENT.md#not-provided-yet)).
 - Registration, password reset, email verification, two-factor sign-in, and "remember me" cookies.
 - Translations: validation messages are in English.

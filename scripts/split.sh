@@ -40,6 +40,7 @@
 #   packages/installer         -> xpsr-installer.git         crystoline/xpsr-installer
 #   packages/webhooks          -> xpsr-webhooks.git          crystoline/xpsr-webhooks
 #   packages/audit             -> xpsr-audit.git             crystoline/xpsr-audit
+#   packages/telemetry         -> xpsr-telemetry.git         crystoline/xpsr-telemetry
 #   export-skeleton.php output -> xpsr-skeleton.git          crystoline/xpsr
 #
 # Packages keep their history (git subtree split). The skeleton gets one sync commit per
@@ -81,7 +82,7 @@ push() {
 # developed and tested here but not published; see "Adding a package" in docs/PACKAGES.md.
 PUBLISHED=(
     framework router-fastroute router-sunrise cache http-client database orm-doctrine log-monolog validation
-    orm-eloquent auth-jwt queue mail scheduler storage view-plates view-latte view-blade lock notifications api installer webhooks audit
+    orm-eloquent auth-jwt queue mail scheduler storage view-plates view-latte view-blade lock notifications api installer webhooks audit telemetry
 )
 
 for directory in packages/*/; do

@@ -6,7 +6,9 @@ namespace Crystoline\Xpsr\Routing;
 
 use Crystoline\Xpsr\Contracts\Routing\RouterInterface;
 use Crystoline\Xpsr\Http\MiddlewarePipeline;
+use Crystoline\Xpsr\Routing\Event\RouteMatched;
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -23,6 +25,7 @@ final class RouteDispatcher implements RequestHandlerInterface
         private readonly RouterInterface $router,
         private readonly ContainerInterface $container,
         private readonly ResponseFactoryInterface $responses,
+        private readonly ?EventDispatcherInterface $events = null,
     ) {}
 
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -42,6 +45,7 @@ final class RouteDispatcher implements RequestHandlerInterface
             $request = $request->withAttribute($key, $value);
         }
         $request = $request->withAttribute('_route', $match->route)->withAttribute('_route_params', $match->parameters);
+        $this->events?->dispatch(new RouteMatched($match->route, $match->parameters, $request));
         $handler = new class ($match->route, new HandlerResolver($this->container)) implements RequestHandlerInterface {
             public function __construct(private readonly RouteDefinition $route, private readonly HandlerResolver $resolver) {}
             public function handle(ServerRequestInterface $request): ResponseInterface

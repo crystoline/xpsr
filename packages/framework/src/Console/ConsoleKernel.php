@@ -6,7 +6,7 @@ namespace Crystoline\Xpsr\Console;
 
 use Composer\InstalledVersions;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\Console\Application;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LazyCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -38,7 +38,8 @@ final class ConsoleKernel
     public function run(?InputInterface $input = null, ?OutputInterface $output = null): int
     {
         // Symfony keeps per-invocation state. Build a fresh application for each run.
-        $console = new Application('XPSR', self::version());
+        $events = $this->container->has(EventDispatcherInterface::class) ? $this->container->get(EventDispatcherInterface::class) : null;
+        $console = new ConsoleApplication('XPSR', self::version(), $events instanceof EventDispatcherInterface ? $events : null);
         $console->setAutoExit(false);
         $console->setCatchErrors(true);
         foreach ($this->commands->all() as $name => $definition) {

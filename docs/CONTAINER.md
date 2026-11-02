@@ -14,6 +14,7 @@ $container->instance('literal.string', 'strlen');
 $container->factory('request.id', static fn () => bin2hex(random_bytes(16)));
 $container->factory('shared.id', static fn () => bin2hex(random_bytes(16)), shared: true);
 $container->alias('context', 'shared.context');
+$container->extend('shared.context', static fn(stdClass $context, ContainerInterface $container): stdClass => $context);
 ```
 
 These examples assume a script under an application subdirectory. Use the appropriate absolute bootstrap path for your entry point.
@@ -25,6 +26,7 @@ These examples assume a script under an application subdirectory. Use the approp
 | `factory($id, $callable, shared: false)` | Invoke the callable with the PSR-11 container each time. Set `shared: true` to cache its result, including `null`. |
 | `instance($id, $value)` | Return the exact value, including strings, arrays, nulls, closures, and invokable objects. Never invoke it. |
 | `alias($alias, $target)` | Delegate to the target on every lookup, preserving the target's lifetime and observing subsequent target rebinding. |
+| `extend($id, $closure)` | Wrap a service: the closure gets the service as defined so far and the container, and returns what `get()` gives from now on. The lifetime stays: a shared service is extended once, a transient one on each resolution, an instance once. Extending twice wraps the first result. An autowirable class needs no definition first; a deferred service is loaded first; an unknown identifier is a PSR-11 not-found error. This is how a provider decorates another package's service, such as the HTTP client. |
 | `has($id)` | Check definitions, deferred declarations, or whether a class is instantiable. Does not run factories, construct services, or load deferred providers. PHP class autoloading may occur. |
 | `get($id)` | Resolve the entry or throw a PSR-11 exception. |
 

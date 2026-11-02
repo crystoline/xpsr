@@ -199,6 +199,8 @@ $status = $application->getConsoleKernel()->run($input, $output);
 $json = $output->fetch();
 ```
 
+With the event dispatcher, each command dispatches `Crystoline\Xpsr\Console\Event\CommandStarting` before it runs and `CommandFinished` after, with its exit code or the exception it threw; see [EVENTS.md](EVENTS.md#framework-events).
+
 Normal results go to stdout. Symfony command/usage errors go to stderr when using the real console or a `ConsoleOutputInterface` implementation. A plain `BufferedOutput` captures a combined stream. Bootstrap failures are caught by the executable, printed to stderr, and return 1. CLI exceptions are developer-facing; HTTP error rendering is a separate boundary.
 
 Use `Command::SUCCESS` (0), `Command::FAILURE` (1), or `Command::INVALID` (2) in application commands. Returned command statuses propagate to the caller; Symfony parser and lookup failures return nonzero. The supplied `serve` and `route:list` option validation returns 2. `Symfony\Component\Console\Tester\CommandTester` can test individual commands; kernel and subprocess tests cover integration, stderr, and exit status.

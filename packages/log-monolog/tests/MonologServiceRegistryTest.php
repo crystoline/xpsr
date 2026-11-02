@@ -6,9 +6,11 @@ namespace Crystoline\Xpsr\Log\Monolog\Tests;
 
 use Crystoline\Xpsr\Application;
 use Crystoline\Xpsr\Log\Monolog\Http\RequestIdMiddleware;
+use Crystoline\Xpsr\Log\Monolog\LogProcessors;
 use Crystoline\Xpsr\Log\Monolog\LoggingOptions;
 use Crystoline\Xpsr\Log\Monolog\MonologServiceRegistry;
 use Crystoline\Xpsr\Log\Monolog\RequestId;
+use Crystoline\Xpsr\Log\Monolog\Tests\Fixtures\TagProcessor;
 use Crystoline\Xpsr\ServiceContainer\ContainerException;
 use InvalidArgumentException;
 use Monolog\Formatter\JsonFormatter;
@@ -18,6 +20,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use Monolog\LogRecord;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -119,6 +122,7 @@ final class MonologServiceRegistryTest extends TestCase
         yield 'level' => [['level' => 'loud'], 'The log level (logging.level or LOG_LEVEL) must be a PSR-3 level such as debug, info, or warning, not "loud".'];
         yield 'days' => [['days' => 0], 'logging.days must be a whole number of days, 1 or more.'];
         yield 'not a string' => [['channel' => ['file']], 'Logging settings must be strings, except logging.days.'];
+        yield 'processors' => [['processors' => TagProcessor::class], 'logging.processors must be a list of service IDs.'];
     }
 
     /** @param array<string, mixed> $logging */
@@ -184,5 +188,22 @@ final class MonologServiceRegistryTest extends TestCase
         $app->boot();
 
         return $app;
+    }
+
+    public function testProcessorsFromTheConfigurationAndProvidersJoinTheLogger(): void
+    {
+        $app = $this->application(['channel' => 'file', 'format' => 'json', 'processors' => [TagProcessor::class]]);
+        $app->get(LogProcessors::class)->add(static fn(LogRecord $record): LogRecord => $record->with(extra: [...$record->extra, 'callable' => true]));
+        $app->get(LoggerInterface::class)->info('Tagged');
+        $line = json_decode((string) file_get_contents($this->root . '/var/log/app.log'), true);
+        self::assertSame(['tag' => 'fixture', 'callable' => true], $line['extra'] ?? null);
+
+        $app = $this->application(['processors' => [\stdClass::class]]);
+        try {
+            $app->get(LoggerInterface::class);
+            self::fail('The logger was built.');
+        } catch (ContainerException $exception) {
+            self::assertStringContainsString('Log processor stdClass must implement Monolog\Processor\ProcessorInterface or be callable.', $exception->getMessage());
+        }
     }
 }

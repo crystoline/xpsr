@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cd042ff4a85530f184165b5553a0b104",
+    "content-hash": "fddbc38e8b965448442075cf7738014f",
     "packages": [
         {
             "name": "crystoline/xpsr-framework",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "5e3cb2da92757b961a39ffc05545679a3cf35295"
+                "reference": "3641a085f145ad265fda720853530f048af9d1d2"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
@@ -94,7 +94,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-fastroute",
-                "reference": "20f944804d09cc31f2b5e95fba9c10b65df38195"
+                "reference": "e8794862090253007e2290c79e8389a5370eb467"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.5@dev",
@@ -3131,7 +3131,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/api",
-                "reference": "20e02b21fda2228cb2b29a52240641c6ef1bb30b"
+                "reference": "5a0db3a6bc2257ff2bf6a7ae327c8155b666d770"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.5@dev",
@@ -3189,7 +3189,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/audit",
-                "reference": "bd3f42967d0e25220407b513fed990f55856f2ef"
+                "reference": "32f2d6624e1c0694de1c703de0d278fbdf10c012"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.5@dev",
@@ -3253,7 +3253,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/auth-jwt",
-                "reference": "564f60124c3b16bf39f21477af4d9c48be077f73"
+                "reference": "b35f82b5f01ae7cf6f168af7da61392c80b34128"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.5@dev",
@@ -3306,7 +3306,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/cache",
-                "reference": "c1f72b00925cec0b2111e3cbc3e5c25c70806e68"
+                "reference": "03fde5dfeeec90a3df7a62dfe5e574d9747a626a"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.5@dev",
@@ -3367,7 +3367,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/database",
-                "reference": "d3d5e6f81cce01a902eb64b22ae573cb03ba9d4a"
+                "reference": "18e6e0e331740161b1fa83cd2a7ef44b95869c25"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.5@dev",
@@ -3426,7 +3426,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/http-client",
-                "reference": "13b23cb67beff364b88148ccd1d8268cefdc6fdf"
+                "reference": "344b0c800f2de46e96f443d7c1e6fa28306b4320"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.5@dev",
@@ -3482,7 +3482,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/installer",
-                "reference": "d05d37ba7db2fb6288447a4ea94b1ee7656138a6"
+                "reference": "951c0d4d3a7a2d71fb4f209ccc22a843b96380fc"
             },
             "require": {
                 "php": "^8.4",
@@ -3533,7 +3533,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/lock",
-                "reference": "384907fcf47930b05e50844e1c328825adb6a4bd"
+                "reference": "289409ec0d938cf46a220ab4212f1f97a79acc84"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.5@dev",
@@ -3593,7 +3593,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/log-monolog",
-                "reference": "69616f2b9dc8591906cd43fc6cc3f0aa0e044c75"
+                "reference": "057757ca848853b03616da05c2a1f1c9702adc8b"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.5@dev",
@@ -3647,7 +3647,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/mail",
-                "reference": "396ec5cfc94f14ab0db7eb794fedec4d6760b652"
+                "reference": "21a53006604442fbb2ef7c83bb1490e075422832"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.5@dev",
@@ -3707,7 +3707,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/notifications",
-                "reference": "7533b52d888804e1ade4535bf4baa6fb36534d0e"
+                "reference": "1769005d564c593999dfd346e26baccf8f7e9c8c"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.5@dev",
@@ -3779,7 +3779,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/orm-doctrine",
-                "reference": "f150ae514f85dc6bbbdcca983add562b5abed637"
+                "reference": "d925f93b90169601b7c23fff9bca65c814fd21e8"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.5@dev",
@@ -3837,7 +3837,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/orm-eloquent",
-                "reference": "affd1f6438bb8564ff2ef74b24ce19f804846042"
+                "reference": "a6c803ff4c127f224640196a150c411d74ee0b71"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.5@dev",
@@ -3895,7 +3895,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/queue",
-                "reference": "9ce5d65331434b549592ced5838b63a23578705f"
+                "reference": "b3f9084f97429a059e10ee73db899bc9b60b2f22"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.5@dev",
@@ -3967,7 +3967,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-sunrise",
-                "reference": "fecf56aa40820350e360116e7e7d024dee667589"
+                "reference": "9c7f6e4ffd3f8eb13f5e8515a7fb7079fa97f5bc"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.5@dev",
@@ -4017,7 +4017,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/scheduler",
-                "reference": "80daa1b510c4663bf9ac6004b93ef98caf1a4a82"
+                "reference": "c430508ef4ac72c72c3ca10804221d3a5c3eaf64"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.5@dev",
@@ -4080,7 +4080,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/storage",
-                "reference": "83e7dda7e3c7797e8bff2ca0f54bff494f589565"
+                "reference": "abb4e9d82cba245b79c924679774e845251468ee"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.5@dev",
@@ -4135,12 +4135,81 @@
             }
         },
         {
+            "name": "crystoline/xpsr-telemetry",
+            "version": "0.5.x-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/telemetry",
+                "reference": "3b15c6d2ce1d4713e5fd0dea0c5d099b94700aa0"
+            },
+            "require": {
+                "crystoline/xpsr-framework": "^0.5@dev",
+                "crystoline/xpsr-http-client": "^0.5@dev",
+                "open-telemetry/api": "^1.8",
+                "open-telemetry/context": "^1.4",
+                "open-telemetry/exporter-otlp": "^1.4",
+                "open-telemetry/sdk": "^1.15",
+                "php": "^8.4",
+                "psr/container": "^2.0",
+                "psr/http-client": "^1.0",
+                "psr/http-message": "^1.1 || ^2.0",
+                "psr/http-server-middleware": "^1.0"
+            },
+            "require-dev": {
+                "crystoline/xpsr-database": "^0.5@dev",
+                "crystoline/xpsr-log-monolog": "^0.5@dev",
+                "crystoline/xpsr-queue": "^0.5@dev",
+                "crystoline/xpsr-router-fastroute": "^0.5@dev",
+                "crystoline/xpsr-scheduler": "^0.5@dev",
+                "nyholm/psr7": "^1.8.2",
+                "phpunit/phpunit": "^12.5",
+                "symfony/clock": "^7.4 || ^8.0"
+            },
+            "suggest": {
+                "crystoline/xpsr-database": "A span per database query",
+                "crystoline/xpsr-log-monolog": "The trace and span IDs on every log line",
+                "crystoline/xpsr-queue": "A span per queued job, in the trace that queued it",
+                "crystoline/xpsr-scheduler": "A span per scheduled task"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.5.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\Telemetry\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\Telemetry\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adekunle",
+                    "email": "crystoline@gmail.com"
+                }
+            ],
+            "description": "Distributed tracing for XPSR applications on the OpenTelemetry SDK: requests, database queries, outgoing HTTP calls, queued jobs, console commands, and scheduled tasks as one trace, exported over OTLP",
+            "homepage": "https://xpsr.crysto.name.ng",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "crystoline/xpsr-validation",
             "version": "0.5.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/validation",
-                "reference": "6a3b6f7ded198c48922b37df8039e8569a3e2555"
+                "reference": "d7498416f4ff1d586d3a42100325e03a43d32bf9"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.5@dev",
@@ -4197,7 +4266,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/view-blade",
-                "reference": "5d40e6e0bcc3ce13123d397a2c1e62998f092af8"
+                "reference": "b03b3b9e1426742c486cc90e9214289a31435ad5"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.5@dev",
@@ -4250,7 +4319,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/view-latte",
-                "reference": "e6dd15e93f12084211da3735034bf54c03365804"
+                "reference": "6dc7b47b0e6540f6fcf92f04a5ba162d77573706"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.5@dev",
@@ -4299,7 +4368,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/view-plates",
-                "reference": "172532ef4423e536206a83c980508149277a3a86"
+                "reference": "2fba36722496dd0912b26ba4fbe7be92eb48b69c"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.5@dev",
@@ -4348,7 +4417,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/webhooks",
-                "reference": "3767b54bbce9a33c7e4960d5d04805e78b27a14a"
+                "reference": "03ceaa010dbe57481725c2bf65c12a3e538f58e1"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.5@dev",
@@ -5691,6 +5760,50 @@
                 }
             ],
             "time": "2026-09-22T09:54:55+00:00"
+        },
+        {
+            "name": "google/protobuf",
+            "version": "v5.36.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/protocolbuffers/protobuf-php.git",
+                "reference": "020bc8e831611869ac387ddd38fbbadd78d15195"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/020bc8e831611869ac387ddd38fbbadd78d15195",
+                "reference": "020bc8e831611869ac387ddd38fbbadd78d15195",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=11.5.50 <12.0.0"
+            },
+            "suggest": {
+                "ext-bcmath": "Need to support JSON deserialization"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Google\\Protobuf\\": "src/Google/Protobuf",
+                    "GPBMetadata\\Google\\Protobuf\\": "src/GPBMetadata/Google/Protobuf"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "proto library for PHP",
+            "homepage": "https://developers.google.com/protocol-buffers/",
+            "keywords": [
+                "proto"
+            ],
+            "support": {
+                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v5.36.2"
+            },
+            "time": "2026-09-17T15:56:42+00:00"
         },
         {
             "name": "illuminate/bus",
@@ -7552,6 +7665,419 @@
             "time": "2026-02-16T23:10:27+00:00"
         },
         {
+            "name": "open-telemetry/api",
+            "version": "1.10.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opentelemetry-php/api.git",
+                "reference": "b2bc26bf8bd6b2b6447b3626b2a1b5733873aa0b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opentelemetry-php/api/zipball/b2bc26bf8bd6b2b6447b3626b2a1b5733873aa0b",
+                "reference": "b2bc26bf8bd6b2b6447b3626b2a1b5733873aa0b",
+                "shasum": ""
+            },
+            "require": {
+                "open-telemetry/context": "^1.4",
+                "php": "^8.1",
+                "psr/log": "^1.1|^2.0|^3.0",
+                "symfony/polyfill-php82": "^1.26"
+            },
+            "conflict": {
+                "open-telemetry/sdk": "<=1.11"
+            },
+            "type": "library",
+            "extra": {
+                "spi": {
+                    "OpenTelemetry\\API\\Instrumentation\\AutoInstrumentation\\HookManagerInterface": [
+                        "OpenTelemetry\\API\\Instrumentation\\AutoInstrumentation\\ExtensionHookManager"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-main": "1.8.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "Trace/functions.php"
+                ],
+                "psr-4": {
+                    "OpenTelemetry\\API\\": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "opentelemetry-php contributors",
+                    "homepage": "https://github.com/open-telemetry/opentelemetry-php/graphs/contributors"
+                }
+            ],
+            "description": "API for OpenTelemetry PHP.",
+            "keywords": [
+                "Metrics",
+                "api",
+                "apm",
+                "logging",
+                "opentelemetry",
+                "otel",
+                "tracing"
+            ],
+            "support": {
+                "chat": "https://app.slack.com/client/T08PSQ7BQ/C01NFPCV44V",
+                "docs": "https://opentelemetry.io/docs/languages/php",
+                "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
+                "source": "https://github.com/open-telemetry/opentelemetry-php"
+            },
+            "time": "2026-09-16T01:59:09+00:00"
+        },
+        {
+            "name": "open-telemetry/context",
+            "version": "1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opentelemetry-php/context.git",
+                "reference": "3c414b246e0dabb7d6145404e6a5e4536ca18d07"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opentelemetry-php/context/zipball/3c414b246e0dabb7d6145404e6a5e4536ca18d07",
+                "reference": "3c414b246e0dabb7d6145404e6a5e4536ca18d07",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1",
+                "symfony/polyfill-php82": "^1.26"
+            },
+            "suggest": {
+                "ext-ffi": "To allow context switching in Fibers"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "fiber/initialize_fiber_handler.php"
+                ],
+                "psr-4": {
+                    "OpenTelemetry\\Context\\": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "opentelemetry-php contributors",
+                    "homepage": "https://github.com/open-telemetry/opentelemetry-php/graphs/contributors"
+                }
+            ],
+            "description": "Context implementation for OpenTelemetry PHP.",
+            "keywords": [
+                "Context",
+                "opentelemetry",
+                "otel"
+            ],
+            "support": {
+                "chat": "https://app.slack.com/client/T08PSQ7BQ/C01NFPCV44V",
+                "docs": "https://opentelemetry.io/docs/languages/php",
+                "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
+                "source": "https://github.com/open-telemetry/opentelemetry-php"
+            },
+            "time": "2025-10-19T06:44:33+00:00"
+        },
+        {
+            "name": "open-telemetry/exporter-otlp",
+            "version": "1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opentelemetry-php/exporter-otlp.git",
+                "reference": "283a0d66522f2adc6d8d7debfd7686be91c282be"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opentelemetry-php/exporter-otlp/zipball/283a0d66522f2adc6d8d7debfd7686be91c282be",
+                "reference": "283a0d66522f2adc6d8d7debfd7686be91c282be",
+                "shasum": ""
+            },
+            "require": {
+                "open-telemetry/api": "^1.0",
+                "open-telemetry/gen-otlp-protobuf": "^1.1",
+                "open-telemetry/sdk": "^1.0",
+                "php": "^8.1",
+                "php-http/discovery": "^1.14"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "_register.php"
+                ],
+                "psr-4": {
+                    "OpenTelemetry\\Contrib\\Otlp\\": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "opentelemetry-php contributors",
+                    "homepage": "https://github.com/open-telemetry/opentelemetry-php/graphs/contributors"
+                }
+            ],
+            "description": "OTLP exporter for OpenTelemetry.",
+            "keywords": [
+                "Metrics",
+                "exporter",
+                "gRPC",
+                "http",
+                "opentelemetry",
+                "otel",
+                "otlp",
+                "tracing"
+            ],
+            "support": {
+                "chat": "https://app.slack.com/client/T08PSQ7BQ/C01NFPCV44V",
+                "docs": "https://opentelemetry.io/docs/languages/php",
+                "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
+                "source": "https://github.com/open-telemetry/opentelemetry-php"
+            },
+            "time": "2026-02-05T09:44:52+00:00"
+        },
+        {
+            "name": "open-telemetry/gen-otlp-protobuf",
+            "version": "1.10.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opentelemetry-php/gen-otlp-protobuf.git",
+                "reference": "66f04d0e448ad333033bfc7baae1aa56330be088"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opentelemetry-php/gen-otlp-protobuf/zipball/66f04d0e448ad333033bfc7baae1aa56330be088",
+                "reference": "66f04d0e448ad333033bfc7baae1aa56330be088",
+                "shasum": ""
+            },
+            "require": {
+                "google/protobuf": "^3.22 || ^4.0 || ^5.0",
+                "php": "^8.0"
+            },
+            "suggest": {
+                "ext-protobuf": "For better performance, when dealing with the protobuf format"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Opentelemetry\\Proto\\": "Opentelemetry/Proto/",
+                    "GPBMetadata\\Opentelemetry\\": "GPBMetadata/Opentelemetry/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "opentelemetry-php contributors",
+                    "homepage": "https://github.com/open-telemetry/opentelemetry-php/graphs/contributors"
+                }
+            ],
+            "description": "PHP protobuf files for communication with OpenTelemetry OTLP collectors/servers.",
+            "keywords": [
+                "Metrics",
+                "apm",
+                "gRPC",
+                "logging",
+                "opentelemetry",
+                "otel",
+                "otlp",
+                "protobuf",
+                "tracing"
+            ],
+            "support": {
+                "chat": "https://app.slack.com/client/T08PSQ7BQ/C01NFPCV44V",
+                "docs": "https://opentelemetry.io/docs/languages/php",
+                "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
+                "source": "https://github.com/open-telemetry/opentelemetry-php"
+            },
+            "time": "2026-06-17T12:06:32+00:00"
+        },
+        {
+            "name": "open-telemetry/sdk",
+            "version": "1.15.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opentelemetry-php/sdk.git",
+                "reference": "77e1aa73850154abb86937d52a70883edc3b4547"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opentelemetry-php/sdk/zipball/77e1aa73850154abb86937d52a70883edc3b4547",
+                "reference": "77e1aa73850154abb86937d52a70883edc3b4547",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "nyholm/psr7-server": "^1.1",
+                "open-telemetry/api": "^1.8",
+                "open-telemetry/context": "^1.4",
+                "open-telemetry/sem-conv": "^1.38.0",
+                "php": "^8.1",
+                "php-http/discovery": "^1.14",
+                "psr/http-client": "^1.0",
+                "psr/http-client-implementation": "^1.0",
+                "psr/http-factory-implementation": "^1.0",
+                "psr/http-message": "^1.0.1|^2.0",
+                "psr/log": "^1.1|^2.0|^3.0",
+                "ramsey/uuid": "^3.0 || ^4.0",
+                "symfony/polyfill-mbstring": "^1.23",
+                "symfony/polyfill-php82": "^1.26",
+                "tbachert/spi": "^1.0.5"
+            },
+            "suggest": {
+                "ext-gmp": "To support unlimited number of synchronous metric readers",
+                "ext-mbstring": "To increase performance of string operations",
+                "open-telemetry/sdk-configuration": "File-based OpenTelemetry SDK configuration"
+            },
+            "type": "library",
+            "extra": {
+                "spi": {
+                    "OpenTelemetry\\API\\Configuration\\ConfigEnv\\EnvComponentLoader": [
+                        "OpenTelemetry\\API\\Instrumentation\\Configuration\\General\\ConfigEnv\\EnvComponentLoaderHttpConfig",
+                        "OpenTelemetry\\API\\Instrumentation\\Configuration\\General\\ConfigEnv\\EnvComponentLoaderPeerConfig",
+                        "OpenTelemetry\\SDK\\ConfigEnv\\Trace\\SpanSuppressionStrategySemConv",
+                        "OpenTelemetry\\SDK\\ConfigEnv\\Trace\\SpanSuppressionStrategySpanKind",
+                        "OpenTelemetry\\SDK\\ConfigEnv\\Distribution\\DistributionConfigurationSdk"
+                    ],
+                    "OpenTelemetry\\SDK\\Common\\Configuration\\Resolver\\ResolverInterface": [
+                        "OpenTelemetry\\SDK\\Common\\Configuration\\Resolver\\SdkConfigurationResolver"
+                    ],
+                    "OpenTelemetry\\API\\Instrumentation\\AutoInstrumentation\\HookManagerInterface": [
+                        "OpenTelemetry\\API\\Instrumentation\\AutoInstrumentation\\ExtensionHookManager"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-main": "1.14.x-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "Common/Util/functions.php",
+                    "Logs/Exporter/_register.php",
+                    "Metrics/MetricExporter/_register.php",
+                    "Propagation/_register.php",
+                    "Trace/SpanExporter/_register.php",
+                    "Common/Dev/Compatibility/_load.php",
+                    "_autoload.php"
+                ],
+                "psr-4": {
+                    "OpenTelemetry\\SDK\\": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "opentelemetry-php contributors",
+                    "homepage": "https://github.com/open-telemetry/opentelemetry-php/graphs/contributors"
+                }
+            ],
+            "description": "SDK for OpenTelemetry PHP.",
+            "keywords": [
+                "Metrics",
+                "apm",
+                "logging",
+                "opentelemetry",
+                "otel",
+                "sdk",
+                "tracing"
+            ],
+            "support": {
+                "chat": "https://app.slack.com/client/T08PSQ7BQ/C01NFPCV44V",
+                "docs": "https://opentelemetry.io/docs/languages/php",
+                "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
+                "source": "https://github.com/open-telemetry/opentelemetry-php"
+            },
+            "time": "2026-07-14T13:09:54+00:00"
+        },
+        {
+            "name": "open-telemetry/sem-conv",
+            "version": "1.44.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opentelemetry-php/sem-conv.git",
+                "reference": "c94bc7ebacef039cda4f4c9270807dcc58b4e3af"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opentelemetry-php/sem-conv/zipball/c94bc7ebacef039cda4f4c9270807dcc58b4e3af",
+                "reference": "c94bc7ebacef039cda4f4c9270807dcc58b4e3af",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "OpenTelemetry\\SemConv\\": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "opentelemetry-php contributors",
+                    "homepage": "https://github.com/open-telemetry/opentelemetry-php/graphs/contributors"
+                }
+            ],
+            "description": "Semantic conventions for OpenTelemetry PHP.",
+            "keywords": [
+                "Metrics",
+                "apm",
+                "logging",
+                "opentelemetry",
+                "otel",
+                "semantic conventions",
+                "semconv",
+                "tracing"
+            ],
+            "support": {
+                "chat": "https://app.slack.com/client/T08PSQ7BQ/C01NFPCV44V",
+                "docs": "https://opentelemetry.io/docs/languages/php",
+                "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
+                "source": "https://github.com/open-telemetry/opentelemetry-php"
+            },
+            "time": "2026-09-09T22:06:17+00:00"
+        },
+        {
             "name": "phar-io/manifest",
             "version": "2.0.4",
             "source": {
@@ -8531,6 +9057,160 @@
                 "source": "https://github.com/php-fig/http-client"
             },
             "time": "2023-09-23T14:17:50+00:00"
+        },
+        {
+            "name": "ramsey/collection",
+            "version": "2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ramsey/collection.git",
+                "reference": "344572933ad0181accbf4ba763e85a0306a8c5e2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ramsey/collection/zipball/344572933ad0181accbf4ba763e85a0306a8c5e2",
+                "reference": "344572933ad0181accbf4ba763e85a0306a8c5e2",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "captainhook/plugin-composer": "^5.3",
+                "ergebnis/composer-normalize": "^2.45",
+                "fakerphp/faker": "^1.24",
+                "hamcrest/hamcrest-php": "^2.0",
+                "jangregor/phpstan-prophecy": "^2.1",
+                "mockery/mockery": "^1.6",
+                "php-parallel-lint/php-console-highlighter": "^1.0",
+                "php-parallel-lint/php-parallel-lint": "^1.4",
+                "phpspec/prophecy-phpunit": "^2.3",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan": "^2.1",
+                "phpstan/phpstan-mockery": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpunit/phpunit": "^10.5",
+                "ramsey/coding-standard": "^2.3",
+                "ramsey/conventional-commits": "^1.6",
+                "roave/security-advisories": "dev-latest"
+            },
+            "type": "library",
+            "extra": {
+                "captainhook": {
+                    "force-install": true
+                },
+                "ramsey/conventional-commits": {
+                    "configFile": "conventional-commits.json"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Ramsey\\Collection\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ben Ramsey",
+                    "email": "ben@benramsey.com",
+                    "homepage": "https://benramsey.com"
+                }
+            ],
+            "description": "A PHP library for representing and manipulating collections.",
+            "keywords": [
+                "array",
+                "collection",
+                "hash",
+                "map",
+                "queue",
+                "set"
+            ],
+            "support": {
+                "issues": "https://github.com/ramsey/collection/issues",
+                "source": "https://github.com/ramsey/collection/tree/2.1.1"
+            },
+            "time": "2025-03-22T05:38:12+00:00"
+        },
+        {
+            "name": "ramsey/uuid",
+            "version": "4.9.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ramsey/uuid.git",
+                "reference": "75d73f48d02797c2c285a7e9f348fadc0102ffe2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/75d73f48d02797c2c285a7e9f348fadc0102ffe2",
+                "reference": "75d73f48d02797c2c285a7e9f348fadc0102ffe2",
+                "shasum": ""
+            },
+            "require": {
+                "brick/math": "^0.8.16 || ^0.9 || ^0.10 || ^0.11 || ^0.12 || ^0.13 || ^0.14 || ^0.15 || ^0.16 || ^0.17 || ^0.18 || ^0.19 || ^0.20 || ^1.0",
+                "php": "^8.0",
+                "ramsey/collection": "^1.2 || ^2.0"
+            },
+            "replace": {
+                "rhumsaa/uuid": "self.version"
+            },
+            "require-dev": {
+                "captainhook/captainhook": "^5.25",
+                "captainhook/plugin-composer": "^5.3",
+                "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+                "ergebnis/composer-normalize": "^2.47",
+                "mockery/mockery": "^1.6",
+                "paragonie/random-lib": "^2",
+                "php-mock/php-mock": "^2.6",
+                "php-mock/php-mock-mockery": "^1.5",
+                "php-parallel-lint/php-parallel-lint": "^1.4.0",
+                "phpbench/phpbench": "^1.2.14",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan": "^2.1",
+                "phpstan/phpstan-mockery": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpunit/phpunit": "^9.6",
+                "slevomat/coding-standard": "^8.18",
+                "squizlabs/php_codesniffer": "^3.13"
+            },
+            "suggest": {
+                "ext-bcmath": "Enables faster math with arbitrary-precision integers using BCMath.",
+                "ext-gmp": "Enables faster math with arbitrary-precision integers using GMP.",
+                "ext-uuid": "Enables the use of PeclUuidTimeGenerator and PeclUuidRandomGenerator.",
+                "paragonie/random-lib": "Provides RandomLib for use with the RandomLibAdapter",
+                "ramsey/uuid-doctrine": "Allows the use of Ramsey\\Uuid\\Uuid as Doctrine field type."
+            },
+            "type": "library",
+            "extra": {
+                "captainhook": {
+                    "force-install": true
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "Ramsey\\Uuid\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A PHP library for generating and working with universally unique identifiers (UUIDs).",
+            "keywords": [
+                "guid",
+                "identifier",
+                "uuid"
+            ],
+            "support": {
+                "issues": "https://github.com/ramsey/uuid/issues",
+                "source": "https://github.com/ramsey/uuid/tree/4.9.4"
+            },
+            "time": "2026-09-16T11:39:30+00:00"
         },
         {
             "name": "react/cache",
@@ -12018,6 +12698,86 @@
             "time": "2026-05-26T12:45:58+00:00"
         },
         {
+            "name": "symfony/polyfill-php82",
+            "version": "v1.43.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php82.git",
+                "reference": "843bbe8b2a7934307b749751eede0f111f5d1cfc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php82/zipball/843bbe8b2a7934307b749751eede0f111f5d1cfc",
+                "reference": "843bbe8b2a7934307b749751eede0f111f5d1cfc",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php82\\": ""
+                },
+                "classmap": [
+                    "Resources/stubs"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 8.2+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php82/tree/v1.43.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-09-25T15:50:05+00:00"
+        },
+        {
             "name": "symfony/polyfill-php86",
             "version": "v1.43.0",
             "source": {
@@ -13093,6 +13853,58 @@
             "time": "2026-10-22T14:30:01+00:00"
         },
         {
+            "name": "tbachert/spi",
+            "version": "v1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Nevay/spi.git",
+                "reference": "e7078767866d0a9e0f91d3f9d42a832df5e39002"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Nevay/spi/zipball/e7078767866d0a9e0f91d3f9d42a832df5e39002",
+                "reference": "e7078767866d0a9e0f91d3f9d42a832df5e39002",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^2.0",
+                "composer/semver": "^1.0 || ^2.0 || ^3.0",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "composer/composer": "^2.0",
+                "infection/infection": "^0.27.9",
+                "phpunit/phpunit": "^10.5",
+                "psalm/phar": "^5.18"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Nevay\\SPI\\Composer\\Plugin",
+                "branch-alias": {
+                    "dev-main": "1.0.x-dev"
+                },
+                "plugin-optional": true
+            },
+            "autoload": {
+                "psr-4": {
+                    "Nevay\\SPI\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "Service provider loading facility",
+            "keywords": [
+                "service provider"
+            ],
+            "support": {
+                "issues": "https://github.com/Nevay/spi/issues",
+                "source": "https://github.com/Nevay/spi/tree/v1.0.5"
+            },
+            "time": "2025-06-29T15:42:06+00:00"
+        },
+        {
             "name": "theseer/tokenizer",
             "version": "2.0.1",
             "source": {
@@ -13329,6 +14141,7 @@
         "crystoline/xpsr-router-sunrise": 20,
         "crystoline/xpsr-scheduler": 20,
         "crystoline/xpsr-storage": 20,
+        "crystoline/xpsr-telemetry": 20,
         "crystoline/xpsr-validation": 20,
         "crystoline/xpsr-view-blade": 20,
         "crystoline/xpsr-view-latte": 20,

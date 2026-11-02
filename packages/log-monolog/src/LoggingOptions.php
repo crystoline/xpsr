@@ -17,6 +17,7 @@ use Monolog\Level;
  *   path     file and daily: the log file, relative to the project root (default var/log/app.log)
  *   days     daily: how many files to keep (default 14)
  *   name     the Monolog channel name in each line (default app.name)
+ *   processors  service IDs of Monolog processors to add (default none); see LogProcessors
  *
  * @internal Not covered by the backward-compatibility promise; see docs/VERSIONING.md.
  */
@@ -31,6 +32,8 @@ final class LoggingOptions
         public readonly string $path,
         public readonly int $days,
         public readonly string $name,
+        /** @var list<string> */
+        public readonly array $processors,
     ) {}
 
     /**
@@ -39,7 +42,7 @@ final class LoggingOptions
      */
     public static function from(array $config, array $environment, string $appEnv, string $appName, string $rootDir): self
     {
-        $known = ['channel', 'format', 'level', 'path', 'days', 'name'];
+        $known = ['channel', 'format', 'level', 'path', 'days', 'name', 'processors'];
         foreach (array_keys($config) as $key) {
             if (!in_array($key, $known, true)) {
                 throw new InvalidArgumentException(sprintf('Unknown option logging.%s. Known options: %s.', $key, implode(', ', $known)));
@@ -66,8 +69,12 @@ final class LoggingOptions
             throw new InvalidArgumentException('logging.days must be a whole number of days, 1 or more.');
         }
         $name = self::text($config['name'] ?? null) ?? ($appName !== '' ? $appName : 'app');
+        $processors = $config['processors'] ?? [];
+        if (!is_array($processors) || !array_is_list($processors) || $processors !== array_filter($processors, 'is_string')) {
+            throw new InvalidArgumentException('logging.processors must be a list of service IDs.');
+        }
 
-        return new self($channel, $format, $level, $absolute ? $path : $rootDir . '/' . $path, $days, $name);
+        return new self($channel, $format, $level, $absolute ? $path : $rootDir . '/' . $path, $days, $name, $processors);
     }
 
     private static function text(mixed $value): ?string

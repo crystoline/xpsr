@@ -35,6 +35,7 @@ Set environment variables, or override them in `config/logging.php`:
 | `path` | | `var/log/app.log` | The file for `file` and `daily`, relative to the project root. The directory is created if needed and must be writable by the web server and CLI users. |
 | `days` | | `14` | How many daily files to keep. |
 | `name` | | `app.name` | The channel name on each line. |
+| `processors` | | none | Service IDs of Monolog processors to add; see below. |
 
 ```php
 // config/logging.php
@@ -61,6 +62,16 @@ Exceptions passed as `['exception' => $exception]`, as the exception handler doe
 
 Console commands have no request ID. Jobs queued with [crystoline/xpsr-queue](../queue/README.md#request-ids) during a request carry its ID, and the worker logs with it while each job runs.
 
+## Processors
+
+A [Monolog processor](https://seldaek.github.io/monolog/doc/02-handlers-formatters-processors.html#processors) adds data to every record, as the request ID is added. Name your own in `logging.processors`, as service IDs, or add them from a provider's `boot()`, as service IDs, instances, or callables:
+
+```php
+$this->container->get(Crystoline\Xpsr\Log\Monolog\LogProcessors::class)->add(TraceContextProcessor::class);
+```
+
+The logger gets them when it is built, after its own, so add them before anything logs: list a provider that adds one after `MonologServiceRegistry`. This is how [`crystoline/xpsr-telemetry`](../telemetry/README.md) puts the trace ID on each line.
+
 ## Services
 
 | Service | Provides |
@@ -68,6 +79,7 @@ Console commands have no request ID. Jobs queued with [crystoline/xpsr-queue](..
 | `Psr\Log\LoggerInterface` | The Monolog logger (also `Monolog\Logger`). Shared. |
 | `Crystoline\Xpsr\Log\Monolog\RequestId` | The current request's ID. Shared. |
 | `Crystoline\Xpsr\Log\Monolog\Http\RequestIdMiddleware` | Sets it for each request. |
+| `Crystoline\Xpsr\Log\Monolog\LogProcessors` | Processors other providers add. Shared. |
 
 To add Monolog handlers of your own, such as an error-tracking service, bind `Psr\Log\LoggerInterface` yourself in a provider listed after this one, or extend the logger in a provider's `boot()`: `$this->container->get(Monolog\Logger::class)->pushHandler(...)`.
 

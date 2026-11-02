@@ -15,6 +15,7 @@ use InvalidArgumentException;
 use LogicException;
 use Psr\Clock\ClockInterface;
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Clock\ClockInterface as SymfonyClockInterface;
@@ -89,6 +90,7 @@ final class SchedulerServiceRegistry extends ServiceRegistry
         $this->container->factory(TaskRunner::class, static fn(ContainerInterface $container): TaskRunner => new TaskRunner(
             $container,
             $container->get(LockFactory::class . '.scheduler'),
+            $container->has(EventDispatcherInterface::class) ? $container->get(EventDispatcherInterface::class) : null,
         ), shared: true);
 
         $this->container->factory(ScheduleRunCommand::class, static fn(ContainerInterface $container): ScheduleRunCommand => new ScheduleRunCommand(

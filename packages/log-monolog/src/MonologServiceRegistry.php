@@ -17,6 +17,7 @@ use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler;
 use Monolog\Logger;
+use Monolog\Processor\ProcessorInterface;
 use Monolog\Processor\PsrLogMessageProcessor;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -28,6 +29,7 @@ use Psr\Log\LoggerInterface;
  *   Psr\Log\LoggerInterface            the Monolog logger (also Monolog\Logger)
  *   RequestId                          the current request's ID
  *   Http\RequestIdMiddleware           sets it; list it first in app.middleware
+ *   LogProcessors                      processors other providers add; also logging.processors
  *
  * Options: config/logging.php and LOG_CHANNEL, LOG_FORMAT, LOG_LEVEL; see LoggingOptions.
  */
@@ -36,6 +38,7 @@ final class MonologServiceRegistry extends ServiceRegistry
     public function register(): void
     {
         $this->container->singleton(RequestId::class);
+        $this->container->singleton(LogProcessors::class);
         $this->container->bind(RequestIdMiddleware::class);
         $this->container->factory(LoggerInterface::class, static fn(ContainerInterface $container): Logger => self::logger($container), shared: true);
         $this->container->alias(Logger::class, LoggerInterface::class);
@@ -58,10 +61,19 @@ final class MonologServiceRegistry extends ServiceRegistry
         $handler = self::handler($options);
         $handler->setFormatter(self::formatter($options));
 
-        return new Logger($options->name, [$handler], [
+        $processors = [
             new PsrLogMessageProcessor(removeUsedContextFields: true),
             new RequestIdProcessor($container->get(RequestId::class)),
-        ]);
+        ];
+        foreach ([...$options->processors, ...$container->get(LogProcessors::class)->all()] as $processor) {
+            $instance = is_string($processor) ? $container->get($processor) : $processor;
+            if (!$instance instanceof ProcessorInterface && !is_callable($instance)) {
+                throw new InvalidArgumentException(sprintf('Log processor %s must implement %s or be callable.', is_string($processor) ? $processor : get_debug_type($processor), ProcessorInterface::class));
+            }
+            $processors[] = $instance;
+        }
+
+        return new Logger($options->name, [$handler], $processors);
     }
 
     /** @return HandlerInterface&\Monolog\Handler\FormattableHandlerInterface */

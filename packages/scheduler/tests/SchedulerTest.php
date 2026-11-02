@@ -8,11 +8,15 @@ use ArrayObject;
 use Closure;
 use Crystoline\Xpsr\Application;
 use Crystoline\Xpsr\Console\CommandRegistry;
+use Crystoline\Xpsr\Events\ListenerProvider;
 use Crystoline\Xpsr\Queue\QueueServiceRegistry;
 use Crystoline\Xpsr\Registry\ConsoleServiceRegistry;
+use Crystoline\Xpsr\Registry\EventServiceRegistry;
 use Crystoline\Xpsr\Scheduler\Console\ScheduleListCommand;
 use Crystoline\Xpsr\Scheduler\Console\ScheduleRunCommand;
 use Crystoline\Xpsr\Scheduler\Console\ScheduleWorkCommand;
+use Crystoline\Xpsr\Scheduler\Event\TaskFinished;
+use Crystoline\Xpsr\Scheduler\Event\TaskStarting;
 use Crystoline\Xpsr\Scheduler\Schedule;
 use Crystoline\Xpsr\Scheduler\SchedulerOptions;
 use Crystoline\Xpsr\Scheduler\SchedulerServiceRegistry;
@@ -496,6 +500,7 @@ final class SchedulerTest extends TestCase
         $settings = $application->getConfig();
         $settings->set('app.registry', [
             ConsoleServiceRegistry::class,
+            EventServiceRegistry::class,
             SchedulerServiceRegistry::class,
             ...($queue ? [QueueServiceRegistry::class] : []),
             ...($locks ? [LockServiceRegistry::class] : []),
@@ -538,5 +543,32 @@ final class SchedulerTest extends TestCase
             self::assertInstanceOf($type, $previous);
             self::assertStringContainsString($message, $previous->getMessage());
         }
+    }
+
+    public function testTasksThatRunDispatchStartingAndFinishedEvents(): void
+    {
+        $application = $this->application(<<<'PHP'
+            <?php
+            use Crystoline\Xpsr\Scheduler\Schedule;
+
+            return static function (Schedule $schedule): void {
+                $schedule->command('test:echo hello');
+                $schedule->call(static function (): void {
+                    throw new RuntimeException('Disk full.');
+                })->name('cleanup');
+                $schedule->call(static fn(): null => null)->name('later')->daily('09:00');
+                $schedule->call(static fn(): null => null)->name('skipped')->when(static fn(): bool => false);
+            };
+            PHP);
+        $events = [];
+        $provider = $application->get(ListenerProvider::class);
+        $provider->listen(TaskStarting::class, static function (TaskStarting $event) use (&$events): void {
+            $events[] = 'starting ' . $event->task->description();
+        });
+        $provider->listen(TaskFinished::class, static function (TaskFinished $event) use (&$events): void {
+            $events[] = sprintf('finished %s %s%s', $event->task->description(), $event->result->status->value, $event->result->exception === null ? '' : ' ' . $event->result->exception->getMessage());
+        });
+        $this->runSchedule($application);
+        self::assertSame(['starting test:echo hello', 'finished test:echo hello done', 'starting cleanup', 'finished cleanup failed Disk full.'], $events, 'Tasks that are not due or skipped get no events.');
     }
 }

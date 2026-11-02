@@ -94,6 +94,10 @@ php xpsr schedule:work --time-limit=3600
 
 `schedule:work` starts `php xpsr schedule:run` as a new process each minute, so it picks up code changes. SIGTERM and SIGINT stop it after the current run. With `everySeconds()` tasks, each `schedule:run` keeps going until its minute ends, and SIGTERM or SIGINT ends the repeats after the current task.
 
+## Events
+
+With the event dispatcher, a task that runs dispatches `Crystoline\Xpsr\Scheduler\Event\TaskStarting` before and `TaskFinished` after, with its `TaskResult`: done, or failed with the message and the exception. A task that is not due, or whose conditions or lock skip it, gets no events. Listen to them in `config/events.php` to report failures somewhere, or let [`crystoline/xpsr-telemetry`](../telemetry/README.md) make a span of each task.
+
 ## Configuration
 
 `config/scheduler.php` is optional:

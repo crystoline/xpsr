@@ -336,4 +336,38 @@ final class ServiceContainerTest extends TestCase
         $container->instance('pending', 2);
         self::assertSame(2, $container->get('pending'));
     }
+
+    public function testExtendWrapsAServiceAndKeepsItsLifetime(): void
+    {
+        $container = new ServiceContainer();
+        $container->singleton('shared', stdClass::class);
+        $container->bind('transient', stdClass::class);
+        $container->instance('value', 'plain');
+        $container->alias('alias', 'shared');
+        $container->extend('shared', static function (stdClass $inner, ContainerInterface $received) use ($container): stdClass {
+            self::assertSame($container, $received);
+            $inner->wrapped = true;
+
+            return $inner;
+        });
+        $container->extend('transient', static fn(stdClass $inner): array => ['inner' => $inner]);
+        $container->extend('value', static fn(string $inner): string => strtoupper($inner));
+        $container->extend('alias', static fn(stdClass $inner): string => 'through alias ' . ($inner->wrapped ? 'wrapped' : 'bare'));
+        self::assertTrue($container->get('shared')->wrapped);
+        self::assertSame($container->get('shared'), $container->get('shared'), 'Still shared.');
+        self::assertNotSame($container->get('transient'), $container->get('transient'), 'Still transient.');
+        self::assertInstanceOf(stdClass::class, $container->get('transient')['inner']);
+        self::assertSame('PLAIN', $container->get('value'));
+        self::assertSame('through alias wrapped', $container->get('alias'));
+        $container->extend('value', static fn(string $inner): string => $inner . '!');
+        self::assertSame('PLAIN!', $container->get('value'), 'The second extender wraps the first\'s result.');
+        $container->extend(Fixture\Dependency::class, static fn(Fixture\Dependency $inner): array => [$inner]);
+        self::assertInstanceOf(Fixture\Dependency::class, $container->get(Fixture\Dependency::class)[0], 'An autowirable class needs no definition first.');
+        $container->defer(['later'], static fn() => $container->instance('later', 1));
+        $container->extend('later', static fn(int $inner): int => $inner + 1);
+        self::assertSame(2, $container->get('later'), 'A deferred service is loaded first.');
+        $this->expectException(NotFoundExceptionInterface::class);
+        $this->expectExceptionMessage('Service "missing" was not found, so it cannot be extended.');
+        $container->extend('missing', static fn(mixed $inner): mixed => $inner);
+    }
 }

@@ -7,6 +7,9 @@ namespace Tests\Integration;
 use Crystoline\Xpsr\Application;
 use Crystoline\Xpsr\Console\CommandRegistry;
 use Crystoline\Xpsr\Console\ConsoleKernel;
+use Crystoline\Xpsr\Console\Event\CommandFinished;
+use Crystoline\Xpsr\Console\Event\CommandStarting;
+use Crystoline\Xpsr\Events\ListenerProvider;
 use Crystoline\Xpsr\Routing\RouteCollection;
 use Crystoline\Xpsr\ServiceContainer\ServiceContainer;
 use Crystoline\Xpsr\Contracts\Routing\RouterInterface;
@@ -142,5 +145,37 @@ final class ConsoleKernelTest extends TestCase
         self::assertSame(0, $status);
         self::assertSame("Hello, <person>! Welcome to Example <project>.\n", $stdout);
         self::assertSame('', $stderr);
+    }
+
+    public function testCommandEventsAreDispatchedAroundEachCommand(): void
+    {
+        $app = new Application(dirname(__DIR__, 2));
+        $app->boot();
+        $events = [];
+        $provider = $app->get(ListenerProvider::class);
+        $provider->listen(CommandStarting::class, static function (CommandStarting $event) use (&$events): void {
+            $events[] = 'starting ' . $event->command;
+        });
+        $provider->listen(CommandFinished::class, static function (CommandFinished $event) use (&$events): void {
+            $events[] = sprintf('finished %s %d%s', $event->command, $event->exitCode, $event->exception === null ? '' : ' ' . $event->exception->getMessage());
+        });
+        $app->getContainer()->factory('boom.command', static fn(): Command => new class extends Command {
+            public function __construct()
+            {
+                parent::__construct('app:boom');
+            }
+
+            protected function execute(InputInterface $input, OutputInterface $output): int
+            {
+                throw new \RuntimeException('Broke.');
+            }
+        });
+        $app->get(CommandRegistry::class)->register('app:boom', 'boom.command', 'Throws.');
+        $kernel = $app->getConsoleKernel();
+        [$status] = $this->runConsole($kernel, ['command' => 'about', '--json' => true]);
+        self::assertSame(0, $status);
+        [$status] = $this->runConsole($kernel, ['command' => 'app:boom']);
+        self::assertSame(1, $status);
+        self::assertSame(['starting about', 'finished about 0', 'starting app:boom', 'finished app:boom 1 Broke.'], $events);
     }
 }

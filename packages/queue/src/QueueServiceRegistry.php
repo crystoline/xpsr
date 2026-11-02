@@ -36,6 +36,7 @@ use Symfony\Component\Messenger\Handler\HandlersLocator;
 use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Middleware\HandleMessageMiddleware;
+use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
 use Symfony\Component\Messenger\Middleware\SendMessageMiddleware;
 use Symfony\Component\Messenger\Transport\Sender\SendersLocator;
 
@@ -45,6 +46,7 @@ use Symfony\Component\Messenger\Transport\Sender\SendersLocator;
  *   Crystoline\Xpsr\Queue\QueueInterface        dispatch() jobs
  *   Crystoline\Xpsr\Queue\JobRunner             runs a job's handle() with injected services
  *   Crystoline\Xpsr\Queue\Failed\FailedJobStore the failed jobs table
+ *   Crystoline\Xpsr\Queue\BusMiddleware          Messenger middleware other providers add
  *
  * and queue:work, queue:failed, queue:retry, queue:forget, queue:restart, make:job, and
  * make:queue-table. List it in app.registry after Crystoline\Xpsr\Database\DatabaseServiceRegistry.
@@ -78,14 +80,22 @@ final class QueueServiceRegistry extends ServiceRegistry
                 ? new DatabaseTransportFactory($container->get(ConnectionManager::class), $container->get(QueueOptions::class)->table)
                 : null,
         ), shared: true);
+        $this->container->singleton(BusMiddleware::class);
         $this->container->factory(MessageBusInterface::class, static function (ContainerInterface $container): MessageBusInterface {
             $options = $container->get(QueueOptions::class);
+            $middleware = [];
+            foreach ($container->get(BusMiddleware::class)->all() as $entry) {
+                $instance = is_string($entry) ? $container->get($entry) : $entry;
+                if (!$instance instanceof MiddlewareInterface) {
+                    throw new InvalidArgumentException(sprintf('Queue bus middleware %s must implement %s.', is_string($entry) ? $entry : get_debug_type($entry), MiddlewareInterface::class));
+                }
+                $middleware[] = $instance;
+            }
+            $middleware[] = new SendMessageMiddleware(new SendersLocator([JobInterface::class => [$options->default]], $container->get(Transports::class)));
+            $middleware[] = $container->get(UniqueJobs::class);
+            $middleware[] = new HandleMessageMiddleware(new HandlersLocator([JobInterface::class => [new JobHandler($container->get(JobRunner::class))]]));
 
-            return new MessageBus([
-                new SendMessageMiddleware(new SendersLocator([JobInterface::class => [$options->default]], $container->get(Transports::class))),
-                $container->get(UniqueJobs::class),
-                new HandleMessageMiddleware(new HandlersLocator([JobInterface::class => [new JobHandler($container->get(JobRunner::class))]])),
-            ]);
+            return new MessageBus($middleware);
         }, shared: true);
         $this->container->factory(QueueInterface::class, static fn(ContainerInterface $container): QueueInterface => new Queue(
             $container->get(MessageBusInterface::class),

@@ -62,13 +62,7 @@ class ServiceContainer implements ContainerInterface
 
         try {
             $definition = $this->definitions[$id] ?? ['kind' => 'class', 'value' => $id, 'shared' => false];
-            $value = match ($definition['kind']) {
-                'class' => $this->autowire($definition['value']),
-                'factory' => ($definition['value'])($this),
-                'alias' => $this->get($definition['value']),
-                'value' => $definition['value'],
-                default => throw new ContainerException('Unknown service definition kind.'),
-            };
+            $value = $this->resolve($definition);
 
             if ($definition['shared']) {
                 $this->instances[$id] = $value;
@@ -119,6 +113,22 @@ class ServiceContainer implements ContainerInterface
     {
         $this->assertIdentifier($target);
         $this->define($alias, 'alias', $target);
+    }
+
+    public function extend(string $id, Closure $extender): void
+    {
+        $this->assertIdentifier($id);
+        $this->loadDeferred($id);
+        if (!$this->has($id)) {
+            throw new NotFoundException(sprintf('Service "%s" was not found, so it cannot be extended.', $id));
+        }
+        $inner = $this->definitions[$id] ?? ['kind' => 'class', 'value' => $id, 'shared' => false];
+        $this->define(
+            $id,
+            'factory',
+            fn(PsrContainerInterface $container): mixed => $extender($this->resolve($inner), $container),
+            $inner['shared'] || $inner['kind'] === 'value',
+        );
     }
 
     public function defer(array $ids, Closure $loader): void
@@ -178,6 +188,18 @@ class ServiceContainer implements ContainerInterface
 
         unset($this->instances[$id]);
         $this->definitions[$id] = ['kind' => $kind, 'value' => $value, 'shared' => $shared];
+    }
+
+    /** @param array{kind: string, value: mixed, shared: bool} $definition */
+    private function resolve(array $definition): mixed
+    {
+        return match ($definition['kind']) {
+            'class' => $this->autowire($definition['value']),
+            'factory' => ($definition['value'])($this),
+            'alias' => $this->get($definition['value']),
+            'value' => $definition['value'],
+            default => throw new ContainerException('Unknown service definition kind.'),
+        };
     }
 
     private function loadDeferred(string $id): void

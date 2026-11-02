@@ -175,6 +175,16 @@ Use a unique job to avoid queuing the same work twice. Uniqueness is not a guara
 
 With [crystoline/xpsr-log-monolog](../log-monolog/README.md), a job carries the ID of the request that dispatched it. The worker sets that ID while the job runs, so the job's log lines carry the same `request_id` as the request's. So do the lines about its failure or retry. Jobs dispatched outside a request, for example by a command, carry none.
 
+## Bus middleware
+
+The queue is a Symfony Messenger bus. A provider can add Messenger middleware to it in `boot()`, as service IDs or instances; they run first, in the order added, both when a job is dispatched and when a received job is handled, and tell the two apart by the envelope's `ReceivedStamp`:
+
+```php
+$this->container->get(Crystoline\Xpsr\Queue\BusMiddleware::class)->add(TraceJobs::class);
+```
+
+Add them before the bus is first used; it is built with what is there then. This is how [`crystoline/xpsr-telemetry`](../telemetry/README.md) carries a trace through the queue.
+
 ## Testing
 
 ```php
@@ -204,6 +214,7 @@ With `QUEUE_DSN=sync://` in tests, jobs instead run at once.
 | `Crystoline\Xpsr\Queue\JobRunner` | Runs a job's `handle()` with services from the container. |
 | `Crystoline\Xpsr\Queue\Failed\FailedJobStore` | The failed jobs table. |
 | `Symfony\Component\Messenger\MessageBusInterface` | The Messenger bus the queue uses. |
+| `Crystoline\Xpsr\Queue\BusMiddleware` | Messenger middleware other providers add to the bus. Shared. |
 
 This package's tests run against SQLite, MySQL 8.4, MariaDB 11, and PostgreSQL 17.
 

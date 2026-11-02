@@ -103,4 +103,16 @@ public function boot(): void
 | `Psr\EventDispatcher\EventDispatcherInterface` | The dispatcher (also `Crystoline\Xpsr\Events\EventDispatcher`). Shared. |
 | `Psr\EventDispatcher\ListenerProviderInterface` | The listener provider (also `Crystoline\Xpsr\Events\ListenerProvider`). Shared. |
 
-The framework does not dispatch events of its own yet. Queued or asynchronous listeners are not provided; a listener that should not delay a response can hand the work to a queue once queue support exists.
+## Framework events
+
+The framework and the packages dispatch these through the same dispatcher, so an application or a package listens to them like any other event. Each needs `EventServiceRegistry` in `app.registry`; without it, nothing is dispatched.
+
+| Event | When |
+|---|---|
+| `Crystoline\Xpsr\Routing\Event\RouteMatched` | A request matched a route, before the route's middleware and handler run: `route`, `parameters`, `request`. An unmatched request gets no event. |
+| `Crystoline\Xpsr\Console\Event\CommandStarting` | A console command is about to run: `command`, `input`, `output`. Also for a command run by another, such as a scheduled command. |
+| `Crystoline\Xpsr\Console\Event\CommandFinished` | It ran: `exitCode`, and `exception` when it threw (then the exit code is 1), before the console reports it. |
+| `Crystoline\Xpsr\Database\Event\QueryExecuted` | A query ran on a connection of `crystoline/xpsr-database`: `connection`, `sql`, `parameters`, `seconds`. |
+| `Crystoline\Xpsr\Scheduler\Event\TaskStarting`, `TaskFinished` | A due task of `crystoline/xpsr-scheduler` runs: `task`, then `result`. A skipped task gets no events. |
+
+Queued or asynchronous listeners are not provided; a listener that should not delay a response can hand the work to [a queue](../packages/queue/README.md).

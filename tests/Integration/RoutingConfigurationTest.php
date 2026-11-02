@@ -7,6 +7,8 @@ namespace Tests\Integration;
 use Crystoline\Xpsr\Application;
 use Crystoline\Xpsr\Contracts\Routing\RouterInterface;
 use Crystoline\Xpsr\Contracts\Routing\UrlGeneratorInterface;
+use Crystoline\Xpsr\Events\ListenerProvider;
+use Crystoline\Xpsr\Routing\Event\RouteMatched;
 use Crystoline\Xpsr\Router\FastRoute\FastRouteRouter;
 use Crystoline\Xpsr\Router\Sunrise\SunriseRouter;
 use Crystoline\Xpsr\ServiceContainer\ContainerException;
@@ -54,5 +56,19 @@ final class RoutingConfigurationTest extends TestCase
         $this->expectException(ContainerException::class);
         $this->expectExceptionMessage('route file does not exist');
         $app->getHttpKernel();
+    }
+
+    public function testRouteMatchedIsDispatchedWithTheRouteAndTheRequest(): void
+    {
+        $app = new Application(dirname(__DIR__, 2));
+        $app->boot();
+        $matched = [];
+        $app->get(ListenerProvider::class)->listen(RouteMatched::class, static function (RouteMatched $event) use (&$matched): void {
+            $matched[] = [$event->route->getName(), $event->route->path, $event->parameters, $event->request->getAttribute('_route') === $event->route];
+        });
+        $kernel = $app->getHttpKernel();
+        self::assertSame(200, $kernel->handle((new Psr17Factory())->createServerRequest('GET', 'http://localhost/hello'))->getStatusCode());
+        self::assertSame(404, $kernel->handle((new Psr17Factory())->createServerRequest('GET', 'http://localhost/missing'))->getStatusCode());
+        self::assertSame([['hello', '/hello', [], true]], $matched, 'No event for an unmatched request.');
     }
 }
