@@ -2,6 +2,23 @@
 
 Steps for moving an application between minor versions. What changed is in [CHANGELOG.md](CHANGELOG.md); what each kind of release promises is in [docs/VERSIONING.md](docs/VERSIONING.md).
 
+## From 0.6 to 0.7
+
+Nothing breaks. The release adds five optional packages (health checks, translations, broadcasting on Mercure, an OAuth2 server, and the Cycle ORM adapter); an application takes the ones it wants.
+
+### 1. Require 0.7
+
+In `composer.json`, change every `crystoline/xpsr-*` requirement from `^0.6` to `^0.7`, then run:
+
+```sh
+composer update 'crystoline/*' --with-dependencies
+composer test
+```
+
+### 2. The new packages (optional)
+
+Each has a README with its setup: [health](packages/health/README.md), [translation](packages/translation/README.md), [broadcast](packages/broadcast/README.md), [auth-oauth2-server](packages/auth-oauth2-server/README.md), and [orm-cycle](packages/orm-cycle/README.md). With `crystoline/xpsr-validation` and the translation package together, the validator's messages come in the request's language; without the translation package nothing changes.
+
 ## From 0.5 to 0.6
 
 Nothing breaks for an application on the framework's container; a container of your own must gain `extend()` (see [docs/CONTAINER.md](docs/CONTAINER.md)). The steps after the first are optional, and worth doing for the tests. The five new packages of this release, `crystoline/xpsr-api`, `xpsr-installer`, `xpsr-webhooks`, `xpsr-audit`, and `xpsr-telemetry`, are optional and documented in [docs/PACKAGES.md](docs/PACKAGES.md).

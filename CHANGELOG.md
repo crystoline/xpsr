@@ -4,6 +4,8 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+## 0.7.0 (2026-11-03)
+
 ### Added
 
 - `crystoline/xpsr-health`: health checks. `HealthController::live()` answers 200 once the application boots, and `ready()` runs the checks and answers 200 or 503 with a JSON report, whose messages and details show only to private addresses or a request carrying `HEALTH_SECRET`. Checks for what is installed: the database connections, the cache, the queue's transports and failed jobs, the workers' heartbeats, the scheduler (a `health:heartbeat` task joins the schedule), the locks, the disk, and the HTTP dependencies of `health.http`; your own implement `CheckInterface`. Reports are cached for `health.cache` seconds, `HealthChecked` is dispatched on each run, and `php xpsr health` prints the table and exits 1 on a failure. See [its README](packages/health/README.md).

@@ -26,12 +26,12 @@ Not covered:
 
 ## Before 1.0
 
-XPSR is in its 0.x series. Composer reads `^0.6` as "0.6.0 or newer, below 0.7.0", so:
+XPSR is in its 0.x series. Composer reads `^0.7` as "0.7.0 or newer, below 0.8.0", so:
 
-- **Patch releases (0.6.1, 0.6.2, …)** contain fixes only. They never break the public API.
-- **Minor releases (0.7.0, 0.8.0, …)** may break the public API. Every break is listed under **Breaking** in `CHANGELOG.md`, with migration steps in [UPGRADE.md](../UPGRADE.md).
+- **Patch releases (0.7.1, 0.7.2, …)** contain fixes only. They never break the public API.
+- **Minor releases (0.8.0, 0.9.0, …)** may break the public API. Every break is listed under **Breaking** in `CHANGELOG.md`, with migration steps in [UPGRADE.md](../UPGRADE.md).
 
-Require `^0.6` and upgrade between minor versions deliberately.
+Require `^0.7` and upgrade between minor versions deliberately.
 
 ## From 1.0
 
@@ -49,7 +49,7 @@ Require `^0.6` and upgrade between minor versions deliberately.
 
 1. Move the **Unreleased** entries in `CHANGELOG.md` under the new version, update `UPGRADE.md` for breaking changes, and commit.
 2. Ensure CI passes, including the packaging and lowest-dependency jobs.
-3. For a new minor line, such as 0.7, update the branch aliases and the packages' requirements on each other (for example `^0.7@dev`).
+3. For a new minor line, such as 0.8, update the branch aliases and the packages' requirements on each other (for example `^0.8@dev`).
 4. Tag `vX.Y.Z` in the monorepo and push the tag. CI's `split` job tags every package repository, and exports the skeleton with constraints on the release range ([PACKAGES.md](PACKAGES.md#publishing)).
 
 The first tagged release is `0.1.0`. Packagist already lists an unrelated prototype as `crystoline/xpsr` `v1.0.0`; remove that version before tagging `0.1.0`, otherwise `composer create-project crystoline/xpsr` keeps selecting it.

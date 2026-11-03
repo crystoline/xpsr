@@ -6,7 +6,7 @@ Email **crystoline+xpsr@gmail.com**. Please do not open a public issue or pull r
 
 Include what you can of:
 
-- the package and version, such as `crystoline/xpsr-database` 0.6.0;
+- the package and version, such as `crystoline/xpsr-database` 0.7.0;
 - what an attacker can do, and what they need first, such as a signed-in account;
 - the steps or code that show it.
 

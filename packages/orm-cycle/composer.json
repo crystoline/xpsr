@@ -12,8 +12,8 @@
   ],
   "require": {
     "php": "^8.4",
-    "crystoline/xpsr-database": "^0.6@dev",
-    "crystoline/xpsr-framework": "^0.6@dev",
+    "crystoline/xpsr-database": "^0.7@dev",
+    "crystoline/xpsr-framework": "^0.7@dev",
     "cycle/annotated": "^4.6",
     "cycle/database": "^2.22",
     "cycle/entity-behavior": "^1.7",
@@ -52,7 +52,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.6.x-dev"
+      "dev-master": "0.7.x-dev"
     }
   }
 }
