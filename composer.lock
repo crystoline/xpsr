@@ -3306,20 +3306,24 @@
             "dist": {
                 "type": "path",
                 "url": "packages/auth-oauth2-server",
-                "reference": "91ec81a963523e34ac0a10ddf3b495de65c61476"
+                "reference": "515a52c64af547d1e632194a83e737c72696f450"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.6@dev",
                 "crystoline/xpsr-framework": "^0.6@dev",
                 "defuse/php-encryption": "^2.4",
                 "doctrine/dbal": "^4.5",
-                "league/oauth2-server": "^8.5 || ^9.4",
+                "league/oauth2-server": "^8.5.5 || ^9.4",
                 "php": "^8.4",
                 "psr/clock": "^1.0",
                 "psr/container": "^2.0",
                 "psr/http-factory": "^1.1",
                 "psr/http-message": "^1.1 || ^2.0",
                 "symfony/console": "^7.4 || ^8.0"
+            },
+            "conflict": {
+                "lcobucci/clock": "<3.0",
+                "league/event": "<2.3"
             },
             "require-dev": {
                 "crystoline/xpsr-router-fastroute": "^0.6@dev",

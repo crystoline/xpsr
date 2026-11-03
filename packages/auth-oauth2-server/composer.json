@@ -30,6 +30,10 @@
     "symfony/clock": "^7.4 || ^8.0",
     "twig/twig": "^3.21"
   },
+  "conflict": {
+    "lcobucci/clock": "<3.0",
+    "league/event": "<2.3"
+  },
   "autoload": {
     "psr-4": {
       "Crystoline\\Xpsr\\Auth\\OAuth2\\": "src/"
