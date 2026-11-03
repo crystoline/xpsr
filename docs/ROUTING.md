@@ -11,7 +11,7 @@ Each adapter is its own Composer package, so an application installs only the ro
 | `ROUTER_ADAPTER` | Package | Class | Router library |
 |---|---|---|---|
 | `fastroute` | `crystoline/xpsr-router-fastroute` | `Crystoline\Xpsr\Router\FastRoute\FastRouteRouter` | FastRoute 1.3 |
-| `sunrise` | `crystoline/xpsr-router-sunrise` | `Crystoline\Xpsr\Router\Sunrise\SunriseRouter` | Sunrise 2.16 (needs `psr/http-message` 1.x) |
+| `sunrise` | `crystoline/xpsr-router-sunrise` | `Crystoline\Xpsr\Router\Sunrise\SunriseRouter` | Sunrise 3.4 |
 
 The skeleton requires the FastRoute adapter. The Sunrise adapter is a suggestion and, in this repository, a development requirement so both adapters are tested. A `composer install --no-dev` deployment includes Sunrise only after `composer require crystoline/xpsr-router-sunrise`, which setup runs for you. The framework knows these two names without depending on either package. If the selected adapter is not installed, resolving the router fails with the setup command to run.
 

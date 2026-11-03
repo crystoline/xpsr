@@ -204,11 +204,3 @@ Tests of an API behind the `oauth2` guard use `actingAs($user, 'api', ['orders:r
 OpenID Connect ID tokens, the device grant, token introspection and a revocation endpoint, dynamic client registration, a JWKS endpoint (copy the public key to a service that verifies tokens itself), and the password and implicit grants, which OAuth 2.1 removed.
 
 Requires PHP 8.4+ with the `openssl` extension, `crystoline/xpsr-database`, and `league/oauth2-server` 8.5.5 or 9.4+.
-
-With the Sunrise router adapter the library must be 8.5: `sunrise/http-router` 2 needs `psr/http-message` 1.x, and `league/oauth2-server` 9 needs 2.0. Composer moves a package only when asked to, so `setup --router=sunrise --install-dependencies` stops at the conflict in a project that already has this package. Install the adapter with
-
-```sh
-composer require crystoline/xpsr-router-sunrise --no-update
-composer update crystoline/xpsr-router-sunrise league/oauth2-server --with-all-dependencies
-php xpsr setup --router=sunrise
-```

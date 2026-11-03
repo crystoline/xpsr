@@ -7,7 +7,7 @@ php xpsr setup --router=sunrise --install-dependencies
 # or: composer require crystoline/xpsr-router-sunrise, then set ROUTER_ADAPTER=sunrise
 ```
 
-Route files stay the same whichever adapter you choose. Sunrise 2.x requires `psr/http-message` 1.x, so installing this adapter keeps the application on that major version. A package that holds the application on `psr/http-message` 2.0, such as `crystoline/xpsr-auth-oauth2-server` through `league/oauth2-server` 9, has to move at the same time, which `setup --install-dependencies` does not ask of Composer: run `composer require crystoline/xpsr-router-sunrise --no-update`, then `composer update crystoline/xpsr-router-sunrise league/oauth2-server --with-all-dependencies`, then `php xpsr setup --router=sunrise`.
+Route files stay the same whichever adapter you choose. The adapter runs on `sunrise/http-router` 3 (3.4 or later), which accepts `psr/http-message` 1.1 or 2.0, so it installs beside any other package. It only matches: XPSR runs the handlers and middleware, so none of Sunrise's own request handling, loaders, or OpenAPI tooling is involved. An application that calls Sunrise 2 classes itself needs the 0.7 adapter until it moves to 3.
 
 The adapter passes XPSR's shared router contract suite (`Crystoline\Xpsr\Testing\RouterContractTestCase`):
 

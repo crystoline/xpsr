@@ -2,6 +2,21 @@
 
 Steps for moving an application between minor versions. What changed is in [CHANGELOG.md](CHANGELOG.md); what each kind of release promises is in [docs/VERSIONING.md](docs/VERSIONING.md).
 
+## From 0.7 to 0.8
+
+Nothing breaks for an application on the FastRoute adapter, which the skeleton installs. The Sunrise adapter now runs on `sunrise/http-router` 3.
+
+### 1. Require 0.8
+
+In `composer.json`, change every `crystoline/xpsr-*` requirement from `^0.7` to `^0.8`, then run:
+
+```sh
+composer update 'crystoline/*' --with-dependencies
+composer test
+```
+
+With the Sunrise adapter, the same update moves `sunrise/http-router` to 3.4, and `psr/http-message` to 2.0 unless another package holds it at 1.1. Route files and `ROUTER_ADAPTER=sunrise` stay as they are. Only code of your own that calls Sunrise 2 classes directly, outside XPSR's routing, needs the changes Sunrise's own upgrade notes describe; if there is any, stay on 0.7 until it is done.
+
 ## From 0.6 to 0.7
 
 Nothing breaks. The release adds five optional packages (health checks, translations, broadcasting on Mercure, an OAuth2 server, and the Cycle ORM adapter); an application takes the ones it wants.

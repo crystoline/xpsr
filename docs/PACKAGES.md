@@ -63,7 +63,7 @@ crystoline/xpsr (skeleton, repository root)
 | `crystoline/xpsr-validation` | `Crystoline\Xpsr\Validation\Symfony\` | framework, `symfony/validator` ^7.4, `symfony/property-access` ^7.4. The contract, attributes, and mapping it uses are in the framework (`Crystoline\Xpsr\Validation\`). |
 | `crystoline/xpsr-auth-jwt` | `Crystoline\Xpsr\Auth\Jwt\` | framework, `lcobucci/jwt` ^5.6 (`ext-openssl`, `ext-sodium`). The contracts, session sign-in, and policies are in the framework (`Crystoline\Xpsr\Auth\`); the token driver and database users are in `crystoline/xpsr-database`. |
 | `crystoline/xpsr-http-client` | `Crystoline\Xpsr\HttpClient\` | framework, `symfony/http-client` ^7.4, `psr/http-client` ^1.0.3. |
-| `crystoline/xpsr-router-sunrise` | `Crystoline\Xpsr\Router\Sunrise\` | framework, `sunrise/http-router` ^2.16, `psr/http-message` ^1.1 |
+| `crystoline/xpsr-router-sunrise` | `Crystoline\Xpsr\Router\Sunrise\` | framework, `sunrise/http-router` ^3.4, `psr/http-message` ^1.1 or ^2.0, `psr/http-server-handler`, `psr/http-server-middleware` |
 | `crystoline/xpsr` | `App\` | framework, FastRoute adapter, `nyholm/psr7`, `twig/twig`; development: `filp/whoops`, `phpunit/phpunit` |
 
 Rules that keep the split clean:

@@ -4,6 +4,10 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+### Changed
+
+- `crystoline/xpsr-router-sunrise` runs on `sunrise/http-router` 3 (3.4 or later) instead of 2.16. Sunrise 3 accepts `psr/http-message` 2.0, so the adapter installs beside any package, `crystoline/xpsr-auth-oauth2-server` with `league/oauth2-server` 9 included, and `setup --router=sunrise --install-dependencies` works in every project. Route files, matching, and the adapter's class are unchanged. An application that calls Sunrise 2 classes of its own must move them to 3 first; see [UPGRADE.md](UPGRADE.md).
+
 ## 0.7.0 (2026-11-03)
 
 ### Added

@@ -17,6 +17,7 @@ use Crystoline\Xpsr\View\ViewNotFoundException;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
+use LogicException;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -103,6 +104,10 @@ final class AuthorizeController
     private function validate(ServerRequestInterface $request): AuthorizationRequest
     {
         $authRequest = $this->server->validateAuthorizationRequest($request);
+        if (!$authRequest instanceof AuthorizationRequest) {
+            // league/oauth2-server 9 types the result as an interface; its grants return this class.
+            throw new LogicException('The authorization request is a ' . $authRequest::class . ', not an ' . AuthorizationRequest::class . '.');
+        }
         $client = $authRequest->getClient();
         if ($client instanceof Client) {
             foreach ($authRequest->getScopes() as $scope) {
