@@ -58,6 +58,7 @@ lead there.
 - [Telemetry](../packages/telemetry/README.md)
 - [Health checks](../packages/health/README.md)
 - [Translations](../packages/translation/README.md)
+- [Broadcasting](../packages/broadcast/README.md)
 - [Scheduler](../packages/scheduler/README.md)
 - [File storage](../packages/storage/README.md)
 - [Plates views](../packages/view-plates/README.md)

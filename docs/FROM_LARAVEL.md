@@ -233,6 +233,7 @@ Tests extend the skeleton's `tests/TestCase.php`, which has `get()`, `getJson()`
 | `Storage::disk()` | `StorageManager::disk()` |
 | `Http::get()` | PSR-18 `ClientInterface`, and named clients |
 | `Log::info()` | PSR-3 `LoggerInterface` |
+| `broadcast(new OrderShipped($order))`, `ShouldBroadcast` | `BroadcastableInterface` on the event, or `broadcast('orders/42', [...])`, with [`crystoline/xpsr-broadcast`](../packages/broadcast/README.md) |
 | `php artisan ...` | `php xpsr ...`: `migrate`, `queue:work`, `queue:retry`, `schedule:run`, `make:*` |
 
 ## Running both side by side
@@ -249,7 +250,8 @@ An application can move a route group or a job at a time, with Laravel and XPSR 
 ## Not in XPSR
 
 - Facades, route model binding, form request `authorize()`, and service injection into controller methods.
-- Broadcasting, Horizon, Socialite, Passport, Cashier, and Scout.
+- Horizon, Socialite, Passport, Cashier, and Scout.
+- Pusher, Reverb, Laravel Echo, and presence channels. [`crystoline/xpsr-broadcast`](../packages/broadcast/README.md) publishes to a Mercure hub instead, and browsers subscribe with `EventSource`.
 - Telescope and Pulse. [`crystoline/xpsr-telemetry`](../packages/telemetry/README.md) sends traces of requests, queries, outgoing calls, jobs, and commands to any OpenTelemetry backend instead, which shows them with their timings.
 - Octane: long-running servers have not been verified (see [Deployment](DEPLOYMENT.md#not-provided-yet)).
 - Registration, password reset, email verification, two-factor sign-in, and "remember me" cookies.

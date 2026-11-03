@@ -40,6 +40,8 @@ parameters:
         - packages/health/tests
         - packages/translation/src
         - packages/translation/tests
+        - packages/broadcast/src
+        - packages/broadcast/tests
         - packages/view-blade/src
         - packages/view-blade/tests
         - packages/view-latte/src

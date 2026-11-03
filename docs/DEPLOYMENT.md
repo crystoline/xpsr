@@ -201,6 +201,13 @@ With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user 
 - **`ext-intl`** gives plurals and selects (the ICU format). Without it, messages use `%name%` placeholders alone; set `translation.format` to `simple` explicitly when the servers differ from the developers' machines.
 - See [the translation package](../packages/translation/README.md).
 
+## Broadcasting
+
+- **The hub is a service of its own:** the Mercure binary, its Docker image, or FrankenPHP's built-in one. It needs the same key as `BROADCAST_SECRET` (32 random bytes at least), HTTPS, and `cors_origins` naming the application's origin, since browsers subscribe from its pages.
+- **Two URLs:** `BROADCAST_HUB_URL` is where the application publishes, on the private network; `BROADCAST_PUBLIC_HUB_URL` is where browsers subscribe. A hub on another subdomain needs `broadcast.cookie_domain`, so the authorization cookie reaches it.
+- **Through the queue** (the default with the queue package), a slow or absent hub never delays a request: the job is retried, then recorded as failed. `php xpsr broadcast:publish` tries the hub from the shell.
+- See [the broadcast package](../packages/broadcast/README.md).
+
 ## File storage
 
 - **Local disks** (`var/storage` by default) must survive deploys: keep them outside the release directory, or link them in, and back them up.

@@ -53,6 +53,7 @@ The view provider gives every engine the same functions:
 | `session('key', $default)` | A session value, such as a flash message. |
 | `auth_user()` | The signed-in user, or null. |
 | `trans('messages.welcome', {name: name})`, `locale()` | A translated message, and the request's locale, with [`crystoline/xpsr-translation`](../packages/translation/README.md). |
+| `hub_url(['orders/42'])` | The Mercure hub's URL to subscribe at, setting the signed-in user's authorization cookie, with [`crystoline/xpsr-broadcast`](../packages/broadcast/README.md). |
 | `can('update', $task)` | Whether the signed-in user may, by the gate's policies. |
 
 The CSRF functions and `session()` need a route behind `SessionMiddleware`; see [SESSIONS.md](SESSIONS.md). `auth_user()` and `can()` need `Authenticate` (optional or required) on the route; see [AUTH.md](AUTH.md). Each engine calls them its own way:

@@ -1,0 +1,57 @@
+{
+  "name": "crystoline/xpsr-broadcast",
+  "description": "Live updates to browsers for XPSR applications, through a Mercure hub: publish updates to topics from code, events, or a queue job after the transaction commits; authorize signed-in users for private topics with a cookie; hub_url() in templates",
+  "type": "library",
+  "license": "MIT",
+  "homepage": "https://xpsr.crysto.name.ng",
+  "authors": [
+    {
+      "name": "Adekunle",
+      "email": "crystoline@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.4",
+    "crystoline/xpsr-framework": "^0.6@dev",
+    "crystoline/xpsr-http-client": "^0.6@dev",
+    "lcobucci/jwt": "^5.6",
+    "psr/clock": "^1.0",
+    "psr/container": "^2.0",
+    "psr/http-client": "^1.0.3",
+    "psr/http-factory": "^1.1",
+    "psr/http-message": "^1.1 || ^2.0",
+    "psr/http-server-middleware": "^1.0",
+    "symfony/console": "^7.4 || ^8.0"
+  },
+  "require-dev": {
+    "crystoline/xpsr-database": "^0.6@dev",
+    "crystoline/xpsr-queue": "^0.6@dev",
+    "crystoline/xpsr-router-fastroute": "^0.6@dev",
+    "nyholm/psr7": "^1.8.2",
+    "phpunit/phpunit": "^12.5",
+    "symfony/clock": "^7.4 || ^8.0",
+    "twig/twig": "^3.21"
+  },
+  "suggest": {
+    "crystoline/xpsr-queue": "Publishing from a queue job, once the database transaction commits",
+    "crystoline/xpsr-database": "Publishing after the open transaction commits, without the queue"
+  },
+  "autoload": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Broadcast\\": "src/"
+    },
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Broadcast\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.6.x-dev"
+    }
+  }
+}

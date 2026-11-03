@@ -110,6 +110,7 @@ final class PackagesTest extends TestCase
         yield 'telemetry' => ['telemetry'];
         yield 'health' => ['health'];
         yield 'translation' => ['translation'];
+        yield 'broadcast' => ['broadcast'];
         yield 'view-blade' => ['view-blade'];
         yield 'view-latte' => ['view-latte'];
         yield 'view-plates' => ['view-plates'];
