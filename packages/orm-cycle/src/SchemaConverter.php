@@ -113,14 +113,15 @@ final class SchemaConverter
         }
         if (!$autoincrement && $column->hasDefaultValue()) {
             $default = $column->getDefaultValue();
-            // Each driver spells the current timestamp its own way (now(), getdate()); DBAL knows the one name.
-            if ($default === $column::DATETIME_NOW) {
-                $default = 'CURRENT_TIMESTAMP';
-            }
             if (!is_scalar($default) && !$default instanceof Stringable) {
                 throw new InvalidArgumentException(sprintf('make:migration --diff cannot describe the default value of the column %s.%s; write that part of the migration by hand.', $table, $column->getName()));
             }
-            $editor->setDefaultValue(is_scalar($default) ? $default : (string) $default);
+            $value = is_scalar($default) ? $default : (string) $default;
+            // Each driver spells the current timestamp its own way (now(), getdate()), as an SQL fragment; DBAL knows the one name.
+            if ($value === $column::DATETIME_NOW || $value === AbstractColumn::DATETIME_NOW) {
+                $value = 'CURRENT_TIMESTAMP';
+            }
+            $editor->setDefaultValue($value);
         }
 
         return $editor->create();
