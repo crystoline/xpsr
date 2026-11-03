@@ -44,6 +44,7 @@
 #   packages/health            -> xpsr-health.git            crystoline/xpsr-health
 #   packages/translation       -> xpsr-translation.git       crystoline/xpsr-translation
 #   packages/broadcast         -> xpsr-broadcast.git         crystoline/xpsr-broadcast
+#   packages/auth-oauth2-server -> xpsr-auth-oauth2-server.git crystoline/xpsr-auth-oauth2-server
 #   export-skeleton.php output -> xpsr-skeleton.git          crystoline/xpsr
 #
 # Packages keep their history (git subtree split). The skeleton gets one sync commit per
@@ -85,7 +86,7 @@ push() {
 # developed and tested here but not published; see "Adding a package" in docs/PACKAGES.md.
 PUBLISHED=(
     framework router-fastroute router-sunrise cache http-client database orm-doctrine log-monolog validation
-    orm-eloquent auth-jwt queue mail scheduler storage view-plates view-latte view-blade lock notifications api installer webhooks audit telemetry health translation broadcast
+    orm-eloquent auth-jwt queue mail scheduler storage view-plates view-latte view-blade lock notifications api installer webhooks audit telemetry health translation broadcast auth-oauth2-server
 )
 
 for directory in packages/*/; do

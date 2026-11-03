@@ -1,0 +1,108 @@
+<?php
+
+declare(strict_types=1);
+
+use Crystoline\Xpsr\Database\Migration\Migration;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Schema\Index;
+use Doctrine\DBAL\Schema\PrimaryKeyConstraint;
+use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\Types;
+
+/**
+ * The tables of crystoline/xpsr-auth-oauth2-server: the registered clients, and the access
+ * tokens, refresh tokens, and authorization codes the server issued.
+ */
+return new class extends Migration {
+    public function up(Connection $db): void
+    {
+        $schema = $db->createSchemaManager();
+        $schema->createTable(
+            Table::editor()
+                ->setUnquotedName({{ table }})
+                ->setColumns(
+                    Column::editor()->setUnquotedName('id')->setTypeName(Types::STRING)->setLength(32)->create(),
+                    Column::editor()->setUnquotedName('name')->setTypeName(Types::STRING)->setLength(255)->create(),
+                    // SHA-256 of the secret, in hexadecimal; null for a public client. The secret itself is never stored.
+                    Column::editor()->setUnquotedName('secret_hash')->setTypeName(Types::STRING)->setLength(64)->setNotNull(false)->create(),
+                    // JSON lists.
+                    Column::editor()->setUnquotedName('redirect_uris')->setTypeName(Types::TEXT)->create(),
+                    Column::editor()->setUnquotedName('grants')->setTypeName(Types::TEXT)->create(),
+                    // A JSON list, or null for every configured scope.
+                    Column::editor()->setUnquotedName('scopes')->setTypeName(Types::TEXT)->setNotNull(false)->create(),
+                    Column::editor()->setUnquotedName('confidential')->setTypeName(Types::BOOLEAN)->create(),
+                    // Unix times.
+                    Column::editor()->setUnquotedName('created_at')->setTypeName(Types::INTEGER)->create(),
+                    Column::editor()->setUnquotedName('revoked_at')->setTypeName(Types::INTEGER)->setNotNull(false)->create(),
+                )
+                ->setPrimaryKeyConstraint(PrimaryKeyConstraint::editor()->setUnquotedColumnNames('id')->create())
+                ->create(),
+        );
+        $schema->createTable(
+            Table::editor()
+                ->setUnquotedName({{ access_tokens }})
+                ->setColumns(
+                    Column::editor()->setUnquotedName('id')->setTypeName(Types::STRING)->setLength(100)->create(),
+                    Column::editor()->setUnquotedName('client_id')->setTypeName(Types::STRING)->setLength(32)->create(),
+                    // Null for a client credentials token, which is the client's own.
+                    Column::editor()->setUnquotedName('user_id')->setTypeName(Types::STRING)->setLength(64)->setNotNull(false)->create(),
+                    // A JSON list.
+                    Column::editor()->setUnquotedName('scopes')->setTypeName(Types::TEXT)->create(),
+                    Column::editor()->setUnquotedName('revoked')->setTypeName(Types::BOOLEAN)->create(),
+                    // Unix times.
+                    Column::editor()->setUnquotedName('created_at')->setTypeName(Types::INTEGER)->create(),
+                    Column::editor()->setUnquotedName('expires_at')->setTypeName(Types::INTEGER)->create(),
+                )
+                ->setPrimaryKeyConstraint(PrimaryKeyConstraint::editor()->setUnquotedColumnNames('id')->create())
+                ->setIndexes(
+                    Index::editor()->setUnquotedName('{{ access_tokens_prefix }}_user')->setUnquotedColumnNames('user_id')->create(),
+                    Index::editor()->setUnquotedName('{{ access_tokens_prefix }}_client')->setUnquotedColumnNames('client_id')->create(),
+                    Index::editor()->setUnquotedName('{{ access_tokens_prefix }}_expires')->setUnquotedColumnNames('expires_at')->create(),
+                )
+                ->create(),
+        );
+        $schema->createTable(
+            Table::editor()
+                ->setUnquotedName({{ refresh_tokens }})
+                ->setColumns(
+                    Column::editor()->setUnquotedName('id')->setTypeName(Types::STRING)->setLength(100)->create(),
+                    Column::editor()->setUnquotedName('access_token_id')->setTypeName(Types::STRING)->setLength(100)->create(),
+                    Column::editor()->setUnquotedName('revoked')->setTypeName(Types::BOOLEAN)->create(),
+                    Column::editor()->setUnquotedName('expires_at')->setTypeName(Types::INTEGER)->create(),
+                )
+                ->setPrimaryKeyConstraint(PrimaryKeyConstraint::editor()->setUnquotedColumnNames('id')->create())
+                ->setIndexes(
+                    Index::editor()->setUnquotedName('{{ refresh_tokens_prefix }}_token')->setUnquotedColumnNames('access_token_id')->create(),
+                    Index::editor()->setUnquotedName('{{ refresh_tokens_prefix }}_expires')->setUnquotedColumnNames('expires_at')->create(),
+                )
+                ->create(),
+        );
+        $schema->createTable(
+            Table::editor()
+                ->setUnquotedName({{ auth_codes }})
+                ->setColumns(
+                    Column::editor()->setUnquotedName('id')->setTypeName(Types::STRING)->setLength(100)->create(),
+                    Column::editor()->setUnquotedName('client_id')->setTypeName(Types::STRING)->setLength(32)->create(),
+                    Column::editor()->setUnquotedName('user_id')->setTypeName(Types::STRING)->setLength(64)->setNotNull(false)->create(),
+                    Column::editor()->setUnquotedName('scopes')->setTypeName(Types::TEXT)->create(),
+                    Column::editor()->setUnquotedName('revoked')->setTypeName(Types::BOOLEAN)->create(),
+                    Column::editor()->setUnquotedName('expires_at')->setTypeName(Types::INTEGER)->create(),
+                )
+                ->setPrimaryKeyConstraint(PrimaryKeyConstraint::editor()->setUnquotedColumnNames('id')->create())
+                ->setIndexes(
+                    Index::editor()->setUnquotedName('{{ auth_codes_prefix }}_expires')->setUnquotedColumnNames('expires_at')->create(),
+                )
+                ->create(),
+        );
+    }
+
+    public function down(Connection $db): void
+    {
+        $schema = $db->createSchemaManager();
+        $schema->dropTable({{ auth_codes }});
+        $schema->dropTable({{ refresh_tokens }});
+        $schema->dropTable({{ access_tokens }});
+        $schema->dropTable({{ table }});
+    }
+};

@@ -6,6 +6,7 @@ Authentication finds out who sent a request; authorization decides what they may
 |---|---|
 | Sessions for browsers, password hashing, `Authenticate` and `Guest` middleware, policies | the framework (`Crystoline\Xpsr\Auth\`) |
 | JWTs for APIs (the default `api` guard) | `crystoline/xpsr-auth-jwt` |
+| An OAuth2 server, for other applications that call the API | `crystoline/xpsr-auth-oauth2-server` |
 | Revocable API tokens in a table, and users in a table | `crystoline/xpsr-database` |
 | Users as Doctrine entities or Eloquent models | `crystoline/xpsr-orm-doctrine`, `crystoline/xpsr-orm-eloquent` |
 
@@ -203,6 +204,16 @@ $new->plainText;   // "42|…", shown once
 
 Sanctum's cookie sign-in for single-page apps is not supported: browsers use XPSR's session guard instead, and sign in once after the move.
 
+### OAuth2: other applications
+
+With [`crystoline/xpsr-auth-oauth2-server`](../packages/auth-oauth2-server/README.md), other applications get tokens to call your API: as themselves, with the client credentials grant, or for one of your users who approved them on a consent page, with the authorization code grant and PKCE. Give a guard the `oauth2` driver:
+
+```php
+'api' => ['driver' => 'oauth2', 'provider' => 'users'],
+```
+
+The tokens then work with `Authenticate`, `RequireScopes`, and `Identity` like any other, with the scopes the user approved; a client credentials token authenticates as the `Client` itself. A token ends when it expires, when it is revoked, or when its client is.
+
 ## Several kinds of user
 
 When admins (or staff, or partners) live in their own table, give them their own provider and guard:
@@ -333,7 +344,7 @@ They see the user on routes behind `Authenticate` or `Authenticate::optional()`,
 | Option | Default | Meaning |
 |---|---|---|
 | `default` | `web` | The guard `Authenticate` and `Guest` use when none is named. |
-| `guards` | `web`: session; `api`: `AUTH_API_DRIVER` (`jwt`) | Each guard's `driver` (`session`, `jwt`, `token`, or a service implementing `GuardFactoryInterface`), `provider`, and optionally its own `login_path` and `home_path`. |
+| `guards` | `web`: session; `api`: `AUTH_API_DRIVER` (`jwt`) | Each guard's `driver` (`session`, `jwt`, `token`, `sanctum`, `oauth2`, or a service implementing `GuardFactoryInterface`), `provider`, and optionally its own `login_path` and `home_path`. |
 | `providers` | `users`: `database` on `users` (`email`, `password`) | Where each kind of user is looked up; see [Users](#users) and [Several kinds of user](#several-kinds-of-user). |
 | `users` | | The short form for a single provider named `users`, instead of `providers`. |
 | `login_path`, `home_path` | `/login`, `/` | Where `Authenticate` sends guests and `Guest` sends users, unless a guard sets its own. |
@@ -361,4 +372,4 @@ public function testTheApiNeedsTheReadScope(): void
 
 ## Not included
 
-Registration, password reset, and email verification are application code for now; password reset emails wait for the mail component. Social login, OAuth servers, two-factor sign-in, and "remember me" cookies are not provided.
+Registration, password reset, and email verification are application code for now; password reset emails wait for the mail component. Social login (signing in with Google or GitHub; `league/oauth2-client` does it), two-factor sign-in, and "remember me" cookies are not provided. An OAuth2 server, for other applications that act for your users, is [`crystoline/xpsr-auth-oauth2-server`](../packages/auth-oauth2-server/README.md).

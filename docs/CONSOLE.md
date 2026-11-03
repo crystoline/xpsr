@@ -33,6 +33,9 @@ php xpsr auth:token ada@example.com --scope=tasks:read --expires="90 days"
 php xpsr auth:token-revoke 12
 php xpsr auth:jwt-secret --write
 php xpsr auth:jwt ada@example.com --scope=tasks:read
+php xpsr make:oauth-tables
+php xpsr oauth:keys --write
+php xpsr oauth:client "Mobile app" --redirect=https://app.example/callback --public
 php xpsr make:job SendWelcomeEmail
 php xpsr make:queue-table
 php xpsr queue:work --stop-when-empty
@@ -59,6 +62,8 @@ php xpsr schedule:run
 `session:prune` removes expired sessions from the configured store and reports how many; it comes from `SessionServiceRegistry`. `make:session-table` comes from `crystoline/xpsr-database` and writes the migration for the database session store's table. See [SESSIONS.md](SESSIONS.md).
 
 `make:token-table`, `auth:token`, and `auth:token-revoke` come from `crystoline/xpsr-database` and manage revocable API tokens; `auth:jwt-secret` and `auth:jwt` come from `crystoline/xpsr-auth-jwt`. `auth:token` and `auth:jwt` print the token once. See [AUTH.md](AUTH.md).
+
+`make:oauth-tables`, `oauth:keys`, `oauth:client`, `oauth:clients`, `oauth:client-revoke`, and `oauth:purge` come from `crystoline/xpsr-auth-oauth2-server` and run the OAuth2 server; see [its README](../packages/auth-oauth2-server/README.md).
 
 `queue:work`, `queue:failed`, `queue:retry`, `queue:forget`, `queue:restart`, `make:job`, and `make:queue-table` come from `crystoline/xpsr-queue`; see [its README](../packages/queue/README.md). `queue:work` runs until it is stopped; SIGTERM and SIGINT stop it after the current job.
 

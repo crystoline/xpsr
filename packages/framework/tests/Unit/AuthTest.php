@@ -268,7 +268,7 @@ final class AuthTest extends TestCase
     {
         yield 'jwt without its package' => [['guards' => ['api' => ['driver' => 'jwt']]], 'auth.guards.api uses the jwt driver, which needs crystoline/xpsr-auth-jwt: run composer require crystoline/xpsr-auth-jwt, and add Crystoline\Xpsr\Auth\Jwt\JwtServiceRegistry to app.registry.'];
         yield 'token without its package' => [['guards' => ['api' => ['driver' => 'token']]], 'which needs crystoline/xpsr-database'];
-        yield 'an unknown driver' => [['guards' => ['api' => ['driver' => 'magic']]], 'auth.guards.api driver "magic" must be session, jwt, token, sanctum, or a service implementing'];
+        yield 'an unknown driver' => [['guards' => ['api' => ['driver' => 'magic']]], 'auth.guards.api driver "magic" must be session, jwt, token, sanctum, oauth2, or a service implementing'];
     }
 
     /** @param array<string, mixed> $config */

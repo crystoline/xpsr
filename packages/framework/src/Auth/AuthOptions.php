@@ -10,7 +10,7 @@ use InvalidArgumentException;
  * The "auth" configuration (config/auth.php), validated:
  *
  *   default      the guard Authenticate and Guest use when none is named (default web)
- *   guards       name => ['driver' => session|jwt|token|sanctum|<service>, 'provider' => <name>,
+ *   guards       name => ['driver' => session|jwt|token|sanctum|oauth2|<service>, 'provider' => <name>,
  *                'login_path' => ..., 'home_path' => ...] (default: web on the session, api on jwt)
  *   providers    name => ['driver' => database|doctrine|eloquent|<service>, ...]: where each
  *                kind of user is looked up, such as users and admins
@@ -71,7 +71,7 @@ final class AuthOptions
                 throw new InvalidArgumentException('auth.guards names must be letters, digits, dots, underscores, or hyphens.');
             }
             if (!is_array($guard) || !is_string($guard['driver'] ?? null) || $guard['driver'] === '') {
-                throw new InvalidArgumentException("auth.guards.{$name} must be an array with a \"driver\": session, jwt, token, sanctum, or a service.");
+                throw new InvalidArgumentException("auth.guards.{$name} must be an array with a \"driver\": session, jwt, token, sanctum, oauth2, or a service.");
             }
             $provider = $guard['provider'] ?? (isset($providers['users']) || count($providers) !== 1 ? 'users' : array_key_first($providers));
             if (!is_string($provider) || !isset($providers[$provider])) {

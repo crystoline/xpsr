@@ -111,6 +111,7 @@ final class PackagesTest extends TestCase
         yield 'health' => ['health'];
         yield 'translation' => ['translation'];
         yield 'broadcast' => ['broadcast'];
+        yield 'OAuth2 server' => ['auth-oauth2-server'];
         yield 'view-blade' => ['view-blade'];
         yield 'view-latte' => ['view-latte'];
         yield 'view-plates' => ['view-plates'];

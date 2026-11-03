@@ -8,7 +8,8 @@ use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * One way of recognizing users, configured in auth.guards: "session" (browsers), "jwt"
- * (crystoline/xpsr-auth-jwt), or "token" (crystoline/xpsr-database).
+ * (crystoline/xpsr-auth-jwt), "token" or "sanctum" (crystoline/xpsr-database), or "oauth2"
+ * (crystoline/xpsr-auth-oauth2-server).
  */
 interface GuardInterface
 {

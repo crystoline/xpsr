@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "181c137d1c874f5b73de393b6c27d97a",
+    "content-hash": "cac0ba5a1dc82afd37b9e46e71061f41",
     "packages": [
         {
             "name": "crystoline/xpsr-framework",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "50e542d6fbbd71585e28ade5da8b83307116d209"
+                "reference": "f71e1732fde6f5928ca0b95952716fcb7c18ef06"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
@@ -94,7 +94,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-fastroute",
-                "reference": "403069081c83690808f74d095bc0e31cdef1fbc4"
+                "reference": "5c5571a24b9c1b5c10fa7f4c4142bfa77ba94433"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3131,7 +3131,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/api",
-                "reference": "285352a68b7b112f923bfbdcc20d2b801d896945"
+                "reference": "48347c8db56c70e52ad8db573f2ee00cf7109491"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3189,7 +3189,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/audit",
-                "reference": "874bef5727ac057d89fe588dfae68b94426153a5"
+                "reference": "9aa408cbee58876411cdc355ab8b056c3eafe72b"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.6@dev",
@@ -3253,7 +3253,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/auth-jwt",
-                "reference": "bb5731ca5bb5c166d192240650683438e8806311"
+                "reference": "98bcc8c06903e09ab7d3d77f27694cc4741d098c"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3301,12 +3301,72 @@
             }
         },
         {
+            "name": "crystoline/xpsr-auth-oauth2-server",
+            "version": "0.6.x-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/auth-oauth2-server",
+                "reference": "91ec81a963523e34ac0a10ddf3b495de65c61476"
+            },
+            "require": {
+                "crystoline/xpsr-database": "^0.6@dev",
+                "crystoline/xpsr-framework": "^0.6@dev",
+                "defuse/php-encryption": "^2.4",
+                "doctrine/dbal": "^4.5",
+                "league/oauth2-server": "^8.5 || ^9.4",
+                "php": "^8.4",
+                "psr/clock": "^1.0",
+                "psr/container": "^2.0",
+                "psr/http-factory": "^1.1",
+                "psr/http-message": "^1.1 || ^2.0",
+                "symfony/console": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "crystoline/xpsr-router-fastroute": "^0.6@dev",
+                "nyholm/psr7": "^1.8.2",
+                "phpunit/phpunit": "^12.5",
+                "symfony/clock": "^7.4 || ^8.0",
+                "twig/twig": "^3.21"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.6.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\Auth\\OAuth2\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\Auth\\OAuth2\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adekunle",
+                    "email": "crystoline@gmail.com"
+                }
+            ],
+            "description": "An OAuth2 authorization server for XPSR applications, on league/oauth2-server: client credentials, authorization code with PKCE, and refresh tokens; the oauth2 guard driver; clients, scopes, and consent",
+            "homepage": "https://xpsr.crysto.name.ng",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "crystoline/xpsr-broadcast",
             "version": "0.6.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/broadcast",
-                "reference": "b9115bbdf0e916d87805a453b59f17dc8a1f76cf"
+                "reference": "4c4b08640755ae3e3a84af95e768e6ca25772738"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3375,7 +3435,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/cache",
-                "reference": "3af772effd6da1bbbb0c01a9c8a175f392a14c2c"
+                "reference": "af40d25a5e237b6571cf19c3ef8f8eb9145de5e9"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3436,7 +3496,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/database",
-                "reference": "497db838cdc1f72bbf3654034254c88e522f38d6"
+                "reference": "07f4e0d6a94f80468b5739d1c99b08f44d27f8e5"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3495,7 +3555,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/health",
-                "reference": "7ea44d1a673761cc8de616672c13471eb853b85d"
+                "reference": "3f547177e385434cc8f6dc9118993d1e805a7562"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3563,7 +3623,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/http-client",
-                "reference": "1f1e5a071d14cbe6f68bdadcfa098a44a9f36bd5"
+                "reference": "dfa0419c994092afc0348bd789800d29ef23a9a0"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3619,7 +3679,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/installer",
-                "reference": "5b6e7d571aa84a97c118f1c410b0c0a86f693109"
+                "reference": "b17fc5f19380632d12015c7e5b6da381c87ed0f1"
             },
             "require": {
                 "php": "^8.4",
@@ -3670,7 +3730,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/lock",
-                "reference": "2db47e9a85850ddc7c735b7d38989ea408d323f2"
+                "reference": "1ebeda54a2c55aa8baa0092623a9926367b1d833"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3730,7 +3790,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/log-monolog",
-                "reference": "2bd0c240275658d1129554f5e040e7bbfd8e620f"
+                "reference": "3acfeea41ad2514b23f254a443655480de475661"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3784,7 +3844,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/mail",
-                "reference": "ae0e44f20882aac057bc04eeef9bd5063a8967eb"
+                "reference": "09857baad60e941b31d7b70022cc4865846722df"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3844,7 +3904,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/notifications",
-                "reference": "cb97ad207a0ae831474fb0d42cca53c674b97743"
+                "reference": "4b9d1ca37cc4475390a2e1b0c34a9906369f6024"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3916,7 +3976,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/orm-doctrine",
-                "reference": "f8cc81a536cc5b58c3a01268f8f16c611df20d30"
+                "reference": "0e9a8b9b1537f52e1830e22a935877964c58f456"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.6@dev",
@@ -3974,7 +4034,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/orm-eloquent",
-                "reference": "fbe514d05634d438753999af3f7a933445137515"
+                "reference": "1cb0c7e02229cabbbdaa9f2a4102dec011e3389d"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.6@dev",
@@ -4032,7 +4092,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/queue",
-                "reference": "9abe12f795715892abf0c4a82f182efb2f299c2b"
+                "reference": "28cfa67ed5e8a5e1192936c0fd3551e738f28a6f"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.6@dev",
@@ -4104,7 +4164,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-sunrise",
-                "reference": "145ac8df88176c9c941d606633e007790d62f8bd"
+                "reference": "a29f6344c3c2c87651be15c44a29f73435fb4180"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -4154,7 +4214,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/scheduler",
-                "reference": "d9e08b1930f283cc855e9fa6e901eb134c082d7b"
+                "reference": "f6a111433ec312a2e826c145b36f1aa2a1229d00"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -4217,7 +4277,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/storage",
-                "reference": "8a42256ab9ba3de099d030b92c1a8f963aa16057"
+                "reference": "dbb5ce62be658eeffdd60e1e913664424a2d262d"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -4277,7 +4337,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/telemetry",
-                "reference": "8396e0a430e336cfba6420c80810033c924a0cf4"
+                "reference": "6f3ca6756f8b527c4cbf257323df241bdd5d6374"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -4346,7 +4406,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/translation",
-                "reference": "b99f19c0537e25ba64755f51b5e620c3ada64c54"
+                "reference": "c3aa86cc2af3bf6302add69c221b52e2169161af"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -4411,7 +4471,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/validation",
-                "reference": "cd5c66eb65d303eed156e1d79c3bb3a9748c0ce1"
+                "reference": "5c50b399f26dbc42e1fb44f685e745d3b3dce5d9"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -4468,7 +4528,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/view-blade",
-                "reference": "db433754e5448dad4275ae124f22758b3a6042db"
+                "reference": "d0a6ed827ba8f1e11e3818deb2004679f75c5370"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -4521,7 +4581,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/view-latte",
-                "reference": "2e7a1cb2910f7b8918fde60dd004f596ec915663"
+                "reference": "2c7c33269ec0d369d8ba533846e983d216a234f9"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -4570,7 +4630,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/view-plates",
-                "reference": "dbf47f4eaa43d90c5ba9adfd3d47ddefd7769a69"
+                "reference": "0f64e0e2c7a1ac6637f289efb895b76152fefc58"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -4619,7 +4679,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/webhooks",
-                "reference": "c3694d920de745445943c2107480572ccdb8c424"
+                "reference": "2e1688ab62b68dff6519a740673f6317d533f641"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.6@dev",
@@ -4673,6 +4733,73 @@
                 "symlink": true,
                 "relative": true
             }
+        },
+        {
+            "name": "defuse/php-encryption",
+            "version": "v2.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/defuse/php-encryption.git",
+                "reference": "f53396c2d34225064647a05ca76c1da9d99e5828"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/defuse/php-encryption/zipball/f53396c2d34225064647a05ca76c1da9d99e5828",
+                "reference": "f53396c2d34225064647a05ca76c1da9d99e5828",
+                "shasum": ""
+            },
+            "require": {
+                "ext-openssl": "*",
+                "paragonie/random_compat": ">= 2",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5|^6|^7|^8|^9|^10",
+                "yoast/phpunit-polyfills": "^2.0.0"
+            },
+            "bin": [
+                "bin/generate-defuse-key"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Defuse\\Crypto\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Hornby",
+                    "email": "taylor@defuse.ca",
+                    "homepage": "https://defuse.ca/"
+                },
+                {
+                    "name": "Scott Arciszewski",
+                    "email": "info@paragonie.com",
+                    "homepage": "https://paragonie.com"
+                }
+            ],
+            "description": "Secure PHP Encryption Library",
+            "keywords": [
+                "aes",
+                "authenticated encryption",
+                "cipher",
+                "crypto",
+                "cryptography",
+                "encrypt",
+                "encryption",
+                "openssl",
+                "security",
+                "symmetric key cryptography"
+            ],
+            "support": {
+                "issues": "https://github.com/defuse/php-encryption/issues",
+                "source": "https://github.com/defuse/php-encryption/tree/v2.4.0"
+            },
+            "time": "2023-06-19T06:10:36+00:00"
         },
         {
             "name": "doctrine/collections",
@@ -6942,6 +7069,70 @@
             "time": "2026-10-22T00:09:27+00:00"
         },
         {
+            "name": "lcobucci/clock",
+            "version": "3.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lcobucci/clock.git",
+                "reference": "f7739b066e14fe528a586f02aa22d4b2ba2acb38"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lcobucci/clock/zipball/f7739b066e14fe528a586f02aa22d4b2ba2acb38",
+                "reference": "f7739b066e14fe528a586f02aa22d4b2ba2acb38",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~8.4.0 || ~8.5.0 || ~8.6.0",
+                "psr/clock": "^1.0"
+            },
+            "provide": {
+                "psr/clock-implementation": "1.0"
+            },
+            "require-dev": {
+                "infection/infection": "^0.35.8",
+                "lcobucci/coding-standard": "^12.1",
+                "phpstan/extension-installer": "^1.4.3",
+                "phpstan/phpstan": "^2.3.4",
+                "phpstan/phpstan-deprecation-rules": "^2.0.5",
+                "phpstan/phpstan-phpunit": "^2.1.1",
+                "phpstan/phpstan-strict-rules": "^2.1",
+                "phpunit/phpunit": "^13.4.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Lcobucci\\Clock\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Luís Cobucci",
+                    "email": "lcobucci@gmail.com"
+                }
+            ],
+            "description": "Yet another clock abstraction",
+            "support": {
+                "issues": "https://github.com/lcobucci/clock/issues",
+                "source": "https://github.com/lcobucci/clock/tree/3.7.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/lcobucci",
+                    "type": "github"
+                },
+                {
+                    "url": "https://www.patreon.com/lcobucci",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2026-11-01T20:20:04+00:00"
+        },
+        {
             "name": "lcobucci/jwt",
             "version": "5.6.1",
             "source": {
@@ -7013,6 +7204,60 @@
                 }
             ],
             "time": "2026-10-10T09:42:14+00:00"
+        },
+        {
+            "name": "league/event",
+            "version": "2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/event.git",
+                "reference": "062ebb450efbe9a09bc2478e89b7c933875b0935"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/event/zipball/062ebb450efbe9a09bc2478e89b7c933875b0935",
+                "reference": "062ebb450efbe9a09bc2478e89b7c933875b0935",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1.0"
+            },
+            "require-dev": {
+                "henrikbjorn/phpspec-code-coverage": "~1.0.1",
+                "phpspec/phpspec": "^2.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Event\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frenky.net"
+                }
+            ],
+            "description": "Event package",
+            "keywords": [
+                "emitter",
+                "event",
+                "listener"
+            ],
+            "support": {
+                "issues": "https://github.com/thephpleague/event/issues",
+                "source": "https://github.com/thephpleague/event/tree/2.3.0"
+            },
+            "time": "2025-03-14T19:51:10+00:00"
         },
         {
             "name": "league/flysystem",
@@ -7309,6 +7554,94 @@
             "time": "2026-07-09T11:49:27+00:00"
         },
         {
+            "name": "league/oauth2-server",
+            "version": "8.5.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/oauth2-server.git",
+                "reference": "cc8778350f905667e796b3c2364a9d3bd7a73518"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/cc8778350f905667e796b3c2364a9d3bd7a73518",
+                "reference": "cc8778350f905667e796b3c2364a9d3bd7a73518",
+                "shasum": ""
+            },
+            "require": {
+                "defuse/php-encryption": "^2.3",
+                "ext-openssl": "*",
+                "lcobucci/clock": "^2.2 || ^3.0",
+                "lcobucci/jwt": "^4.3 || ^5.0",
+                "league/event": "^2.2",
+                "league/uri": "^6.7 || ^7.0",
+                "php": "^8.0",
+                "psr/http-message": "^1.0.1 || ^2.0"
+            },
+            "replace": {
+                "league/oauth2server": "*",
+                "lncd/oauth2": "*"
+            },
+            "require-dev": {
+                "laminas/laminas-diactoros": "^3.0.0",
+                "phpstan/phpstan": "^0.12.57",
+                "phpstan/phpstan-phpunit": "^0.12.16",
+                "phpunit/phpunit": "^9.6.6",
+                "roave/security-advisories": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "League\\OAuth2\\Server\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alex Bilbie",
+                    "email": "hello@alexbilbie.com",
+                    "homepage": "http://www.alexbilbie.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Andy Millington",
+                    "email": "andrew@noexceptions.io",
+                    "homepage": "https://www.noexceptions.io",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A lightweight and powerful OAuth 2.0 authorization and resource server library with support for all the core specification grants. This library will allow you to secure your API with OAuth and allow your applications users to approve apps that want to access their data from your API.",
+            "homepage": "https://oauth2.thephpleague.com/",
+            "keywords": [
+                "Authentication",
+                "api",
+                "auth",
+                "authorisation",
+                "authorization",
+                "oauth",
+                "oauth 2",
+                "oauth 2.0",
+                "oauth2",
+                "protect",
+                "resource",
+                "secure",
+                "server"
+            ],
+            "support": {
+                "issues": "https://github.com/thephpleague/oauth2-server/issues",
+                "source": "https://github.com/thephpleague/oauth2-server/tree/8.5.5"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sephster",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-12-20T23:06:10+00:00"
+        },
+        {
             "name": "league/plates",
             "version": "v3.6.0",
             "source": {
@@ -7371,6 +7704,189 @@
                 "source": "https://github.com/thephpleague/plates/tree/v3.6.0"
             },
             "time": "2024-11-02T15:03:35+00:00"
+        },
+        {
+            "name": "league/uri",
+            "version": "7.9.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/uri.git",
+                "reference": "40403f5c3141457a61f7f1aba6706e8fa4a0ece5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/uri/zipball/40403f5c3141457a61f7f1aba6706e8fa4a0ece5",
+                "reference": "40403f5c3141457a61f7f1aba6706e8fa4a0ece5",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "league/uri-interfaces": "^7.9.1",
+                "php": "^8.1",
+                "psr/http-factory": "^1"
+            },
+            "conflict": {
+                "league/uri-schemes": "^1.0"
+            },
+            "suggest": {
+                "ext-bcmath": "to improve IPV4 host parsing",
+                "ext-dom": "to convert the URI into an HTML anchor tag",
+                "ext-fileinfo": "to create Data URI from file contennts",
+                "ext-gmp": "to improve IPV4 host parsing",
+                "ext-intl": "to handle IDN host with the best performance",
+                "ext-uri": "to use the PHP native URI class",
+                "jeremykendall/php-domain-parser": "to further parse the URI host and resolve its Public Suffix and Top Level Domain",
+                "league/uri-components": "to provide additional tools to manipulate URI objects components",
+                "league/uri-polyfill": "to backport the PHP URI extension for older versions of PHP",
+                "php-64bit": "to improve IPV4 host parsing",
+                "rowbot/url": "to handle URLs using the WHATWG URL Living Standard specification",
+                "symfony/polyfill-intl-idn": "to handle IDN host via the Symfony polyfill if ext-intl is not present"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "7.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Uri\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ignace Nyamagana Butera",
+                    "email": "nyamsprod@gmail.com",
+                    "homepage": "https://nyamsprod.com"
+                }
+            ],
+            "description": "URI manipulation library",
+            "homepage": "https://uri.thephpleague.com",
+            "keywords": [
+                "URN",
+                "data-uri",
+                "file-uri",
+                "ftp",
+                "hostname",
+                "http",
+                "https",
+                "middleware",
+                "parse_str",
+                "parse_url",
+                "psr-7",
+                "query-string",
+                "querystring",
+                "rfc2141",
+                "rfc3986",
+                "rfc3987",
+                "rfc6570",
+                "rfc8141",
+                "uri",
+                "uri-template",
+                "url",
+                "ws"
+            ],
+            "support": {
+                "docs": "https://uri.thephpleague.com",
+                "forum": "https://thephpleague.slack.com",
+                "issues": "https://github.com/thephpleague/uri-src/issues",
+                "source": "https://github.com/thephpleague/uri/tree/7.9.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/nyamsprod",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-10-27T07:14:23+00:00"
+        },
+        {
+            "name": "league/uri-interfaces",
+            "version": "7.9.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/uri-interfaces.git",
+                "reference": "994300a79e17f179112dc259f8df0c4de982f736"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/uri-interfaces/zipball/994300a79e17f179112dc259f8df0c4de982f736",
+                "reference": "994300a79e17f179112dc259f8df0c4de982f736",
+                "shasum": ""
+            },
+            "require": {
+                "ext-filter": "*",
+                "php": "^8.1",
+                "psr/http-message": "^1.1 || ^2.0"
+            },
+            "suggest": {
+                "ext-bcmath": "to improve IPV4 host parsing",
+                "ext-gmp": "to improve IPV4 host parsing",
+                "ext-intl": "to handle IDN host with the best performance",
+                "php-64bit": "to improve IPV4 host parsing",
+                "rowbot/url": "to handle URLs using the WHATWG URL Living Standard specification",
+                "symfony/polyfill-intl-idn": "to handle IDN host via the Symfony polyfill if ext-intl is not present"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "7.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Uri\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ignace Nyamagana Butera",
+                    "email": "nyamsprod@gmail.com",
+                    "homepage": "https://nyamsprod.com"
+                }
+            ],
+            "description": "Common tools for parsing and resolving RFC3987/RFC3986 URI",
+            "homepage": "https://uri.thephpleague.com",
+            "keywords": [
+                "data-uri",
+                "file-uri",
+                "ftp",
+                "hostname",
+                "http",
+                "https",
+                "parse_str",
+                "parse_url",
+                "psr-7",
+                "query-string",
+                "querystring",
+                "rfc3986",
+                "rfc3987",
+                "rfc6570",
+                "uri",
+                "url",
+                "ws"
+            ],
+            "support": {
+                "docs": "https://uri.thephpleague.com",
+                "forum": "https://thephpleague.slack.com",
+                "issues": "https://github.com/thephpleague/uri-src/issues",
+                "source": "https://github.com/thephpleague/uri-interfaces/tree/7.9.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/nyamsprod",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-10-27T07:14:23+00:00"
         },
         {
             "name": "minishlink/web-push",
@@ -8278,6 +8794,56 @@
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
             "time": "2026-09-09T22:06:17+00:00"
+        },
+        {
+            "name": "paragonie/random_compat",
+            "version": "v9.99.100",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/random_compat.git",
+                "reference": "996434e5492cb4c3edcb9168db6fbb1359ef965a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/996434e5492cb4c3edcb9168db6fbb1359ef965a",
+                "reference": "996434e5492cb4c3edcb9168db6fbb1359ef965a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">= 7"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*|5.*",
+                "vimeo/psalm": "^1"
+            },
+            "suggest": {
+                "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com"
+                }
+            ],
+            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
+            "keywords": [
+                "csprng",
+                "polyfill",
+                "pseudorandom",
+                "random"
+            ],
+            "support": {
+                "email": "info@paragonie.com",
+                "issues": "https://github.com/paragonie/random_compat/issues",
+                "source": "https://github.com/paragonie/random_compat"
+            },
+            "time": "2020-10-15T08:29:30+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -14405,6 +14971,7 @@
         "crystoline/xpsr-api": 20,
         "crystoline/xpsr-audit": 20,
         "crystoline/xpsr-auth-jwt": 20,
+        "crystoline/xpsr-auth-oauth2-server": 20,
         "crystoline/xpsr-broadcast": 20,
         "crystoline/xpsr-cache": 20,
         "crystoline/xpsr-database": 20,

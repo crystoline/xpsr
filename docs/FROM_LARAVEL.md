@@ -219,6 +219,7 @@ Tests extend the skeleton's `tests/TestCase.php`, which has `get()`, `getJson()`
 | `Hash::make()`, `Hash::check()` | `PasswordHasher::hash()`, `verify()` |
 | `Gate::authorize()`, `$this->authorize()` | `Gate::authorize()` |
 | `$user->createToken()` | `SanctumTokenRepository::create()` |
+| Passport: `Client::create()`, `Passport::tokensCan()`, the `/oauth/token` and `/oauth/authorize` routes | `Clients::create()`, `oauth.scopes`, and routes to `TokenController` and `AuthorizeController`, with [`crystoline/xpsr-auth-oauth2-server`](../packages/auth-oauth2-server/README.md) |
 | `DB::table()`, `DB::select()` | Doctrine DBAL's `Connection`, or Eloquent |
 | `DB::afterCommit()` | `Transactions::afterCommit()` |
 | `DB::listen()`, `DB::whenQueryingForLongerThan()` | The `QueryExecuted` event in `config/events.php`, or `slow_queries` in `config/database.php` |
@@ -250,7 +251,8 @@ An application can move a route group or a job at a time, with Laravel and XPSR 
 ## Not in XPSR
 
 - Facades, route model binding, form request `authorize()`, and service injection into controller methods.
-- Horizon, Socialite, Passport, Cashier, and Scout.
+- Horizon, Socialite, Cashier, and Scout.
+- Passport's personal access tokens and password grant. [`crystoline/xpsr-auth-oauth2-server`](../packages/auth-oauth2-server/README.md) is the OAuth2 server, with the client credentials and authorization code grants; personal tokens come from the `token` driver.
 - Pusher, Reverb, Laravel Echo, and presence channels. [`crystoline/xpsr-broadcast`](../packages/broadcast/README.md) publishes to a Mercure hub instead, and browsers subscribe with `EventSource`.
 - Telescope and Pulse. [`crystoline/xpsr-telemetry`](../packages/telemetry/README.md) sends traces of requests, queries, outgoing calls, jobs, and commands to any OpenTelemetry backend instead, which shows them with their timings.
 - Octane: long-running servers have not been verified (see [Deployment](DEPLOYMENT.md#not-provided-yet)).

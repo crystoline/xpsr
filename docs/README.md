@@ -59,6 +59,7 @@ lead there.
 - [Health checks](../packages/health/README.md)
 - [Translations](../packages/translation/README.md)
 - [Broadcasting](../packages/broadcast/README.md)
+- [OAuth2 server](../packages/auth-oauth2-server/README.md)
 - [Scheduler](../packages/scheduler/README.md)
 - [File storage](../packages/storage/README.md)
 - [Plates views](../packages/view-plates/README.md)
