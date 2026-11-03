@@ -1,0 +1,53 @@
+{
+  "name": "crystoline/xpsr-translation",
+  "description": "Translations for XPSR applications on Symfony Translation: message files per locale, the locale of each request from its route, session, cookie, or Accept-Language header, trans() in code and templates, translated validation messages, and commands for missing keys",
+  "type": "library",
+  "license": "MIT",
+  "homepage": "https://xpsr.crysto.name.ng",
+  "authors": [
+    {
+      "name": "Adekunle",
+      "email": "crystoline@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^8.4",
+    "crystoline/xpsr-framework": "^0.6@dev",
+    "psr/container": "^2.0",
+    "psr/http-message": "^1.1 || ^2.0",
+    "psr/http-server-middleware": "^1.0",
+    "symfony/config": "^7.4 || ^8.0",
+    "symfony/console": "^7.4 || ^8.0",
+    "symfony/translation": "^7.4 || ^8.0",
+    "symfony/translation-contracts": "^3.6"
+  },
+  "require-dev": {
+    "crystoline/xpsr-router-fastroute": "^0.6@dev",
+    "crystoline/xpsr-validation": "^0.6@dev",
+    "nyholm/psr7": "^1.8.2",
+    "phpunit/phpunit": "^12.5",
+    "twig/twig": "^3.21"
+  },
+  "suggest": {
+    "ext-intl": "Plurals, selects, and number formats in messages (the ICU format)",
+    "crystoline/xpsr-validation": "Validation messages in the request's locale"
+  },
+  "autoload": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Translation\\": "src/"
+    },
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Crystoline\\Xpsr\\Translation\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.6.x-dev"
+    }
+  }
+}

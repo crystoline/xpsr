@@ -14,6 +14,7 @@ use Psr\Cache\CacheItemPoolInterface;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface as SymfonyValidatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Registers request validation backed by Symfony Validator:
@@ -32,6 +33,10 @@ final class ValidationServiceRegistry extends ServiceRegistry
         $this->container->factory(InputMapper::class, static fn(ContainerInterface $container): InputMapper => new InputMapper($container), shared: true);
         $this->container->factory(SymfonyValidatorInterface::class, static function (ContainerInterface $container): SymfonyValidatorInterface {
             $builder = Validation::createValidatorBuilder()->enableAttributeMapping();
+            // With crystoline/xpsr-translation, messages come in the request's locale from the validators domain.
+            if ($container->has(TranslatorInterface::class)) {
+                $builder->setTranslator($container->get(TranslatorInterface::class))->setTranslationDomain('validators');
+            }
             $debug = (bool) $container->get(Configuration::class)->get('app.debug', false);
             if (!$debug && $container->has(CacheItemPoolInterface::class)) {
                 $builder->setMappingCache($container->get(CacheItemPoolInterface::class));

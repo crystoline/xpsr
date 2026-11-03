@@ -57,6 +57,7 @@ lead there.
 - [Audit log](../packages/audit/README.md)
 - [Telemetry](../packages/telemetry/README.md)
 - [Health checks](../packages/health/README.md)
+- [Translations](../packages/translation/README.md)
 - [Scheduler](../packages/scheduler/README.md)
 - [File storage](../packages/storage/README.md)
 - [Plates views](../packages/view-plates/README.md)

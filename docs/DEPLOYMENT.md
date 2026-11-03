@@ -194,6 +194,13 @@ With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user 
 - **Heartbeats need the cache package:** the workers and scheduler checks read what `queue:work` and the `health:heartbeat` task leave in the cache, so the cache must be one every instance shares (Redis or the database) when several servers probe.
 - **`php xpsr health`** from cron or Docker's `HEALTHCHECK` runs the same checks and exits 1 on a failure.
 
+## Translations
+
+- **`LocaleMiddleware` in `app.middleware`,** and `translation.locales` listing every locale served; a locale not listed is never chosen, whatever the request asks.
+- **The catalogues are compiled** into `var/cache/translations` in production (`translation.cache`), so that directory must be writable, and must be cleared after a deployment changes message files; `php xpsr translation:missing` in the pipeline catches keys a locale lacks.
+- **`ext-intl`** gives plurals and selects (the ICU format). Without it, messages use `%name%` placeholders alone; set `translation.format` to `simple` explicitly when the servers differ from the developers' machines.
+- See [the translation package](../packages/translation/README.md).
+
 ## File storage
 
 - **Local disks** (`var/storage` by default) must survive deploys: keep them outside the release directory, or link them in, and back them up.

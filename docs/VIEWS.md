@@ -52,6 +52,7 @@ The view provider gives every engine the same functions:
 | `csrf_field()` | A hidden `_token` input with it, as HTML. |
 | `session('key', $default)` | A session value, such as a flash message. |
 | `auth_user()` | The signed-in user, or null. |
+| `trans('messages.welcome', {name: name})`, `locale()` | A translated message, and the request's locale, with [`crystoline/xpsr-translation`](../packages/translation/README.md). |
 | `can('update', $task)` | Whether the signed-in user may, by the gate's policies. |
 
 The CSRF functions and `session()` need a route behind `SessionMiddleware`; see [SESSIONS.md](SESSIONS.md). `auth_user()` and `can()` need `Authenticate` (optional or required) on the route; see [AUTH.md](AUTH.md). Each engine calls them its own way:

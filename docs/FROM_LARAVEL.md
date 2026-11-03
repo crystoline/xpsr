@@ -253,5 +253,5 @@ An application can move a route group or a job at a time, with Laravel and XPSR 
 - Telescope and Pulse. [`crystoline/xpsr-telemetry`](../packages/telemetry/README.md) sends traces of requests, queries, outgoing calls, jobs, and commands to any OpenTelemetry backend instead, which shows them with their timings.
 - Octane: long-running servers have not been verified (see [Deployment](DEPLOYMENT.md#not-provided-yet)).
 - Registration, password reset, email verification, two-factor sign-in, and "remember me" cookies.
-- Translations: validation messages are in English.
+- Laravel's `lang/en.json` files of whole sentences, `trans_choice()`, and `@lang`. [`crystoline/xpsr-translation`](../packages/translation/README.md) has `lang/<locale>/<domain>.php` files, `trans()` with ICU plurals, and the validation messages in the request's language.
 - Tinker, and route and configuration caches, which XPSR does not need (see [Deployment](DEPLOYMENT.md#performance)).

@@ -166,4 +166,6 @@ self::assertSame(['This value should not be blank.'], json_decode((string) $resp
 
 `ValidatorInterface`, `ValidationException`, the attributes, and the mapping belong to the framework, so another implementation can replace this package without changing input classes' field names, filters, or types.
 
+With [`crystoline/xpsr-translation`](../translation/README.md), the validator takes the translator, and the messages come in the request's locale from Symfony's own translations of its constraints.
+
 Requires PHP 8.4+.

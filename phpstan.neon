@@ -38,6 +38,8 @@ parameters:
         - packages/telemetry/tests
         - packages/health/src
         - packages/health/tests
+        - packages/translation/src
+        - packages/translation/tests
         - packages/view-blade/src
         - packages/view-blade/tests
         - packages/view-latte/src

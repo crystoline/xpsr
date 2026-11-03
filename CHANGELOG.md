@@ -8,6 +8,11 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 - `crystoline/xpsr-health`: health checks. `HealthController::live()` answers 200 once the application boots, and `ready()` runs the checks and answers 200 or 503 with a JSON report, whose messages and details show only to private addresses or a request carrying `HEALTH_SECRET`. Checks for what is installed: the database connections, the cache, the queue's transports and failed jobs, the workers' heartbeats, the scheduler (a `health:heartbeat` task joins the schedule), the locks, the disk, and the HTTP dependencies of `health.http`; your own implement `CheckInterface`. Reports are cached for `health.cache` seconds, `HealthChecked` is dispatched on each run, and `php xpsr health` prints the table and exits 1 on a failure. See [its README](packages/health/README.md).
 - `queue:work` in `crystoline/xpsr-queue` leaves a heartbeat in the application cache for each transport it works on; `WorkerHeartbeat::lastSeen()` reads it.
+- `crystoline/xpsr-translation`: translations on Symfony Translation. Message files `lang/<locale>/<domain>.php` with dotted keys, in the ICU format with `ext-intl` (plurals and selects) or the simple `%name%` one without; `trans('messages.welcome', ['name' => 'Ada'])` in code, and `trans()` and `locale()` in every view engine; `LocaleMiddleware` sets the request's locale from its `{locale}` route parameter, session value, cookie, or `Accept-Language` header, among `translation.locales`, with `app.fallback_locale` for missing keys; `translation:missing` and `make:lang`; and the validation messages in the request's language through Symfony's own translations. See [its README](packages/translation/README.md).
+
+### Changed
+
+- The validator of `crystoline/xpsr-validation` takes the translator when `Symfony\Contracts\Translation\TranslatorInterface` is registered, so its messages are translated; without one, they stay in English as before.
 
 ## 0.6.0 (2026-11-02)
 

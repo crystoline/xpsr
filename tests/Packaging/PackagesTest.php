@@ -109,6 +109,7 @@ final class PackagesTest extends TestCase
         yield 'audit log' => ['audit'];
         yield 'telemetry' => ['telemetry'];
         yield 'health' => ['health'];
+        yield 'translation' => ['translation'];
         yield 'view-blade' => ['view-blade'];
         yield 'view-latte' => ['view-latte'];
         yield 'view-plates' => ['view-plates'];
@@ -139,7 +140,8 @@ final class PackagesTest extends TestCase
             self::assertFalse(is_link($directory . '/vendor/crystoline/xpsr-framework'), 'The framework is installed as a copy.');
         }
         $output = $this->runCommand([PHP_BINARY, 'vendor/bin/phpunit', '--colors=never'], $directory);
-        self::assertMatchesRegularExpression('/^OK \(\d+ tests?, \d+ assertions?\)$/m', $output);
+        // A test a package skips where an extension is missing (the translation package's ICU test without intl) is not a failure.
+        self::assertMatchesRegularExpression('/^OK(?: \(\d+ tests?, \d+ assertions?\)|, but some tests were skipped!)$/m', $output);
     }
 
     public function testCreateProjectBuildsAWorkingApplicationWithEitherAdapter(): void
