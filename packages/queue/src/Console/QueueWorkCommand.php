@@ -8,7 +8,9 @@ use Crystoline\Xpsr\Queue\Failed\FailedJobListener;
 use Crystoline\Xpsr\Queue\Failed\FailedJobStore;
 use Crystoline\Xpsr\Queue\JobRunner;
 use Crystoline\Xpsr\Queue\Messenger\Transports;
+use Crystoline\Xpsr\Queue\WorkerHeartbeat;
 use Psr\Cache\CacheItemPoolInterface;
+use Psr\Clock\ClockInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\SignalableCommandInterface;
@@ -51,6 +53,7 @@ final class QueueWorkCommand extends Command implements SignalableCommandInterfa
         private readonly ?LoggerInterface $logger = null,
         private readonly array $subscribers = [],
         private readonly ?JobRunner $runner = null,
+        private readonly ?ClockInterface $clock = null,
     ) {
         parent::__construct('queue:work');
     }
@@ -108,6 +111,8 @@ final class QueueWorkCommand extends Command implements SignalableCommandInterfa
         }
         if ($this->cache !== null) {
             $events->addSubscriber(new StopWorkerOnRestartSignalListener($this->cache, $this->logger));
+            // The heartbeat the health checks read: this worker was alive on these transports.
+            $events->addSubscriber(new WorkerHeartbeat($this->cache, $names, $this->clock));
         }
         if ($input->getOption('stop-when-empty')) {
             $events->addListener(WorkerRunningEvent::class, static function (WorkerRunningEvent $event): void {

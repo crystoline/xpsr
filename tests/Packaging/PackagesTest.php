@@ -108,6 +108,7 @@ final class PackagesTest extends TestCase
         yield 'webhooks' => ['webhooks'];
         yield 'audit log' => ['audit'];
         yield 'telemetry' => ['telemetry'];
+        yield 'health' => ['health'];
         yield 'view-blade' => ['view-blade'];
         yield 'view-latte' => ['view-latte'];
         yield 'view-plates' => ['view-plates'];

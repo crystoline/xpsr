@@ -24,6 +24,7 @@ use Crystoline\Xpsr\Queue\QueueInterface;
 use Crystoline\Xpsr\Queue\QueueOptions;
 use Crystoline\Xpsr\Queue\QueueServiceRegistry;
 use Crystoline\Xpsr\Queue\Testing\FakeQueue;
+use Crystoline\Xpsr\Queue\WorkerHeartbeat;
 use Crystoline\Xpsr\Queue\Tests\Fixtures\AfterCommitJob;
 use Crystoline\Xpsr\Queue\Tests\Fixtures\BadRetryJob;
 use Crystoline\Xpsr\Queue\Tests\Fixtures\BrokenFailedJob;
@@ -132,13 +133,20 @@ final class QueueTest extends TestCase
 
     public function testJobsGoToTheirTransportAndTheWorkerRunsThem(): void
     {
+        $cache = new ArrayAdapter();
+        $this->application->getContainer()->instance(CacheItemPoolInterface::class, $cache);
         $this->queue()->dispatch(new MemoryJob());
         $this->queue()->dispatch(new RecordJob('in memory'), queue: 'memory');
         self::assertSame([], $this->recorder->done, '#[OnQueue] and queue: send them to the in-memory transport.');
+        self::assertFalse($cache->hasItem(WorkerHeartbeat::key('memory')), 'No heartbeat before the worker ran.');
 
         $worker = $this->work(['transports' => ['memory'], '--stop-when-empty' => true]);
         self::assertSame(['memory', 'in memory'], $this->recorder->done);
         self::assertStringContainsString('Done Crystoline\Xpsr\Queue\Tests\Fixtures\MemoryJob (memory)', $worker);
+        $seen = WorkerHeartbeat::lastSeen($cache, 'memory');
+        self::assertIsInt($seen, 'The worker left its heartbeat in the cache.');
+        self::assertEqualsWithDelta(time(), $seen, 5);
+        self::assertNull(WorkerHeartbeat::lastSeen($cache, 'db'), 'Only for the transports it worked on.');
     }
 
     public function testTheDatabaseTransportKeepsJobsInItsTable(): void

@@ -48,6 +48,7 @@ crystoline/xpsr (skeleton, repository root)
 | `crystoline/xpsr-webhooks` | `Crystoline\Xpsr\Webhooks\` | framework, database, queue, and http-client; `symfony/console` 7.4 or 8. Endpoint secrets use the framework's `Encrypter` (`APP_KEY`). |
 | `crystoline/xpsr-audit` | `Crystoline\Xpsr\Audit\` | framework and database; `symfony/console` 7.4 or 8. The Eloquent, Doctrine, and Monolog packages are detected when installed. |
 | `crystoline/xpsr-telemetry` | `Crystoline\Xpsr\Telemetry\` | framework and http-client; `open-telemetry/sdk` ^1.15, `open-telemetry/exporter-otlp` ^1.4 (which bring `google/protobuf`). The database, queue, scheduler, and Monolog packages are detected when installed. |
+| `crystoline/xpsr-health` | `Crystoline\Xpsr\Health\` | framework; `symfony/console` 7.4 or 8. The database, cache, queue, scheduler, lock, and HTTP client packages are detected when installed. |
 | `crystoline/xpsr-scheduler` | `Crystoline\Xpsr\Scheduler\` | framework, `dragonmantank/cron-expression` ^3.4, `symfony/lock` 7.4 or 8; `crystoline/xpsr-queue` for scheduled jobs. |
 | `crystoline/xpsr-storage` | `Crystoline\Xpsr\Storage\` | framework, `league/flysystem`, `league/flysystem-local`, and `league/flysystem-memory` ^3.29; `league/flysystem-async-aws-s3` for the s3 driver. |
 | `crystoline/xpsr-view-plates` | `Crystoline\Xpsr\View\Plates\` | framework, `league/plates` ^3.6. |
@@ -157,6 +158,7 @@ The CI job `lowest-dependencies` runs the whole suite after `composer update --p
 | `crystoline/xpsr-webhooks` | `packages/webhooks`, with its history | `crystoline/xpsr-webhooks` |
 | `crystoline/xpsr-audit` | `packages/audit`, with its history | `crystoline/xpsr-audit` |
 | `crystoline/xpsr-telemetry` | `packages/telemetry`, with its history | `crystoline/xpsr-telemetry` |
+| `crystoline/xpsr-health` | `packages/health`, with its history | `crystoline/xpsr-health` |
 | `crystoline/xpsr-scheduler` | `packages/scheduler`, with its history | `crystoline/xpsr-scheduler` |
 | `crystoline/xpsr-storage` | `packages/storage`, with its history | `crystoline/xpsr-storage` |
 | `crystoline/xpsr-view-plates` | `packages/view-plates`, with its history | `crystoline/xpsr-view-plates` |

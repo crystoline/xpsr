@@ -83,6 +83,10 @@ php xpsr queue:work --stop-when-empty     # once, for cron or tests
 
 A worker runs until it is stopped. SIGTERM and SIGINT stop it after the current job. Keep workers running with a process supervisor (systemd, Supervisor, or the container platform), and run `php xpsr queue:restart` after each deploy: running workers then stop after their current job, and the supervisor starts them with the new code. `queue:restart` needs a shared cache, `crystoline/xpsr-cache`.
 
+### Heartbeats
+
+With the cache package, a worker leaves a heartbeat in the cache for each transport it works on: when it started, every fifteen seconds while it runs, and when it stops. `Crystoline\Xpsr\Queue\WorkerHeartbeat::lastSeen($cache, 'default')` gives the Unix time, or null when no worker has reported. [`crystoline/xpsr-health`](../health/README.md) reads it to tell whether workers are running.
+
 ## Failures and retries
 
 A job that throws is tried again after a delay that grows: by default 3 more times, after 1, 2, and 4 seconds, up to 1 hour apart.

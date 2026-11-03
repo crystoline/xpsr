@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "44117d4adac152431c394569d47e6302",
+    "content-hash": "689b08ef2e8a9e436612bcc7fe02f2a6",
     "packages": [
         {
             "name": "crystoline/xpsr-framework",
@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/framework",
-                "reference": "5c6c2cfe128dd8f5c3f701c9442924b5bae20d61"
+                "reference": "a589098d077a1347e8cc4278c6042fdd447b97d2"
             },
             "require": {
                 "composer-runtime-api": "^2.2",
@@ -94,7 +94,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-fastroute",
-                "reference": "eadfa053dcb2042637004c1c2b3e8c7f8e83be44"
+                "reference": "8bf90ec9bd82eb508a0b4b35f85e78655534845f"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3131,7 +3131,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/api",
-                "reference": "178a6baa60f4555ae899a212f1df3e56dbe74f42"
+                "reference": "34fe505200d2ed32fd426ddff8d70d2cd5b85e92"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3189,7 +3189,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/audit",
-                "reference": "1b24ea2377edd56e6bb356d38a4373733887e5d7"
+                "reference": "84a32c89683b4aae68425dbbb885d3341caa8957"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.6@dev",
@@ -3253,7 +3253,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/auth-jwt",
-                "reference": "a6d245145b64c204d537e1b496d15465f91f7ce7"
+                "reference": "5794eaac6b185e4988dbbe0f0c7f0fd24492f5e6"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3306,7 +3306,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/cache",
-                "reference": "ed9ee47896402d87058fce0f73540d3e8627bcce"
+                "reference": "66afc50fbf2f7fcd50e1af4498079e031bd24627"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3367,7 +3367,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/database",
-                "reference": "9d00dd4fd099046fb5817986fbd370299719f2da"
+                "reference": "bbd033f8a9aad3b22d63c68835db5cd040cf38af"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3421,12 +3421,80 @@
             }
         },
         {
+            "name": "crystoline/xpsr-health",
+            "version": "0.6.x-dev",
+            "dist": {
+                "type": "path",
+                "url": "packages/health",
+                "reference": "eedcb0ccf41fe4b76da7a7dd9d210b75a1b4267f"
+            },
+            "require": {
+                "crystoline/xpsr-framework": "^0.6@dev",
+                "php": "^8.4",
+                "psr/clock": "^1.0",
+                "psr/container": "^2.0",
+                "psr/http-message": "^1.1 || ^2.0",
+                "symfony/console": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "crystoline/xpsr-cache": "^0.6@dev",
+                "crystoline/xpsr-database": "^0.6@dev",
+                "crystoline/xpsr-http-client": "^0.6@dev",
+                "crystoline/xpsr-lock": "^0.6@dev",
+                "crystoline/xpsr-queue": "^0.6@dev",
+                "crystoline/xpsr-router-fastroute": "^0.6@dev",
+                "crystoline/xpsr-scheduler": "^0.6@dev",
+                "nyholm/psr7": "^1.8.2",
+                "phpunit/phpunit": "^12.5",
+                "symfony/clock": "^7.4 || ^8.0"
+            },
+            "suggest": {
+                "crystoline/xpsr-cache": "The cache check, and the worker and scheduler heartbeats",
+                "crystoline/xpsr-database": "The database check",
+                "crystoline/xpsr-http-client": "Checks of HTTP dependencies",
+                "crystoline/xpsr-lock": "The locks check",
+                "crystoline/xpsr-queue": "The queue and workers checks",
+                "crystoline/xpsr-scheduler": "The scheduler check"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.6.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\Health\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Crystoline\\Xpsr\\Health\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adekunle",
+                    "email": "crystoline@gmail.com"
+                }
+            ],
+            "description": "Health checks for XPSR applications: live and ready endpoints for load balancers and orchestrators, a health command, and checks of the database, cache, queue and its workers, scheduler, locks, disk space, and HTTP dependencies",
+            "homepage": "https://xpsr.crysto.name.ng",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "crystoline/xpsr-http-client",
             "version": "0.6.x-dev",
             "dist": {
                 "type": "path",
                 "url": "packages/http-client",
-                "reference": "ec34d06b882151468f9ed9c21e6cb9a85fbc3cb4"
+                "reference": "838cb0af894374051e6d266037f1c5656b253989"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3482,7 +3550,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/installer",
-                "reference": "f57ad2d9104972cf81b2445ceaf790528e06bf82"
+                "reference": "cbc0d46162dfd93ab7bf95ddc905003b23aa994f"
             },
             "require": {
                 "php": "^8.4",
@@ -3533,7 +3601,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/lock",
-                "reference": "89f0316b5b56c9d69e6229eed5e6b2cc0c8b779f"
+                "reference": "b08d89593624702b1ce0bd82d8c4780f6de44466"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3593,7 +3661,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/log-monolog",
-                "reference": "8ffdef3a9c18a13ee1be28b17a4360dd825ebaf5"
+                "reference": "ff823907c04763c2d43b46cd25d11f3ad5222d74"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3647,7 +3715,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/mail",
-                "reference": "fd6d0783ccfd60f7087cadfe02fb0a5aacacc1b1"
+                "reference": "b9e42d716d436cee3a6eca71048d762c593cdea5"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3707,7 +3775,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/notifications",
-                "reference": "dea3dabc845f6f94024dc283822b65632c257191"
+                "reference": "477adfc8d34c9eade51026420c33a9d445b52379"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -3779,7 +3847,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/orm-doctrine",
-                "reference": "96d915352404259db482d2368e949d5a65c8f579"
+                "reference": "64a67825a29fef34bb7c9bbfa9d679ca42fe8b77"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.6@dev",
@@ -3837,7 +3905,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/orm-eloquent",
-                "reference": "cd7ae8255f9c8be30ddc77d2463b0933cf2a3d8c"
+                "reference": "0b8c99a7bb351e695103f8bf83ee8f23c3cb2f88"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.6@dev",
@@ -3895,7 +3963,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/queue",
-                "reference": "a407699df1083f5b918b5f01717a30597feeff87"
+                "reference": "1c1c2e33c05b5ef65dd981380b6cb2b06e89fd77"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.6@dev",
@@ -3967,7 +4035,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/router-sunrise",
-                "reference": "004ba2b18d7b2046fc3cf1d4b54c55b48836d3b5"
+                "reference": "8da4855d27c42cf604f8a3ccf33f8cffd5ab2ca1"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -4017,7 +4085,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/scheduler",
-                "reference": "532c6834bd9f8a2ca1a32926d27002404f9639c2"
+                "reference": "de2b8bf365dd5f8567d9506e93cff500dd9b8e46"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -4080,7 +4148,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/storage",
-                "reference": "a721b5526783f57964eecd198388f776d3143dca"
+                "reference": "4b4679356339a44741318ed9dcd1d2fdffd904c7"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -4140,7 +4208,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/telemetry",
-                "reference": "cec2825ecf8a288e851ee5d75f97e0dd3a88aa46"
+                "reference": "cd411b293157b0196e24700ac3927a4957d30794"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -4209,7 +4277,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/validation",
-                "reference": "3c8fbb21c17ba68a68cf43c98e2ae84675c492b1"
+                "reference": "460441b61cc605affbca1eac21dcc6f338f9a55d"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -4266,7 +4334,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/view-blade",
-                "reference": "830692ea5c76a4b57278eae372c383afdeafbdb0"
+                "reference": "b1ff5338d1c5b290ec1f7d1fca241629a3469126"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -4319,7 +4387,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/view-latte",
-                "reference": "af2fd7cd3bf7a7fa5e641e552b99e8bd4911ab57"
+                "reference": "73013ff1f90cd122d1872c93d63db08d8480c1ae"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -4368,7 +4436,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/view-plates",
-                "reference": "b21078412d91e918fc2bec453680c16fd04ef1d2"
+                "reference": "69f0bb5e10d4d0ee3caa4de89fee943c13284fa3"
             },
             "require": {
                 "crystoline/xpsr-framework": "^0.6@dev",
@@ -4417,7 +4485,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/webhooks",
-                "reference": "cbe921116b6b7075451d8b6c0a1e57f3c44497f4"
+                "reference": "e9fe2a28f3c17da1d728ec3fd0f9b5b8590e3078"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.6@dev",
@@ -14128,6 +14196,7 @@
         "crystoline/xpsr-cache": 20,
         "crystoline/xpsr-database": 20,
         "crystoline/xpsr-framework": 20,
+        "crystoline/xpsr-health": 20,
         "crystoline/xpsr-http-client": 20,
         "crystoline/xpsr-installer": 20,
         "crystoline/xpsr-lock": 20,

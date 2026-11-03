@@ -114,5 +114,6 @@ The framework and the packages dispatch these through the same dispatcher, so an
 | `Crystoline\Xpsr\Console\Event\CommandFinished` | It ran: `exitCode`, and `exception` when it threw (then the exit code is 1), before the console reports it. |
 | `Crystoline\Xpsr\Database\Event\QueryExecuted` | A query ran on a connection of `crystoline/xpsr-database`: `connection`, `sql`, `parameters`, `seconds`. |
 | `Crystoline\Xpsr\Scheduler\Event\TaskStarting`, `TaskFinished` | A due task of `crystoline/xpsr-scheduler` runs: `task`, then `result`. A skipped task gets no events. |
+| `Crystoline\Xpsr\Health\Event\HealthChecked` | The health checks of `crystoline/xpsr-health` ran: `report`. Not for a cached report. |
 
 Queued or asynchronous listeners are not provided; a listener that should not delay a response can hand the work to [a queue](../packages/queue/README.md).

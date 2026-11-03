@@ -187,6 +187,13 @@ With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user 
 - **Queries are recorded as SQL with placeholders,** never with parameter values. Attributes of your own spans are yours to keep clean.
 - See [the telemetry package](../packages/telemetry/README.md).
 
+## Health checks
+
+- **Two routes** from [the health package](../packages/health/README.md): `/health` for a liveness probe (200 once the application boots) and `/health/ready` for a readiness probe (503 while a check fails). Alert on the second.
+- **Details are for the network:** messages and details show only to private addresses or to a request carrying `HEALTH_SECRET`; set the secret for a monitor outside the network, and `app.trusted_proxies` so the client address is right behind a load balancer.
+- **Heartbeats need the cache package:** the workers and scheduler checks read what `queue:work` and the `health:heartbeat` task leave in the cache, so the cache must be one every instance shares (Redis or the database) when several servers probe.
+- **`php xpsr health`** from cron or Docker's `HEALTHCHECK` runs the same checks and exits 1 on a failure.
+
 ## File storage
 
 - **Local disks** (`var/storage` by default) must survive deploys: keep them outside the release directory, or link them in, and back them up.

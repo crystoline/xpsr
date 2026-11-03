@@ -47,6 +47,7 @@ use Symfony\Component\Messenger\Transport\Sender\SendersLocator;
  *   Crystoline\Xpsr\Queue\JobRunner             runs a job's handle() with injected services
  *   Crystoline\Xpsr\Queue\Failed\FailedJobStore the failed jobs table
  *   Crystoline\Xpsr\Queue\BusMiddleware          Messenger middleware other providers add
+ *   Crystoline\Xpsr\Queue\WorkerHeartbeat        lastSeen(): when a worker was last alive, from the cache
  *
  * and queue:work, queue:failed, queue:retry, queue:forget, queue:restart, make:job, and
  * make:queue-table. List it in app.registry after Crystoline\Xpsr\Database\DatabaseServiceRegistry.
@@ -127,6 +128,7 @@ final class QueueServiceRegistry extends ServiceRegistry
             $container->has(LoggerInterface::class) ? $container->get(LoggerInterface::class) : null,
             array_values(array_filter([$container->get(UniqueJobs::class), self::requestIds($container)])),
             $container->get(JobRunner::class),
+            $container->get(ClockInterface::class),
         ));
         $this->container->factory(QueueRestartCommand::class, static fn(ContainerInterface $container): QueueRestartCommand => new QueueRestartCommand(
             $container->has(CacheItemPoolInterface::class) ? $container->get(CacheItemPoolInterface::class) : null,
