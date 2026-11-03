@@ -44,6 +44,8 @@ parameters:
         - packages/broadcast/tests
         - packages/auth-oauth2-server/src
         - packages/auth-oauth2-server/tests
+        - packages/orm-cycle/src
+        - packages/orm-cycle/tests
         - packages/view-blade/src
         - packages/view-blade/tests
         - packages/view-latte/src

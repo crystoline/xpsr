@@ -36,6 +36,7 @@ final class AuthManager
         'database' => ['crystoline/xpsr-database', 'Crystoline\Xpsr\Database\DatabaseServiceRegistry'],
         'doctrine' => ['crystoline/xpsr-orm-doctrine', 'Crystoline\Xpsr\Orm\Doctrine\DoctrineOrmServiceRegistry'],
         'eloquent' => ['crystoline/xpsr-orm-eloquent', 'Crystoline\Xpsr\Orm\Eloquent\EloquentServiceRegistry'],
+        'cycle' => ['crystoline/xpsr-orm-cycle', 'Crystoline\Xpsr\Orm\Cycle\CycleOrmServiceRegistry'],
     ];
 
     private const INTENDED = '_intended.';
@@ -95,7 +96,7 @@ final class AuthManager
         }
         $instance = $this->container->has($driver) ? $this->container->get($driver) : null;
         if (!$instance instanceof UserProviderInterface) {
-            throw new InvalidArgumentException("{$label} driver \"{$driver}\" must be database, doctrine, eloquent, or a service implementing " . UserProviderInterface::class . '.');
+            throw new InvalidArgumentException("{$label} driver \"{$driver}\" must be database, doctrine, eloquent, cycle, or a service implementing " . UserProviderInterface::class . '.');
         }
 
         return $this->providers[$provider] = $instance;

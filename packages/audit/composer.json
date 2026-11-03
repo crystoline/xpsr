@@ -24,6 +24,7 @@
     "crystoline/xpsr-log-monolog": "^0.6@dev",
     "crystoline/xpsr-orm-doctrine": "^0.6@dev",
     "crystoline/xpsr-orm-eloquent": "^0.6@dev",
+    "crystoline/xpsr-orm-cycle": "^0.6@dev",
     "nyholm/psr7": "^1.8.2",
     "phpunit/phpunit": "^12.5",
     "symfony/clock": "^7.4 || ^8.0"
@@ -31,6 +32,7 @@
   "suggest": {
     "crystoline/xpsr-orm-eloquent": "Automatic auditing of models with the Audited trait",
     "crystoline/xpsr-orm-doctrine": "Automatic auditing of entities with the #[Audited] attribute",
+    "crystoline/xpsr-orm-cycle": "Automatic auditing of Cycle entities with the #[Audited] attribute",
     "crystoline/xpsr-log-monolog": "The request ID on each entry",
     "crystoline/xpsr-api": "Paging the log with Pagination"
   },

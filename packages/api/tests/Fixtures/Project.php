@@ -8,6 +8,7 @@ use Crystoline\Xpsr\Api\ApiServiceRegistry;
 use Crystoline\Xpsr\Application;
 use Crystoline\Xpsr\Database\ConnectionManager;
 use Crystoline\Xpsr\Database\DatabaseServiceRegistry;
+use Crystoline\Xpsr\Orm\Cycle\CycleOrmServiceRegistry;
 use Crystoline\Xpsr\Orm\Doctrine\DoctrineOrmServiceRegistry;
 use Crystoline\Xpsr\Orm\Eloquent\EloquentServiceRegistry;
 use Crystoline\Xpsr\Registry\ConsoleServiceRegistry;
@@ -18,8 +19,9 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
 /**
- * A temporary project with the database, Doctrine, Eloquent, and API providers on SQLite. The
- * Doctrine entities and the Eloquent models share the api_invoices and api_lines tables.
+ * A temporary project with the database, Doctrine, Eloquent, Cycle, and API providers on SQLite.
+ * The Doctrine entities, the Eloquent models, and the Cycle entity share the api_invoices and
+ * api_lines tables.
  */
 final class Project
 {
@@ -36,13 +38,14 @@ final class Project
         $this->application = new Application($this->root);
         $config = $this->application->getConfig();
         $config->set('app.env', 'local');
-        $config->set('app.registry', [FactoriesRegistry::class, ConsoleServiceRegistry::class, DatabaseServiceRegistry::class, DoctrineOrmServiceRegistry::class, EloquentServiceRegistry::class, ApiServiceRegistry::class]);
+        $config->set('app.registry', [FactoriesRegistry::class, ConsoleServiceRegistry::class, DatabaseServiceRegistry::class, DoctrineOrmServiceRegistry::class, EloquentServiceRegistry::class, CycleOrmServiceRegistry::class, ApiServiceRegistry::class]);
         $config->set('database', [
             'default' => 'main',
             'connections' => ['main' => ['driver' => 'pdo_sqlite', 'path' => 'var/app.sqlite']],
             'migrations' => ['table' => 'migrations_' . bin2hex(random_bytes(3))],
         ]);
         $config->set('orm', ['entities' => [__DIR__ . '/Entity']]);
+        $config->set('cycle', ['entities' => [__DIR__ . '/CycleEntity'], 'schema_cache' => null]);
         $config->set('api', $api);
     }
 

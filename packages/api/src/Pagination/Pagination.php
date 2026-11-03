@@ -57,7 +57,7 @@ final class Pagination
         }
 
         throw new InvalidArgumentException(sprintf(
-            'Cannot paginate %s: no paginator supports it. Built in: arrays and iterables, DBAL query builders, Doctrine queries, and Eloquent builders, each when its package is installed.',
+            'Cannot paginate %s: no paginator supports it. Built in: arrays and iterables, DBAL query builders, Doctrine queries, Eloquent builders, and Cycle selects, each when its package is installed.',
             get_debug_type($query),
         ));
     }

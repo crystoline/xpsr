@@ -7,7 +7,7 @@ namespace Crystoline\Xpsr\Audit\Attribute;
 use Attribute;
 
 /**
- * Marks a Doctrine entity whose inserts, updates, and deletions are recorded automatically:
+ * Marks a Doctrine or Cycle entity whose inserts, updates, and deletions are recorded automatically:
  *
  *     #[ORM\Entity]
  *     #[Audited(except: ['notes'], redact: ['iban'])]

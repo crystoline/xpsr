@@ -8,7 +8,7 @@ Authentication finds out who sent a request; authorization decides what they may
 | JWTs for APIs (the default `api` guard) | `crystoline/xpsr-auth-jwt` |
 | An OAuth2 server, for other applications that call the API | `crystoline/xpsr-auth-oauth2-server` |
 | Revocable API tokens in a table, and users in a table | `crystoline/xpsr-database` |
-| Users as Doctrine entities or Eloquent models | `crystoline/xpsr-orm-doctrine`, `crystoline/xpsr-orm-eloquent` |
+| Users as Doctrine entities, Eloquent models, or Cycle entities | `crystoline/xpsr-orm-doctrine`, `crystoline/xpsr-orm-eloquent`, `crystoline/xpsr-orm-cycle` |
 
 New projects list `Crystoline\Xpsr\Registry\AuthServiceRegistry` in `app.registry` and have `config/auth.php`. The pages in `routes/web.php` run `Authenticate::optional()`, so they know who is signed in, and nothing else changes until you use it.
 
@@ -25,6 +25,9 @@ Users come from a provider, configured in `auth.providers` (or `auth.users`, the
 
 // Eloquent models: crystoline/xpsr-orm-eloquent.
 'users' => ['driver' => 'eloquent', 'model' => App\Model\User::class, 'login' => 'email'],
+
+// Cycle entities: crystoline/xpsr-orm-cycle.
+'users' => ['driver' => 'cycle', 'entity' => App\Entity\User::class, 'login' => 'email'],
 ```
 
 The database provider returns `Crystoline\Xpsr\Auth\GenericUser` objects: `$user->authIdentifier()`, and `$user->get('name')` for any other column. The password column is never included. A users table needs a primary key, a unique login column, and a password column long enough for a hash (255 characters):
@@ -33,7 +36,7 @@ The database provider returns `Crystoline\Xpsr\Auth\GenericUser` objects: `$user
 php xpsr make:migration create_users_table --create=users
 ```
 
-For Doctrine, the entity implements `Crystoline\Xpsr\Auth\UserInterface` (`authIdentifier()` and `authPasswordHash()`), and also `Crystoline\Xpsr\Orm\Doctrine\Auth\PasswordUpgradableInterface` so that sign-in can replace outdated hashes. For Eloquent, the model implements `UserInterface` with the `Crystoline\Xpsr\Orm\Eloquent\Auth\Authenticatable` trait. Any other source works too: implement `Crystoline\Xpsr\Auth\UserProviderInterface` and name its service as the driver.
+For Doctrine, the entity implements `Crystoline\Xpsr\Auth\UserInterface` (`authIdentifier()` and `authPasswordHash()`), and also `Crystoline\Xpsr\Orm\Doctrine\Auth\PasswordUpgradableInterface` so that sign-in can replace outdated hashes. For Eloquent, the model implements `UserInterface` with the `Crystoline\Xpsr\Orm\Eloquent\Auth\Authenticatable` trait. For Cycle, the entity implements `UserInterface` and `Crystoline\Xpsr\Orm\Cycle\Auth\PasswordUpgradableInterface`. Any other source works too: implement `Crystoline\Xpsr\Auth\UserProviderInterface` and name its service as the driver.
 
 Logins are compared exactly. Store email addresses in lowercase and lowercase them at sign-in; the `Lowercase` input filter does.
 

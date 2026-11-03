@@ -323,13 +323,13 @@ Where a PSR exists, it already provides the portability, and the "adapter" is on
 crystoline/xpsr-database          foundation: connections, migrations, contracts, test helpers
 ├── crystoline/xpsr-orm-doctrine  Doctrine ORM adapter (first)
 ├── crystoline/xpsr-orm-eloquent  Eloquent adapter (second)
-└── crystoline/xpsr-orm-cycle     Cycle ORM adapter (later, if wanted)
+└── crystoline/xpsr-orm-cycle     Cycle ORM adapter (0.7.0)
 ```
 
 - **Foundation (implemented).** `crystoline/xpsr-database` keeps Doctrine DBAL as the one connection layer: DBAL already hides the differences between database servers, and a second abstraction over the DBAL, Illuminate, and Cycle query builders would be a weaker DBAL. One configuration and one connection per name, shared by every adapter, so the ORM, plain queries, and test rollbacks see the same transaction. The migrate commands talk only to `MigratorInterface`, selected with `database.migrations.runner`; `DatabaseTransactions` wraps tests in transactions; `MigratorContractTestCase` is the runner contract suite.
 - **Doctrine ORM adapter (implemented, twentieth milestone).** Builds the `EntityManager` on XPSR's DBAL connection, with attribute mapping from `app/Entity` and native lazy objects instead of proxies. `ClearEntityManagerMiddleware` clears it after each request for worker servers. Schema changes go through `make:migration --diff`; a Doctrine Migrations runner through `MigratorFactoryInterface` remains possible later.
 - **Eloquent adapter.** Configures `illuminate/database` on the PDO of XPSR's connection, so transactions stay shared. Optionally provides a runner for Eloquent-style migrations. Check compatibility with the `illuminate/*` versions the framework already uses.
-- **Cycle ORM adapter.** Only if requested: Cycle opens its own connections, so sharing transactions needs more work.
+- **Cycle ORM adapter.** Built for 0.7.0, on XPSR's connections after all: driver classes give Cycle the PDO that DBAL opened and run its transactions through DBAL, as the Eloquent adapter does.
 - **ORM contract suite (implemented).** `Testing\OrmAdapterContractTestCase`: every ORM adapter must show that it uses XPSR's connection (its writes are visible to DBAL inside the same transaction and undone by a rollback), reads what plain queries wrote, and resets its state between requests.
 - **Choosing.** `php xpsr setup --orm=doctrine|eloquent|none`, like `--router`: installs the package, adds the provider, and writes the configuration.
 

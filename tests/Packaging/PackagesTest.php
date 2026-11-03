@@ -112,6 +112,7 @@ final class PackagesTest extends TestCase
         yield 'translation' => ['translation'];
         yield 'broadcast' => ['broadcast'];
         yield 'OAuth2 server' => ['auth-oauth2-server'];
+        yield 'Cycle ORM adapter' => ['orm-cycle'];
         yield 'view-blade' => ['view-blade'];
         yield 'view-latte' => ['view-latte'];
         yield 'view-plates' => ['view-plates'];

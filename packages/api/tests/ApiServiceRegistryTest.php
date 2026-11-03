@@ -7,6 +7,7 @@ namespace Crystoline\Xpsr\Api\Tests;
 use Crystoline\Xpsr\Api\ApiOptions;
 use Crystoline\Xpsr\Api\Console\MakeResourceCommand;
 use Crystoline\Xpsr\Api\Pagination\Pagination;
+use Crystoline\Xpsr\Api\Tests\Fixtures\CycleEntity;
 use Crystoline\Xpsr\Api\Tests\Fixtures\Entity;
 use Crystoline\Xpsr\Api\Tests\Fixtures\Model;
 use Crystoline\Xpsr\Api\Tests\Fixtures\Project;
@@ -15,6 +16,7 @@ use Crystoline\Xpsr\Api\Tests\Fixtures\Resource\LineResource;
 use Crystoline\Xpsr\Console\CommandRegistry;
 use Crystoline\Xpsr\Routing\HandlerResolver;
 use Crystoline\Xpsr\ServiceContainer\ContainerException;
+use Cycle\ORM\ORMInterface;
 use InvalidArgumentException;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -82,6 +84,20 @@ final class ApiServiceRegistryTest extends TestCase
         $simple = $pagination->fromRequest($this->request('page=2'))->simplePaginate($query);
         self::assertNull($simple->total);
         self::assertFalse($simple->hasMore);
+    }
+
+    public function testACycleSelectIsPaged(): void
+    {
+        $pagination = $this->project->application->get(Pagination::class);
+        $select = $this->project->application->get(ORMInterface::class)->getRepository(CycleEntity\Invoice::class)->select()->orderBy('id');
+
+        $page = $pagination->fromRequest($this->request())->paginate($select);
+        self::assertSame(3, $page->total);
+        self::assertContainsOnlyInstancesOf(CycleEntity\Invoice::class, $page->items);
+        self::assertSame(['A1', 'A2'], array_map(static fn(CycleEntity\Invoice $invoice): string => $invoice->number, $page->items));
+        $second = $pagination->fromRequest($this->request('page=2'))->paginate($select);
+        self::assertSame(['A3'], array_map(static fn(CycleEntity\Invoice $invoice): string => $invoice->number, $second->items), 'The select is cloned, so it pages again.');
+        self::assertSame(3, $second->total);
     }
 
     public function testAnEloquentQueryIsPaged(): void

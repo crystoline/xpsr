@@ -17,6 +17,7 @@ crystoline/xpsr (skeleton, repository root)
 ├── (suggested) crystoline/xpsr-database        packages/database ──► framework, doctrine/dbal
 ├── (suggested) crystoline/xpsr-orm-doctrine    packages/orm-doctrine ──► framework, database, doctrine/orm
 ├── (suggested) crystoline/xpsr-orm-eloquent    packages/orm-eloquent ──► framework, database, illuminate/database
+├── (suggested) crystoline/xpsr-orm-cycle       packages/orm-cycle    ──► framework, database, cycle/orm
 ├── (suggested) crystoline/xpsr-queue           packages/queue ──► framework, database, symfony/messenger
 ├── (suggested) crystoline/xpsr-mail            packages/mail ──► framework, symfony/mailer
 ├── (suggested) crystoline/xpsr-lock            packages/lock ──► framework, symfony/lock
@@ -39,12 +40,13 @@ crystoline/xpsr (skeleton, repository root)
 | `crystoline/xpsr-database` | `Crystoline\Xpsr\Database\` | framework, `doctrine/dbal` ^4.5. |
 | `crystoline/xpsr-orm-doctrine` | `Crystoline\Xpsr\Orm\Doctrine\` | framework, database, `doctrine/orm` ^3.7, `doctrine/persistence` ^4.1, `symfony/cache` ^7.4. |
 | `crystoline/xpsr-orm-eloquent` | `Crystoline\Xpsr\Orm\Eloquent\` | framework, database, `illuminate/database` ^12.0, `illuminate/events` ^12.0. |
+| `crystoline/xpsr-orm-cycle` | `Crystoline\Xpsr\Orm\Cycle\` | framework, database, `cycle/orm` ^2.18, `cycle/annotated` ^4.6, `cycle/schema-builder` ^2.12, `cycle/entity-behavior` ^1.7, `spiral/tokenizer` ^3.17. |
 | `crystoline/xpsr-queue` | `Crystoline\Xpsr\Queue\` | framework, database, `symfony/messenger`, `symfony/doctrine-messenger`, and `symfony/event-dispatcher` 7.4 or 8; Redis, AMQP, and SQS through their Messenger bridges. |
 | `crystoline/xpsr-mail` | `Crystoline\Xpsr\Mail\` | framework, `symfony/mailer` and `symfony/mime` 7.4 or 8; `crystoline/xpsr-queue` for queued email; providers through Symfony's mailer bridges. |
 | `crystoline/xpsr-lock` | `Crystoline\Xpsr\Lock\` | framework, `symfony/lock` and `symfony/clock` 7.4 or 8; `symfony/cache` with phpredis or `predis/predis` for Redis and Redlock; `crystoline/xpsr-database` for the database store. |
 | `crystoline/xpsr-notifications` | `Crystoline\Xpsr\Notifications\` | framework, `symfony/notifier` 7.4 or 8; `crystoline/xpsr-mail` for the mail channel, `crystoline/xpsr-database` for the database and webpush channels, `minishlink/web-push` ^11 for web push, `crystoline/xpsr-queue` for queued notifications; SMS providers through Symfony's notifier bridges. |
 | `crystoline/xpsr-installer` | `Crystoline\Xpsr\Installer\` | `symfony/console` and `symfony/process` 7.4 or 8, and nothing of XPSR: it is installed globally and runs Composer and a project's own commands. Provides the `xpsr` binary. |
-| `crystoline/xpsr-api` | `Crystoline\Xpsr\Api\` | framework, `psr/http-message` 1.1 or 2.0; `crystoline/xpsr-database`, `crystoline/xpsr-orm-doctrine`, and `crystoline/xpsr-orm-eloquent` for paging their queries. |
+| `crystoline/xpsr-api` | `Crystoline\Xpsr\Api\` | framework, `psr/http-message` 1.1 or 2.0; `crystoline/xpsr-database`, `crystoline/xpsr-orm-doctrine`, `crystoline/xpsr-orm-eloquent`, and `crystoline/xpsr-orm-cycle` for paging their queries. |
 | `crystoline/xpsr-webhooks` | `Crystoline\Xpsr\Webhooks\` | framework, database, queue, and http-client; `symfony/console` 7.4 or 8. Endpoint secrets use the framework's `Encrypter` (`APP_KEY`). |
 | `crystoline/xpsr-audit` | `Crystoline\Xpsr\Audit\` | framework and database; `symfony/console` 7.4 or 8. The Eloquent, Doctrine, and Monolog packages are detected when installed. |
 | `crystoline/xpsr-telemetry` | `Crystoline\Xpsr\Telemetry\` | framework and http-client; `open-telemetry/sdk` ^1.15, `open-telemetry/exporter-otlp` ^1.4 (which bring `google/protobuf`). The database, queue, scheduler, and Monolog packages are detected when installed. |
@@ -149,6 +151,7 @@ The CI job `lowest-dependencies` runs the whole suite after `composer update --p
 | `crystoline/xpsr-database` | `packages/database`, with its history | `crystoline/xpsr-database` |
 | `crystoline/xpsr-orm-doctrine` | `packages/orm-doctrine`, with its history | `crystoline/xpsr-orm-doctrine` |
 | `crystoline/xpsr-orm-eloquent` | `packages/orm-eloquent`, with its history | `crystoline/xpsr-orm-eloquent` |
+| `crystoline/xpsr-orm-cycle` | `packages/orm-cycle`, with its history | `crystoline/xpsr-orm-cycle` |
 | `crystoline/xpsr-log-monolog` | `packages/log-monolog`, with its history | `crystoline/xpsr-log-monolog` |
 | `crystoline/xpsr-validation` | `packages/validation`, with its history | `crystoline/xpsr-validation` |
 | `crystoline/xpsr-auth-jwt` | `packages/auth-jwt`, with its history | `crystoline/xpsr-auth-jwt` |

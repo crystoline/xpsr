@@ -12,7 +12,7 @@ use InvalidArgumentException;
  *   default      the guard Authenticate and Guest use when none is named (default web)
  *   guards       name => ['driver' => session|jwt|token|sanctum|oauth2|<service>, 'provider' => <name>,
  *                'login_path' => ..., 'home_path' => ...] (default: web on the session, api on jwt)
- *   providers    name => ['driver' => database|doctrine|eloquent|<service>, ...]: where each
+ *   providers    name => ['driver' => database|doctrine|eloquent|cycle|<service>, ...]: where each
  *                kind of user is looked up, such as users and admins
  *   users        the short form for a single provider named "users", when providers is not set
  *   login_path   where Authenticate sends browsers that are not signed in (default /login)
@@ -163,7 +163,7 @@ final class AuthOptions
                 throw new InvalidArgumentException('auth.providers names must be letters, digits, dots, underscores, or hyphens.');
             }
             if (!is_array($provider) || !is_string($provider['driver'] ?? null) || $provider['driver'] === '') {
-                throw new InvalidArgumentException("{$label} must be an array with a \"driver\": database, doctrine, eloquent, or a service implementing " . UserProviderInterface::class . '.');
+                throw new InvalidArgumentException("{$label} must be an array with a \"driver\": database, doctrine, eloquent, cycle, or a service implementing " . UserProviderInterface::class . '.');
             }
         }
 

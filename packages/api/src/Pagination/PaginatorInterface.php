@@ -6,7 +6,7 @@ namespace Crystoline\Xpsr\Api\Pagination;
 
 /**
  * Pages one kind of query. The built-in paginators cover arrays, DBAL query builders, Doctrine
- * queries, and Eloquent builders; an application can add its own by giving Pagination a list.
+ * queries, Eloquent builders, and Cycle selects; an application can add its own by giving Pagination a list.
  */
 interface PaginatorInterface
 {

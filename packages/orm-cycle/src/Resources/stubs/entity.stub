@@ -1,0 +1,15 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Cycle\Annotated\Annotation\Column;
+use Cycle\Annotated\Annotation\Entity;
+
+#[Entity(table: '{{ table }}')]
+class {{ class }}
+{
+    #[Column(type: 'primary')]
+    public ?int $id = null;
+}

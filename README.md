@@ -22,6 +22,7 @@ This repository develops several Composer packages together:
 | `packages/database` | `crystoline/xpsr-database` | Database connections (Doctrine DBAL) and migrations (optional; see [its README](packages/database/README.md)) |
 | `packages/orm-doctrine` | `crystoline/xpsr-orm-doctrine` | Doctrine ORM on XPSR's connection, migrations generated from entities (optional; see [its README](packages/orm-doctrine/README.md)) |
 | `packages/orm-eloquent` | `crystoline/xpsr-orm-eloquent` | Eloquent models on XPSR's connection and transactions, with XPSR's migrations (optional; see [its README](packages/orm-eloquent/README.md)) |
+| `packages/orm-cycle` | `crystoline/xpsr-orm-cycle` | Cycle ORM on XPSR's connections and transactions, with migrations generated from the entities, entity behaviors, and a user provider (optional; see [its README](packages/orm-cycle/README.md)) |
 | `packages/queue` | `crystoline/xpsr-queue` | Queued jobs on Symfony Messenger: sync, database, Redis, AMQP, or SQS; retries and a failed jobs table (optional; see [its README](packages/queue/README.md)) |
 | `packages/mail` | `crystoline/xpsr-mail` | Email on Symfony Mailer: SMTP, sendmail, or a provider by DSN; views as bodies; queued sending (optional; see [its README](packages/mail/README.md)) |
 | `packages/lock` | `crystoline/xpsr-lock` | Locks across processes and servers: files, Redis, Redlock, or the database (optional; see [its README](packages/lock/README.md)) |

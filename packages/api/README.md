@@ -157,6 +157,7 @@ $page = $this->pagination->fromRequest($request)->paginate($query);
 | A DBAL `QueryBuilder` | `crystoline/xpsr-database`. The total replaces the selected columns with `COUNT(*)`, so a query with `GROUP BY` or `DISTINCT` needs its own count: `paginate($query, count: fn() => ...)`. |
 | A Doctrine `Query` or `QueryBuilder` | `crystoline/xpsr-orm-doctrine`, with Doctrine's `Paginator`: a query that fetch-joins a collection counts and limits entities, not joined rows. |
 | An Eloquent builder, a relation, or Illuminate's query builder | `crystoline/xpsr-orm-eloquent`, without `illuminate/pagination`. |
+| A Cycle `Select` | `crystoline/xpsr-orm-cycle`; the select is cloned, so it can be paged again. |
 | An array or any iterable | Always. |
 
 `paginate()` counts the total, so the response has `total` and `last_page`. `simplePaginate()` fetches one item more than the page instead, to know whether there is a next page; `total`, `last_page`, and the `last` link are then `null`. Links keep the request's other query parameters and replace `page`; `path` is the request's URL without the query string.

@@ -13,9 +13,11 @@ use Crystoline\Xpsr\Database\ConnectionManager;
 use Crystoline\Xpsr\Database\DatabaseServiceRegistry;
 use Crystoline\Xpsr\Database\MigratorFactory;
 use Crystoline\Xpsr\Log\Monolog\RequestId;
+use Crystoline\Xpsr\Orm\Cycle\CycleOrmServiceRegistry;
 use Crystoline\Xpsr\Orm\Doctrine\DoctrineOrmServiceRegistry;
 use Crystoline\Xpsr\Orm\Eloquent\EloquentServiceRegistry;
 use Crystoline\Xpsr\Registry\ConsoleServiceRegistry;
+use Cycle\ORM\EntityManagerInterface as CycleEntityManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\PrimaryKeyConstraint;
@@ -29,7 +31,7 @@ use Symfony\Component\Clock\MockClock;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * A temporary project with the database (SQLite), Doctrine, Eloquent, and audit providers, a
+ * A temporary project with the database (SQLite), Doctrine, Eloquent, Cycle, and audit providers, a
  * mock clock, a settable identity, and a request ID holder. boot() writes and runs the audit
  * migration and creates the fixture tables.
  */
@@ -53,13 +55,14 @@ final class Project
         $this->application = new Application($this->root);
         $config = $this->application->getConfig();
         $config->set('app.env', 'local');
-        $config->set('app.registry', [FixtureRegistry::class, ConsoleServiceRegistry::class, DatabaseServiceRegistry::class, DoctrineOrmServiceRegistry::class, EloquentServiceRegistry::class, AuditServiceRegistry::class]);
+        $config->set('app.registry', [FixtureRegistry::class, ConsoleServiceRegistry::class, DatabaseServiceRegistry::class, DoctrineOrmServiceRegistry::class, EloquentServiceRegistry::class, CycleOrmServiceRegistry::class, AuditServiceRegistry::class]);
         $config->set('database', [
             'default' => 'main',
             'connections' => ['main' => ['driver' => 'pdo_sqlite', 'path' => 'var/app.sqlite']],
             'migrations' => ['table' => 'migrations_' . bin2hex(random_bytes(3))],
         ]);
         $config->set('orm', ['entities' => [__DIR__ . '/Entity']]);
+        $config->set('cycle', ['entities' => [__DIR__ . '/CycleEntity'], 'schema_cache' => null]);
         $config->set('audit', $audit);
     }
 
@@ -73,6 +76,18 @@ final class Project
         $this->application->get(MigratorFactory::class)->create()->migrate();
         $em = $this->em();
         (new SchemaTool($em))->createSchema($em->getMetadataFactory()->getAllMetadata());
+        $this->db()->createSchemaManager()->createTable(Table::editor()
+            ->setUnquotedName('audit_receipts')
+            ->setColumns(
+                Column::editor()->setUnquotedName('id')->setTypeName(Types::INTEGER)->setAutoincrement(true)->create(),
+                Column::editor()->setUnquotedName('number')->setTypeName(Types::STRING)->setLength(20)->create(),
+                Column::editor()->setUnquotedName('amount')->setTypeName(Types::INTEGER)->create(),
+                Column::editor()->setUnquotedName('iban')->setTypeName(Types::STRING)->setLength(255)->setNotNull(false)->create(),
+                Column::editor()->setUnquotedName('notes')->setTypeName(Types::STRING)->setLength(255)->setNotNull(false)->create(),
+                Column::editor()->setUnquotedName('issued_at')->setTypeName(Types::DATETIME_MUTABLE)->create(),
+            )
+            ->setPrimaryKeyConstraint(PrimaryKeyConstraint::editor()->setUnquotedColumnNames('id')->create())
+            ->create());
         $this->db()->createSchemaManager()->createTable(Table::editor()
             ->setUnquotedName('audit_payments')
             ->setColumns(
@@ -98,6 +113,12 @@ final class Project
     public function em(): EntityManagerInterface
     {
         return $this->application->get(EntityManagerInterface::class);
+    }
+
+    /** Cycle's entity manager. */
+    public function cycle(): CycleEntityManager
+    {
+        return $this->application->get(CycleEntityManager::class);
     }
 
     public function log(): AuditLog

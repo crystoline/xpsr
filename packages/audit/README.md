@@ -89,6 +89,8 @@ use Crystoline\Xpsr\Audit\Attribute\Audited;
 class Invoice { ... }
 ```
 
+**Cycle** entities take the same `#[Audited]` attribute; `crystoline/xpsr-orm-cycle` attaches the audit behavior to them, which records inserts, updates with the fields that changed, and deletions once each command has run, inside the same transaction.
+
 `except` and `redact` on a model or entity add to `audit.except` and `audit.redact`. An update that touches only excluded fields records nothing.
 
 ## Reading the log

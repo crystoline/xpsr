@@ -6,6 +6,7 @@ namespace Crystoline\Xpsr\Api;
 
 use Crystoline\Xpsr\Api\Console\MakeResourceCommand;
 use Crystoline\Xpsr\Api\Pagination\ArrayPaginator;
+use Crystoline\Xpsr\Api\Pagination\CyclePaginator;
 use Crystoline\Xpsr\Api\Pagination\DbalPaginator;
 use Crystoline\Xpsr\Api\Pagination\DoctrinePaginator;
 use Crystoline\Xpsr\Api\Pagination\EloquentPaginator;
@@ -69,6 +70,9 @@ final class ApiServiceRegistry extends ServiceRegistry
         }
         if (class_exists(\Illuminate\Database\Eloquent\Builder::class)) {
             $paginators[] = new EloquentPaginator();
+        }
+        if (class_exists(\Cycle\ORM\Select::class)) {
+            $paginators[] = new CyclePaginator();
         }
         $paginators[] = new ArrayPaginator();
 

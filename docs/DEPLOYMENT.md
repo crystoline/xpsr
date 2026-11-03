@@ -222,6 +222,11 @@ With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user 
 - `--optimize-autoloader` builds a class map for faster autoloading.
 - Route files and configuration load on each request; there is no route or configuration cache. With OPcache, the skeleton boots and answers a request in under 1 ms, and building 300 routes with the FastRoute adapter takes about 6 ms (measured on PHP 8.4 in Docker). An application with thousands of routes may still notice the build time.
 
+## Cycle ORM
+
+- **Schema cache.** With `crystoline/xpsr-orm-cycle`, run `php xpsr cycle:schema:cache` when deploying, so that production reads the compiled schema from `var/cache/cycle-schema.php` instead of scanning the entity classes on each request; run it again after changing entities. With `APP_DEBUG` on, the entities are compiled on each request.
+- See [the Cycle ORM package](../packages/orm-cycle/README.md).
+
 ## Not provided yet
 
 - **Long-running servers** (RoadRunner, FrankenPHP worker mode, Swoole). Isolation between requests in a single long-running process has not been verified.

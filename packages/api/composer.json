@@ -20,6 +20,7 @@
     "crystoline/xpsr-database": "^0.6@dev",
     "crystoline/xpsr-orm-doctrine": "^0.6@dev",
     "crystoline/xpsr-orm-eloquent": "^0.6@dev",
+    "crystoline/xpsr-orm-cycle": "^0.6@dev",
     "nyholm/psr7": "^1.8.2",
     "phpunit/phpunit": "^12.5"
   },
