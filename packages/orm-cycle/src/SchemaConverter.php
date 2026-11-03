@@ -39,7 +39,8 @@ final class SchemaConverter
 
     private static function table(AbstractTable $table): Table
     {
-        $name = $table->getFullName();
+        // Without the schema PostgreSQL's tables carry (public.notes): DBAL introspects them without it.
+        $name = $table->getName();
         $editor = Table::editor()->setUnquotedName($name);
         $primary = $table->getPrimaryKeys();
         foreach ($table->getColumns() as $column) {
@@ -112,6 +113,10 @@ final class SchemaConverter
         }
         if (!$autoincrement && $column->hasDefaultValue()) {
             $default = $column->getDefaultValue();
+            // Each driver spells the current timestamp its own way (now(), getdate()); DBAL knows the one name.
+            if ($default === $column::DATETIME_NOW) {
+                $default = 'CURRENT_TIMESTAMP';
+            }
             if (!is_scalar($default) && !$default instanceof Stringable) {
                 throw new InvalidArgumentException(sprintf('make:migration --diff cannot describe the default value of the column %s.%s; write that part of the migration by hand.', $table, $column->getName()));
             }
