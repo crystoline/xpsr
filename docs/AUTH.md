@@ -48,7 +48,9 @@ use Crystoline\Xpsr\Auth\PasswordHasher;
 $hash = $hasher->hash($password);   // Argon2id when PHP has it, otherwise bcrypt
 ```
 
-Store the hash, never the password. Sign-in checks it with `password_verify()`, and when the hash was made with an older algorithm or cost, stores a new one.
+Store the hash, never the password. Sign-in checks it with `password_verify()`, and when the hash was made with another algorithm or other options than the setting, stores a new one.
+
+`auth.password` in `config/auth.php` chooses the algorithm: `auto` (Argon2id when PHP has it, otherwise bcrypt), `argon2id`, or `bcrypt`, with `options` passed to `password_hash()` as they are: `cost` for bcrypt; `memory_cost`, `time_cost`, and `threads` for Argon2id; PHP's defaults when unset. The skeleton reads it from `PASSWORD_ALGORITHM`. Choose `bcrypt` while a Laravel application signs users in from the same table (see [Coming from Laravel](FROM_LARAVEL.md#running-both-side-by-side)); a changed setting takes effect user by user, at each next sign-in.
 
 ## Browsers: sign in with the session
 

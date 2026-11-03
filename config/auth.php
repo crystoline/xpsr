@@ -28,6 +28,11 @@ return [
     'home_path' => '/',
     // Model class => policy class, for Gate::allows() and {{ can() }}.
     'policies' => [],
+    // How new password hashes are made: auto (Argon2id when PHP has it, otherwise bcrypt), argon2id, or
+    // bcrypt, which keeps the hashes readable by a Laravel application on the same users table. A hash
+    // made differently is replaced at the user's next sign-in. options go to password_hash(): cost for
+    // bcrypt; memory_cost, time_cost, and threads for Argon2id (PHP's defaults when unset).
+    'password' => ['algorithm' => env('PASSWORD_ALGORITHM', 'auto'), 'options' => []],
     'jwt' => [
         // php xpsr auth:jwt-secret --write
         'secret' => env('AUTH_JWT_SECRET'),

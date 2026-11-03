@@ -8,7 +8,7 @@ This guide moves a Laravel application, such as a JSON API with Sanctum tokens, 
 |---|---|
 | `APP_KEY` and the values encrypted with it | Read and written in the same format, including Eloquent's encrypted casts. Copy `APP_KEY` and `APP_PREVIOUS_KEYS`. See [Encryption](ENCRYPTION.md#coming-from-laravel). |
 | Sanctum tokens in `personal_access_tokens` | Accepted by the `sanctum` guard driver; abilities are scopes. See [Authentication](AUTH.md#laravel-sanctum-tokens). |
-| bcrypt password hashes | Verified, and upgraded to Argon2id when the user next signs in. |
+| bcrypt password hashes | Verified; replaced by Argon2id when the user next signs in, or kept as bcrypt with `PASSWORD_ALGORITHM=bcrypt`. |
 | The database | `php xpsr migrate:baseline` starts XPSR's migrations from it. See [the database package](../packages/database/README.md#starting-from-an-existing-database). |
 | Eloquent models | Run on XPSR's connections with [`crystoline/xpsr-orm-eloquent`](../packages/orm-eloquent/README.md), after the changes in [step 4](#4-models). |
 | The `notifications` table, and `push_subscriptions` from `laravel-notification-channels/webpush` | Read and written as Laravel does, with the same `VAPID_*` keys. See [the notifications package](../packages/notifications/README.md#coming-from-laravel). |
@@ -242,7 +242,7 @@ Tests extend the skeleton's `tests/TestCase.php`, which has `get()`, `getJson()`
 An application can move a route group or a job at a time, with Laravel and XPSR on the same database:
 
 - **Shared:** the database, `APP_KEY`, the time zone, Sanctum tokens (each accepts the other's), encrypted columns, and the notifications and push subscriptions tables.
-- **Passwords.** XPSR stores a new Argon2id hash when a user with a bcrypt hash signs in. Laravel's bcrypt hasher refuses a hash that is not bcrypt while `HASH_VERIFY` is on, as it is by default in Laravel 12, and the sign-in fails with an error. Set `HASH_VERIFY=false` in Laravel's `.env` while both run: Laravel then checks both kinds, and may store a bcrypt hash again when the user signs in there, which XPSR also accepts.
+- **Passwords.** Set `PASSWORD_ALGORITHM=bcrypt` in XPSR's `.env` while both run: new hashes stay bcrypt, at PHP's default cost of 12, which is Laravel's too, so Laravel's hasher keeps accepting them with `HASH_VERIFY` on, as it is by default in Laravel 12. Without the setting, XPSR stores an Argon2id hash when a user signs in, and Laravel's bcrypt hasher then refuses that user unless `HASH_VERIFY=false`. Once Laravel is gone, remove the setting: each hash moves to Argon2id at the user's next sign-in.
 - **Schema changes** happen in XPSR's migrations once it has its baseline, so each side keeps its own migrations table.
 - **Queues.** Give each side its own queue: XPSR's workers cannot run Laravel's jobs, nor Laravel's XPSR's.
 - **The schedule.** Run each task on one side only.

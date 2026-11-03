@@ -18,6 +18,8 @@ use InvalidArgumentException;
  *   login_path   where Authenticate sends browsers that are not signed in (default /login)
  *   home_path    where Guest sends browsers that are signed in (default /)
  *   policies     model class => policy class
+ *   password     ['algorithm' => auto|argon2id|bcrypt, 'options' => password_hash() options]: how
+ *                new hashes are made (default auto: Argon2id when PHP has it, otherwise bcrypt)
  *   jwt, tokens, sanctum  options for the jwt, token, and sanctum drivers, read by their packages
  *
  * A guard without a provider uses "users", or the only provider there is.
@@ -26,7 +28,8 @@ use InvalidArgumentException;
  */
 final class AuthOptions
 {
-    private const KNOWN = ['default', 'guards', 'providers', 'users', 'login_path', 'home_path', 'policies', 'jwt', 'tokens', 'sanctum'];
+    private const KNOWN = ['default', 'guards', 'providers', 'users', 'login_path', 'home_path', 'policies', 'password', 'jwt', 'tokens', 'sanctum'];
+    private const PASSWORD_OPTIONS = ['cost' => [4, 31], 'memory_cost' => [8, PHP_INT_MAX], 'time_cost' => [1, PHP_INT_MAX], 'threads' => [1, PHP_INT_MAX]];
     private const NAME = '/\A[A-Za-z0-9_.-]+\z/';
 
     /**
@@ -35,6 +38,7 @@ final class AuthOptions
      * @param array<string, string> $guardProviders guard => provider
      * @param array<string, array{string, string}> $paths guard => [login path, home path]
      * @param array<class-string, class-string> $policies
+     * @param array<string, int> $passwordOptions
      * @param array<array-key, mixed> $jwt
      * @param array<array-key, mixed> $tokens
      * @param array<array-key, mixed> $sanctum
@@ -46,6 +50,8 @@ final class AuthOptions
         private readonly array $guardProviders,
         private readonly array $paths,
         public readonly array $policies,
+        public readonly string $passwordAlgorithm,
+        public readonly array $passwordOptions,
         public readonly array $jwt,
         public readonly array $tokens,
         public readonly array $sanctum,
@@ -101,6 +107,7 @@ final class AuthOptions
                 throw new InvalidArgumentException('auth.policies must map model classes to existing policy classes; ' . (is_string($policy) ? "{$policy} was not found" : 'a policy is not a class name') . '.');
             }
         }
+        [$passwordAlgorithm, $passwordOptions] = self::password($config);
         foreach (['jwt', 'tokens', 'sanctum'] as $section) {
             if (isset($config[$section]) && !is_array($config[$section])) {
                 throw new InvalidArgumentException("auth.{$section} must be an array of options.");
@@ -108,7 +115,7 @@ final class AuthOptions
         }
 
         /** @var array<class-string, class-string> $policies */
-        return new self($default, $guards, $providers, $guardProviders, $paths, $policies, $config['jwt'] ?? [], $config['tokens'] ?? [], $config['sanctum'] ?? []);
+        return new self($default, $guards, $providers, $guardProviders, $paths, $policies, $passwordAlgorithm, $passwordOptions, $config['jwt'] ?? [], $config['tokens'] ?? [], $config['sanctum'] ?? []);
     }
 
     /** The provider a guard looks its users up in. */
@@ -169,6 +176,42 @@ final class AuthOptions
 
         /** @var array<string, array<array-key, mixed>> $providers */
         return $providers;
+    }
+
+    /**
+     * @param array<array-key, mixed> $config
+     * @return array{string, array<string, int>} the algorithm name and the password_hash() options
+     */
+    private static function password(array $config): array
+    {
+        $password = $config['password'] ?? [];
+        if (!is_array($password)) {
+            throw new InvalidArgumentException('auth.password must be an array with "algorithm" (auto, argon2id, or bcrypt) and, if needed, "options" for password_hash().');
+        }
+        foreach (array_keys($password) as $key) {
+            if (!in_array($key, ['algorithm', 'options'], true)) {
+                throw new InvalidArgumentException("Unknown option auth.password.{$key}. Known options: algorithm, options.");
+            }
+        }
+        $algorithm = $password['algorithm'] ?? PasswordHasher::AUTO;
+        if (!is_string($algorithm) || !in_array($algorithm, PasswordHasher::ALGORITHMS, true)) {
+            throw new InvalidArgumentException('auth.password.algorithm must be auto (Argon2id when PHP has it, otherwise bcrypt), argon2id, or bcrypt.');
+        }
+        $options = $password['options'] ?? [];
+        if (!is_array($options)) {
+            throw new InvalidArgumentException('auth.password.options must be an array of password_hash() options: cost for bcrypt; memory_cost, time_cost, and threads for Argon2id.');
+        }
+        foreach ($options as $key => $value) {
+            if (!is_string($key) || !isset(self::PASSWORD_OPTIONS[$key])) {
+                throw new InvalidArgumentException(sprintf('auth.password.options may set cost (bcrypt), memory_cost, time_cost, and threads (Argon2id), not "%s".', $key));
+            }
+            [$min, $max] = self::PASSWORD_OPTIONS[$key];
+            if (!is_int($value) || $value < $min || $value > $max) {
+                throw new InvalidArgumentException(sprintf('auth.password.options.%s must be an integer %s.', $key, $max === PHP_INT_MAX ? "of at least {$min}" : "from {$min} to {$max}"));
+            }
+        }
+
+        return [$algorithm, $options];
     }
 
     /** @param array<array-key, mixed> $config */

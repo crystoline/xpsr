@@ -4,6 +4,10 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+### Added
+
+- `auth.password` in `config/auth.php`: how new password hashes are made. `algorithm` is `auto` (Argon2id when PHP has it, otherwise bcrypt, as before), `argon2id`, or `bcrypt`, and `options` go to `password_hash()` (`cost`; `memory_cost`, `time_cost`, `threads`). `PasswordHasher::needsRehash()` follows the setting, so hashes move to the chosen algorithm at each user's next sign-in. `bcrypt` keeps a users table shared with a Laravel application working without `HASH_VERIFY=false`; the skeleton reads `PASSWORD_ALGORITHM`. See [docs/AUTH.md](docs/AUTH.md#passwords).
+
 ### Changed
 
 - `crystoline/xpsr-router-sunrise` runs on `sunrise/http-router` 3 (3.4 or later) instead of 2.16. Sunrise 3 accepts `psr/http-message` 2.0, so the adapter installs beside any package, `crystoline/xpsr-auth-oauth2-server` with `league/oauth2-server` 9 included, and `setup --router=sunrise --install-dependencies` works in every project. Route files, matching, and the adapter's class are unchanged. An application that calls Sunrise 2 classes of its own must move them to 3 first; see [UPGRADE.md](UPGRADE.md).

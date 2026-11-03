@@ -78,6 +78,57 @@ final class AuthTest extends TestCase
         $this->hasher->hash(str_repeat('x', PasswordHasher::MAX_LENGTH + 1));
     }
 
+    public function testThePasswordAlgorithmAndOptionsAreSettings(): void
+    {
+        $bcrypt = new PasswordHasher('bcrypt', ['cost' => 4]);
+        $hash = $bcrypt->hash('secret');
+        self::assertSame('2y', password_get_info($hash)['algo']);
+        self::assertSame(4, password_get_info($hash)['options']['cost']);
+        self::assertSame(PASSWORD_BCRYPT, $bcrypt->algorithm());
+        self::assertTrue($bcrypt->verify('secret', $hash));
+        self::assertFalse($bcrypt->verify('secret', null));
+        self::assertFalse($bcrypt->needsRehash($hash));
+        self::assertTrue($bcrypt->needsRehash($this->hasher->hash('secret')), 'Under the bcrypt setting, a hash made with the default setting is replaced at sign-in.');
+        self::assertTrue((new PasswordHasher('bcrypt'))->needsRehash($hash), 'A hash below the configured cost is replaced.');
+        if (defined('PASSWORD_ARGON2ID')) {
+            $argon = new PasswordHasher('argon2id', ['memory_cost' => 8192, 'time_cost' => 1]);
+            $argonHash = $argon->hash('secret');
+            self::assertSame('argon2id', password_get_info($argonHash)['algo']);
+            self::assertSame(8192, password_get_info($argonHash)['options']['memory_cost']);
+            self::assertFalse($argon->needsRehash($argonHash));
+            self::assertTrue($argon->needsRehash($hash), 'Under the argon2id setting, a bcrypt hash is replaced at sign-in.');
+        }
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('auth.password.algorithm must be auto, argon2id, or bcrypt, not "md5".');
+        new PasswordHasher('md5');
+    }
+
+    public function testThePasswordSettingIsValidated(): void
+    {
+        $options = AuthOptions::fromArray(['password' => ['algorithm' => 'bcrypt', 'options' => ['cost' => 10]]]);
+        self::assertSame('bcrypt', $options->passwordAlgorithm);
+        self::assertSame(['cost' => 10], $options->passwordOptions);
+        self::assertSame('auto', AuthOptions::fromArray([])->passwordAlgorithm);
+        self::assertSame([], AuthOptions::fromArray([])->passwordOptions);
+
+        foreach ([
+            [['algorithm' => 'md5'], 'auth.password.algorithm must be auto (Argon2id when PHP has it, otherwise bcrypt), argon2id, or bcrypt.'],
+            [['options' => ['cost' => 99]], 'auth.password.options.cost must be an integer from 4 to 31.'],
+            [['options' => ['memory_cost' => '64M']], 'auth.password.options.memory_cost must be an integer of at least 8.'],
+            [['options' => ['rounds' => 12]], 'auth.password.options may set cost (bcrypt), memory_cost, time_cost, and threads (Argon2id), not "rounds".'],
+            [['level' => 1], 'Unknown option auth.password.level. Known options: algorithm, options.'],
+            ['bcrypt', 'auth.password must be an array with "algorithm" (auto, argon2id, or bcrypt) and, if needed, "options" for password_hash().'],
+        ] as [$password, $message]) {
+            try {
+                AuthOptions::fromArray(['password' => $password]);
+                self::fail($message);
+            } catch (InvalidArgumentException $e) {
+                self::assertSame($message, $e->getMessage());
+            }
+        }
+    }
+
     public function testVerifyChecksCredentialsAndUpgradesOldHashes(): void
     {
         $this->users->add(new GenericUser(8, password_hash('old secret', PASSWORD_BCRYPT, ['cost' => 4])), login: 'old@example.com');
@@ -284,7 +335,7 @@ final class AuthTest extends TestCase
     /** @return iterable<string, array{array<string, mixed>, string}> */
     public static function invalidOptions(): iterable
     {
-        yield 'unknown option' => [['guard' => 'web'], 'Unknown option auth.guard. Known options: default, guards, providers, users, login_path, home_path, policies, jwt, tokens, sanctum.'];
+        yield 'unknown option' => [['guard' => 'web'], 'Unknown option auth.guard. Known options: default, guards, providers, users, login_path, home_path, policies, password, jwt, tokens, sanctum.'];
         yield 'no guards' => [['guards' => []], 'auth.guards must name at least one guard'];
         yield 'guard without driver' => [['guards' => ['web' => []]], 'auth.guards.web must be an array with a "driver"'];
         yield 'unknown default' => [['default' => 'admin'], 'auth.default must name a guard in auth.guards: web, api.'];

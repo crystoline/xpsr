@@ -22,7 +22,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
  *
  *   Crystoline\Xpsr\Auth\AuthManager       sign-in, sign-out, guards, and the user provider
  *   Crystoline\Xpsr\Auth\Access\Gate       policies
- *   Crystoline\Xpsr\Auth\PasswordHasher    password hashes
+ *   Crystoline\Xpsr\Auth\PasswordHasher    password hashes, as auth.password says
  *   Crystoline\Xpsr\Auth\Http\Authenticate the default guard's middleware, and for each guard
  *                                          Authenticate::guard($name) and Authenticate::optional($name)
  *   Crystoline\Xpsr\Auth\Http\Guest        for pages only guests need, and Guest::guard($name)
@@ -37,7 +37,11 @@ final class AuthServiceRegistry extends ServiceRegistry
         $this->container->factory(AuthOptions::class, static function (ContainerInterface $container): AuthOptions {
             return AuthOptions::fromArray(self::config($container));
         }, shared: true);
-        $this->container->singleton(PasswordHasher::class);
+        $this->container->factory(PasswordHasher::class, static function (ContainerInterface $container): PasswordHasher {
+            $options = $container->get(AuthOptions::class);
+
+            return new PasswordHasher($options->passwordAlgorithm, $options->passwordOptions);
+        }, shared: true);
         $this->container->singleton(CurrentIdentity::class);
         $this->container->factory(AuthManager::class, static fn(ContainerInterface $container): AuthManager => new AuthManager(
             $container,
