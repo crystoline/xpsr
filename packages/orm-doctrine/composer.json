@@ -12,8 +12,8 @@
   ],
   "require": {
     "php": "^8.4",
-    "crystoline/xpsr-database": "^0.7@dev",
-    "crystoline/xpsr-framework": "^0.7@dev",
+    "crystoline/xpsr-database": "^0.8@dev",
+    "crystoline/xpsr-framework": "^0.8@dev",
     "doctrine/dbal": "^4.5",
     "doctrine/orm": "^3.7",
     "doctrine/persistence": "^4.1",
@@ -40,7 +40,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.7.x-dev"
+      "dev-master": "0.8.x-dev"
     }
   }
 }

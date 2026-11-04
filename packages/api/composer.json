@@ -12,15 +12,15 @@
   ],
   "require": {
     "php": "^8.4",
-    "crystoline/xpsr-framework": "^0.7@dev",
+    "crystoline/xpsr-framework": "^0.8@dev",
     "psr/container": "^2.0",
     "psr/http-message": "^1.1 || ^2.0"
   },
   "require-dev": {
-    "crystoline/xpsr-database": "^0.7@dev",
-    "crystoline/xpsr-orm-doctrine": "^0.7@dev",
-    "crystoline/xpsr-orm-eloquent": "^0.7@dev",
-    "crystoline/xpsr-orm-cycle": "^0.7@dev",
+    "crystoline/xpsr-database": "^0.8@dev",
+    "crystoline/xpsr-orm-doctrine": "^0.8@dev",
+    "crystoline/xpsr-orm-eloquent": "^0.8@dev",
+    "crystoline/xpsr-orm-cycle": "^0.8@dev",
     "nyholm/psr7": "^1.8.2",
     "phpunit/phpunit": "^12.5"
   },
@@ -41,7 +41,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.7.x-dev"
+      "dev-master": "0.8.x-dev"
     }
   }
 }

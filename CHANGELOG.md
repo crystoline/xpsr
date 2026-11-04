@@ -4,6 +4,8 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+## 0.8.0 (2026-11-04)
+
 ### Breaking
 
 - `Crystoline\Xpsr\Configuration` is the framework's own class and no longer extends Illuminate's `Repository`. It keeps `get()`, `set()`, `has()`, and `all()` with dot notation, `loadConfigurationFiles()`, `files()`, and `read()`. Gone with Illuminate: array access (`$config['app.name']`), `getMany()`, `prepend()`, `push()`, `string()`, `integer()`, `float()`, `boolean()`, `array()`, `collection()`, and macros; `get()` of a key set to null now returns null rather than the default. The framework no longer requires `illuminate/config`; the Eloquent and Blade adapters keep their Illuminate requirements. See [UPGRADE.md](UPGRADE.md).

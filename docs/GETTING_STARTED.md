@@ -347,7 +347,7 @@ php xpsr setup --router=sunrise --install-dependencies
 
 ```text
 Router: sunrise. Preset: api.
-Installed crystoline/xpsr-router-sunrise:^0.7.
+Installed crystoline/xpsr-router-sunrise:^0.8.
 Set ROUTER_ADAPTER=sunrise in .env.
 Bootstrap check passed: 4 route(s); 3 without placeholders matched by Crystoline\Xpsr\Router\Sunrise\SunriseRouter.
 ```

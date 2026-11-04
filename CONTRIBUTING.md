@@ -103,7 +103,7 @@ Every package is released with the same version number ([docs/VERSIONING.md](doc
 
 1. Move the **Unreleased** entries in `CHANGELOG.md` under `## X.Y.Z (date)`, check that `UPGRADE.md` covers every breaking change, and commit.
 2. Make sure CI is green, including the packaging and lowest-dependency jobs.
-3. For a new minor line, such as 0.8, move the line in one commit: the `dev-master` branch alias in every package's `composer.json` (`0.8.x-dev`), the requirements between packages (`^0.8@dev`), the `versions` of the root path repository, and the places that name the line in the documentation and tests; then run `composer update 'crystoline/*'`. `setup` derives the adapter constraint from the installed framework, and `export-skeleton.php --release` writes the release range, so neither needs a change.
+3. For a new minor line, such as 0.9, move the line in one commit: the `dev-master` branch alias in every package's `composer.json` (`0.9.x-dev`), the requirements between packages (`^0.9@dev`), the `versions` of the root path repository, and the places that name the line in the documentation and tests; then run `composer update 'crystoline/*'`. `setup` derives the adapter constraint from the installed framework, and `export-skeleton.php --release` writes the release range, so neither needs a change.
 4. Tag `vX.Y.Z` and push the tag. The `split` job tags every mirror and exports the skeleton with `--release`, so the tagged skeleton requires `^X.Y`.
 5. Packagist updates the packages through the GitHub hook; if the skeleton's entry lags, press **Update** on it. Then, in an empty directory, `composer create-project crystoline/xpsr my-app` must install the new version.
 
@@ -113,8 +113,8 @@ A vulnerability is fixed in a patch release of the latest minor version at once 
 
 `scripts/split.sh` publishes the monorepo into the mirrors, and the `split` job in `.github/workflows/ci.yml` runs it after every other job passes. Each package's mirror is `crystoline/xpsr-<name>`, holding `packages/<name>` with its history (`git subtree split`), and Packagist serves the package of the same name from it. The skeleton is the exception: its package is `crystoline/xpsr`, so that `composer create-project crystoline/xpsr` works, and its mirror is `crystoline/xpsr-skeleton`, because `crystoline/xpsr` on GitHub is this repository. That mirror holds the output of `scripts/export-skeleton.php`, one commit per change.
 
-- A push to `master` updates each mirror's `master`. The packages alias `dev-master` to the current line (`0.7.x-dev`), so `^0.7@dev` resolves to it.
-- A `v*` tag pushes that tag to every mirror and leaves branches alone. The skeleton's tagged commit is exported with `--release`, so it requires the release range, while its `master` keeps `^0.7@dev`.
+- A push to `master` updates each mirror's `master`. The packages alias `dev-master` to the current line (`0.8.x-dev`), so `^0.8@dev` resolves to it.
+- A `v*` tag pushes that tag to every mirror and leaves branches alone. The skeleton's tagged commit is exported with `--release`, so it requires the release range, while its `master` keeps `^0.8@dev`.
 - Re-running with the same commit changes nothing, and everything comes from the committed tree, never the working directory.
 - The skeleton ships without `composer.lock`: each new application resolves its dependencies at `create-project` time and commits its own lock, instead of being pinned to the versions of release day.
 
@@ -123,8 +123,8 @@ A vulnerability is fixed in a patch release of the latest minor version at once 
 ### Exporting the skeleton
 
 ```sh
-php scripts/export-skeleton.php /path/to/empty/dir                   # development constraints (^0.7@dev)
-php scripts/export-skeleton.php /path/to/empty/dir --release=0.7.0   # release constraints (^0.7)
+php scripts/export-skeleton.php /path/to/empty/dir                   # development constraints (^0.8@dev)
+php scripts/export-skeleton.php /path/to/empty/dir --release=0.8.0   # release constraints (^0.8)
 ```
 
 It copies what a new application needs, including the test scaffold (`tests/TestCase.php`, `tests/Application/`, and a `phpunit.xml` from `scripts/skeleton/`), and writes a `composer.json` without the monorepo-only parts: the `packages/*` path repository, the autoloading of package tests, the analysis and style tooling and their scripts, and the packages in `MONOREPO_DEV_PACKAGES`.

@@ -60,9 +60,9 @@ How the packages relate:
 
 ## Versions
 
-Every package is released with the same version number, and each requires the matching framework range: adapter 0.7.x works with framework 0.7.x. Require `^0.7` on every `crystoline/xpsr-*` package and upgrade them together. [VERSIONING.md](VERSIONING.md) says what each kind of release promises, and [UPGRADE.md](../UPGRADE.md) has the steps between minor versions.
+Every package is released with the same version number, and each requires the matching framework range: adapter 0.8.x works with framework 0.8.x. Require `^0.8` on every `crystoline/xpsr-*` package and upgrade them together. [VERSIONING.md](VERSIONING.md) says what each kind of release promises, and [UPGRADE.md](../UPGRADE.md) has the steps between minor versions.
 
-A development install (`xpsr new --dev`, or `composer create-project crystoline/xpsr my-app dev-master`) follows the `master` branches, where unreleased changes are, and which Composer sees as the development version of the current line (`0.7.x-dev`).
+A development install (`xpsr new --dev`, or `composer create-project crystoline/xpsr my-app dev-master`) follows the `master` branches, where unreleased changes are, and which Composer sees as the development version of the current line (`0.8.x-dev`).
 
 ## Repositories
 

@@ -12,10 +12,10 @@
   ],
   "require": {
     "php": "^8.4",
-    "crystoline/xpsr-database": "^0.7@dev",
-    "crystoline/xpsr-framework": "^0.7@dev",
-    "crystoline/xpsr-http-client": "^0.7@dev",
-    "crystoline/xpsr-queue": "^0.7@dev",
+    "crystoline/xpsr-database": "^0.8@dev",
+    "crystoline/xpsr-framework": "^0.8@dev",
+    "crystoline/xpsr-http-client": "^0.8@dev",
+    "crystoline/xpsr-queue": "^0.8@dev",
     "psr/clock": "^1.0",
     "psr/container": "^2.0",
     "psr/event-dispatcher": "^1.0",
@@ -43,7 +43,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "0.7.x-dev"
+      "dev-master": "0.8.x-dev"
     }
   }
 }
