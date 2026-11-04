@@ -4,7 +4,7 @@ Steps for moving an application between minor versions. What changed is in [CHAN
 
 ## From 0.7 to 0.8
 
-Nothing breaks for an application on the FastRoute adapter, which the skeleton installs. The Sunrise adapter now runs on `sunrise/http-router` 3.
+Nothing breaks for an application that reads its configuration with `get()` and runs on the FastRoute adapter, which the skeleton installs. `Configuration` is now the framework's own class (step 3), and the Sunrise adapter runs on `sunrise/http-router` 3.
 
 ### 1. Require 0.8
 
@@ -22,6 +22,17 @@ The framework no longer depends on `symfony/finder`. An application that uses `S
 ### 2. The configuration cache (optional)
 
 Run `php xpsr config:cache` when deploying, after the files and `.env` are in place, and again after changing either; see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md#performance). Nothing changes until you do.
+
+### 3. Configuration without Illuminate
+
+`Crystoline\Xpsr\Configuration` no longer extends Illuminate's `Repository`, and the framework no longer requires `illuminate/config`. `get()`, `set()`, `has()`, and `all()` work as before. If your code used more than that:
+
+- `$config['app.name']` becomes `$config->get('app.name')`, and `isset($config['key'])` becomes `has()`.
+- `getMany(['a', 'b'])` becomes two `get()` calls; `prepend()` and `push()` become `set()` with the changed array.
+- `string()`, `integer()`, `float()`, `boolean()`, `array()`, and `collection()` become `get()` with your own check or cast.
+- A type-hint on `Illuminate\Contracts\Config\Repository` becomes `Crystoline\Xpsr\Configuration`.
+- `get()` of a key that is set to null now returns null, as `has()` reports the key present; write `$config->get('key') ?? $default` where the default should apply to null too.
+- Code that used an Illuminate package through the framework's dependency on `illuminate/config` (`illuminate/collections`, `illuminate/contracts`, `illuminate/macroable`, `illuminate/conditionable`) must require it itself.
 
 ## From 0.6 to 0.7
 

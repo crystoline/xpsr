@@ -4,6 +4,10 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+### Breaking
+
+- `Crystoline\Xpsr\Configuration` is the framework's own class and no longer extends Illuminate's `Repository`. It keeps `get()`, `set()`, `has()`, and `all()` with dot notation, `loadConfigurationFiles()`, `files()`, and `read()`. Gone with Illuminate: array access (`$config['app.name']`), `getMany()`, `prepend()`, `push()`, `string()`, `integer()`, `float()`, `boolean()`, `array()`, `collection()`, and macros; `get()` of a key set to null now returns null rather than the default. The framework no longer requires `illuminate/config`; the Eloquent and Blade adapters keep their Illuminate requirements. See [UPGRADE.md](UPGRADE.md).
+
 ### Added
 
 - `php xpsr config:cache` and `config:clear`: the configuration cache. `var/cache/config.php` holds the merged configuration of the current `APP_ENV` with `env()` resolved, and the application reads it in place of the files. A section whose file holds closures or objects, such as the skeleton's `config/factory.php`, is still read from its file. The cache records a hash of every file it came from and of `.env`; when one changes, the application reads the files instead and says so (a warning on every command's stderr, and in the log on each request) until `config:cache` runs again. `about` reports `configuration: cached` or `files`, and `Application` gained `getEnvironment()` and `getConfigurationNotice()`. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md#performance).
