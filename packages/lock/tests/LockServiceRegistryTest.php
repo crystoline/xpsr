@@ -104,7 +104,11 @@ final class LockServiceRegistryTest extends TestCase
         self::assertInstanceOf(InMemoryStore::class, $this->application(['store' => 'in-memory'])->get(PersistingStoreInterface::class));
         $failure = $this->storeFailure(['store' => 'carrier-pigeon://loft']);
         self::assertInstanceOf(InvalidArgumentException::class, $failure);
-        self::assertSame('lock.store: Unsupported Connection: "carrier-pigeon://loft".', $failure->getMessage());
+        // Symfony Lock 8.1 names the DSN in its message; later releases do not.
+        self::assertContains($failure->getMessage(), [
+            'lock.store: Unsupported Connection: "carrier-pigeon://loft".',
+            'lock.store: No lock store supports the given DSN.',
+        ]);
     }
 
     /**
