@@ -138,7 +138,7 @@ The entity implements `Crystoline\Xpsr\Auth\UserInterface`, and `Crystoline\Xpsr
 
 `Crystoline\Xpsr\Database\Testing\DatabaseTransactions` from the database package covers the ORM too: the entity manager writes through the same connection, so its changes are rolled back after each test. Each test also gets a new application, and with it a new entity manager.
 
-This adapter passes `Crystoline\Xpsr\Database\Testing\OrmAdapterContractTestCase`: it uses XPSR's connection and transaction, reads data written by plain queries, and drops its state between requests. Its tests, including generating, running, and rolling back a `--diff` migration, run against SQLite, MySQL 8.4, MariaDB 11, and PostgreSQL 17.
+The adapter uses XPSR's connection and transaction, reads data written by plain queries, and drops its state between requests. It works on SQLite, MySQL 8.4, MariaDB 11, and PostgreSQL 17, `--diff` migrations included.
 
 ## Services
 

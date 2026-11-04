@@ -51,7 +51,7 @@ For example, Redis with Symfony's adapter, bound in `config/factory.php`:
 ),
 ```
 
-Then set `'driver' => 'service', 'service' => 'cache.redis'` in `config/cache.php`. Only the `file`, `array`, `null`, and `service` wiring is tested by this package; Redis itself is not.
+Then set `'driver' => 'service', 'service' => 'cache.redis'` in `config/cache.php`. The `file`, `array`, `null`, and `service` drivers are XPSR's own; the Redis connection behind `service` is Symfony Cache's adapter, configured as its documentation says.
 
 Use keys made of letters, digits, `_`, and `.`. PSR-16 reserves `{}()/\@:`. Symfony Cache rejects reserved characters only while PHP assertions run (`zend.assertions=1`, the development default), to keep production fast. With the production `php.ini` they are accepted, so catch mistakes in development.
 
@@ -132,12 +132,12 @@ Start each key with what it counts, such as `email:` or `user:`. The middleware'
 
 ### Parallel requests and several servers
 
-Counts live in the application cache, so `cache:clear` resets them. Each count is updated under a short lock, so parallel requests cannot both take a key's last unit. Without locks, four processes making 20 attempts each against a limit of 20 had 70 to 78 accepted in this package's tests.
+Counts live in the application cache, so `cache:clear` resets them. Each count is updated under a short lock, so parallel requests cannot both take a key's last unit.
 
 - **One server** needs no setup. The locks are files in `var/locks`, which the web server and CLI users must be able to write. Keys share 256 lock files, so the directory does not grow with the number of clients.
 - **Several servers** need the counts and the locks on stores they all share. Use the `service` driver with Redis, for example, and install [`crystoline/xpsr-lock`](../lock/README.md) with a shared store: Redis, Redlock, or the database. With `LockServiceRegistry` in `app.registry`, rate limits use those locks. File locks only stop parallel requests on the same server.
 - **The `array` and `null` drivers** take no locks, because each process has its own counts or none.
 
-What a lock adds to each limited request, measured in Docker on one machine: nothing measurable with file locks, about 0.65 ms with a Redis lock store (four round trips), and about 2 ms with Redlock across three servers.
+What a lock adds to each limited request: nothing measurable with file locks, about 0.65 ms with a Redis lock store (four round trips), and about 2 ms with Redlock across three servers.
 
 A lock lasts 5 seconds if the process holding it dies, so that key's requests wait at most that long. If the lock store cannot be reached, limited requests fail with an error instead of going through uncounted. Redlock keeps working while more than half of its servers are up.

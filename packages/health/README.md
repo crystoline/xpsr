@@ -140,6 +140,6 @@ Invalid values fail when the checks are first used, with the setting's name.
 | `Crystoline\Xpsr\Health\Http\HealthController` | `live()` and `ready()`, for a route file. |
 | `Crystoline\Xpsr\Health\Exposure` | Whether a request may see a report's details. Shared. |
 
-Not provided: a Prometheus metrics endpoint (metrics belong with the telemetry package when they come), a status page with history, and sending alerts itself (the event is the hook).
+Not provided: a Prometheus metrics endpoint, a status page with history, and sending alerts itself (the event is the hook).
 
 Requires PHP 8.4+. The database, cache, queue, scheduler, lock, and HTTP client packages are optional and detected.

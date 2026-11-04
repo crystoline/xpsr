@@ -132,7 +132,7 @@ Any [Symfony Validator constraint](https://symfony.com/doc/current/reference/con
 public readonly string $new,
 ```
 
-Messages are in English.
+Messages are in English, or in the request's language with [`crystoline/xpsr-translation`](../translation/README.md).
 
 ## Without a class
 

@@ -30,7 +30,7 @@ return [
     // The transport queue() uses; null for queue.default.
     'queue' => null,
     'sms' => [
-        // termii://API_KEY@default?from=MPAY&channel=generic, twilio://SID:TOKEN@default?from=+15005550006, ...
+        // termii://API_KEY@default?from=ACME&channel=generic, twilio://SID:TOKEN@default?from=+15005550006, ...
         // "<dsn> || <dsn>" fails over to a second provider. log://default writes to the log.
         'dsn' => env('SMS_DSN', 'log://default'),
     ],
@@ -167,7 +167,7 @@ Symfony has bridges for about fifty providers. `termii://… || twilio://…` se
 `toSms()` returns the text, or a Symfony `SmsMessage` for a sender ID or a provider's options:
 
 ```php
-return new SmsMessage((string) $to->notificationAddress('sms'), "Your code is {$this->code}", from: 'MPAY');
+return new SmsMessage((string) $to->notificationAddress('sms'), "Your code is {$this->code}", from: 'ACME');
 ```
 
 For a provider without a bridge, such as Africa's Talking, write a Symfony Notifier transport and its factory, and list the factory class in `notifications.sms.factories`. Or write a channel (see [Your own channels](#your-own-channels)).
@@ -340,6 +340,6 @@ To send for real in tests, set `SMS_DSN=array://default` and `MAIL_DSN=array://d
 
 Commands: `make:notification`, `make:notifications-table`, `make:push-subscriptions-table`, and `webpush:keys` (`--write` sets the keys in `.env`; `--force` replaces keys that are set).
 
-This package's tests run against SQLite, MySQL 8.4, MariaDB 11, and PostgreSQL 17. Web push is checked by decrypting each push as a browser would and verifying its VAPID signature.
+The database and web push channels work on SQLite, MySQL 8.4, MariaDB 11, and PostgreSQL 17.
 
 Requires PHP 8.4+.

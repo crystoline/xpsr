@@ -197,7 +197,7 @@ Invalid values fail on first use with the setting's name.
 
 ## Testing
 
-Tests of an API behind the `oauth2` guard use `actingAs($user, 'api', ['orders:read'])` as with any token; to act as a client, pass the `Client` from `Clients::create()`. The package's own tests run the real flows with keys made once per process.
+Tests of an API behind the `oauth2` guard use `actingAs($user, 'api', ['orders:read'])` as with any token; to act as a client, pass the `Client` from `Clients::create()`.
 
 ## Not provided
 

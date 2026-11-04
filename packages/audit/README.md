@@ -1,6 +1,6 @@
 # crystoline/xpsr-audit
 
-An audit log for XPSR applications: who changed what, when, and from where, with the values before and after. Entries are recorded by hand where something happens, and automatically for Eloquent models and Doctrine entities that ask for it. Support, finance, and auditors read it; nothing in it is changed once written.
+An audit log for XPSR applications: who changed what, when, and from where, with the values before and after. Entries are recorded by hand where something happens, and automatically for Eloquent models and Doctrine and Cycle entities that ask for it. Support, finance, and auditors read it; nothing in it is changed once written.
 
 ```sh
 composer require crystoline/xpsr-audit
@@ -130,4 +130,4 @@ final class RefundTest extends TestCase
 
 ## Deployment
 
-The log grows with every change; schedule `audit:prune` and keep the table on a connection whose backups match the retention you need. Entries are written in the same transaction as the change they describe, with the application's database connection, so they cost one insert each. There is no hash chain yet: the log shows what the application recorded, not that nobody altered the table afterwards.
+The log grows with every change; schedule `audit:prune` and keep the table on a connection whose backups match the retention you need. Entries are written in the same transaction as the change they describe, with the application's database connection, so they cost one insert each. There is no hash chain: the log shows what the application recorded, not that nobody altered the table afterwards.

@@ -1,6 +1,8 @@
 # XPSR implementation status
 
-The proposal and its default decisions were accepted on 26 October 2026. This file tracks implementation separately from the original assessment in `FRAMEWORK_PLAN.md`.
+> The build log of XPSR: what each slice delivered, what was verified, and what was left out and why. Kept as a record for contributors; the guides in this directory and the package READMEs describe XPSR as released.
+
+The plan in `FRAMEWORK_PLAN.md` and its default decisions were accepted on 26 October 2026. This file tracks the implementation separately from it.
 
 ## First milestone: completed — bootstrap and testable HTTP handling
 
@@ -417,8 +419,18 @@ What each design left out, with the reason, so that it is a decision on record r
 - **Telemetry (`crystoline/xpsr-telemetry`).** Metrics and OpenTelemetry logs: traces first; metrics can follow once there is a use for them. The gRPC transport: OTLP over HTTP serves every collector without an extension. Spans for Symfony's `HttpClientInterface` (its responses are lazy, so a span would end before the status is known), views, and cache calls. Spans for `queue:work`, `schedule:work`, and `serve`: a span as long as the process is useless, and would make every job part of one trace.
 - **Notifications (`crystoline/xpsr-notifications`).** Slack and chat channels, mobile push (FCM, APNs), real-time broadcasting (`crystoline/xpsr-broadcast` publishes to browsers; a notification channel for it can follow), and holding a send until a database transaction commits (the queue's `#[AfterCommit]` now covers the queued case).
 - **`migrate:baseline` (`crystoline/xpsr-database`).** Data, views, triggers, and stored procedures: DBAL's portable schema cannot express them, so the command names the views and sequences it saw and leaves them to the application.
-- **Authentication.** Registration, password reset, email verification, social login, two-factor sign-in, and "remember me" cookies: application code, or packages, once the mail and OAuth pieces they need exist (`docs/AUTH.md`).
-- **Moving from Laravel.** Facades, route model binding, form request `authorize()`, service injection into controller methods, Octane, Tinker, and the route and configuration caches, each explained in `docs/FROM_LARAVEL.md`. Translations are planned for 0.7.0.
+- **Authentication.** Registration, password reset, email verification, social login, two-factor sign-in, and "remember me" cookies: application code on the mail package, or packages of their own (`docs/AUTH.md`).
+- **Moving from Laravel.** Facades, route model binding, form request `authorize()`, service injection into controller methods, Octane, Tinker, and the route cache, each explained in `docs/FROM_LARAVEL.md`; the configuration cache came in the forty-sixth milestone.
+
+## Forty-eighth milestone: completed — documentation by audience
+
+Done on 4 November 2026. The guides and package READMEs are written for the people who build applications with XPSR; what contributors and maintainers need moved out of them.
+
+- `CONTRIBUTING.md` at the root: reporting bugs, proposing changes, the setup, the checks, where tests go, the rules between packages, the documentation habits, pull requests, adding a package, and, for maintainers, releasing and how publishing works. It is listed in `docs/README.md`, so the website has it under Project.
+- `docs/PACKAGES.md` keeps what an application installs, the package table, versions, and the repositories; `docs/VERSIONING.md` lost its release steps; `README.md` is the front page: what XPSR is, how to start, the guides, the packages, contributing.
+- The guides lost milestone and "initial" language, the migration notes from the pre-release design (routing, container), the descriptions of the framework's own tests (HTTP, console, routing), the plans inside "not provided" sentences, and the stale sentences (no database yet, the mail component, the configuration cache that XPSR "does not need"). The READMEs state support ("works on SQLite, MySQL 8.4, MariaDB 11, and PostgreSQL 17") instead of describing their test suites, and the Sunrise adapter no longer calls itself a migration path.
+- This file and `FRAMEWORK_PLAN.md` carry a header saying they are the build log and the plan, and the README no longer presents them as the roadmap.
+- The first-publication steps and the rehearsal record were deleted: done, and in git history.
 
 ## Forty-seventh milestone: completed — configuration without Illuminate
 
@@ -759,4 +771,4 @@ Tagged `v0.2.0` in all eight repositories. Packagist serves 0.2.0 for every pack
 
 ## Next implementation slice
 
-Every component in `FRAMEWORK_PLAN.md` section 10 is done and released in 0.4.0, and the work for moving from Laravel in 0.5.0. Ten packages were chosen on 1 November 2026, for two releases: 0.6.0 with API resources, the installer, webhooks, the audit log, and OpenTelemetry tracing (all released in 0.6.0 on 2 November 2026); 0.7.0 with health checks, translation, broadcasting on Mercure, an OAuth2 server, and a Cycle ORM adapter (all released in 0.7.0 on 3 November 2026). The Sunrise adapter then moved to `sunrise/http-router` 3, which ended the `psr/http-message` 1.x pin the 0.7.0 release record describes. The password hash setting followed (forty-fifth milestone), then the configuration cache (forty-sixth) and the framework's own `Configuration` in place of Illuminate Config (forty-seventh); the route cache stays left out on the sixteenth milestone's numbers. The 0.8.0 release comes next. Settle a component's open decisions with the user before starting it. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Adding a package" in `PACKAGES.md`.
+Every component in `FRAMEWORK_PLAN.md` section 10 is done and released in 0.4.0, and the work for moving from Laravel in 0.5.0. Ten packages were chosen on 1 November 2026, for two releases: 0.6.0 with API resources, the installer, webhooks, the audit log, and OpenTelemetry tracing (all released in 0.6.0 on 2 November 2026); 0.7.0 with health checks, translation, broadcasting on Mercure, an OAuth2 server, and a Cycle ORM adapter (all released in 0.7.0 on 3 November 2026). The Sunrise adapter then moved to `sunrise/http-router` 3, which ended the `psr/http-message` 1.x pin the 0.7.0 release record describes. The password hash setting followed (forty-fifth milestone), then the configuration cache (forty-sixth) and the framework's own `Configuration` in place of Illuminate Config (forty-seventh); the route cache stays left out on the sixteenth milestone's numbers. The documentation was then sorted by audience (forty-eighth milestone). The 0.8.0 release comes next. A component's open decisions are settled before it is started. A new package needs its own mirror repository, the `SPLIT_TOKEN` scope, and a Packagist entry before `scripts/split.sh` can publish it; see "Publishing a new package" in `CONTRIBUTING.md`.

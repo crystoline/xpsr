@@ -30,7 +30,7 @@ Only `public/` may be exposed. Everything else (`.env`, `config/`, `vendor/`, `c
 
 **Apache.** Set the `DocumentRoot` to `public/`, enable `mod_rewrite`, and allow the included `public/.htaccess` (`AllowOverride All`, or copy its rules into the virtual host). The rules send every request that is not an existing file to `index.php` and pass the `Authorization` header through.
 
-**nginx with PHP-FPM** (a starting point; the test suite covers Apache and PHP's built-in server, not nginx):
+**nginx with PHP-FPM** (a starting point; Apache and PHP's built-in server are the configurations XPSR is tested on):
 
 ```nginx
 server {
@@ -77,7 +77,7 @@ With a configuration cache (`php xpsr config:cache`, see Performance), values fr
 
 Exceptions become JSON or HTML error responses (see [HTTP.md](HTTP.md)). Server errors (5xx) are logged with their stack trace through PHP's `error_log()`: into the web server's or PHP-FPM's error log, or the file named by the `error_log` ini setting. To use a different logger, bind `Psr\Log\LoggerInterface` in `config/factory.php`, for example to Monolog.
 
-Keep `display_errors=Off` in production. PHP warnings and deprecation notices printed before the response would corrupt it. The response emitter refuses to send such a response and logs `Cannot send the response: output already started`. With output buffering on (the production default), the client then gets a clean 500 instead. XPSR's minimum dependency versions are chosen so that none of them emit deprecation notices on PHP 8.4 or 8.5, and CI checks this.
+Keep `display_errors=Off` in production. PHP warnings and deprecation notices printed before the response would corrupt it. The response emitter refuses to send such a response and logs `Cannot send the response: output already started`. With output buffering on (the production default), the client then gets a clean 500 instead. XPSR's minimum dependency versions are chosen so that none of them emit deprecation notices on PHP 8.4 or 8.5.
 
 If the application cannot boot at all, `public/index.php` logs the cause and returns a plain "Internal Server Error".
 
@@ -164,7 +164,7 @@ With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user 
 
 ## Notifications
 
-- **SMS** needs the provider's credentials in `SMS_DSN`, such as `termii://API_KEY@default?from=MPAY&channel=generic`. The default, `log://default`, only writes each SMS to the log.
+- **SMS** needs the provider's credentials in `SMS_DSN`, such as `termii://API_KEY@default?from=ACME&channel=generic`. The default, `log://default`, only writes each SMS to the log.
 - **Web push keys** (`VAPID_PUBLIC_KEY` and `VAPID_PRIVATE_KEY`) must stay the same across deploys and servers. Browsers that subscribed with one public key get no pushes signed with another.
 - **Queued notifications** need queue workers (see [Queue workers](#queue-workers)). A channel that fails is retried alone, so a retry does not send the other channels again.
 - See [the notifications package](../packages/notifications/README.md).
@@ -181,7 +181,7 @@ With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user 
 
 - **`AuditContextMiddleware`** must be in `app.middleware` for entries to carry the client IP and user agent; the IP respects `app.trusted_proxies`.
 - **Retention is yours to set:** the log grows with every recorded change. Schedule `php xpsr audit:prune --days=<retention>`, and keep the table where your backups keep it as long as you must.
-- **It records, it does not seal:** there is no hash chain yet, so the log shows what the application wrote, not that the table was never altered. Restrict write access to it in the database.
+- **It records, it does not seal:** there is no hash chain, so the log shows what the application wrote, not that the table was never altered. Restrict write access to it in the database.
 - See [the audit package](../packages/audit/README.md).
 
 ## Telemetry
@@ -225,7 +225,7 @@ With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user 
 
 - Enable OPcache. With `opcache.validate_timestamps=0`, reload PHP-FPM or Apache on every deploy.
 - `--optimize-autoloader` builds a class map for faster autoloading.
-- Run `php xpsr config:cache` when deploying, after the files and `.env` are in place. The application then reads `var/cache/config.php`, the merged configuration with `env()` resolved, instead of the configuration files, which saves about 0.3 ms of the 0.35 ms a request spent on them (measured on PHP 8.4 in Docker with OPcache). Sections whose files hold closures or objects, such as the skeleton's `config/factory.php`, are still read from their files. The cache records a hash of each file it came from and of `.env`: after a change, the application reads the files instead and warns on every command and in the log until `config:cache` runs again, so a stale cache costs time, never correctness. With `opcache.validate_timestamps=0`, reload PHP after `config:cache`.
+- Run `php xpsr config:cache` when deploying, after the files and `.env` are in place. The application then reads `var/cache/config.php`, the merged configuration with `env()` resolved, instead of the configuration files, which saves about 0.3 ms of the 0.35 ms a request spent on them (on PHP 8.4 with OPcache). Sections whose files hold closures or objects, such as the skeleton's `config/factory.php`, are still read from their files. The cache records a hash of each file it came from and of `.env`: after a change, the application reads the files instead and warns on every command and in the log until `config:cache` runs again, so a stale cache costs time, never correctness. With `opcache.validate_timestamps=0`, reload PHP after `config:cache`.
 - Route files load on each request; there is no route cache. With OPcache, the skeleton boots and answers a request in under 1 ms, and building 300 routes with the FastRoute adapter takes about 6 ms. A cache would save a few milliseconds only for very large route sets, and would have to refuse closures as handlers, which the skeleton's `/hello` route uses.
 
 ## Cycle ORM
@@ -233,9 +233,9 @@ With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user 
 - **Schema cache.** With `crystoline/xpsr-orm-cycle`, run `php xpsr cycle:schema:cache` when deploying, so that production reads the compiled schema from `var/cache/cycle-schema.php` instead of scanning the entity classes on each request; run it again after changing entities. With `APP_DEBUG` on, the entities are compiled on each request.
 - See [the Cycle ORM package](../packages/orm-cycle/README.md).
 
-## Not provided yet
+## Not provided
 
-- **Long-running servers** (RoadRunner, FrankenPHP worker mode, Swoole). Isolation between requests in a single long-running process has not been verified.
+- **Long-running servers** (RoadRunner, FrankenPHP worker mode, Swoole). XPSR serves one request per process, as PHP-FPM and Apache do; it is not tested in a process that serves many, and the global helpers assume one application per process.
 
 ## After deploying
 

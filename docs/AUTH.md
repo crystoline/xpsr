@@ -377,4 +377,4 @@ public function testTheApiNeedsTheReadScope(): void
 
 ## Not included
 
-Registration, password reset, and email verification are application code for now; password reset emails wait for the mail component. Social login (signing in with Google or GitHub; `league/oauth2-client` does it), two-factor sign-in, and "remember me" cookies are not provided. An OAuth2 server, for other applications that act for your users, is [`crystoline/xpsr-auth-oauth2-server`](../packages/auth-oauth2-server/README.md).
+Registration, password reset, and email verification are application code: a few routes and views, with [`crystoline/xpsr-mail`](../packages/mail/README.md) for the emails. Social login (signing in with Google or GitHub; `league/oauth2-client` does it), two-factor sign-in, and "remember me" cookies are not provided. An OAuth2 server, for other applications that act for your users, is [`crystoline/xpsr-auth-oauth2-server`](../packages/auth-oauth2-server/README.md).

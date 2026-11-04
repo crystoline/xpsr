@@ -220,6 +220,6 @@ With `QUEUE_DSN=sync://` in tests, jobs instead run at once.
 | `Symfony\Component\Messenger\MessageBusInterface` | The Messenger bus the queue uses. |
 | `Crystoline\Xpsr\Queue\BusMiddleware` | Messenger middleware other providers add to the bus. Shared. |
 
-This package's tests run against SQLite, MySQL 8.4, MariaDB 11, and PostgreSQL 17.
+The database transport works on SQLite, MySQL 8.4, MariaDB 11, and PostgreSQL 17.
 
 Requires PHP 8.4+.

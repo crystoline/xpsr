@@ -105,7 +105,7 @@ Values are stored in Laravel's format, so columns that a Laravel application enc
 
 `Crystoline\Xpsr\Database\Testing\DatabaseTransactions` from the database package covers models too: they write through the same connection, so their changes are rolled back after each test.
 
-This adapter passes `Crystoline\Xpsr\Database\Testing\OrmAdapterContractTestCase`. Its tests, including transactions nested both ways, run against SQLite, MySQL 8.4, MariaDB 11, and PostgreSQL 17.
+The adapter uses XPSR's connection and transaction, reads data written by plain queries, and drops its state between requests. It works on SQLite, MySQL 8.4, MariaDB 11, and PostgreSQL 17, transactions nested both ways included.
 
 Static analysis tools do not see Eloquent's static forwarding (`Task::where(...)`); `Task::query()->where(...)` is the same call and is understood.
 

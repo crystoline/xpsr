@@ -1,6 +1,8 @@
 # XPSR framework completion plan
 
-Prepared on 26 October 2026 from the working tree, including the unfinished namespace migration. The user accepted this proposal and all default decisions on 26 October 2026. The APIs, commands, and package names below describe the target; consult `IMPLEMENTATION_STATUS.md` for delivered work.
+> The plan the rebuild of XPSR followed, kept as a record. It is not documentation: the guides in this directory and the package READMEs describe XPSR as released, and [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md) is the log of what each slice delivered.
+
+Prepared on 26 October 2026 from the working tree, including the unfinished namespace migration, and accepted with all its default decisions the same day. The APIs, commands, and package names below describe the target; `IMPLEMENTATION_STATUS.md` has the delivered work.
 
 **Direction:** Build a small PHP framework with a PSR-based HTTP core, interchangeable integrations, and a convenient application skeleton. Keep XPSR's own application lifecycle, routing API, service providers, commands, and developer experience. Use existing implementations where that reduces maintenance without limiting those choices.
 

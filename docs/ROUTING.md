@@ -13,7 +13,7 @@ Each adapter is its own Composer package, so an application installs only the ro
 | `fastroute` | `crystoline/xpsr-router-fastroute` | `Crystoline\Xpsr\Router\FastRoute\FastRouteRouter` | FastRoute 1.3 |
 | `sunrise` | `crystoline/xpsr-router-sunrise` | `Crystoline\Xpsr\Router\Sunrise\SunriseRouter` | Sunrise 3.4 |
 
-The skeleton requires the FastRoute adapter. The Sunrise adapter is a suggestion and, in this repository, a development requirement so both adapters are tested. A `composer install --no-dev` deployment includes Sunrise only after `composer require crystoline/xpsr-router-sunrise`, which setup runs for you. The framework knows these two names without depending on either package. If the selected adapter is not installed, resolving the router fails with the setup command to run.
+The skeleton requires the FastRoute adapter. The Sunrise adapter is a suggestion: an application includes it only after `composer require crystoline/xpsr-router-sunrise`, which setup runs for you. The framework knows these two names without depending on either package. If the selected adapter is not installed, resolving the router fails with the setup command to run.
 
 A custom adapter can be configured by its service class. It must implement `RouterInterface`; register a container factory if it needs dependencies beyond autowiring. The built-in adapters use the shared collection. Replace the `RouterInterface` binding directly for a different registration arrangement.
 
@@ -49,8 +49,8 @@ The collection freezes when loaded by the provider or first consumed by an adapt
 
 - Paths start with one slash. Static segments use ASCII letters, digits, dots, underscores, hyphens, and tildes.
 - A placeholder occupies a whole segment, such as `/users/{id}`. Names start with a letter or underscore, contain only letters/digits/underscores, and have at most 32 characters. Repeated names and the reserved names `_route` and `_route_params` are rejected.
-- Constraints use `where()`, not inline vendor syntax. Initially supported: `\d+` and positive ASCII character classes followed by `+`, such as `[0-9]+`, `[a-z]+`, or `[A-Za-z0-9_-]+`. Ranges must match only letters, digits, underscores, or hyphens.
-- Optional segments, partial-segment placeholders, catch-all slashes, host patterns, arbitrary regexes, and wildcard methods are outside this initial grammar and fail at registration.
+- Constraints use `where()`, not inline vendor syntax. Supported: `\d+` and positive ASCII character classes followed by `+`, such as `[0-9]+`, `[a-z]+`, or `[A-Za-z0-9_-]+`. Ranges must match only letters, digits, underscores, or hyphens.
+- Optional segments, partial-segment placeholders, catch-all slashes, host patterns, arbitrary regexes, and wildcard methods are outside the grammar and fail at registration.
 - Matching is case-sensitive and trailing slashes are significant. Query strings do not affect selection.
 - For a requested method, static routes win over variable routes regardless of declaration order. Overlapping variable routes use declaration order; put constrained routes before broader routes. Identical patterns for the same method are rejected even if placeholder names differ. Semantically overlapping but textually different constraints remain ordered.
 - Paths are normalized segment by segment. Parameters decode once; generated values encode once. UTF-8, spaces, plus signs, and literal percent signs work in unconstrained parameters. Encoded slash/backslash, controls, invalid UTF-8, and dot segments are rejected as unmatched paths. A literal value `%2F` generates `%252F` and is returned as `%2F`, without a second decoding pass. Do not decode route attributes again.
@@ -106,16 +106,14 @@ $path = $urls->generate('users.show', ['id' => 42], ['tab' => 'profile details']
 // /users/42?tab=profile%20details
 ```
 
-Parameters accept strings and integers. Unknown route names, missing/extra path parameters, unsupported values, and constraint violations throw `InvalidArgumentException`. Query parameters are supplied separately and encoded with PHP's RFC 3986 query builder. Generated URLs are root-relative paths; absolute URLs, host/scheme selection, and signed URLs are not part of this milestone.
+Parameters accept strings and integers. Unknown route names, missing/extra path parameters, unsupported values, and constraint violations throw `InvalidArgumentException`. Query parameters are supplied separately and encoded with PHP's RFC 3986 query builder. Generated URLs are root-relative paths; absolute URLs, host and scheme selection, and signed URLs are not provided.
 
-## Adapter contract and migration
+## Adapter contract
 
 `RouterInterface::match(ServerRequestInterface): RouteMatch` returns a matched definition and decoded parameters, or a missing result. A missing result with an empty allowed-method list means 404; a nonempty list means method-not-allowed (or automatic OPTIONS when requested). Matching never invokes controllers or middleware.
 
-Custom adapters must implement the documented ordering, normalization, HEAD fallback, and allowed-method policy. `AbstractRouter` supplies that policy for the built-in adapters; its native matcher must perform exact-method matching with encoded parameters. To prove an adapter, extend `Crystoline\Xpsr\Testing\RouterContractTestCase` in its tests and implement `createRouter()`. Both official adapters run exactly this suite (it needs `phpunit/phpunit` and `nyholm/psr7` as development dependencies).
+Custom adapters must implement the documented ordering, normalization, HEAD fallback, and allowed-method policy. `AbstractRouter` supplies that policy for the built-in adapters; its native matcher must perform exact-method matching with encoded parameters. To prove an adapter, extend `Crystoline\Xpsr\Testing\RouterContractTestCase` in its tests and implement `createRouter()`. The suite needs `phpunit/phpunit` and `nyholm/psr7` as development dependencies.
 
-The previous `RouterInterface::dispatch()`, Sunrise-bound route files, framework `Routing\Router` wrapper, and `getUnderlyingRouter()` are replaced by this API. Move native registrations to callable collection files; update custom kernel construction to pass a PSR-15 terminal handler, exception handler, PSR-17 stream factory, and optional middleware. Native Sunrise route handlers/middleware are no longer executed by the adapter.
-
-The same adapter contract tests cover Sunrise and FastRoute. Application integration tests switch adapters using the same example files. `php xpsr route:list` inspects these definitions; see `CONSOLE.md` for filters and JSON output. There is no route cache ([DEPLOYMENT.md](DEPLOYMENT.md#performance) gives the numbers); advanced route grammar and comprehensive emitter/session integration remain later work.
+`php xpsr route:list` inspects these definitions; see `CONSOLE.md` for filters and JSON output. There is no route cache; [DEPLOYMENT.md](DEPLOYMENT.md#performance) gives the numbers.
 
 Upstream references: [FastRoute](https://github.com/nikic/FastRoute/tree/v1.3.0), [Sunrise router](https://github.com/sunrise-php/http-router), [PHP-FIG accepted standards](https://www.php-fig.org/psr/).

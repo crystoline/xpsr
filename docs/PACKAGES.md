@@ -1,231 +1,69 @@
 # XPSR packages
 
-XPSR is developed in one repository and installed as separate Composer packages. Applications get only the router they use, and the framework never depends on the application skeleton.
+XPSR is a set of Composer packages with one version number. An application installs the framework, one router adapter, and the optional packages it wants, and nothing else comes along: the framework does not depend on the application skeleton, and no package depends on one it does not use.
+
+## What an application starts with
+
+`composer create-project crystoline/xpsr` (or `xpsr new`) installs:
+
+| Package | Why |
+|---|---|
+| `crystoline/xpsr-framework` | The framework: lifecycle, container, HTTP kernel, routing, views, sessions, authentication, console. |
+| `crystoline/xpsr-router-fastroute` | The default router adapter. `php xpsr setup --router=sunrise` swaps it for the Sunrise one. |
+| `nyholm/psr7` | The PSR-7 and PSR-17 implementation `config/factory.php` uses. |
+| `twig/twig` | Views, for the `web` preset. An API-only application can remove it. |
+| `filp/whoops` (development) | Detailed error pages with `APP_DEBUG=true`. |
+
+Everything else is optional: `composer require` the package, add its registry to `app.registry` where its README says so, and it is in. Each README has the setup, the configuration, and what the package does not do.
 
 ## Packages and dependencies
-
-```text
-crystoline/xpsr (skeleton, repository root)
-├── crystoline/xpsr-framework          packages/framework
-├── crystoline/xpsr-router-fastroute   packages/router-fastroute ──► framework, nikic/fast-route
-├── nyholm/psr7                        PSR-7/17 implementation used by config/factory.php
-├── twig/twig                          views (the web example); API-only apps can remove it
-├── (dev) filp/whoops                  detailed debug error pages
-├── (suggested) crystoline/xpsr-router-sunrise   packages/router-sunrise ──► framework, sunrise/http-router
-├── (suggested) crystoline/xpsr-cache            packages/cache ──► framework, symfony/cache
-├── (suggested) crystoline/xpsr-http-client     packages/http-client ──► framework, symfony/http-client
-├── (suggested) crystoline/xpsr-database        packages/database ──► framework, doctrine/dbal
-├── (suggested) crystoline/xpsr-orm-doctrine    packages/orm-doctrine ──► framework, database, doctrine/orm
-├── (suggested) crystoline/xpsr-orm-eloquent    packages/orm-eloquent ──► framework, database, illuminate/database
-├── (suggested) crystoline/xpsr-orm-cycle       packages/orm-cycle    ──► framework, database, cycle/orm
-├── (suggested) crystoline/xpsr-queue           packages/queue ──► framework, database, symfony/messenger
-├── (suggested) crystoline/xpsr-mail            packages/mail ──► framework, symfony/mailer
-├── (suggested) crystoline/xpsr-lock            packages/lock ──► framework, symfony/lock
-├── (suggested) crystoline/xpsr-notifications   packages/notifications ──► framework, symfony/notifier
-├── (suggested) crystoline/xpsr-scheduler       packages/scheduler ──► framework, dragonmantank/cron-expression, symfony/lock
-├── (suggested) crystoline/xpsr-storage         packages/storage ──► framework, league/flysystem
-├── (suggested) crystoline/xpsr-view-plates     packages/view-plates ──► framework, league/plates
-├── (suggested) crystoline/xpsr-view-latte      packages/view-latte ──► framework, latte/latte
-├── (suggested) crystoline/xpsr-view-blade      packages/view-blade ──► framework, illuminate/view
-├── (suggested) crystoline/xpsr-log-monolog     packages/log-monolog ──► framework, monolog/monolog
-├── (suggested) crystoline/xpsr-validation      packages/validation ──► framework, symfony/validator
-└── (suggested) crystoline/xpsr-auth-jwt        packages/auth-jwt ──► framework, lcobucci/jwt
-```
 
 | Package | Namespace | Depends on |
 |---|---|---|
 | `crystoline/xpsr-framework` | `Crystoline\Xpsr\` | PSR interfaces, Symfony Console and Process, phpdotenv, Nyholm PSR-7 server, and any PSR-17 implementation (`psr/http-factory-implementation`). Accepts `psr/http-message` 1.1 or 2.0. Suggests Twig (views) and Whoops (debug pages), but does not require them. |
 | `crystoline/xpsr-router-fastroute` | `Crystoline\Xpsr\Router\FastRoute\` | framework, `nikic/fast-route` ^1.3 |
-| `crystoline/xpsr-cache` | `Crystoline\Xpsr\Cache\` | framework, `symfony/cache` ^7.4, `symfony/rate-limiter` ^7.4, `psr/cache` 2 or 3, `psr/simple-cache` 1 to 3 (1.x keeps it installable next to the Sunrise adapter) |
+| `crystoline/xpsr-router-sunrise` | `Crystoline\Xpsr\Router\Sunrise\` | framework, `sunrise/http-router` ^3.4, `psr/http-message` ^1.1 or ^2.0, `psr/http-server-handler`, `psr/http-server-middleware` |
+| `crystoline/xpsr-installer` | `Crystoline\Xpsr\Installer\` | `symfony/console` and `symfony/process` 7.4 or 8, and nothing of XPSR: it is installed globally and runs Composer and a project's own commands. Provides the `xpsr` binary. |
+| `crystoline/xpsr-cache` | `Crystoline\Xpsr\Cache\` | framework, `symfony/cache` ^7.4, `symfony/rate-limiter` ^7.4, `psr/cache` 2 or 3, `psr/simple-cache` 1 to 3 |
 | `crystoline/xpsr-database` | `Crystoline\Xpsr\Database\` | framework, `doctrine/dbal` ^4.5. |
 | `crystoline/xpsr-orm-doctrine` | `Crystoline\Xpsr\Orm\Doctrine\` | framework, database, `doctrine/orm` ^3.7, `doctrine/persistence` ^4.1, `symfony/cache` ^7.4. |
 | `crystoline/xpsr-orm-eloquent` | `Crystoline\Xpsr\Orm\Eloquent\` | framework, database, `illuminate/database` ^12.0, `illuminate/events` ^12.0. |
 | `crystoline/xpsr-orm-cycle` | `Crystoline\Xpsr\Orm\Cycle\` | framework, database, `cycle/orm` ^2.18, `cycle/annotated` ^4.6, `cycle/schema-builder` ^2.12, `cycle/entity-behavior` ^1.7, `spiral/tokenizer` ^3.17. |
+| `crystoline/xpsr-validation` | `Crystoline\Xpsr\Validation\Symfony\` | framework, `symfony/validator` ^7.4, `symfony/property-access` ^7.4. The contract, attributes, and mapping it uses are in the framework (`Crystoline\Xpsr\Validation\`). |
+| `crystoline/xpsr-api` | `Crystoline\Xpsr\Api\` | framework, `psr/http-message` 1.1 or 2.0; `crystoline/xpsr-database`, `crystoline/xpsr-orm-doctrine`, `crystoline/xpsr-orm-eloquent`, and `crystoline/xpsr-orm-cycle` for paging their queries. |
+| `crystoline/xpsr-http-client` | `Crystoline\Xpsr\HttpClient\` | framework, `symfony/http-client` ^7.4, `psr/http-client` ^1.0.3. |
+| `crystoline/xpsr-log-monolog` | `Crystoline\Xpsr\Log\Monolog\` | framework, `monolog/monolog` ^3.9. |
+| `crystoline/xpsr-auth-jwt` | `Crystoline\Xpsr\Auth\Jwt\` | framework, `lcobucci/jwt` ^5.6 (`ext-openssl`, `ext-sodium`). The contracts, session sign-in, and policies are in the framework (`Crystoline\Xpsr\Auth\`); the token driver and database users are in `crystoline/xpsr-database`. |
+| `crystoline/xpsr-auth-oauth2-server` | `Crystoline\Xpsr\Auth\OAuth2\` | framework, database, `league/oauth2-server` 8.5.5 or 9.4, `defuse/php-encryption` 2.4. |
 | `crystoline/xpsr-queue` | `Crystoline\Xpsr\Queue\` | framework, database, `symfony/messenger`, `symfony/doctrine-messenger`, and `symfony/event-dispatcher` 7.4 or 8; Redis, AMQP, and SQS through their Messenger bridges. |
 | `crystoline/xpsr-mail` | `Crystoline\Xpsr\Mail\` | framework, `symfony/mailer` and `symfony/mime` 7.4 or 8; `crystoline/xpsr-queue` for queued email; providers through Symfony's mailer bridges. |
 | `crystoline/xpsr-lock` | `Crystoline\Xpsr\Lock\` | framework, `symfony/lock` and `symfony/clock` 7.4 or 8; `symfony/cache` with phpredis or `predis/predis` for Redis and Redlock; `crystoline/xpsr-database` for the database store. |
 | `crystoline/xpsr-notifications` | `Crystoline\Xpsr\Notifications\` | framework, `symfony/notifier` 7.4 or 8; `crystoline/xpsr-mail` for the mail channel, `crystoline/xpsr-database` for the database and webpush channels, `minishlink/web-push` ^11 for web push, `crystoline/xpsr-queue` for queued notifications; SMS providers through Symfony's notifier bridges. |
-| `crystoline/xpsr-installer` | `Crystoline\Xpsr\Installer\` | `symfony/console` and `symfony/process` 7.4 or 8, and nothing of XPSR: it is installed globally and runs Composer and a project's own commands. Provides the `xpsr` binary. |
-| `crystoline/xpsr-api` | `Crystoline\Xpsr\Api\` | framework, `psr/http-message` 1.1 or 2.0; `crystoline/xpsr-database`, `crystoline/xpsr-orm-doctrine`, `crystoline/xpsr-orm-eloquent`, and `crystoline/xpsr-orm-cycle` for paging their queries. |
+| `crystoline/xpsr-scheduler` | `Crystoline\Xpsr\Scheduler\` | framework, `dragonmantank/cron-expression` ^3.4, `symfony/lock` 7.4 or 8; `crystoline/xpsr-queue` for scheduled jobs. |
+| `crystoline/xpsr-storage` | `Crystoline\Xpsr\Storage\` | framework, `league/flysystem`, `league/flysystem-local`, and `league/flysystem-memory` ^3.29; `league/flysystem-async-aws-s3` for the s3 driver. |
 | `crystoline/xpsr-webhooks` | `Crystoline\Xpsr\Webhooks\` | framework, database, queue, and http-client; `symfony/console` 7.4 or 8. Endpoint secrets use the framework's `Encrypter` (`APP_KEY`). |
-| `crystoline/xpsr-audit` | `Crystoline\Xpsr\Audit\` | framework and database; `symfony/console` 7.4 or 8. The Eloquent, Doctrine, and Monolog packages are detected when installed. |
+| `crystoline/xpsr-audit` | `Crystoline\Xpsr\Audit\` | framework and database; `symfony/console` 7.4 or 8. The Eloquent, Doctrine, Cycle, and Monolog packages are detected when installed. |
 | `crystoline/xpsr-telemetry` | `Crystoline\Xpsr\Telemetry\` | framework and http-client; `open-telemetry/sdk` ^1.15, `open-telemetry/exporter-otlp` ^1.4 (which bring `google/protobuf`). The database, queue, scheduler, and Monolog packages are detected when installed. |
 | `crystoline/xpsr-health` | `Crystoline\Xpsr\Health\` | framework; `symfony/console` 7.4 or 8. The database, cache, queue, scheduler, lock, and HTTP client packages are detected when installed. |
 | `crystoline/xpsr-translation` | `Crystoline\Xpsr\Translation\` | framework, `symfony/translation` and `symfony/config` 7.4 or 8; `ext-intl` for the ICU format. The validation package is detected when installed. |
 | `crystoline/xpsr-broadcast` | `Crystoline\Xpsr\Broadcast\` | framework, http-client, `lcobucci/jwt` 5.6. The queue and database packages are detected when installed. |
-| `crystoline/xpsr-auth-oauth2-server` | `Crystoline\Xpsr\Auth\OAuth2\` | framework, database, `league/oauth2-server` 8.5.5 or 9.4, `defuse/php-encryption` 2.4. |
-| `crystoline/xpsr-scheduler` | `Crystoline\Xpsr\Scheduler\` | framework, `dragonmantank/cron-expression` ^3.4, `symfony/lock` 7.4 or 8; `crystoline/xpsr-queue` for scheduled jobs. |
-| `crystoline/xpsr-storage` | `Crystoline\Xpsr\Storage\` | framework, `league/flysystem`, `league/flysystem-local`, and `league/flysystem-memory` ^3.29; `league/flysystem-async-aws-s3` for the s3 driver. |
 | `crystoline/xpsr-view-plates` | `Crystoline\Xpsr\View\Plates\` | framework, `league/plates` ^3.6. |
 | `crystoline/xpsr-view-latte` | `Crystoline\Xpsr\View\Latte\` | framework, `latte/latte` ^3.1.2. |
 | `crystoline/xpsr-view-blade` | `Crystoline\Xpsr\View\Blade\` | framework, `illuminate/view`, `illuminate/container`, `illuminate/events`, `illuminate/filesystem`, and `illuminate/support` ^12.0. |
-| `crystoline/xpsr-log-monolog` | `Crystoline\Xpsr\Log\Monolog\` | framework, `monolog/monolog` ^3.9. |
-| `crystoline/xpsr-validation` | `Crystoline\Xpsr\Validation\Symfony\` | framework, `symfony/validator` ^7.4, `symfony/property-access` ^7.4. The contract, attributes, and mapping it uses are in the framework (`Crystoline\Xpsr\Validation\`). |
-| `crystoline/xpsr-auth-jwt` | `Crystoline\Xpsr\Auth\Jwt\` | framework, `lcobucci/jwt` ^5.6 (`ext-openssl`, `ext-sodium`). The contracts, session sign-in, and policies are in the framework (`Crystoline\Xpsr\Auth\`); the token driver and database users are in `crystoline/xpsr-database`. |
-| `crystoline/xpsr-http-client` | `Crystoline\Xpsr\HttpClient\` | framework, `symfony/http-client` ^7.4, `psr/http-client` ^1.0.3. |
-| `crystoline/xpsr-router-sunrise` | `Crystoline\Xpsr\Router\Sunrise\` | framework, `sunrise/http-router` ^3.4, `psr/http-message` ^1.1 or ^2.0, `psr/http-server-handler`, `psr/http-server-middleware` |
 | `crystoline/xpsr` | `App\` | framework, FastRoute adapter, `nyholm/psr7`, `twig/twig`; development: `filp/whoops`, `phpunit/phpunit` |
 
-Rules that keep the split clean:
+How the packages relate:
 
-- The framework must not reference `App\`, skeleton paths, or adapter classes. It knows the official adapter names (`fastroute`, `sunrise`) and their class names only as strings in `RouteServiceRegistry::ADAPTERS`. If the selected adapter is missing, it reports which package to install.
+- The framework never depends on the skeleton or on an adapter. It knows the official adapters by name, `fastroute` and `sunrise`, and if the selected one is not installed, it says which package to install.
 - Adapters depend on the framework, never on each other.
-- Shared test fixtures live in the framework's tests (`Crystoline\Xpsr\Tests\Fixtures\`). Fixtures that need the skeleton live in the root `tests/`.
-
-Known coupling: the `setup` command's presets name the skeleton's route files (`routes/api.php`, `routes/web.php`), and its routing template matches the skeleton's `config/routing.php`. This belongs in an installer package once `xpsr new` exists.
+- An optional package depends on the framework and on the packages it needs, as the table says, and detects the others at run time where it can use them: the health checks find the queue, the audit log finds the ORM, and so on.
 
 ## Versions
 
-`master` is the development line of the next minor release, currently `0.7.x-dev`. When a release starts a new line, such as 0.8, change every occurrence below in one commit.
+Every package is released with the same version number, and each requires the matching framework range: adapter 0.7.x works with framework 0.7.x. Require `^0.7` on every `crystoline/xpsr-*` package and upgrade them together. [VERSIONING.md](VERSIONING.md) says what each kind of release promises, and [UPGRADE.md](../UPGRADE.md) has the steps between minor versions.
 
-- **In this repository**, the root path repository assigns that version through its `versions` option, so it does not depend on Git branch detection.
-- **In the split repositories**, each `composer.json` declares the branch alias `dev-master` → `0.7.x-dev`.
-- **Between packages**, requirements use `^0.7@dev`. Composer ignores stability flags in dependencies, so they also accept the stable `0.7.0` once it is tagged.
-- **The released skeleton** requires `^0.7`: `export-skeleton.php --release` writes that range.
-- **`setup`** derives the adapter constraint from the installed framework: `^0.7` for a 0.7.x release, `^0.7@dev` for a development install. Adapters therefore always match the framework's release line.
+A development install (`xpsr new --dev`, or `composer create-project crystoline/xpsr my-app dev-master`) follows the `master` branches, where unreleased changes are, and which Composer sees as the development version of the current line (`0.7.x-dev`).
 
-`master` moved to `0.2.x-dev` with the namespace change, so that a project following `0.1.x-dev` did not receive it, to `0.3.x-dev` with the 0.3.0 release, to `0.4.x-dev` with the 0.4.0 release, to `0.5.x-dev` with the 0.5.0 release, to `0.6.x-dev` with the 0.6.0 release, and to `0.7.x-dev` with the 0.7.0 release.
+## Repositories
 
-## Working in the monorepo
-
-```sh
-composer install              # links packages/* into vendor/crystoline/
-composer test                 # framework, adapter, and skeleton suites
-composer analyse && composer style
-composer test:packaging       # slower; needs network access
-```
-
-Edits under `packages/` take effect immediately, because `vendor/crystoline/*` are symbolic links. After changing a package's `composer.json`, run `composer update 'crystoline/*'`.
-
-Where tests go:
-
-| Test | Location |
-|---|---|
-| Framework unit tests | `packages/framework/tests` (`Crystoline\Xpsr\Tests\`) |
-| Adapter tests (the shared router contract) | `packages/router-*/tests` |
-| Tests that need the skeleton's files: application boot, console, generators, setup, front controller | `tests/` (`Tests\`) |
-| Installing packages separately and `composer create-project` | `tests/Packaging` (group `packaging`, excluded from `composer test`) |
-
-Each package has its own `phpunit.xml.dist` and runs its tests standalone after `composer install` in its directory. The packaging test does exactly that.
-
-## Exporting the skeleton
-
-```sh
-php scripts/export-skeleton.php /path/to/empty/dir
-```
-
-The script copies the files a new application needs, including the application test scaffold (`tests/TestCase.php`, `tests/Application/`, and a `phpunit.xml` from `scripts/skeleton/`). It writes a `composer.json` without the monorepo-only parts:
-
-- the `packages/*` path repository;
-- autoloading for package tests;
-- the analysis and style tooling and their scripts.
-
-It does not copy `composer.lock`; see [Publishing](#publishing) for why the skeleton ships without one. `--release=X.Y.Z` writes release constraints (`^X.Y`) on the XPSR packages instead of `^0.2@dev`.
-
-The packaging test builds a project from this export with `composer create-project`, using the packages through path repositories without symbolic links. It then checks that:
-
-- only the FastRoute adapter is installed;
-- `setup` works;
-- a real `composer require` of the Sunrise adapter succeeds, including moving `psr/http-message` from 2.x to 1.x;
-- requests are served and generators work;
-- the project's own tests pass;
-- a `composer install --no-dev --optimize-autoloader` production install still serves requests.
-
-`XPSR_DEPENDENCIES=lowest composer test:packaging` installs each package at the lowest versions its constraints allow.
-
-## Lowest dependency versions
-
-The CI job `lowest-dependencies` runs the whole suite after `composer update --prefer-lowest --prefer-stable`, with deprecation notices treated as failures. This guards the minimum versions declared in each `composer.json`. It found that `vlucas/phpdotenv` 5.4, `nyholm/psr7` 1.8.0, `filp/whoops` 2.14, and `symfony/var-dumper` 6.4 print PHP 8.4 deprecation notices that corrupt responses and console output. The minimums are therefore `^5.6.1`, `^1.8.2`, and `^2.16`, plus a `conflict` with `symfony/var-dumper` below 7.4. On PHP 8.5, Whoops before 2.18.4 also uses a deprecated `(integer)` cast, so the Whoops minimum is now `^2.18.4`. The HTTP client package conflicts with `symfony/polyfill-php83` below 1.30, which Symfony HttpClient would otherwise allow and which declares implicitly nullable parameters. For the same reason the validation package conflicts with `symfony/translation-contracts` below 3.5 and with `symfony/property-info` below 6.4.8 and in 7.0.
-
-## Publishing
-
-`scripts/split.sh` publishes the monorepo into twenty-one read-only repositories, and the `split` job in `.github/workflows/ci.yml` runs it after every other CI job passes:
-
-| Repository | Content | Packagist package |
-|---|---|---|
-| `crystoline/xpsr-framework` | `packages/framework`, with its history (`git subtree split`) | `crystoline/xpsr-framework` |
-| `crystoline/xpsr-router-fastroute` | `packages/router-fastroute`, with its history | `crystoline/xpsr-router-fastroute` |
-| `crystoline/xpsr-router-sunrise` | `packages/router-sunrise`, with its history | `crystoline/xpsr-router-sunrise` |
-| `crystoline/xpsr-cache` | `packages/cache`, with its history | `crystoline/xpsr-cache` |
-| `crystoline/xpsr-http-client` | `packages/http-client`, with its history | `crystoline/xpsr-http-client` |
-| `crystoline/xpsr-database` | `packages/database`, with its history | `crystoline/xpsr-database` |
-| `crystoline/xpsr-orm-doctrine` | `packages/orm-doctrine`, with its history | `crystoline/xpsr-orm-doctrine` |
-| `crystoline/xpsr-orm-eloquent` | `packages/orm-eloquent`, with its history | `crystoline/xpsr-orm-eloquent` |
-| `crystoline/xpsr-orm-cycle` | `packages/orm-cycle`, with its history | `crystoline/xpsr-orm-cycle` |
-| `crystoline/xpsr-log-monolog` | `packages/log-monolog`, with its history | `crystoline/xpsr-log-monolog` |
-| `crystoline/xpsr-validation` | `packages/validation`, with its history | `crystoline/xpsr-validation` |
-| `crystoline/xpsr-auth-jwt` | `packages/auth-jwt`, with its history | `crystoline/xpsr-auth-jwt` |
-| `crystoline/xpsr-queue` | `packages/queue`, with its history | `crystoline/xpsr-queue` |
-| `crystoline/xpsr-mail` | `packages/mail`, with its history | `crystoline/xpsr-mail` |
-| `crystoline/xpsr-lock` | `packages/lock`, with its history | `crystoline/xpsr-lock` |
-| `crystoline/xpsr-notifications` | `packages/notifications`, with its history | `crystoline/xpsr-notifications` |
-| `crystoline/xpsr-api` | `packages/api`, with its history | `crystoline/xpsr-api` |
-| `crystoline/xpsr-installer` | `packages/installer`, with its history | `crystoline/xpsr-installer` |
-| `crystoline/xpsr-webhooks` | `packages/webhooks`, with its history | `crystoline/xpsr-webhooks` |
-| `crystoline/xpsr-audit` | `packages/audit`, with its history | `crystoline/xpsr-audit` |
-| `crystoline/xpsr-telemetry` | `packages/telemetry`, with its history | `crystoline/xpsr-telemetry` |
-| `crystoline/xpsr-health` | `packages/health`, with its history | `crystoline/xpsr-health` |
-| `crystoline/xpsr-translation` | `packages/translation`, with its history | `crystoline/xpsr-translation` |
-| `crystoline/xpsr-broadcast` | `packages/broadcast`, with its history | `crystoline/xpsr-broadcast` |
-| `crystoline/xpsr-auth-oauth2-server` | `packages/auth-oauth2-server`, with its history | `crystoline/xpsr-auth-oauth2-server` |
-| `crystoline/xpsr-scheduler` | `packages/scheduler`, with its history | `crystoline/xpsr-scheduler` |
-| `crystoline/xpsr-storage` | `packages/storage`, with its history | `crystoline/xpsr-storage` |
-| `crystoline/xpsr-view-plates` | `packages/view-plates`, with its history | `crystoline/xpsr-view-plates` |
-| `crystoline/xpsr-view-latte` | `packages/view-latte`, with its history | `crystoline/xpsr-view-latte` |
-| `crystoline/xpsr-view-blade` | `packages/view-blade`, with its history | `crystoline/xpsr-view-blade` |
-| `crystoline/xpsr-skeleton` | the output of `scripts/export-skeleton.php`, one sync commit per change | `crystoline/xpsr` |
-
-Each repository is named after its Composer package without the vendor prefix. The skeleton is the exception: its package is `crystoline/xpsr`, so that `composer create-project crystoline/xpsr` works, but its repository is `xpsr-skeleton`, because `crystoline/xpsr` is this monorepo. Development, issues, and pull requests happen in `crystoline/xpsr`. The other repositories are read-only mirrors.
-
-- **A push to `master`** updates each repository's `master` branch. Packages declare the branch alias `dev-master` → `0.7.x-dev`, so `^0.7@dev` resolves to it.
-- **A `v*` tag** pushes that tag to every repository and leaves branches alone. The skeleton's tagged commit is exported with `--release`, so it requires the release range (`^0.7`), while its `master` keeps `^0.7@dev`.
-- **Re-running** with the same commit changes nothing.
-- **Inputs:** everything comes from the committed tree, never the working directory.
-
-The skeleton ships without `composer.lock`: each new application resolves its dependencies at `create-project` time and commits its own lock. This replaces the original plan's "commit the skeleton's lockfile". A shipped lock would pin every new application to the versions current at release time.
-
-### Rehearsal
-
-The split and release flow was rehearsed against local bare repositories:
-
-- Splitting twice produced identical commits.
-- A release tagged every repository.
-- `composer create-project` from them (as VCS repositories) installed framework and FastRoute `0.1.0`, and the application's tests passed.
-- `setup --router=sunrise --install-dependencies` installed the Sunrise adapter `0.1.0` and moved `psr/http-message` to 1.1.
-- A `0.1.x-dev` project resolved the `master` branches through the branch aliases.
-
-To repeat it locally:
-
-```sh
-for r in xpsr-framework xpsr-router-fastroute xpsr-router-sunrise xpsr-cache xpsr-skeleton; do git init --bare /tmp/remotes/$r.git; done
-scripts/split.sh /tmp/remotes master          # branch sync
-scripts/split.sh /tmp/remotes master v0.1.0   # release
-```
-
-### First publication
-
-Owner-only steps, in order:
-
-1. **Repositories.** Create five empty public repositories under `crystoline`: `xpsr-framework`, `xpsr-router-fastroute`, `xpsr-router-sunrise`, `xpsr-cache`, and `xpsr-skeleton`. Describe each as a read-only mirror of `crystoline/xpsr`, and consider turning off issues and pull requests there.
-2. **Token.** Create a fine-grained personal access token with access to those five repositories only, with **Contents: read and write**. Store it as the `SPLIT_TOKEN` Actions secret of `crystoline/xpsr`: Settings → Secrets and variables → Actions.
-3. **First sync.** Merge `framework-rebuild` into `master` and push. When CI passes, the `split` job publishes the five `master` branches.
-4. **Old prototype.** In Packagist, delete the `v1.0.0` version of `crystoline/xpsr` (the old prototype), and delete the `v1.0.0` tag in `crystoline/xpsr`. Change the package's repository URL to `https://github.com/crystoline/xpsr-skeleton`.
-5. **Packagist.** Submit `crystoline/xpsr-framework`, `crystoline/xpsr-router-fastroute`, `crystoline/xpsr-router-sunrise`, and `crystoline/xpsr-cache` with their repositories. Enable Packagist's GitHub integration so all five update automatically.
-6. **Release.** Move the `CHANGELOG.md` entries under `0.1.0`, commit, then tag `v0.1.0` in `crystoline/xpsr` and push the tag. CI tags all five mirrors.
-7. **Check.** In an empty directory, run `composer create-project crystoline/xpsr my-app` and confirm it installs `0.1.0`, including `xpsr-framework` 0.1.0.
-
-### Adding a package
-
-A new package can be developed and tested in `packages/` before it has a mirror. Wire it into the monorepo the way `packages/cache` is:
-
-- `composer.json` in the package, with the `dev-master` branch alias of the current line (see [Versions](#versions)), its own `phpunit.xml.dist`, `.gitignore`, `LICENSE`, and `README.md`;
-- the root `composer.json`: `require-dev`, the path repository's `versions`, and `autoload-dev` for its tests;
-- `phpunit.xml` (a test suite and a `source` exclusion), `phpstan.neon` (its `src` and `tests`), and the packages list in `tests/Packaging/PackagesTest.php`;
-- `MONOREPO_DEV_PACKAGES` in `scripts/export-skeleton.php`, so the skeleton does not require it.
-
-`scripts/split.sh` publishes only the packages in its `PUBLISHED` list, so an unpublished package does not break the `split` job. To publish one:
-
-1. **Repository.** Create an empty public repository `crystoline/xpsr-<name>` and describe it as a read-only mirror.
-2. **Token.** Give the `SPLIT_TOKEN` token **Contents: read and write** access to the new repository too.
-3. **Split.** Add `<name>` to `PUBLISHED` in `scripts/split.sh`, add the package to the publishing table above and to the skeleton's `suggest` if applications should discover it, commit, and push. CI publishes its `master`.
-4. **Packagist.** Submit `https://github.com/crystoline/xpsr-<name>`. The next release tag then tags it with the other packages.
+Development happens in [crystoline/xpsr](https://github.com/crystoline/xpsr), one repository with the skeleton at its root and every package under `packages/`. Each package also has a repository of its own, `crystoline/xpsr-<name>` (the skeleton's is `crystoline/xpsr-skeleton`), which Packagist reads; those are read-only mirrors that the main repository's CI updates. Report issues and send pull requests to `crystoline/xpsr`: [CONTRIBUTING.md](../CONTRIBUTING.md) has the setup, the checks, and how a release is made.

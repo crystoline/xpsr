@@ -9,17 +9,10 @@ It does not include a router implementation. Install an adapter alongside it:
 | FastRoute (default) | `crystoline/xpsr-router-fastroute` | `fastroute` |
 | Sunrise | `crystoline/xpsr-router-sunrise` | `sunrise` |
 
-Most applications start from the `crystoline/xpsr` skeleton instead of requiring this package directly. Documentation lives in the XPSR repository's `docs/` directory.
+Most applications start from the `crystoline/xpsr` skeleton instead of requiring this package directly. The guides are at [xpsr.crysto.name.ng](https://xpsr.crysto.name.ng/docs/).
 
 ## Writing a router adapter
 
 Implement `Crystoline\Xpsr\Contracts\Routing\RouterInterface`, usually by extending `Crystoline\Xpsr\Routing\AbstractRouter`. Then prove it with the shared contract suite: extend `Crystoline\Xpsr\Testing\RouterContractTestCase` in your tests and return your router from `createRouter()`. The suite needs `phpunit/phpunit` and `nyholm/psr7` as development dependencies.
-
-## Tests
-
-```sh
-composer install
-vendor/bin/phpunit
-```
 
 Requires PHP 8.4+.

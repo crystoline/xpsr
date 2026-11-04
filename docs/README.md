@@ -72,4 +72,5 @@ lead there.
 - [Versioning](VERSIONING.md)
 - [Upgrade guide](../UPGRADE.md)
 - [Changelog](../CHANGELOG.md)
+- [Contributing](../CONTRIBUTING.md)
 - [Security policy](../SECURITY.md)

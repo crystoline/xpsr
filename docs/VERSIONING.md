@@ -41,15 +41,8 @@ Require `^0.7` and upgrade between minor versions deliberately.
 
 ## PHP and dependency versions
 
-- Each release supports the PHP versions tested in CI (currently 8.4 and 8.5). Dropping a PHP version is a breaking change: it needs a minor release before 1.0 and a major release after.
-- Minimum dependency versions must be free of deprecation notices on every supported PHP version. CI runs the whole test suite against the lowest allowed versions with deprecations treated as failures. Raising a minimum version to fix a defect is allowed in any release.
+- Each release supports the PHP versions it is tested on, currently 8.4 and 8.5. Dropping a PHP version is a breaking change: it needs a minor release before 1.0 and a major release after.
+- Minimum dependency versions are free of deprecation notices on every supported PHP version: the whole test suite runs against the lowest allowed versions, with deprecations treated as failures. Raising a minimum version to fix a defect is allowed in any release.
 - Supporting a new major version of a dependency, such as `psr/http-message` 2, is not a breaking change on its own.
 
-## Making a release
-
-1. Move the **Unreleased** entries in `CHANGELOG.md` under the new version, update `UPGRADE.md` for breaking changes, and commit.
-2. Ensure CI passes, including the packaging and lowest-dependency jobs.
-3. For a new minor line, such as 0.8, update the branch aliases and the packages' requirements on each other (for example `^0.8@dev`).
-4. Tag `vX.Y.Z` in the monorepo and push the tag. CI's `split` job tags every package repository, and exports the skeleton with constraints on the release range ([PACKAGES.md](PACKAGES.md#publishing)).
-
-The first tagged release is `0.1.0`. Packagist already lists an unrelated prototype as `crystoline/xpsr` `v1.0.0`; remove that version before tagging `0.1.0`, otherwise `composer create-project crystoline/xpsr` keeps selecting it.
+How a release is made is in [CONTRIBUTING.md](../CONTRIBUTING.md#releasing-maintainers).

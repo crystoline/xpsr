@@ -26,4 +26,4 @@ While XPSR is below 1.0, vulnerabilities are fixed in the latest minor version. 
 
 This policy covers the packages developed in [crystoline/xpsr](https://github.com/crystoline/xpsr): `crystoline/xpsr`, the skeleton, and every `crystoline/xpsr-*` package, including their read-only mirrors.
 
-A vulnerability in a library XPSR uses, such as Symfony, Doctrine, Monolog, or Laravel's components, belongs to that library's maintainers. Tell us too when the way XPSR uses it makes an application vulnerable.
+A vulnerability in a library XPSR uses, such as Symfony, Doctrine, Monolog, or Laravel's components, belongs to that library's maintainers. Report it here too when the way XPSR uses it makes an application vulnerable.

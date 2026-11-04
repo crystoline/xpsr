@@ -57,7 +57,7 @@ Configuration lives in `config/*.php` files that read `.env` through `env()`, as
 - **Keys:** copy `APP_KEY`, and `APP_PREVIOUS_KEYS` if it is set. Keep `app.cipher` as Laravel's (`AES-256-CBC` unless it was changed).
 - **Time zone:** keep `timezone` in `config/app.php` the same as Laravel's. Sanctum's and the notifications' times are stored in it, as Laravel stores them.
 - **Database:** `DB_CONNECTION`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD` have the same names. XPSR's connections are `sqlite`, `mysql`, and `pgsql`; for Laravel's `mariadb` connection, use `mysql`.
-- **Services by DSN:** where Laravel has several variables per service, XPSR takes one DSN: `MAIL_DSN=smtp://user:secret@smtp.example.com:587`, `QUEUE_DSN=redis://127.0.0.1:6379/messages`, `SMS_DSN=termii://API_KEY@default?from=MPAY&channel=generic`, and `LOCK_STORE=redis://127.0.0.1:6379`.
+- **Services by DSN:** where Laravel has several variables per service, XPSR takes one DSN: `MAIL_DSN=smtp://user:secret@smtp.example.com:587`, `QUEUE_DSN=redis://127.0.0.1:6379/messages`, `SMS_DSN=termii://API_KEY@default?from=ACME&channel=generic`, and `LOCK_STORE=redis://127.0.0.1:6379`.
 - **Web push:** copy `VAPID_PUBLIC_KEY` and `VAPID_PRIVATE_KEY`, so subscribed browsers keep getting pushes.
 
 Three of Laravel's tables have names XPSR uses for tables of its own, laid out differently. Give XPSR's other names:
@@ -255,7 +255,7 @@ An application can move a route group or a job at a time, with Laravel and XPSR 
 - Passport's personal access tokens and password grant. [`crystoline/xpsr-auth-oauth2-server`](../packages/auth-oauth2-server/README.md) is the OAuth2 server, with the client credentials and authorization code grants; personal tokens come from the `token` driver.
 - Pusher, Reverb, Laravel Echo, and presence channels. [`crystoline/xpsr-broadcast`](../packages/broadcast/README.md) publishes to a Mercure hub instead, and browsers subscribe with `EventSource`.
 - Telescope and Pulse. [`crystoline/xpsr-telemetry`](../packages/telemetry/README.md) sends traces of requests, queries, outgoing calls, jobs, and commands to any OpenTelemetry backend instead, which shows them with their timings.
-- Octane: long-running servers have not been verified (see [Deployment](DEPLOYMENT.md#not-provided-yet)).
+- Octane: XPSR serves one request per process (see [Deployment](DEPLOYMENT.md#not-provided)).
 - Registration, password reset, email verification, two-factor sign-in, and "remember me" cookies.
 - Laravel's `lang/en.json` files of whole sentences, `trans_choice()`, and `@lang`. [`crystoline/xpsr-translation`](../packages/translation/README.md) has `lang/<locale>/<domain>.php` files, `trans()` with ICU plurals, and the validation messages in the request's language.
-- Tinker, and route and configuration caches, which XPSR does not need (see [Deployment](DEPLOYMENT.md#performance)).
+- Tinker, and a route cache, which XPSR does not need; `php xpsr config:cache` is the configuration cache (see [Deployment](DEPLOYMENT.md#performance)).

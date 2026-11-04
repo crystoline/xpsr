@@ -1,6 +1,6 @@
 # Getting started with XPSR
 
-This tutorial builds a small tasks API: three endpoints, an API-key middleware, a console command, and tests. Then it switches the router adapter without touching any route. Every step was run in a freshly created project; the commands and files below are the ones that were tested.
+This tutorial builds a small tasks API: three endpoints, an API-key middleware, a console command, and tests. Then it switches the router adapter without touching any route. The commands and files below are copied from a freshly created project.
 
 You need PHP 8.4 or newer and Composer 2. On Linux and macOS, `php xpsr serve` also needs the `pcntl` extension.
 
@@ -22,15 +22,7 @@ cd my-app
 php xpsr setup --router=fastroute --preset=api
 ```
 
-To try unreleased changes, create a project from a clone of the XPSR repository instead:
-
-```sh
-php scripts/export-skeleton.php /tmp/xpsr-skeleton
-composer create-project crystoline/xpsr my-app 0.7.x-dev --add-repository \
-  --repository='{"type":"path","url":"/tmp/xpsr-skeleton","options":{"symlink":false,"versions":{"crystoline/xpsr":"0.7.x-dev"}}}' \
-  --repository='{"type":"path","url":"'"$PWD"'/packages/*","options":{"symlink":false,"versions":{"crystoline/xpsr-framework":"0.7.x-dev","crystoline/xpsr-router-fastroute":"0.7.x-dev","crystoline/xpsr-router-sunrise":"0.7.x-dev"}}}'
-cd my-app
-```
+To try unreleased changes, install the development line instead: `xpsr new my-app --dev`, or `composer create-project crystoline/xpsr my-app dev-master` followed by the setup command.
 
 Composer creates `.env` from `.env.example`, and setup, run by the installer or by hand, ends with:
 
@@ -53,7 +45,7 @@ curl http://127.0.0.1:3001/hello
 php xpsr make:controller TaskController
 ```
 
-Replace the generated `app/Http/Controller/TaskController.php`. There is no database integration yet, so the tasks are a constant:
+Replace the generated `app/Http/Controller/TaskController.php`. The tasks are a constant rather than a database table, to keep the tutorial on routes, middleware, commands, and tests:
 
 ```php
 <?php

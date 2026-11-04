@@ -328,6 +328,6 @@ A runner implements `MigratorInterface` and a factory implementing `MigratorFact
 | `Crystoline\Xpsr\Database\Migration\MigratorFactoryInterface` | The runner the migrate commands use: `create(?string $connection)` returns a `MigratorInterface`. |
 | `Crystoline\Xpsr\Database\MigratorFactory` | XPSR's own runner, for timestamped files in `migrations/`. |
 
-This package's tests run against SQLite, and against MySQL 8.4, MariaDB 11, and PostgreSQL 17 when `XPSR_TEST_MYSQL_URL` or `XPSR_TEST_PGSQL_URL` is set.
+Works on SQLite, MySQL 8.4, MariaDB 11, and PostgreSQL 17.
 
 Requires PHP 8.4+ and the PDO extension for your database.

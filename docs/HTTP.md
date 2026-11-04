@@ -69,7 +69,7 @@ An exception implementing `Crystoline\Xpsr\Http\Exception\PublicErrorInterface` 
 
 Unmatched routes (404) and unsupported methods (405) are thrown as `NotFoundHttpException` and `MethodNotAllowedHttpException`, so they receive the same JSON or HTML body as other errors.
 
-Symfony's HttpKernel exceptions (`Symfony\Component\HttpKernel\Exception\*`) are also rendered with their status and headers when `symfony/http-kernel` is installed. The framework no longer depends on that package; it was required only for these classes.
+Symfony's HttpKernel exceptions (`Symfony\Component\HttpKernel\Exception\*`) are also rendered with their status and headers when `symfony/http-kernel` is installed; the framework does not require it.
 
 If the application cannot even boot, `public/index.php` logs the cause with `error_log()` and returns a plain-text "Internal Server Error" with status 500.
 
@@ -134,16 +134,3 @@ If output has already started, for example from an `echo` or a PHP warning, the 
 Return output in the response body instead of echoing it.
 
 The emitter does not add `Content-Length`, compress, or handle range requests; the web server or middleware can do that.
-
-## Verification
-
-`tests/Integration/FrontControllerTest.php` serves a skeleton copy with PHP's built-in server and checks raw HTTP responses:
-
-- status lines with custom reasons;
-- repeated headers and cookies;
-- 301 with `Location`, 204, streamed bodies, HEAD;
-- JSON 404s and body parsing;
-- production and debug errors with logging;
-- bootstrap failures and output that starts too early.
-
-Unit tests cover the emitter, body parser, logger, and routing errors in detail.

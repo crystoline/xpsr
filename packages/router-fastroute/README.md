@@ -8,9 +8,4 @@ composer require crystoline/xpsr-router-fastroute
 
 Select it with `ROUTER_ADAPTER=fastroute`, or run `php xpsr setup --router=fastroute`. Route files stay the same whichever adapter you choose.
 
-The adapter passes XPSR's shared router contract suite (`Crystoline\Xpsr\Testing\RouterContractTestCase`):
-
-```sh
-composer install
-vendor/bin/phpunit
-```
+Requires PHP 8.4+ and `nikic/fast-route` 1.3.

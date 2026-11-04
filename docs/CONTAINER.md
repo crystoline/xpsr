@@ -1,6 +1,6 @@
 # Container and provider lifecycle
 
-The application owns a container. It no longer extends `ServiceContainer`. Runtime factories, controllers, and integrations can consume `Psr\Container\ContainerInterface` from `psr/container` 2.x. The framework's registration API is separate: `ContainerBuilderInterface` defines writes, while `Crystoline\Xpsr\Contracts\Container\ContainerInterface` combines registration and PSR-11 consumption for bootstrapping and providers.
+The application owns a container. Runtime factories, controllers, and integrations can consume `Psr\Container\ContainerInterface` from `psr/container` 2.x. The framework's registration API is separate: `ContainerBuilderInterface` defines writes, while `Crystoline\Xpsr\Contracts\Container\ContainerInterface` combines registration and PSR-11 consumption for bootstrapping and providers.
 
 ```php
 $application = require __DIR__ . '/../bootstrap/app.php';
@@ -62,7 +62,7 @@ The application registers a `Symfony\Component\Clock\NativeClock` in the `app.ti
 
 ## Providers
 
-Providers extend `ServiceRegistry` and are listed in `config/app.php` under `registry`. The existing names remain to avoid an unnecessary rename.
+Providers extend `ServiceRegistry` and are listed in `config/app.php` under `registry`.
 
 1. Provider classes are validated and duplicate classes are collapsed, preserving their first position.
 2. Deferred service identifiers are reserved without executing provider `register()` methods.
@@ -78,13 +78,6 @@ Deferred identifiers must not collide with existing definitions or other deferre
 
 Application boot is idempotent. Recursive boot fails clearly. A failed eager lifecycle is remembered so another `boot()` call cannot repeat partial startup side effects. Deferred boot hooks may consume services their own provider has already defined.
 
-## Migrating earlier bindings
+## Factories in configuration
 
-- Change `bind($id, $closure)` to `factory($id, $closure)`.
-- Change `singleton($id, $closure)` to `factory($id, $closure, shared: true)`.
-- Change `bind($id, $objectOrValue)` to `instance($id, $objectOrValue)`.
-- Use `alias()` when an identifier should delegate to another configured binding.
-- Change application-level writes to `$application->getContainer()->...`.
-- Provider constructors should accept the framework container contract rather than the concrete `ServiceContainer` class.
-
-The `config/factory.php` registry explicitly interprets entries as factories. Entries may be callables or invokable factory class names; retrieving the same invokable class directly still returns the object. This configuration path no longer depends on implicit invocation in the container.
+The `config/factory.php` registry explicitly interprets entries as factories. Entries may be callables or invokable factory class names; retrieving the same invokable class directly still returns the object.

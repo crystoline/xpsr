@@ -155,6 +155,6 @@ A `FinishedSpan` has `name()`, `kind()`, `attribute($name)`, `attributes()`, `is
 | `Crystoline\Xpsr\Telemetry\Http\TraceRequestsMiddleware` | The request span; first in `app.middleware`. |
 | `Crystoline\Xpsr\Telemetry\Testing\FakeTelemetry` | The finished spans, with the memory exporter. Shared. |
 
-Not provided: metrics and OpenTelemetry logs (traces first; metrics can follow once there is a use for them), the gRPC transport (the OTLP/HTTP one serves every collector), and spans for views or cache calls.
+Not provided: metrics and OpenTelemetry logs, the gRPC transport (the OTLP/HTTP one serves every collector), and spans for views or cache calls.
 
 Requires PHP 8.4+, `open-telemetry/sdk` 1.15+, and `open-telemetry/exporter-otlp` 1.4+. The database, HTTP client, queue, scheduler, and Monolog packages are optional and detected.

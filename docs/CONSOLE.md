@@ -120,7 +120,7 @@ The application namespace and directory come from `app.namespace` (default `App`
 
 **Interaction and exit codes.** In an interactive terminal, a missing name is asked for. With `--no-interaction`, a missing name fails as a usage error. Success returns 0; an invalid name or option returns 2 (`INVALID`) and writes nothing; a conflict or filesystem failure returns 1 (`FAILURE`). Messages go to stderr. Generated files pass PER Coding Style and PHPStan at its highest level.
 
-Stubs live in `packages/framework/src/Console/Resources/stubs/`. Application-level stub overrides are not supported yet.
+The stubs are part of the framework package, under `Console/Resources/stubs/`; an application cannot override them.
 
 ## Add an application command
 
@@ -191,7 +191,7 @@ Add this provider to `app.registry` in `config/app.php`, keeping `Crystoline\Xps
 
 Command registration specifies the name, service ID, description, and optional aliases. This metadata is authoritative, including when the command class declares a different name or aliases. Names are lowercase words separated by colons, with digits, underscores, and hyphens permitted after each word's first letter. Duplicate names/aliases and Symfony's reserved names (`list`, `help`, `completion`, `_complete`) fail explicitly.
 
-There is no automatic directory scanning or attribute discovery. Plain invokable objects are not command services in this initial API; extend Symfony's `Command`. Use a factory binding for services with constructor dependencies that cannot be autowired. To change a built-in command's behavior, replace its service binding rather than registering its name twice.
+There is no automatic directory scanning or attribute discovery. Plain invokable objects are not command services; extend Symfony's `Command`. Use a factory binding for services with constructor dependencies that cannot be autowired. To change a built-in command's behavior, replace its service binding rather than registering its name twice.
 
 Default command listing uses lazy metadata, so unrelated command constructors are not called. Running a command or asking for its detailed help resolves that command and its dependencies. Symfony's richer machine-readable command descriptions may resolve commands to inspect their input definitions. `route:list` therefore loads route files when selected; `list` and `about` do not. Providers should register command metadata in an eager boot hook; a deferred provider whose services have never been requested cannot advertise commands by executing its boot hook.
 
@@ -212,9 +212,9 @@ With the event dispatcher, each command dispatches `Crystoline\Xpsr\Console\Even
 
 Normal results go to stdout. Symfony command/usage errors go to stderr when using the real console or a `ConsoleOutputInterface` implementation. A plain `BufferedOutput` captures a combined stream. Bootstrap failures are caught by the executable, printed to stderr, and return 1. CLI exceptions are developer-facing; HTTP error rendering is a separate boundary.
 
-Use `Command::SUCCESS` (0), `Command::FAILURE` (1), or `Command::INVALID` (2) in application commands. Returned command statuses propagate to the caller; Symfony parser and lookup failures return nonzero. The supplied `serve` and `route:list` option validation returns 2. `Symfony\Component\Console\Tester\CommandTester` can test individual commands; kernel and subprocess tests cover integration, stderr, and exit status.
+Use `Command::SUCCESS` (0), `Command::FAILURE` (1), or `Command::INVALID` (2) in application commands. Returned command statuses propagate to the caller; Symfony parser and lookup failures return nonzero. The supplied `serve` and `route:list` option validation returns 2. `Symfony\Component\Console\Tester\CommandTester` can test an individual command; [TESTING.md](TESTING.md#console-commands) shows running commands through the application in tests.
 
-The default console bootstrap does not construct HTTP requests, resolve the HTTP kernel, or start sessions. A custom provider or command can introduce such side effects, so keep provider registration lightweight. This milestone does not establish isolation between multiple application instances using global helpers.
+The default console bootstrap does not construct HTTP requests, resolve the HTTP kernel, or start sessions. A custom provider or command can introduce such side effects, so keep provider registration lightweight. The global helpers such as `app()` and `config()` refer to one application per process, so two application instances in one process are not isolated from each other.
 
 ## Development server
 
@@ -222,12 +222,12 @@ The default console bootstrap does not construct HTTP requests, resolve the HTTP
 
 The default address is `127.0.0.1:3001`. Use `--host=0.0.0.0` when deliberately serving through a container port mapping; IPv6 literals such as `--host=::1` are also accepted. This is a development server, not a production server.
 
-On Unix, `serve` requires `pcntl` to handle Ctrl+C/SIGINT and SIGTERM and stop the child process. The bundled Docker image and CI extension list include it. Interrupted commands return 130 or 143, respectively. Child stdout/stderr are forwarded without retaining a growing history in the parent process. Worker mode is disabled to keep child cleanup predictable.
+On Unix, `serve` requires `pcntl` to handle Ctrl+C/SIGINT and SIGTERM and stop the child process. The skeleton's Docker image includes it. Interrupted commands return 130 or 143, respectively. Child stdout/stderr are forwarded without retaining a growing history in the parent process. Worker mode is disabled to keep child cleanup predictable.
 
-The live server tests cover Linux, including application paths with spaces and signal cleanup. Native Windows server execution/shutdown is not verified by this suite; other console commands are exercised in Linux containers from the Windows workspace.
+`serve` is tested on Linux, application paths with spaces included; on native Windows it is not.
 
-## Remaining developer tooling
+## Outside a project
 
-Application stub overrides are subsequent work; there is no route cache, for the reasons [DEPLOYMENT.md](DEPLOYMENT.md#performance) gives. `xpsr new`, and `xpsr <command>` without `php`, come from [the installer](../packages/installer/README.md).
+`xpsr new`, and `xpsr <command>` without `php`, come from [the installer](../packages/installer/README.md).
 
 Upstream reference: [Symfony Console documentation](https://symfony.com/doc/7.4/console.html). XPSR provides its own registration and lifecycle; Symfony FrameworkBundle configuration and automatic service discovery do not apply here.

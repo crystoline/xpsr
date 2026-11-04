@@ -62,7 +62,7 @@ $this->postJson('/api/payments', ['amount' => 5000, 'currency' => 'NGN'])
 | `assertJsonValidationErrors('title')`, `assertJsonValidationErrors(['title', 'amount' => 'positive'])` | A 422 whose `errors` name each field, with a message containing the text when one is given. |
 | `assertSee('Welcome')`, `assertDontSee('Error')` | The body contains, or does not contain, the text: for HTML pages. |
 
-`$response->json()` is the decoded body, `json('data.0.id')` a value in it, `body()` the body as a string, `status()` the status, and `response()` the PSR-7 response. `getStatusCode()`, `getHeaderLine()`, and `getBody()` work as before.
+`$response->json()` is the decoded body, `json('data.0.id')` a value in it, `body()` the body as a string, `status()` the status, and `response()` the PSR-7 response. `getStatusCode()`, `getHeaderLine()`, and `getBody()` work too, as on any PSR-7 response.
 
 ## Console commands
 
