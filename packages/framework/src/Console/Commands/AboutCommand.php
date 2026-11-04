@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Crystoline\Xpsr\Console\Commands;
 
 use Crystoline\Xpsr\Application;
+use Crystoline\Xpsr\ConfigurationCache;
 use Crystoline\Xpsr\Console\ConsoleKernel;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatter;
@@ -39,6 +40,7 @@ final class AboutCommand extends Command
             'debug' => (bool) $config->get('app.debug', false),
             'php' => PHP_VERSION,
             'router' => $config->get('routing.adapter', 'fastroute'),
+            'configuration' => $this->application->getConfigurationNotice() === null && (new ConfigurationCache($this->application->getRootDir()))->exists() ? 'cached' : 'files',
             'root' => $this->application->getRootDir(),
         ];
         if ($input->getOption('json')) {

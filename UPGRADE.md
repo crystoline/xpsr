@@ -17,6 +17,12 @@ composer test
 
 With the Sunrise adapter, the same update moves `sunrise/http-router` to 3.4, and `psr/http-message` to 2.0 unless another package holds it at 1.1. Route files and `ROUTER_ADAPTER=sunrise` stay as they are. Only code of your own that calls Sunrise 2 classes directly, outside XPSR's routing, needs the changes Sunrise's own upgrade notes describe; if there is any, stay on 0.7 until it is done.
 
+The framework no longer depends on `symfony/finder`. An application that uses `Symfony\Component\Finder\Finder` without requiring the package itself must add it with `composer require symfony/finder`.
+
+### 2. The configuration cache (optional)
+
+Run `php xpsr config:cache` when deploying, after the files and `.env` are in place, and again after changing either; see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md#performance). Nothing changes until you do.
+
 ## From 0.6 to 0.7
 
 Nothing breaks. The release adds five optional packages (health checks, translations, broadcasting on Mercure, an OAuth2 server, and the Cycle ORM adapter); an application takes the ones it wants.

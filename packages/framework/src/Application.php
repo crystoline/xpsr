@@ -27,6 +27,7 @@ use Symfony\Component\Clock\ClockInterface as SymfonyClockInterface;
 use Symfony\Component\Clock\NativeClock;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 final class Application
 {
@@ -35,6 +36,8 @@ final class Application
     private readonly ContainerInterface $container;
     private readonly ServiceProviderManager $providers;
     public readonly string $rootDir;
+    public readonly string $environment;
+    private ?string $configurationNotice = null;
 
     public function __construct(string $rootDir, ?ContainerInterface $container = null)
     {
@@ -54,8 +57,13 @@ final class Application
             throw new InvalidArgumentException('APP_ENV must contain only letters, numbers, underscores, or hyphens.');
         }
 
-        $this->config = new Configuration();
-        $this->config->loadConfigurationFiles($root . '/config', $environment);
+        $this->environment = $environment;
+        try {
+            $this->config = (new ConfigurationCache($root))->load($environment) ?? self::loadConfiguration($root, $environment);
+        } catch (StaleConfigurationCacheException $e) {
+            $this->configurationNotice = $e->getMessage();
+            $this->config = self::loadConfiguration($root, $environment);
+        }
         $this->registerCoreServices();
         $this->providers = new ServiceProviderManager($this->container);
     }
@@ -68,6 +76,22 @@ final class Application
     public function getConfig(): Configuration
     {
         return $this->config;
+    }
+
+    /** APP_ENV, which also names the directory of configuration overrides, config/<APP_ENV>/. */
+    public function getEnvironment(): string
+    {
+        return $this->environment;
+    }
+
+    /**
+     * Why var/cache/config.php was set aside and the configuration files read instead: it was
+     * built for another APP_ENV, or a file it came from has changed. Null when there is no cache
+     * or it is in use. Commands print it, and getHttpKernel() logs it.
+     */
+    public function getConfigurationNotice(): ?string
+    {
+        return $this->configurationNotice;
     }
 
     public function getContainer(): ContainerInterface
@@ -99,8 +123,22 @@ final class Application
     public function getHttpKernel(): RequestHandlerInterface
     {
         $this->boot();
+        if ($this->configurationNotice !== null && $this->container->has(LoggerInterface::class)) {
+            $logger = $this->container->get(LoggerInterface::class);
+            if ($logger instanceof LoggerInterface) {
+                $logger->warning($this->configurationNotice);
+            }
+        }
 
         return $this->container->get(RequestHandlerInterface::class);
+    }
+
+    private static function loadConfiguration(string $root, string $environment): Configuration
+    {
+        $configuration = new Configuration();
+        $configuration->loadConfigurationFiles($root . '/config', $environment);
+
+        return $configuration;
     }
 
     public function getConsoleKernel(): ConsoleKernel

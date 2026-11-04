@@ -11,7 +11,8 @@ XPSR runs on any PHP 8.4+ setup that sends requests to a single front controller
 5. Set `TRUSTED_PROXIES` if a load balancer or reverse proxy terminates TLS.
 6. Set `APP_URL` to the public URL, and make the web server answer only your hostnames.
 7. Enable OPcache.
-8. After deploying, check `php xpsr route:list` and request a known URL.
+8. Run `php xpsr config:cache` once the files and `.env` are in place, and again after changing either.
+9. After deploying, check `php xpsr route:list` and request a known URL.
 
 ## Dependencies
 
@@ -70,6 +71,8 @@ Add a `default_server` block that rejects unknown hostnames (`return 444;`). The
 
 Per-environment settings belong in `config/{APP_ENV}/` files. Each file overrides only the keys it returns.
 
+With a configuration cache (`php xpsr config:cache`, see Performance), values from the environment are read when the cache is written, not on each request.
+
 ## Errors and logging
 
 Exceptions become JSON or HTML error responses (see [HTTP.md](HTTP.md)). Server errors (5xx) are logged with their stack trace through PHP's `error_log()`: into the web server's or PHP-FPM's error log, or the file named by the `error_log` ini setting. To use a different logger, bind `Psr\Log\LoggerInterface` in `config/factory.php`, for example to Monolog.
@@ -92,6 +95,8 @@ The web server user must be able to write:
 
 - `var/sessions`, for sessions in the default file store. It is created with mode 0700 on first use.
 - `var/cache/views`, for compiled templates (`app.view_cache_dir`).
+
+`var/cache/config.php` is written by whoever runs `php xpsr config:cache`; the web server only reads it.
 
 Optional packages write to their own directories, such as `var/cache/app` for the file cache, `var/storage` for local disks, and `var/locks` for locks, scheduled tasks, and rate limits.
 
@@ -220,7 +225,8 @@ With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user 
 
 - Enable OPcache. With `opcache.validate_timestamps=0`, reload PHP-FPM or Apache on every deploy.
 - `--optimize-autoloader` builds a class map for faster autoloading.
-- Route files and configuration load on each request; there is no route or configuration cache. With OPcache, the skeleton boots and answers a request in under 1 ms, and building 300 routes with the FastRoute adapter takes about 6 ms (measured on PHP 8.4 in Docker). An application with thousands of routes may still notice the build time.
+- Run `php xpsr config:cache` when deploying, after the files and `.env` are in place. The application then reads `var/cache/config.php`, the merged configuration with `env()` resolved, instead of the configuration files, which saves about 0.3 ms of the 0.35 ms a request spent on them (measured on PHP 8.4 in Docker with OPcache). Sections whose files hold closures or objects, such as the skeleton's `config/factory.php`, are still read from their files. The cache records a hash of each file it came from and of `.env`: after a change, the application reads the files instead and warns on every command and in the log until `config:cache` runs again, so a stale cache costs time, never correctness. With `opcache.validate_timestamps=0`, reload PHP after `config:cache`.
+- Route files load on each request; there is no route cache. With OPcache, the skeleton boots and answers a request in under 1 ms, and building 300 routes with the FastRoute adapter takes about 6 ms. A cache would save a few milliseconds only for very large route sets, and would have to refuse closures as handlers, which the skeleton's `/hello` route uses.
 
 ## Cycle ORM
 

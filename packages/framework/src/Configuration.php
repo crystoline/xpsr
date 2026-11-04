@@ -6,7 +6,6 @@ namespace Crystoline\Xpsr;
 
 use Illuminate\Config\Repository;
 use RuntimeException;
-use Symfony\Component\Finder\Finder;
 
 class Configuration extends Repository
 {
@@ -14,46 +13,55 @@ class Configuration extends Repository
     {
         $this->items = [];
 
-        foreach ($this->getConfigurationFiles($path) as $key => $file) {
-            $this->set($key, $this->readConfiguration($file));
+        foreach (self::files($path) as $key => $file) {
+            $this->set($key, self::read($file));
         }
 
         if ($environment === null || $environment === '') {
             return;
         }
 
-        foreach ($this->getConfigurationFiles($path . '/' . $environment) as $key => $file) {
-            foreach ($this->readConfiguration($file) as $setting => $value) {
+        foreach (self::files($path . '/' . $environment) as $key => $file) {
+            foreach (self::read($file) as $setting => $value) {
                 $this->set($key . '.' . $setting, $value);
             }
         }
     }
 
-    /** @return array<string, string> */
-    private function getConfigurationFiles(string $path): array
+    /**
+     * The configuration files directly in a directory, by key (the file name without .php) in
+     * name order; none when the directory does not exist.
+     *
+     * @return array<string, string> key => path
+     */
+    public static function files(string $path): array
     {
-        if (!is_dir($path)) {
-            return [];
-        }
-
         $files = [];
 
-        foreach (Finder::create()->files()->name('*.php')->in($path)->depth(0)->sortByName() as $file) {
-            $files[$file->getBasename('.php')] = $file->getPathname();
+        foreach (glob($path . '/*.php') ?: [] as $file) {
+            if (is_file($file)) {
+                $files[basename($file, '.php')] = $file;
+            }
         }
+        ksort($files, SORT_STRING);
 
         return $files;
     }
 
-    /** @return array<string, mixed> */
-    private function readConfiguration(string $file): array
+    /**
+     * The array a configuration file returns.
+     *
+     * @return array<string, mixed>
+     */
+    public static function read(string $file): array
     {
-        $values = (static fn(string $path) => require $path)($file);
+        $values = (static fn(string $path): mixed => require $path)($file);
 
         if (!is_array($values)) {
             throw new RuntimeException(sprintf('Configuration file "%s" must return an array.', $file));
         }
 
+        /** @var array<string, mixed> $values */
         return $values;
     }
 }

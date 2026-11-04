@@ -116,6 +116,6 @@ Custom adapters must implement the documented ordering, normalization, HEAD fall
 
 The previous `RouterInterface::dispatch()`, Sunrise-bound route files, framework `Routing\Router` wrapper, and `getUnderlyingRouter()` are replaced by this API. Move native registrations to callable collection files; update custom kernel construction to pass a PSR-15 terminal handler, exception handler, PSR-17 stream factory, and optional middleware. Native Sunrise route handlers/middleware are no longer executed by the adapter.
 
-The same adapter contract tests cover Sunrise and FastRoute. Application integration tests switch adapters using the same example files. `php xpsr route:list` inspects these definitions; see `CONSOLE.md` for filters and JSON output. Route caches, advanced route grammar, and comprehensive emitter/session integration remain later work.
+The same adapter contract tests cover Sunrise and FastRoute. Application integration tests switch adapters using the same example files. `php xpsr route:list` inspects these definitions; see `CONSOLE.md` for filters and JSON output. There is no route cache ([DEPLOYMENT.md](DEPLOYMENT.md#performance) gives the numbers); advanced route grammar and comprehensive emitter/session integration remain later work.
 
 Upstream references: [FastRoute](https://github.com/nikic/FastRoute/tree/v1.3.0), [Sunrise router](https://github.com/sunrise-php/http-router), [PHP-FIG accepted standards](https://www.php-fig.org/psr/).

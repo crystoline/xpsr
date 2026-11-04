@@ -9,7 +9,10 @@ use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Command\LazyCommand;
+use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use UnexpectedValueException;
 
@@ -18,9 +21,11 @@ final class ConsoleKernel
     /** @deprecated since 0.1.1. Use version(), which reports the installed release. */
     public const VERSION = 'development';
 
+    /** @param string|null $configurationNotice why the configuration cache was set aside (Application::getConfigurationNotice()), printed before every command */
     public function __construct(
         private readonly ContainerInterface $container,
         private readonly CommandRegistry $commands,
+        private readonly ?string $configurationNotice = null,
     ) {}
 
     /**
@@ -37,6 +42,11 @@ final class ConsoleKernel
 
     public function run(?InputInterface $input = null, ?OutputInterface $output = null): int
     {
+        $output ??= new ConsoleOutput();
+        if ($this->configurationNotice !== null) {
+            $errors = $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output;
+            $errors->writeln('<comment>' . OutputFormatter::escape($this->configurationNotice) . '</comment>');
+        }
         // Symfony keeps per-invocation state. Build a fresh application for each run.
         $events = $this->container->has(EventDispatcherInterface::class) ? $this->container->get(EventDispatcherInterface::class) : null;
         $console = new ConsoleApplication('XPSR', self::version(), $events instanceof EventDispatcherInterface ? $events : null);

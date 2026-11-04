@@ -16,6 +16,8 @@ php xpsr app:greet Ada
 php xpsr setup
 php xpsr setup --router=sunrise --preset=api --install-dependencies --no-interaction
 php xpsr view:clear
+php xpsr config:cache
+php xpsr config:clear
 php xpsr key:generate --write
 php xpsr make:controller Admin/UserController
 php xpsr make:controller PingController --invokable
@@ -54,6 +56,8 @@ php xpsr schedule:run
 `route:list` reads the shared route collection, so its output is independent of the selected adapter. It lists declared methods, path, name, handler, and inherited/route middleware without instantiating controllers or middleware. `--method` filters declared methods case-insensitively; `--path` and `--name` use case-sensitive substring matches. Filters combine with AND. HEAD fallback and automatic OPTIONS are implicit and do not create extra rows. `--json` returns an array (including an empty array when nothing matches).
 
 `view:clear` empties `app.view_cache_dir`, the compiled templates, and reports how many files it removed. It refuses a directory that holds the application or its views. It fails, naming a file, when files cannot be removed, usually because another user created them. See [VIEWS.md](VIEWS.md).
+
+`config:cache` writes `var/cache/config.php`, the merged configuration of the current `APP_ENV` with `env()` resolved, and the application reads it in place of the files from then on. Sections whose files hold closures or objects, such as the skeleton's `config/factory.php`, are still read from their files. The cache records a hash of every file it came from and of `.env`; after a change, the application reads the files instead and says so on every command's stderr and in the request log until `config:cache` runs again. `config:clear` removes the cache. `about` reports `configuration: cached` or `files`. See [DEPLOYMENT.md](DEPLOYMENT.md#performance).
 
 `key:generate` prints a new encryption key for `app.cipher`, as `base64:` and the key in base64. `--write` sets `APP_KEY` in `.env`, and refuses to replace a key that is already set unless `--force` is given. See [ENCRYPTION.md](ENCRYPTION.md).
 
@@ -224,6 +228,6 @@ The live server tests cover Linux, including application paths with spaces and s
 
 ## Remaining developer tooling
 
-Application stub overrides and configuration/route caches are subsequent work. `xpsr new`, and `xpsr <command>` without `php`, come from [the installer](../packages/installer/README.md).
+Application stub overrides are subsequent work; there is no route cache, for the reasons [DEPLOYMENT.md](DEPLOYMENT.md#performance) gives. `xpsr new`, and `xpsr <command>` without `php`, come from [the installer](../packages/installer/README.md).
 
 Upstream reference: [Symfony Console documentation](https://symfony.com/doc/7.4/console.html). XPSR provides its own registration and lifecycle; Symfony FrameworkBundle configuration and automatic service discovery do not apply here.

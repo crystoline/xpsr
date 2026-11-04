@@ -171,8 +171,8 @@ Use a project-root `xpsr` executable and an `app/Console/Commands/` directory. R
 | `php xpsr serve` | Run a local development server with `public/` as document root | Console foundation |
 | `php xpsr route:list` | Inspect the common route collection, regardless of adapter | Console foundation |
 | `php xpsr make:controller`, `make:middleware`, `make:command`, `make:provider` | Generate application code from XPSR stubs | Developer tooling |
-| `php xpsr config:cache`, `config:clear` | Build and invalidate deployment configuration | After configuration becomes cacheable |
-| `php xpsr route:cache`, `route:clear` | Cache route metadata where supported | After routing contract stability |
+| `php xpsr config:cache`, `config:clear` | Build and remove the configuration cache | Done (0.8) |
+| `php xpsr route:cache`, `route:clear` | Cache route metadata where supported | Left out: measured as not worth it (sixteenth milestone) |
 | `php xpsr cache:clear` | Clear the configured application cache | Optional cache integration |
 | `php xpsr migrate`, `queue:work`, `schedule:run` | Commands contributed by their respective integrations | Later modules |
 

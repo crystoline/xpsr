@@ -6,10 +6,12 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ### Added
 
+- `php xpsr config:cache` and `config:clear`: the configuration cache. `var/cache/config.php` holds the merged configuration of the current `APP_ENV` with `env()` resolved, and the application reads it in place of the files. A section whose file holds closures or objects, such as the skeleton's `config/factory.php`, is still read from its file. The cache records a hash of every file it came from and of `.env`; when one changes, the application reads the files instead and says so (a warning on every command's stderr, and in the log on each request) until `config:cache` runs again. `about` reports `configuration: cached` or `files`, and `Application` gained `getEnvironment()` and `getConfigurationNotice()`. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md#performance).
 - `auth.password` in `config/auth.php`: how new password hashes are made. `algorithm` is `auto` (Argon2id when PHP has it, otherwise bcrypt, as before), `argon2id`, or `bcrypt`, and `options` go to `password_hash()` (`cost`; `memory_cost`, `time_cost`, `threads`). `PasswordHasher::needsRehash()` follows the setting, so hashes move to the chosen algorithm at each user's next sign-in. `bcrypt` keeps a users table shared with a Laravel application working without `HASH_VERIFY=false`; the skeleton reads `PASSWORD_ALGORITHM`. See [docs/AUTH.md](docs/AUTH.md#passwords).
 
 ### Changed
 
+- Configuration files are listed with `glob()` instead of Symfony Finder, which took 0.2 ms of the 0.35 ms a request spent on configuration. The framework no longer requires `symfony/finder`; an application that used it through the framework must require it itself. `Configuration` gained the static `files()` and `read()`.
 - `crystoline/xpsr-router-sunrise` runs on `sunrise/http-router` 3 (3.4 or later) instead of 2.16. Sunrise 3 accepts `psr/http-message` 2.0, so the adapter installs beside any package, `crystoline/xpsr-auth-oauth2-server` with `league/oauth2-server` 9 included, and `setup --router=sunrise --install-dependencies` works in every project. Route files, matching, and the adapter's class are unchanged. An application that calls Sunrise 2 classes of its own must move them to 3 first; see [UPGRADE.md](UPGRADE.md).
 
 ## 0.7.0 (2026-11-03)

@@ -8,6 +8,8 @@ use Crystoline\Xpsr\Application;
 use Crystoline\Xpsr\Configuration;
 use Crystoline\Xpsr\Console\CommandRegistry;
 use Crystoline\Xpsr\Console\Commands\AboutCommand;
+use Crystoline\Xpsr\Console\Commands\ConfigCacheCommand;
+use Crystoline\Xpsr\Console\Commands\ConfigClearCommand;
 use Crystoline\Xpsr\Console\Commands\KeyGenerateCommand;
 use Crystoline\Xpsr\Console\Commands\MakeCommandCommand;
 use Crystoline\Xpsr\Console\Commands\MakeControllerCommand;
@@ -32,6 +34,8 @@ final class ConsoleServiceRegistry extends ServiceRegistry
         $this->container->factory(CommandRegistry::class, static function (): CommandRegistry {
             $commands = new CommandRegistry();
             $commands->register('about', AboutCommand::class, 'Show application and runtime information.');
+            $commands->register('config:cache', ConfigCacheCommand::class, 'Write the configuration cache (var/cache/config.php) for the current APP_ENV.');
+            $commands->register('config:clear', ConfigClearCommand::class, 'Remove the configuration cache (var/cache/config.php).');
             $commands->register('key:generate', KeyGenerateCommand::class, 'Make an encryption key (APP_KEY).');
             $commands->register('make:command', MakeCommandCommand::class, 'Create a console command class.');
             $commands->register('make:controller', MakeControllerCommand::class, 'Create a controller class.');
@@ -56,6 +60,10 @@ final class ConsoleServiceRegistry extends ServiceRegistry
             }
             return new StubGenerator($container->get(Application::class)->getRootDir(), $namespace, $sourceDir);
         }, shared: true);
-        $this->container->singleton(ConsoleKernel::class);
+        $this->container->factory(ConsoleKernel::class, static fn(ContainerInterface $container): ConsoleKernel => new ConsoleKernel(
+            $container,
+            $container->get(CommandRegistry::class),
+            $container->get(Application::class)->getConfigurationNotice(),
+        ), shared: true);
     }
 }
