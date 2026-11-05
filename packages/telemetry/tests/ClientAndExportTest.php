@@ -65,7 +65,10 @@ final class ClientAndExportTest extends TestCase
         self::assertSame(201, $call->attribute('http.response.status_code'));
         self::assertFalse($call->isError());
         $sent = $this->project->client->lastRequest();
-        self::assertSame("00-{$call->traceId()}-{$call->spanId()}-01", $sent->getHeaderLine('traceparent'), 'The callee continues the trace from the client span.');
+        // The flags must have the sampled bit; newer SDKs also set the random-trace-ID bit (03).
+        $traceparent = $sent->getHeaderLine('traceparent');
+        self::assertMatchesRegularExpression("/\\A00-{$call->traceId()}-{$call->spanId()}-[0-9a-f]{2}\\z/", $traceparent, 'The callee continues the trace from the client span.');
+        self::assertSame(1, hexdec(substr($traceparent, -2)) & 1, 'The trace is sampled.');
         $this->project->spans()->clear();
 
         $tracer = $app->get(Tracer::class);

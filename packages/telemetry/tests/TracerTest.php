@@ -89,7 +89,9 @@ final class TracerTest extends TestCase
         $headers = [];
         $tracer->inject($headers);
         self::assertArrayHasKey('traceparent', $headers);
-        self::assertSame("00-{$span->traceId()}-{$span->spanId()}-01", $headers['traceparent']);
+        // The flags must have the sampled bit; newer SDKs also set the random-trace-ID bit (03).
+        self::assertMatchesRegularExpression("/\\A00-{$span->traceId()}-{$span->spanId()}-[0-9a-f]{2}\\z/", $headers['traceparent']);
+        self::assertSame(1, hexdec(substr($headers['traceparent'], -2)) & 1, 'The trace is sampled.');
         $span->end();
         $span->end();
         self::assertNull($tracer->current());
