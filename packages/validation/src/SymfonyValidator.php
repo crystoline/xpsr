@@ -15,8 +15,9 @@ use Symfony\Component\Validator\Validator\ValidatorInterface as SymfonyValidator
 /**
  * Validates with Symfony Validator. Input classes declare rules as attributes from
  * Symfony\Component\Validator\Constraints, such as #[Assert\NotBlank]; the framework's
- * InputMapper first maps and converts the request data, so type problems and rule violations
- * are reported together in one ValidationException, under the client's field names.
+ * InputMapper first maps and converts the request data, reporting every missing field and type
+ * problem in one ValidationException. Only an input that maps is checked against the rules, whose
+ * violations are reported together in another; both use the client's field names.
  */
 final class SymfonyValidator implements ValidatorInterface
 {

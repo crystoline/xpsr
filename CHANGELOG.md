@@ -4,6 +4,11 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+### Fixed
+
+- Signing in with a password hash that the `auth.password` setting replaces, such as a bcrypt hash from Laravel under `auto`, signed the user out again on the next request. `AuthManager::verify()` returned the user with the old hash after storing the new one, so the session kept a fingerprint of the old hash. It now returns the user as stored, and `attempt()` keeps them signed in.
+- The validation package's README said every problem is reported at once. Missing fields and wrong types are reported first, and the rules run once every field maps; the README and `SymfonyValidator`'s description now say so.
+
 ## 0.8.0 (2026-11-04)
 
 ### Breaking

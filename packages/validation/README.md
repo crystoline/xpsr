@@ -74,7 +74,7 @@ When anything is wrong, `validate()` throws `Crystoline\Xpsr\Validation\Validati
 }
 ```
 
-Every problem is reported at once, each under the field name the client sent. Dates in messages are written by Symfony: as `Oct 28, 2026, 12:00 AM` when PHP's `intl` extension is loaded, otherwise as `2026-10-28 00:00:00`; compare messages in tests by their start, or by field. Browsers that ask for HTML get the same messages as a list. Validation errors are not logged.
+Problems are reported under the field names the client sent, in two steps. First the fields are mapped: every missing field, wrong type, and empty required string is reported together. Only when every field maps do the rules run, and then every rule that fails is reported together. So `{"title": "", "priority": "urgent"}` reports `title` alone, and once the title is filled in, the client learns about `priority`. The rules run on the input object, which cannot be built while a field is missing or of the wrong type. Dates in messages are written by Symfony: as `Oct 28, 2026, 12:00 AM` when PHP's `intl` extension is loaded, otherwise as `2026-10-28 00:00:00`; compare messages in tests by their start, or by field. Browsers that ask for HTML get the same messages as a list. Validation errors are not logged.
 
 ## Fields and types
 

@@ -166,6 +166,19 @@ final class AuthTest extends TestCase
         self::assertNull($this->application->get(CurrentIdentity::class)->get());
     }
 
+    public function testSigningInWithAnOldHashUpgradesItAndStaysSignedIn(): void
+    {
+        $this->users->add(new GenericUser(8, password_hash('old secret', PASSWORD_BCRYPT, ['cost' => 4]), ['name' => 'Grace']), login: 'old@example.com');
+        $auth = $this->auth();
+        $session = new Session();
+        $request = $this->request($session);
+
+        $user = $auth->attempt($request, 'old@example.com', 'old secret');
+        self::assertSame(8, $user?->authIdentifier());
+        self::assertFalse($this->hasher->needsRehash((string) $user->authPasswordHash()), 'The user returned carries the upgraded hash.');
+        self::assertSame(8, $auth->authenticate($request)?->user->authIdentifier(), 'The next request is still signed in after the hash was upgraded.');
+    }
+
     public function testChangingThePasswordSignsOtherSessionsOut(): void
     {
         $auth = $this->auth();

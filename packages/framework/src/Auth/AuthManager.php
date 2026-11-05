@@ -156,6 +156,9 @@ final class AuthManager
         }
         if ($this->hasher->needsRehash($hash)) {
             $users->updatePasswordHash($user, $this->hasher->hash($password));
+            // Users can be immutable (GenericUser), so read the user again: a session started with the
+            // old hash's fingerprint would not match the stored hash on the next request.
+            $user = $users->findById($user->authIdentifier()) ?? $user;
         }
 
         return $user;
