@@ -184,6 +184,13 @@ With `crystoline/xpsr-scheduler`, add one crontab entry for the web server user 
 - **It records, it does not seal:** there is no hash chain, so the log shows what the application wrote, not that the table was never altered. Restrict write access to it in the database.
 - See [the audit package](../packages/audit/README.md).
 
+## Seed data
+
+- **Run `php xpsr seed --force` after `php xpsr migrate --force`** on every deployment. Seeders change only what differs from what they describe, so a deployment with nothing new changes nothing; `--dry-run` shows what a run would change, by row.
+- **Sample data stays out of production** when its set lists its `environments` in `config/seeds.php`: asking for it elsewhere is refused before anything is written.
+- **Seed from one place**, as with migrations: two runs at once may both try to insert the same row. Give the key columns a unique index, so the second fails, changes nothing, and succeeds when run again.
+- See [the seed data package](../packages/database-seeder/README.md).
+
 ## Telemetry
 
 - **Off until `OTEL_ENABLED=true`:** installing [the telemetry package](../packages/telemetry/README.md) changes nothing by itself. Set `OTEL_EXPORTER_OTLP_ENDPOINT` to the collector, and `OTEL_SERVICE_NAME` when `app.name` is not the name you want to see.

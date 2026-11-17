@@ -42,6 +42,7 @@ lead there.
 - [Sunrise router](../packages/router-sunrise/README.md)
 - [Cache](../packages/cache/README.md)
 - [Database](../packages/database/README.md)
+- [Seed data](../packages/database-seeder/README.md)
 - [Doctrine ORM](../packages/orm-doctrine/README.md)
 - [Eloquent](../packages/orm-eloquent/README.md)
 - [Cycle ORM](../packages/orm-cycle/README.md)

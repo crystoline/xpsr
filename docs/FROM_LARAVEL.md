@@ -82,6 +82,8 @@ The baseline describes every table, so a new database, such as the one tests use
 
 From then on, change the schema with XPSR migrations (`php xpsr make:migration`), written with DBAL's schema API. Eloquent's schema builder and Laravel's migration files are not used.
 
+Seeders move to [`crystoline/xpsr-database-seeder`](../packages/database-seeder/README.md). The list in `DatabaseSeeder::run()` becomes a set in `config/seeds.php`, each seeder becomes a class with `run(Seed $seed)`, and `php artisan db:seed` becomes `php xpsr seed`. A loop of `updateOrCreate()` or `firstOrCreate()` becomes one `sync()` call, and models still work inside a seeder. Laravel's seeders are usually written to run once on an empty database; XPSR's describe the rows and change only what differs, so they run on every deployment, and reference data that the Laravel application kept in migrations can move to them. `php xpsr make:seeder PlansSeeder --table=plans --key=code --dump` writes a seeder from the rows the database already holds.
+
 ### 4. Models
 
 Copy `app/Models`. Models keep their casts, relationships, scopes, accessors, events, and soft deletes, and encrypted casts use XPSR's encrypter. Remove Laravel's traits that need the rest of Laravel, such as `HasApiTokens`, `Notifiable`, and `HasFactory`, and implement XPSR's interfaces instead:
@@ -193,6 +195,7 @@ Tests extend the skeleton's `tests/TestCase.php`, which has `get()`, `getJson()`
 | Laravel | XPSR |
 |---|---|
 | `RefreshDatabase` | `RefreshDatabase` from the database package: the same, including on an in-memory SQLite database |
+| `$this->seed()`, `$this->seed(OrderSeeder::class)` | The same, from the seed data package's `SeedsDatabase` trait, called in `setUp()` |
 | `DatabaseTruncation` | `DatabaseTruncation` |
 | `assertDatabaseHas()`, `assertDatabaseMissing()`, `assertDatabaseCount()`, `assertDatabaseEmpty()` | The same, from the `DatabaseAssertions` trait |
 | `assertJsonStructure()` | `assertJson()` with the keys, or `assertJsonPath()` for each |
@@ -222,6 +225,7 @@ Tests extend the skeleton's `tests/TestCase.php`, which has `get()`, `getJson()`
 | Passport: `Client::create()`, `Passport::tokensCan()`, the `/oauth/token` and `/oauth/authorize` routes | `Clients::create()`, `oauth.scopes`, and routes to `TokenController` and `AuthorizeController`, with [`crystoline/xpsr-auth-oauth2-server`](../packages/auth-oauth2-server/README.md) |
 | `DB::table()`, `DB::select()` | Doctrine DBAL's `Connection`, or Eloquent |
 | `DB::afterCommit()` | `Transactions::afterCommit()` |
+| `DatabaseSeeder`, `$this->call([...])`, `php artisan db:seed` | A set in `config/seeds.php` and `php xpsr seed`, with [`crystoline/xpsr-database-seeder`](../packages/database-seeder/README.md) |
 | `DB::listen()`, `DB::whenQueryingForLongerThan()` | The `QueryExecuted` event in `config/events.php`, or `slow_queries` in `config/database.php` |
 | `Crypt::encryptString()` | `Encrypter::encryptString()` |
 | `Cache::remember()` | PSR-16 `CacheInterface`: `get()`, then `set()` |
@@ -235,7 +239,7 @@ Tests extend the skeleton's `tests/TestCase.php`, which has `get()`, `getJson()`
 | `Http::get()` | PSR-18 `ClientInterface`, and named clients |
 | `Log::info()` | PSR-3 `LoggerInterface` |
 | `broadcast(new OrderShipped($order))`, `ShouldBroadcast` | `BroadcastableInterface` on the event, or `broadcast('orders/42', [...])`, with [`crystoline/xpsr-broadcast`](../packages/broadcast/README.md) |
-| `php artisan ...` | `php xpsr ...`: `migrate`, `queue:work`, `queue:retry`, `schedule:run`, `make:*` |
+| `php artisan ...` | `php xpsr ...`: `migrate`, `seed`, `queue:work`, `queue:retry`, `schedule:run`, `make:*` |
 
 ## Running both side by side
 

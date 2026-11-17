@@ -45,6 +45,10 @@ php xpsr queue:failed
 php xpsr queue:retry --all
 php xpsr queue:restart
 php xpsr mail:test ada@example.com
+php xpsr make:seeder RolesSeeder
+php xpsr seed --dry-run
+php xpsr seed
+php xpsr seed:list
 php xpsr schedule:list
 php xpsr schedule:run
 ```
@@ -72,6 +76,8 @@ php xpsr schedule:run
 `queue:work`, `queue:failed`, `queue:retry`, `queue:forget`, `queue:restart`, `make:job`, and `make:queue-table` come from `crystoline/xpsr-queue`; see [its README](../packages/queue/README.md). `queue:work` runs until it is stopped; SIGTERM and SIGINT stop it after the current job.
 
 `mail:test` comes from `crystoline/xpsr-mail` and sends a short email now, through the transport `mail.dsn` names; see [its README](../packages/mail/README.md).
+
+`seed`, `seed:list`, and `make:seeder` come from `crystoline/xpsr-database-seeder`; see [its README](../packages/database-seeder/README.md). `seed` loads the default set of `config/seeds.php`, or the sets named, and changes only the rows that differ from what the seeders describe; `--dry-run` lists what it would change and changes nothing, and in production it asks first unless `--force` is given. `make:seeder --table=plans --dump` writes a seeder from the rows a table holds.
 
 `schedule:run`, `schedule:list`, and `schedule:work` come from `crystoline/xpsr-scheduler`; see [its README](../packages/scheduler/README.md). `schedule:run` runs the tasks due this minute and is meant for cron; `schedule:work` runs it each minute in the foreground.
 

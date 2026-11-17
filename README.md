@@ -2,7 +2,7 @@
 
 A PHP framework built on PSR standards, with the parts you choose.
 
-XPSR gives an application a PSR-15 HTTP kernel and middleware, a PSR-11 container with providers, routing that is portable across FastRoute and Sunrise, views in Twig, Plates, Latte, or Blade, sessions with CSRF protection, authentication with guards and policies, PSR-14 events, and an `xpsr` console with generators. Around it are optional packages for the database and three ORMs, queues, mail, caching and rate limiting, locks, notifications, scheduled tasks, file storage, validation, logging, an HTTP client, webhooks, an audit log, tracing, health checks, translations, broadcasting, and an OAuth2 server. Every package shares one version number, and the framework itself depends on Symfony Console and Process, phpdotenv, and Nyholm's PSR-7, nothing else.
+XPSR gives an application a PSR-15 HTTP kernel and middleware, a PSR-11 container with providers, routing that is portable across FastRoute and Sunrise, views in Twig, Plates, Latte, or Blade, sessions with CSRF protection, authentication with guards and policies, PSR-14 events, and an `xpsr` console with generators. Around it are optional packages for the database and three ORMs, seed data, queues, mail, caching and rate limiting, locks, notifications, scheduled tasks, file storage, validation, logging, an HTTP client, webhooks, an audit log, tracing, health checks, translations, broadcasting, and an OAuth2 server. Every package shares one version number, and the framework itself depends on Symfony Console and Process, phpdotenv, and Nyholm's PSR-7, nothing else.
 
 ## Get started
 
@@ -34,6 +34,7 @@ The skeleton installs the framework and the FastRoute adapter; every other packa
 | [`crystoline/xpsr-installer`](packages/installer/README.md) | The `xpsr` command outside a project: `xpsr new` creates an application, and other commands run the nearest project's own `xpsr`. Installed globally. |
 | [`crystoline/xpsr-cache`](packages/cache/README.md) | Application cache: PSR-16 and PSR-6, `cache:clear`, rate limiting. |
 | [`crystoline/xpsr-database`](packages/database/README.md) | Database connections (Doctrine DBAL) and migrations. |
+| [`crystoline/xpsr-database-seeder`](packages/database-seeder/README.md) | Seed data that converges: seeders describe a table's rows and change only what differs, in sets for reference and sample data, with a dry run. |
 | [`crystoline/xpsr-orm-doctrine`](packages/orm-doctrine/README.md) | Doctrine ORM on XPSR's connection, migrations generated from entities. |
 | [`crystoline/xpsr-orm-eloquent`](packages/orm-eloquent/README.md) | Eloquent models on XPSR's connection and transactions, with XPSR's migrations. |
 | [`crystoline/xpsr-orm-cycle`](packages/orm-cycle/README.md) | Cycle ORM on XPSR's connections and transactions, with migrations generated from the entities, entity behaviors, and a user provider. |

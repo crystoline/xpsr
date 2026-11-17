@@ -26,6 +26,7 @@ Everything else is optional: `composer require` the package, add its registry to
 | `crystoline/xpsr-installer` | `Crystoline\Xpsr\Installer\` | `symfony/console` and `symfony/process` 7.4 or 8, and nothing of XPSR: it is installed globally and runs Composer and a project's own commands. Provides the `xpsr` binary. |
 | `crystoline/xpsr-cache` | `Crystoline\Xpsr\Cache\` | framework, `symfony/cache` ^7.4, `symfony/rate-limiter` ^7.4, `psr/cache` 2 or 3, `psr/simple-cache` 1 to 3 |
 | `crystoline/xpsr-database` | `Crystoline\Xpsr\Database\` | framework, `doctrine/dbal` ^4.5. |
+| `crystoline/xpsr-database-seeder` | `Crystoline\Xpsr\Database\Seeder\` | framework and database; `symfony/console` 7.4 or 8; `fakerphp/faker` ^1.24 for `Seed::faker()`. |
 | `crystoline/xpsr-orm-doctrine` | `Crystoline\Xpsr\Orm\Doctrine\` | framework, database, `doctrine/orm` ^3.7, `doctrine/persistence` ^4.1, `symfony/cache` ^7.4. |
 | `crystoline/xpsr-orm-eloquent` | `Crystoline\Xpsr\Orm\Eloquent\` | framework, database, `illuminate/database` ^12.0, `illuminate/events` ^12.0. |
 | `crystoline/xpsr-orm-cycle` | `Crystoline\Xpsr\Orm\Cycle\` | framework, database, `cycle/orm` ^2.18, `cycle/annotated` ^4.6, `cycle/schema-builder` ^2.12, `cycle/entity-behavior` ^1.7, `spiral/tokenizer` ^3.17. |

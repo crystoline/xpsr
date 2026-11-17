@@ -126,6 +126,8 @@ final class PaymentTest extends TestCase
 
 Override `connectionsToRefresh()` to return the names of other connections to refresh as well.
 
+With [`crystoline/xpsr-database-seeder`](../packages/database-seeder/README.md#testing), the `SeedsDatabase` trait loads the application's seed data inside the test's transaction: `$this->seed()` for the default set, `$this->seed('demo')` for a set by name, and `$this->seed(BusyShopScenario::class)` for one seeder, which is a good place for the rows several tests start from.
+
 **`DatabaseTruncation`** is for tests whose data must be visible to other connections or processes, such as a test that runs two workers against one row to prove a lock: the test's changes are committed, and every table except the migrations table is emptied after the test (after `tearDown()`). Override `tablesToKeep()` for tables to leave alone, such as reference data. Truncation is slower than a rollback, so use it only where the rollback does not work.
 
 **`DatabaseTransactions`** is the rollback alone, for a database that is already migrated: call `$this->beginDatabaseTransaction()` in `setUp()`. The test's transaction does not count for [`Transactions::afterCommit()`](../packages/database/README.md#after-a-transaction-commits): callbacks and `#[AfterCommit]` jobs run when the code under test commits its own outermost transaction.

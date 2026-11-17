@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Crystoline\Xpsr\Database\Seeder\Seed;
+use Crystoline\Xpsr\Database\Seeder\SeederInterface;
+
+/** Listed in a set in config/seeds.php. Load it with: php xpsr seed */
+final class {{ class }} implements SeederInterface
+{
+    public function run(Seed $seed): void
+    {
+        // Rows are matched by the key: a missing row is inserted, a changed one updated, and
+        // running the seeder again changes nothing.
+        $seed->table('{{ table }}')->sync({{ key }}, [
+{{ rows }}
+        ]);
+    }
+}

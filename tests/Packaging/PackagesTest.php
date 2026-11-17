@@ -107,6 +107,7 @@ final class PackagesTest extends TestCase
         yield 'installer' => ['installer'];
         yield 'webhooks' => ['webhooks'];
         yield 'audit log' => ['audit'];
+        yield 'database seeder' => ['database-seeder'];
         yield 'telemetry' => ['telemetry'];
         yield 'health' => ['health'];
         yield 'translation' => ['translation'];
