@@ -28,7 +28,7 @@ Not covered:
 
 XPSR is in its 0.x series. Composer reads `^0.8` as "0.8.0 or newer, below 0.9.0", so:
 
-- **Patch releases (0.8.1, 0.8.2, …)** contain fixes only. They never break the public API.
+- **Patch releases (0.8.1, 0.8.2, …)** contain fixes, and may bring a new optional package. They never break the public API, and nothing changes for an application that does not install the new package.
 - **Minor releases (0.9.0, 0.10.0, …)** may break the public API. Every break is listed under **Breaking** in `CHANGELOG.md`, with migration steps in [UPGRADE.md](../UPGRADE.md).
 
 Require `^0.8` and upgrade between minor versions deliberately.

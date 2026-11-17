@@ -4,9 +4,17 @@ All XPSR packages share one version number. See [docs/VERSIONING.md](docs/VERSIO
 
 ## Unreleased
 
+## 0.8.1 (2026-11-17)
+
+Every package is tagged 0.8.1. An application on 0.8.0 can add the new package without updating the others.
+
 ### Added
 
 - `crystoline/xpsr-database-seeder`, a new package for seed data: the rows an application needs before anyone uses it, and sample data. A seeder describes what a table should hold, `$seed->table('roles')->sync('slug', [...])`, and a run inserts the rows that are missing and updates only the columns that differ, so `php xpsr seed` runs on every deployment and a second run changes nothing; nothing records which seeders have run. `insertOnly` leaves defaults and password hashes alone once written, `prune` deletes rows that are gone from the code, and `map()` looks up other rows by their key. Sets in `config/seeds.php` group seeders, name the environments they may run in, and require other sets. A run is one transaction on each connection, `--dry-run` lists every row it would change and changes nothing, and `seed` asks first in production unless `--force` is given. `Seed::random()` and `Seed::faker()` give sample data that is the same on every machine, `make:seeder --dump` writes a seeder from the rows a table holds, `seed:list` shows the sets, and the `SeedsDatabase` trait loads seed data in tests. It works on SQLite, MySQL 8.4, MariaDB 11, and PostgreSQL 17. See [its README](packages/database-seeder/README.md).
+
+### Changed
+
+- A patch release may bring a new optional package, as this one does. It still never breaks the public API, and nothing changes for an application that does not install the new package. [docs/VERSIONING.md](docs/VERSIONING.md) says so now; it said patch releases contain fixes only.
 
 ### Fixed
 

@@ -46,6 +46,7 @@
 #   packages/broadcast         -> xpsr-broadcast.git         crystoline/xpsr-broadcast
 #   packages/auth-oauth2-server -> xpsr-auth-oauth2-server.git crystoline/xpsr-auth-oauth2-server
 #   packages/orm-cycle         -> xpsr-orm-cycle.git         crystoline/xpsr-orm-cycle
+#   packages/database-seeder   -> xpsr-database-seeder.git   crystoline/xpsr-database-seeder
 #   export-skeleton.php output -> xpsr-skeleton.git          crystoline/xpsr
 #
 # Packages keep their history (git subtree split). The skeleton gets one sync commit per
@@ -84,10 +85,10 @@ push() {
 }
 
 # Packages under packages/ that have a mirror repository. A package missing from this list is
-# developed and tested here but not published; see "Adding a package" in docs/PACKAGES.md.
+# developed and tested here but not published; see "Publishing a new package" in CONTRIBUTING.md.
 PUBLISHED=(
     framework router-fastroute router-sunrise cache http-client database orm-doctrine log-monolog validation
-    orm-eloquent auth-jwt queue mail scheduler storage view-plates view-latte view-blade lock notifications api installer webhooks audit telemetry health translation broadcast auth-oauth2-server orm-cycle
+    orm-eloquent auth-jwt queue mail scheduler storage view-plates view-latte view-blade lock notifications api installer webhooks audit telemetry health translation broadcast auth-oauth2-server orm-cycle database-seeder
 )
 
 for directory in packages/*/; do

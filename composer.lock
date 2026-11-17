@@ -3033,7 +3033,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/database-seeder",
-                "reference": "b07f17928f2ecec4c14b81757e5845730d9d751f"
+                "reference": "a31367cd8adfce2e1a0bb351c04fe06dee6d3567"
             },
             "require": {
                 "crystoline/xpsr-database": "^0.8@dev",
@@ -3044,6 +3044,7 @@
                 "symfony/console": "^7.4 || ^8.0"
             },
             "require-dev": {
+                "crystoline/xpsr-orm-eloquent": "^0.8@dev",
                 "fakerphp/faker": "^1.24.1",
                 "nyholm/psr7": "^1.8.2",
                 "phpunit/phpunit": "^12.5"
