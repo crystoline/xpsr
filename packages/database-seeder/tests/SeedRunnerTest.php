@@ -9,6 +9,7 @@ use Crystoline\Xpsr\Database\Seeder\SeedException;
 use Crystoline\Xpsr\Database\Seeder\SeederReport;
 use Crystoline\Xpsr\Database\Seeder\SeedReport;
 use Crystoline\Xpsr\Database\Seeder\SeedSet;
+use Crystoline\Xpsr\Database\Seeder\TableReport;
 use Crystoline\Xpsr\Database\Seeder\Tests\Fixtures\Project;
 use Crystoline\Xpsr\Database\Seeder\Tests\Fixtures\Seed\FailingSeeder;
 use Crystoline\Xpsr\Database\Seeder\Tests\Fixtures\Seed\MembersSeeder;
@@ -69,6 +70,11 @@ final class SeedRunnerTest extends TestCase
             self::ran($report),
         );
         self::assertSame(3, $report->table(Tables::name('role_user'))->inserted);
+        self::assertSame(
+            [Tables::name('role_user')],
+            array_map(static fn(TableReport $table): string => $table->table, $report->seeders()[2]->tables()),
+            'The roles table, which the seeder only read, is not in its report.',
+        );
         $roles = array_column($project->rows('roles', 'slug'), 'id', 'slug');
         self::assertEquals(
             [[$roles['admin'], 1], [$roles['member'], 2], [$roles['member'], 3]],

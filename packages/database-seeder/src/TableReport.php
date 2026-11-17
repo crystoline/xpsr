@@ -33,6 +33,12 @@ final class TableReport
         return $this->inserted + $this->updated + $this->deleted > 0;
     }
 
+    /** Whether the seeder synced or filled the table, changed or not, and did not only read it. */
+    public function touched(): bool
+    {
+        return $this->inserted + $this->updated + $this->unchanged + $this->deleted > 0 || $this->notes !== [];
+    }
+
     /** Such as "1 inserted, 2 updated, 5 unchanged". */
     public function summary(): string
     {

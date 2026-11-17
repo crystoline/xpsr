@@ -16,10 +16,10 @@ final class SeederReport
         public readonly string $seeder,
     ) {}
 
-    /** @return list<TableReport> */
+    /** @return list<TableReport> the tables the seeder synced or filled; one it only read, as with map(), is not listed */
     public function tables(): array
     {
-        return array_values($this->tables);
+        return array_values(array_filter($this->tables, static fn(TableReport $table): bool => $table->touched()));
     }
 
     /** @internal */
